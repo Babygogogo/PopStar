@@ -14,7 +14,7 @@ bool GameLayer::init(){
 	this->scheduleUpdate();
 	EventListenerTouchOneByOne* listener = EventListenerTouchOneByOne::create();
 	listener->onTouchBegan = CC_CALLBACK_2(GameLayer::onTouchBegan,this);
-	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener,this);
+																																																																																																																																																																																																																																																																																																																																										   Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener,this);
 
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Sprite* background = Sprite::create("bg_mainscene.jpg");
@@ -99,7 +99,7 @@ void GameLayer::floatLeftStarMsg(int leftNum){
 	FloatWord* leftStarMsg1 = FloatWord::create(ChineseWord("shengyu") + String::createWithFormat("%d",leftNum)->_string +ChineseWord("ge"), 
 		50,Point(visibleSize.width,visibleSize.height/2));
 	this->addChild(leftStarMsg1);
-    int jiangLiScore = GAMEDATA::getInstance()->getJiangli(leftNum);
+	int jiangLiScore = GAMEDATA::getInstance()->getJiangli(leftNum);
 	FloatWord* leftStarMsg2 = FloatWord::create(ChineseWord("jiangli") + String::createWithFormat("%d",jiangLiScore)->_string + ChineseWord("fen"),
 		50,Point(visibleSize.width,visibleSize.height/2 - 50));
 	this->addChild(leftStarMsg2);

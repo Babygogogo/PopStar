@@ -1,19 +1,19 @@
 #include "Timer.h"
 #include "cocos2d.h"
 
-struct BWUpdateWrapper
+struct UpdateWrapper
 {
-	BWUpdateWrapper(std::function<void(const time_t&)>&& rhs){
+	UpdateWrapper(std::function<void(const time_t&)>&& rhs){
 		func = std::move(rhs);
 	}
-	BWUpdateWrapper(BWUpdateWrapper&& rhs){
+	UpdateWrapper(UpdateWrapper&& rhs){
 		this->func = std::move(rhs.func);
 		this->flag_deletion = std::move(rhs.flag_deletion);
 	}
 
-	BWUpdateWrapper(const BWUpdateWrapper&) = delete;
-	BWUpdateWrapper& operator=(const BWUpdateWrapper&) = delete;
-	BWUpdateWrapper& operator=(BWUpdateWrapper&& rhs) = delete;
+	UpdateWrapper(const UpdateWrapper&) = delete;
+	UpdateWrapper& operator=(const UpdateWrapper&) = delete;
+	UpdateWrapper& operator=(UpdateWrapper&& rhs) = delete;
 
 	bool flag_deletion = false;
 	std::function<void(time_t)> func;
@@ -41,8 +41,8 @@ public:
 	time_t global_previous_time_ms{ 0 };
 	time_t elapsed_time_ms{ 0 };
 
-	std::unordered_map<void*, BWUpdateWrapper> m_update_observers;
-	std::unordered_map<void*, BWUpdateWrapper> m_update_observers_to_add;
+	std::unordered_map<void*, UpdateWrapper> m_update_observers;
+	std::unordered_map<void*, UpdateWrapper> m_update_observers_to_add;
 };
 
 Timer::impl::impl()

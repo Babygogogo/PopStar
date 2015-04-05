@@ -176,6 +176,9 @@
     <ClInclude Include="..\Classes\Common\IUpdateable.h">
       <Filter>Common</Filter>
     </ClInclude>
+    <ClInclude Include="..\Classes\GameObject\SoundPlayer.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="game.rc">
