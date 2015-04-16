@@ -1,7 +1,10 @@
 #include "MenuLayer.h"
-#include "GameScene.h"
 #include "GameData.h"
 #include "Audio.h"
+
+#include "./Common/SingletonContainer.h"
+#include "./Common/SceneStack.h"
+#include "./Script/PuzzleScene.h"
 
 using namespace cocos2d;
 
@@ -30,6 +33,8 @@ bool MenuLayer::init(){
 void MenuLayer::startGame(){
 	CCLOG("START!");
 	GAMEDATA::getInstance()->init();
-	Director::getInstance()->replaceScene(GameScene::create());
 
+	auto puzzle_scene = GameObject::create();
+	puzzle_scene->addComponent<PuzzleScene>();
+	SingletonContainer::instance().get<SceneStack>()->replaceAndRun(std::move(puzzle_scene));
 }

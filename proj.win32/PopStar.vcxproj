@@ -149,11 +149,11 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClCompile Include="..\Classes\GameObject\Component.cpp" />
     <ClCompile Include="..\Classes\GameObject\DisplayNode.cpp" />
     <ClCompile Include="..\Classes\GameObject\GameObject.cpp" />
-    <ClCompile Include="..\Classes\GameScene.cpp" />
     <ClCompile Include="..\Classes\HelloWorldScene.cpp" />
     <ClCompile Include="..\Classes\LayerChangeUtil.cpp" />
     <ClCompile Include="..\Classes\LevelMsgLayer.cpp" />
     <ClCompile Include="..\Classes\MenuLayer.cpp" />
+    <ClCompile Include="..\Classes\Script\PuzzleScene.cpp" />
     <ClCompile Include="..\Classes\Script\TitleScene.cpp" />
     <ClCompile Include="..\Classes\Star.cpp" />
     <ClCompile Include="..\Classes\StarMatrix.cpp" />
@@ -179,10 +179,10 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClInclude Include="..\Classes\GameObject\DisplayNode.h" />
     <ClInclude Include="..\Classes\GameObject\GameObject.h" />
     <ClInclude Include="..\Classes\GameObject\SoundPlayer.h" />
-    <ClInclude Include="..\Classes\GameScene.h" />
     <ClInclude Include="..\Classes\HelloWorldScene.h" />
     <ClInclude Include="..\Classes\LevelMsgLayer.h" />
     <ClInclude Include="..\Classes\MenuLayer.h" />
+    <ClInclude Include="..\Classes\Script\PuzzleScene.h" />
     <ClInclude Include="..\Classes\Script\Script.h" />
     <ClInclude Include="..\Classes\Script\TitleScene.h" />
     <ClInclude Include="..\Classes\Star.h" />

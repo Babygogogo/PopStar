@@ -48,9 +48,6 @@
     <ClCompile Include="..\Classes\GameLayer.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\GameScene.cpp">
-      <Filter>Classes</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\LayerChangeUtil.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
@@ -99,6 +96,9 @@
     <ClCompile Include="..\Classes\Script\TitleScene.cpp">
       <Filter>Script</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\Script\PuzzleScene.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -126,9 +126,6 @@
       <Filter>Classes</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\GameLayer.h">
-      <Filter>Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\GameScene.h">
       <Filter>Classes</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\LevelMsgLayer.h">
@@ -183,6 +180,9 @@
       <Filter>Script</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Script\Script.h">
+      <Filter>Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Script\PuzzleScene.h">
       <Filter>Script</Filter>
     </ClInclude>
   </ItemGroup>
