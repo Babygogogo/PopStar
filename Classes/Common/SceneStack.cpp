@@ -43,9 +43,9 @@ void SceneStack::impl::pushSceneToDirector(GameObject *scene)
 {
 	auto director = cocos2d::Director::getInstance();
 	if (director->getRunningScene())
-		director->pushScene(scene->getComponent<DisplayNode>()->getAs<DisplayNode::Scene>());
+		director->pushScene(scene->getComponent<DisplayNode>()->getAs<cocos2d::Scene>());
 	else
-		director->runWithScene(scene->getComponent<DisplayNode>()->getAs<DisplayNode::Scene>());
+		director->runWithScene(scene->getComponent<DisplayNode>()->getAs<cocos2d::Scene>());
 }
 
 GameObject * SceneStack::impl::topScene()
@@ -58,7 +58,7 @@ GameObject * SceneStack::impl::topScene()
 
 void SceneStack::impl::validate(GameObject* scene)
 {
-	if (!scene || !scene->getComponent<DisplayNode>() || !scene->getComponent<DisplayNode>()->getAs<DisplayNode::Scene>())
+	if (!scene || !scene->getComponent<DisplayNode>() || !scene->getComponent<DisplayNode>()->getAs<cocos2d::Scene>())
 		throw("pushScene with a non-scene");
 	if (scene->getParent())
 		throw("pushScene with a game object that has a parent");
@@ -132,7 +132,7 @@ std::unique_ptr<GameObject> SceneStack::replaceAndRun(std::unique_ptr<GameObject
 	auto ownership = pimpl->pop();
 	pimpl->push(std::move(scene));
 
-	cocos2d::Director::getInstance()->replaceScene(pimpl->topScene()->getComponent<DisplayNode>()->getAs<DisplayNode::Scene>());
+	cocos2d::Director::getInstance()->replaceScene(pimpl->topScene()->getComponent<DisplayNode>()->getAs<cocos2d::Scene>());
 
 	return ownership;
 }

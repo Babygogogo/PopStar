@@ -1,8 +1,9 @@
 #ifndef __BW_DISPLAY_NODE__
 #define __BW_DISPLAY_NODE__
 
-#include "cocos2d.h"
 #include <memory>
+#include <functional>
+#include "cocos2d.h"
 #include "Component.h"
 
 class DisplayNode final : public Component
@@ -10,37 +11,25 @@ class DisplayNode final : public Component
 	friend class GameObject;
 
 public:
-	using Node = cocos2d::Node;
-	using Sprite = cocos2d::Sprite;
-	using Layer = cocos2d::Layer;
-	using Scene = cocos2d::Scene;
-
 	virtual ~DisplayNode();
 
 	DisplayNode *getParent() const;
 
+	//////////////////////////////////////////////////////////////////////////
+	//Initializer and getter for underlying object
+	//////////////////////////////////////////////////////////////////////////
+	//*	T must be subclass of cocos2d::Node.
+	//*	In most cases, just leave the creater_func blank:
+	//initAs<cocos2d::Scene>();
+	//*	You can supply creater_func with a lambda, which will be used for creating the underlying object:
+	//initAs<cocos2d::Sprite>([](){return cocos2d::Sprite::create("some_file_name");});
 	template<typename T>
-	T* initAs()
-	{
-		if (auto existing_node = getAs<T>())
-			return existing_node;
-		if (m_node)
-			throw("Initializing a initialized DisplayNode");
-
-		this->m_node = T::create();
-		this->m_node->retain();
-		attachToParent();
-
-		return getAs<T>();
-	}
-	
-	template<typename T, typename Arg>
-	T* initAs(const Arg &arg)
+	T* initAs(std::function<T*()> &&creater_func = nullptr)
 	{
 		if (m_node)
 			throw("Initializing a initialized DisplayNode");
 
-		this->m_node = T::create(arg);
+		this->m_node = creater_func ? creater_func() : T::create();
 		this->m_node->retain();
 		attachToParent();
 
@@ -70,7 +59,7 @@ private:
 	void attachToParent();
 	void removeFromParent();
 
-	Node* m_node{ nullptr };
+	cocos2d::Node* m_node{ nullptr };
 
 	class impl;
 	std::unique_ptr<impl> pimpl;
