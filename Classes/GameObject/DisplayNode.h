@@ -28,14 +28,22 @@ public:
 			throw("Initializing a initialized DisplayNode");
 
 		this->m_node = T::create();
-		if (auto parent = getParent()){
-			if (parent->m_node)
-				parent->m_node->addChild(this->m_node);
-			else
-				parent->initAs<DefaultNode>()->addChild(this->m_node);
-		}
-
 		this->m_node->retain();
+		attachToParent();
+
+		return getAs<T>();
+	}
+	
+	template<typename T, typename Arg>
+	T* initAs(const Arg &arg)
+	{
+		if (m_node)
+			throw("Initializing a initialized DisplayNode");
+
+		this->m_node = T::create(arg);
+		this->m_node->retain();
+		attachToParent();
+
 		return getAs<T>();
 	}
 
@@ -59,6 +67,7 @@ private:
 	DisplayNode(GameObject *game_object);
 
 	void addChild(DisplayNode *child);
+	void attachToParent();
 	void removeFromParent();
 
 	Node* m_node{ nullptr };

@@ -36,12 +36,11 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
 	// create a scene and run
 	Audio::getInstance()->prepare();
-	//director->runWithScene(LegacyMenuScene::create());
+
 	auto title_scene = GameObject::create();
 	title_scene->addComponent<TitleScene>();
 	SingletonContainer::instance().add<::Timer>();
 	SingletonContainer::instance().add<SceneStack>()->pushAndRun(std::move(title_scene));
-
 
 	return true;
 }

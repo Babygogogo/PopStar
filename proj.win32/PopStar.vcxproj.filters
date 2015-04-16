@@ -48,13 +48,7 @@
     <ClCompile Include="..\Classes\GameLayer.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\LayerChangeUtil.cpp">
-      <Filter>Classes</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\LevelMsgLayer.cpp">
-      <Filter>Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\MenuLayer.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\Star.cpp">
@@ -129,9 +123,6 @@
       <Filter>Classes</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\LevelMsgLayer.h">
-      <Filter>Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\MenuLayer.h">
       <Filter>Classes</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Star.h">

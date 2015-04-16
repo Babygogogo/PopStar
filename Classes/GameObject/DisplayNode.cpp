@@ -24,6 +24,8 @@ DisplayNode::impl::~impl()
 
 DisplayNode::DisplayNode(GameObject *game_object) : Component("DisplayNode", game_object), pimpl(new impl(game_object))
 {
+	if (auto parent_object = game_object->getParent())
+		parent_object->addComponent<DisplayNode>()->addChild(this);
 }
 
 DisplayNode::~DisplayNode()
@@ -61,6 +63,16 @@ void DisplayNode::addChild(DisplayNode *child)
 DisplayNode * DisplayNode::getParent() const
 {
 	return pimpl->m_parent;
+}
+
+void DisplayNode::attachToParent()
+{
+	if (auto parent = getParent()){
+		if (parent->m_node)
+			parent->m_node->addChild(this->m_node);
+		else
+			parent->initAs<DefaultNode>()->addChild(this->m_node);
+	}
 }
 
 void DisplayNode::removeFromParent()

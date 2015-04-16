@@ -1,6 +1,7 @@
 #ifndef __TITLE_SCENE__
 #define __TITLE_SCENE__
 
+#include <memory>
 #include "Script.h"
 
 class TitleScene final :public Script
@@ -23,6 +24,9 @@ protected:
 
 private:
 	TitleScene(GameObject* game_object);
+
+	struct impl;
+	std::unique_ptr<impl> pimpl;
 };
 
 #endif // !__TITLE_SCENE__
