@@ -10,11 +10,14 @@
     <Filter Include="resource">
       <UniqueIdentifier>{715254bc-d70b-4ec5-bf29-467dd3ace079}</UniqueIdentifier>
     </Filter>
-    <Filter Include="GameObject">
-      <UniqueIdentifier>{c457ba0e-bd2b-4166-9f4f-e768be90d2e6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Common">
       <UniqueIdentifier>{a5a94a7e-091b-4363-af0f-202d37bee3c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObjectAndComponent">
+      <UniqueIdentifier>{c457ba0e-bd2b-4166-9f4f-e768be90d2e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script">
+      <UniqueIdentifier>{ef8c469e-5c7a-42b8-a0b3-cad6c0f00978}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -57,9 +60,6 @@
     <ClCompile Include="..\Classes\MenuLayer.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\MenuScene.cpp">
-      <Filter>Classes</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\Star.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
@@ -76,13 +76,13 @@
       <Filter>Classes</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\GameObject\GameObject.cpp">
-      <Filter>GameObject</Filter>
+      <Filter>GameObjectAndComponent</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\GameObject\DisplayNode.cpp">
-      <Filter>GameObject</Filter>
+      <Filter>GameObjectAndComponent</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\GameObject\Component.cpp">
-      <Filter>GameObject</Filter>
+      <Filter>GameObjectAndComponent</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\Common\Timer.cpp">
       <Filter>Common</Filter>
@@ -95,6 +95,9 @@
     </ClCompile>
     <ClCompile Include="..\Classes\Common\SceneStack.cpp">
       <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Script\TitleScene.cpp">
+      <Filter>Script</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -134,9 +137,6 @@
     <ClInclude Include="..\Classes\MenuLayer.h">
       <Filter>Classes</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\MenuScene.h">
-      <Filter>Classes</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\Star.h">
       <Filter>Classes</Filter>
     </ClInclude>
@@ -153,13 +153,13 @@
       <Filter>Classes</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\GameObject\GameObject.h">
-      <Filter>GameObject</Filter>
+      <Filter>GameObjectAndComponent</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\GameObject\DisplayNode.h">
-      <Filter>GameObject</Filter>
+      <Filter>GameObjectAndComponent</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\GameObject\Component.h">
-      <Filter>GameObject</Filter>
+      <Filter>GameObjectAndComponent</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Common\Object.h">
       <Filter>Common</Filter>
@@ -177,7 +177,13 @@
       <Filter>Common</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\GameObject\SoundPlayer.h">
-      <Filter>GameObject</Filter>
+      <Filter>GameObjectAndComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Script\TitleScene.h">
+      <Filter>Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Script\Script.h">
+      <Filter>Script</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

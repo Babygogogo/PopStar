@@ -5,6 +5,8 @@
 
 class IUpdateable
 {
+	friend class GameObject;
+
 protected:
 	inline virtual void update(const std::time_t& time_ms) = 0;
 };

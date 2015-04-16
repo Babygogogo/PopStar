@@ -35,7 +35,7 @@ int Star::getColor(){
 	return color;
 }
 
-void Star::setDesPosition(const Point& p){
+void Star::setDesPosition(const cocos2d::Point& p){
 	desPosition = p;
 }
 

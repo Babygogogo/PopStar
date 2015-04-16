@@ -4,6 +4,10 @@
 #include "ComboEffect.h"
 #include "Audio.h"
 #include <ctime>
+
+using namespace cocos2d;
+using namespace std;
+
 float StarMatrix::ONE_CLEAR_TIME = 0.05f;
 StarMatrix* StarMatrix::create(GameLayer* layer){
 	StarMatrix* ret = new StarMatrix();
@@ -46,7 +50,7 @@ void StarMatrix::updateStar(float delta){
 	
 }
 
-void StarMatrix::onTouch(const Point& p){
+void StarMatrix::onTouch(const cocos2d::Point& p){
 	Star* s = getStarByTouch(p);
 	if(s){
 	genSelectedList(s);
@@ -67,7 +71,7 @@ void StarMatrix::initMatrix(){
 				CCLOG("color i=%d,j=%d");
 			Star* star = Star::create(color);
 			stars[i][j] = star;
-			star->setPosition(getPositionByIndex(i,j) + Point(0,100));
+			star->setPosition(getPositionByIndex(i, j) + cocos2d::Point(0, 100));
 			star->setDesPosition(getPositionByIndex(i,j));
 			star->setIndex_ij(i,j);
 			this->addChild(star);

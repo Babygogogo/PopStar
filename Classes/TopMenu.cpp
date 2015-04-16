@@ -1,6 +1,10 @@
 #include "TopMenu.h"
 #include "Chinese.h"
 #include "GameData.h"
+
+using std::string;
+using namespace cocos2d;
+
 bool TopMenu::init(){
 	if(!Node::init()){
 		return false;

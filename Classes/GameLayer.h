@@ -4,9 +4,10 @@
 #include "FloatWord.h"
 #include "TopMenu.h"
 #include "StarMatrix.h"
-using namespace cocos2d;
+
 class StarMatrix;
-class GameLayer : public Layer{
+
+class GameLayer : public cocos2d::Layer{
 public:
 	virtual bool init();
 	CREATE_FUNC(GameLayer);
@@ -15,7 +16,7 @@ public:
 	void removeFloatWord();
 	void showStarMatrix();
 	virtual void update(float delta);
-	virtual bool onTouchBegan(Touch* touch,Event* event);
+	virtual bool onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event);
 	void refreshMenu();
 	void showLinkNum(int size);
 	void hideLinkNum();
@@ -27,6 +28,6 @@ private:
 	FloatWord* _targetScore;
 	TopMenu* menu;
 	StarMatrix* matrix;
-	Label* linkNum;
+	cocos2d::Label* linkNum;
 };
 #endif

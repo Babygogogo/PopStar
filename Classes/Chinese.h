@@ -2,11 +2,9 @@
 #define _CHINESEWORD_H_
 #include <string>
 #include <cocos2d.h>
-using namespace std;
-using namespace cocos2d;
 
-static ValueVector txt_vec = FileUtils::getInstance()->getValueVectorFromFile("ChineseWords.xml");
+static cocos2d::ValueVector txt_vec = cocos2d::FileUtils::getInstance()->getValueVectorFromFile("ChineseWords.xml");
 
-string ChineseWord(const char* wordId);
+std::string ChineseWord(const char* wordId);
 
 #endif

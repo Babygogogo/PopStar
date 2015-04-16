@@ -32,6 +32,8 @@ public:
 	GameObject* pushAndRun(std::unique_ptr<GameObject> &&scene);
 	//The ownership of the pre-top scene is returned. You can do anything with it, or just leave it alone.
 	std::unique_ptr<GameObject> pop();
+	//Replace the current scene with a new one. The ownership of the pre-current scene will be returned.
+	std::unique_ptr<GameObject> replaceAndRun(std::unique_ptr<GameObject> &&scene);
 	//The current scene is also the top scene in the stack.
 	GameObject* getCurrentScene();
 

@@ -1,6 +1,10 @@
 #include "AppDelegate.h"
-#include "MenuScene.h"
 #include "Audio.h"
+
+#include "./Common/SingletonContainer.h"
+#include "./Common/Timer.h"
+#include "./Common/SceneStack.h"
+#include "./Script/TitleScene.h"
 
 USING_NS_CC;
 
@@ -31,8 +35,13 @@ bool AppDelegate::applicationDidFinishLaunching() {
 	director->setAnimationInterval(1.0 / 60);
 
 	// create a scene and run
-	director->runWithScene(MenuScene::create());
 	Audio::getInstance()->prepare();
+	//director->runWithScene(LegacyMenuScene::create());
+	auto title_scene = GameObject::create();
+	title_scene->addComponent<TitleScene>();
+	SingletonContainer::instance().add<::Timer>();
+	SingletonContainer::instance().add<SceneStack>()->pushAndRun(std::move(title_scene));
+
 
 	return true;
 }

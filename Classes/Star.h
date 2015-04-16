@@ -2,8 +2,8 @@
 #define _STAR_H_
 
 #include "cocos2d.h"
-using namespace cocos2d;
-class Star : public Sprite{
+
+class Star : public cocos2d::Sprite{
 public:
 	enum color{
 		GREEN,
@@ -16,8 +16,8 @@ public:
 	bool isSelected();
 	inline void setSelected(bool b){selected = b;}
 	int getColor();
-	void setDesPosition(const Point& p);
-	inline Point getDesPosition(){return desPosition;}
+	void setDesPosition(const cocos2d::Point& p);
+	inline cocos2d::Point getDesPosition(){ return desPosition; }
 	void updatePosition();
 	inline int getIndexI(){return index_i;}
 	inline int getIndexJ(){return index_j;}
@@ -32,7 +32,7 @@ public:
 	static const int STAR_HEIGHT = 48;
 private:
 	int color;
-	Point desPosition;
+	cocos2d::Point desPosition;
 	bool selected;
 	int index_i;
 	int index_j;

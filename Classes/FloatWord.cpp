@@ -1,5 +1,7 @@
 #include "FloatWord.h"
 
+using namespace cocos2d;
+
 FloatWord* FloatWord::create(const std::string& word,const int fontSize,Point begin){
 	FloatWord* ret = new FloatWord();
 	if(ret && ret->init(word,fontSize,begin)){

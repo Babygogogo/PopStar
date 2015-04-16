@@ -1,8 +1,8 @@
 #ifndef _LEVELMSGLAYER_H_
 #define _LEVELMSGLAYER_H_
 #include "cocos2d.h"
-using namespace cocos2d;
-class LevelMsgLayer : public Layer{
+
+class LevelMsgLayer : public cocos2d::Layer{
 public:
 	virtual bool init();
 	CREATE_FUNC(LevelMsgLayer);

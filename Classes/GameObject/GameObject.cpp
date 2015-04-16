@@ -2,6 +2,7 @@
 
 #include "GameObject.h"
 #include "DisplayNode.h"
+#include "../Script/TitleScene.h"
 
 using std::unique_ptr;
 
@@ -77,27 +78,12 @@ bool GameObject::isAncestorOf(const GameObject *child) const
 	return false;
 }
 
-std::unique_ptr<GameObject> GameObject::create(Type type)
-{
-	auto game_object = unique_ptr<GameObject>(new GameObject());
-
-	switch (type){
-	case Type::scene:
-		game_object->addComponent<DisplayNode>()->initAs<DisplayNode::Scene>();
-		break;
-	default:
-		break;
-	}
-
-	return game_object;
-}
-
 GameObject * GameObject::getParent() const
 {
 	return pimpl->m_parent;
 }
 
-std::unique_ptr<GameObject> GameObject::removeFromParent()
+std::unique_ptr<GameObject> GameObject::getOwnershipFromParent()
 {
 	if (auto parent = getParent()){
 		this->pimpl->m_parent = nullptr;

@@ -1,5 +1,8 @@
 #include "StarParticle.h"
 #include "Star.h"
+
+using namespace cocos2d;
+
 void showStarParticleEffect(int color,Point position,Node* node){
 	ParticleExplosion* effect = ParticleExplosion::create();
 	effect->setTexture(Director::getInstance()->getTextureCache()->addImage("star.png"));

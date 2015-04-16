@@ -3,8 +3,14 @@
 #include "GameData.h"
 #include "Chinese.h"
 #include "StarMatrix.h"
-#include "MenuScene.h"
 #include "Audio.h"
+#include "./Common/SingletonContainer.h"
+#include "./Common/SceneStack.h"
+#include "./Script/TitleScene.h"
+
+using namespace cocos2d;
+using namespace std;
+
 bool GameLayer::init(){
 	if(!Layer::init()){
 		return false;
@@ -131,5 +137,11 @@ void GameLayer::gotoGameOver(){
 	FloatWord* gameOver = FloatWord::create(
 		"GAME OVER",80,Point(visibleSize.width,visibleSize.height/2));
 	this->addChild(gameOver);
-	gameOver->floatIn(1.0f,[]{Director::getInstance()->replaceScene(MenuScene::create());});
+
+	gameOver->floatIn(1.0f,
+		[](){
+		auto title_scene = GameObject::create();
+		title_scene->addComponent<TitleScene>();
+		SingletonContainer::instance().get<SceneStack>()->replaceAndRun(std::move(title_scene));
+	});
 }

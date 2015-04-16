@@ -17,8 +17,6 @@ public:
 
 	virtual ~DisplayNode();
 
-	static const bool canUpdate = false;
-
 	DisplayNode *getParent() const;
 
 	template<typename T>
@@ -47,6 +45,9 @@ public:
 		return dynamic_cast<T*>(m_node);
 	}
 
+	//////////////////////////////////////////////////////////////////////////
+	//Disable copy/move constructor and operator=.
+	//////////////////////////////////////////////////////////////////////////
 	DisplayNode(const DisplayNode&) = delete;
 	DisplayNode(DisplayNode&&) = delete;
 	DisplayNode& operator=(const DisplayNode&) = delete;

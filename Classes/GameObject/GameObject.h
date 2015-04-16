@@ -19,9 +19,9 @@
  * \
  * \details
  *	GameObjects are organized in the form of trees. Methods like addChild, removeFromParent are provided for organizing.
- *	Roots of the trees are GameObjects created as "scene". They should be push into SceneStack to take their effects.
- *	game object is a container of various components and/or scripts, which implement most of the logics of the real game object.
- *	game objects, along with its components, are managed with std::unique_ptr.
+ *	Roots of the trees are GameObjects that created as "scene". They should be push into SceneStack to take their effects.
+ *	Game object is a container of various components and/or scripts which implement most of the logics of the real game object.
+ *	Game objects, along with its components, are managed with std::unique_ptr.
  *	For most cases in the code base, a std::unique_ptr means an ownership, while a raw pointer stands for a (temporary) reference.
  * \
  * \author	Babygogogo
@@ -33,8 +33,10 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 	//Factory method.
 	//////////////////////////////////////////////////////////////////////////
-	enum class Type{empty, scene, tile};
-	static std::unique_ptr<GameObject> create(Type type = Type::empty);
+	static std::unique_ptr<GameObject> create()
+	{
+		return std::unique_ptr<GameObject>(new GameObject);
+	};
 
 	~GameObject();
 
@@ -47,7 +49,7 @@ public:
 
 	//If the game object has no parent, nothing happens, and nullptr is returned.
 	//Otherwise, the ownership is returned. Keep it, or the object along with its children will be destroyed.
-	std::unique_ptr<GameObject> removeFromParent();
+	std::unique_ptr<GameObject> getOwnershipFromParent();
 
 	//////////////////////////////////////////////////////////////////////////
 	//Stuff for adding/getting components or scripts.
@@ -87,8 +89,8 @@ private:
 	//Only the current scene owned by the SceneStack, and the (indirect) children of that scene, will be "update" once a frame.
 	void update(const time_t &time_ms) override
 	{
-		for (auto &update_pair : m_updates)
-			update_pair.second(time_ms);
+		for (auto &updateable : m_updateables)
+			updateable->update(time_ms);
 
 		for (auto &child : m_children)
 			child->update(time_ms);
@@ -115,7 +117,7 @@ private:
 	> T* addComponentHelper()
 	{
 		auto component = emplaceComponent<T>();
-		m_updates.emplace(component);
+		m_updateables.emplace(component);
 
 		return component;
 	};
@@ -124,7 +126,6 @@ private:
 	//Data members of components and children.
 	//////////////////////////////////////////////////////////////////////////
 	std::unordered_map<std::type_index, std::unique_ptr<Component>> m_components;
-	std::unordered_map<Component*, std::function<void(const time_t&)>> m_updates;
 	std::unordered_set<IUpdateable*> m_updateables;
 	std::vector<std::unique_ptr<GameObject>> m_children;
 

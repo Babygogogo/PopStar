@@ -2,6 +2,9 @@
 #include "GameScene.h"
 #include "GameData.h"
 #include "Audio.h"
+
+using namespace cocos2d;
+
 bool MenuLayer::init(){
 	if(!Layer::init()){
 		return false;

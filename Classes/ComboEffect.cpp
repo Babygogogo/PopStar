@@ -1,4 +1,7 @@
 #include "ComboEffect.h"
+
+using namespace cocos2d;
+
 void showComboEffect(int size,Node* node){
 	if(size<5)
 		return;
