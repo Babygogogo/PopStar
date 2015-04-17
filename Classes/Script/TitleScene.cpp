@@ -30,12 +30,13 @@ struct TitleScene::impl
 	//	This change should be reasonable, but the better solution is to understand why the CCMenuItem::_scriptType is changed.
 	std::unique_ptr<GameObject> createTitleMenu();
 	std::unique_ptr<GameObject> createStartButton();
+	std::function<void(cocos2d::Ref*)> createStartButtonCallback();
 };
 
 std::unique_ptr<GameObject> TitleScene::impl::createTitleLayer()
 {
-	auto title_layer_object = GameObject::create();
-	title_layer_object->addComponent<DisplayNode>()->initAs<cocos2d::Layer>();
+	auto title_layer_object = GameObject::create(
+		[](GameObject* object){object->addComponent<DisplayNode>()->initAs<cocos2d::Layer>(); });
 
 	title_layer_object->addChild(createBackground());
 	title_layer_object->addChild(createTitleMenu());
@@ -72,20 +73,22 @@ std::unique_ptr<GameObject> TitleScene::impl::createTitleMenu()
 std::unique_ptr<GameObject> TitleScene::impl::createStartButton()
 {
 	auto button_object = GameObject::create();
-	button_object->addComponent<DisplayNode>()->initAs<cocos2d::MenuItemImage>([](){
-		return cocos2d::MenuItemImage::create(
-			"menu_start.png",
-			"menu_start.png",
-			[](cocos2d::Ref *sender){
-				GAMEDATA::getInstance()->init();
-
-				auto puzzle_scene = GameObject::create();
-				puzzle_scene->addComponent<PuzzleScene>();
-				SingletonContainer::instance().get<SceneStack>()->replaceAndRun(std::move(puzzle_scene));
-		});
-	});
+	button_object->addComponent<DisplayNode>()->initAs<cocos2d::MenuItemImage>(
+		[this](){return cocos2d::MenuItemImage::create("menu_start.png", "menu_start.png", createStartButtonCallback()); }
+	);
 
 	return button_object;
+}
+
+std::function<void(cocos2d::Ref*)> TitleScene::impl::createStartButtonCallback()
+{
+	return [](cocos2d::Ref *sender){
+		GAMEDATA::getInstance()->init();
+
+		auto puzzle_scene = GameObject::create();
+		puzzle_scene->addComponent<PuzzleScene>();
+		SingletonContainer::instance().get<SceneStack>()->replaceAndRun(std::move(puzzle_scene));
+	};
 }
 
 TitleScene::TitleScene(GameObject* game_object) :Script("TitleScene", game_object), pimpl(new impl)

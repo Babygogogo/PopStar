@@ -33,9 +33,13 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 	//Factory method.
 	//////////////////////////////////////////////////////////////////////////
-	static std::unique_ptr<GameObject> create()
+	static std::unique_ptr<GameObject> create(std::function<void(GameObject*)> &&additional_task = nullptr)
 	{
-		return std::unique_ptr<GameObject>(new GameObject);
+		auto game_object = std::unique_ptr<GameObject>(new GameObject);
+		if (additional_task)
+			additional_task(game_object.get());
+
+		return game_object;
 	};
 
 	~GameObject();
