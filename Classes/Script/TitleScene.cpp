@@ -16,6 +16,18 @@ struct TitleScene::impl
 
 	std::unique_ptr<GameObject> createBackground();
 
+	//HACK: It seems that the cocos2d-x engine has a mysterious bug here.
+	//	If you create Menu with its factory method (e.g. auto menu = Menu::create(some_item..., NULL),
+	//or auto menu = Menu::create(); menu->addChild(some_item);)
+	//then all's right with the world.
+	//	BUT if you create the menu and buttons with the GameObject and its components,
+	//you will get a runtime error when you click the button, in line no. 128 of CCMenuItem.cpp.
+	//	The cause is that the member CCMenuItem::_scriptType is changed somehow mysteriously,
+	//without the script engine being initialized.
+	//	To correct this, I made a change to the code of the engine, in line no. 124 of CCMenuItem.cpp:
+	//before:	if (kScriptTypeNone != _scriptType)
+	//after:	if (kScriptTypeNone != _scriptType && ScriptEngineManager::getInstance()->getScriptEngine())
+	//	This change should be reasonable, but the better solution is to understand why the CCMenuItem::_scriptType is changed.
 	std::unique_ptr<GameObject> createTitleMenu();
 	std::unique_ptr<GameObject> createStartButton();
 };
@@ -47,26 +59,14 @@ std::unique_ptr<GameObject> TitleScene::impl::createTitleMenu()
 {
 	auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
 
-	auto button_object = GameObject::create();
-	auto button_sprite = button_object->addComponent<DisplayNode>()->initAs<cocos2d::Sprite>();
+	auto menu_object = GameObject::create();
+	auto menu_underlying = menu_object->addComponent<DisplayNode>()->initAs<cocos2d::Menu>();
 
-	auto startBtn = cocos2d::MenuItemImage::create(
-		"menu_start.png",
-		"menu_star.png",
-		[](cocos2d::Ref *sender){
-			GAMEDATA::getInstance()->init();
-			
-			auto puzzle_scene = GameObject::create();
-			puzzle_scene->addComponent<PuzzleScene>();
-			SingletonContainer::instance().get<SceneStack>()->replaceAndRun(std::move(puzzle_scene));
-	});
+	menu_object->addChild(createStartButton());
+	menu_underlying->alignItemsVertically();
+	menu_underlying->setPosition(visibleSize.width / 2, visibleSize.height / 2);
 
-	auto menu = cocos2d::Menu::create(startBtn, NULL);
-	menu->alignItemsVertically();
-	menu->setPosition(visibleSize.width / 2, visibleSize.height / 2);
-	button_sprite->addChild(menu);
-
-	return button_object;
+	return menu_object;
 }
 
 std::unique_ptr<GameObject> TitleScene::impl::createStartButton()
@@ -75,7 +75,7 @@ std::unique_ptr<GameObject> TitleScene::impl::createStartButton()
 	button_object->addComponent<DisplayNode>()->initAs<cocos2d::MenuItemImage>([](){
 		return cocos2d::MenuItemImage::create(
 			"menu_start.png",
-			"menu_star.png",
+			"menu_start.png",
 			[](cocos2d::Ref *sender){
 				GAMEDATA::getInstance()->init();
 
