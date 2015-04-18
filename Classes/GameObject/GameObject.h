@@ -33,6 +33,12 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 	//Factory method.
 	//////////////////////////////////////////////////////////////////////////
+	//	You can supply the additional_task with a lambda, making the caller code more compact:
+	//auto game_object = GameObject::create([](GameObject *obj){obj->addComponent<...>();...;});
+	//	otherwise (the code below does the same thing as above):
+	//auto game_object = GameObject::create();
+	//game_object->addComponent<...>();...;
+	//	No matter which approach you prefer, make sure that your code is readable.
 	static std::unique_ptr<GameObject> create(std::function<void(GameObject*)> &&additional_task = nullptr)
 	{
 		auto game_object = std::unique_ptr<GameObject>(new GameObject);

@@ -9,25 +9,59 @@ using namespace cocos2d;
 using namespace std;
 
 float StarMatrix::ONE_CLEAR_TIME = 0.05f;
-StarMatrix* StarMatrix::create(GameLayer* layer){
-	StarMatrix* ret = new StarMatrix();
-	if(ret && ret->init(layer)){
-		ret->autorelease();
-		return ret;
+//StarMatrix* StarMatrix::create(GameLayer* layer){
+//	StarMatrix* ret = new StarMatrix();
+//	if(ret && ret->init(layer)){
+//		ret->autorelease();
+//		return ret;
+//	}
+//	CC_SAFE_DELETE(ret);
+//	return nullptr;
+//}
+
+StarMatrix * StarMatrix::create(std::function<void()> &&layerHideLinkNum, std::function<void(int)> &&layerShowLinkNum, std::function<void(int)> &&layerFloatLeftStarMsg, std::function<void()> &&layerRefreshMenu, std::function<void()> &&layerGotoNextLevel, std::function<void()> &&layerGotoGameOver)
+{
+	auto matrix = new StarMatrix();
+	if (matrix && matrix->init(std::move(layerHideLinkNum), std::move(layerShowLinkNum), std::move(layerFloatLeftStarMsg),
+		std::move(layerRefreshMenu), std::move(layerGotoNextLevel), std::move(layerGotoGameOver))){
+		matrix->autorelease();
+		return matrix;
 	}
-	CC_SAFE_DELETE(ret);
+
+	CC_SAFE_DELETE(matrix);
 	return nullptr;
 }
 
-bool StarMatrix::init(GameLayer* layer){
-	if(!Node::init()){
+//bool StarMatrix::init(GameLayer* layer){
+//	if(!Node::init()){
+//		return false;
+//	}
+//	m_layer = layer;
+//	needClear = false;
+//	clearSumTime = 0;
+//	memset(stars, 0, sizeof(Star*) * ROW_NUM * COL_NUM);
+//	initMatrix();
+//	return true;
+//}
+
+bool StarMatrix::init(std::function<void()> &&layerHideLinkNum, std::function<void(int)> &&layerShowLinkNum,
+	std::function<void(int)> &&layerFloatLeftStarMsg, std::function<void()> &&layerRefreshMenu, std::function<void()> &&layerGotoNextLevel, std::function<void()> &&layerGotoGameOver)
+{
+	if (!Node::init())
 		return false;
-	}
-	m_layer = layer;
+
+	m_layerHideLinkNum = std::move(layerHideLinkNum);
+	m_layerShowLinkNum = std::move(layerShowLinkNum);
+	m_layerFloatLeftStarMsg = std::move(layerFloatLeftStarMsg);
+	m_layerRefreshMenu = std::move(layerRefreshMenu);
+	m_layerGotoNextLevel = std::move(layerGotoNextLevel);
+	m_layerGotoGameOver = std::move(layerGotoGameOver);
+
 	needClear = false;
 	clearSumTime = 0;
 	memset(stars, 0, sizeof(Star*) * ROW_NUM * COL_NUM);
 	initMatrix();
+
 	return true;
 }
 
@@ -140,7 +174,12 @@ void StarMatrix::genSelectedList(Star* s){
 
 void StarMatrix::deleteSelectedList(){
 	if(selectedList.size() <= 1){
-		m_layer->hideLinkNum();
+
+		//////////////////////////////////////////////////////////////////////////
+		//m_layer->hideLinkNum();
+		m_layerHideLinkNum();
+		//////////////////////////////////////////////////////////////////////////
+		
 		selectedList.at(0)->setSelected(false);
 		return;
 	}
@@ -159,10 +198,19 @@ void StarMatrix::deleteSelectedList(){
 	Audio::getInstance()->playCombo(selectedList.size());
 
 	refreshScore();
-	m_layer->showLinkNum(selectedList.size());
+	
+	//////////////////////////////////////////////////////////////////////////
+	//m_layer->showLinkNum(selectedList.size());
+	m_layerShowLinkNum(selectedList.size());
+	//////////////////////////////////////////////////////////////////////////
+
 	adjustMatrix();
 	if(isEnded()){
-		m_layer->floatLeftStarMsg(getLeftStarNum());//通知layer弹出剩余星星的信息
+		//////////////////////////////////////////////////////////////////////////
+		//m_layer->floatLeftStarMsg(getLeftStarNum());//通知layer弹出剩余星星的信息
+		m_layerFloatLeftStarMsg(getLeftStarNum());
+		//////////////////////////////////////////////////////////////////////////
+		
 		CCLOG("ENDED");
 	}
 
@@ -227,7 +275,11 @@ void StarMatrix::refreshScore(){
 	if(data->getCurScore() > data->getHistoryScore()){
 		data->setHistoryScore(data->getCurScore());
 	}
-	m_layer->refreshMenu();
+
+	//////////////////////////////////////////////////////////////////////////
+	//m_layer->refreshMenu();
+	m_layerRefreshMenu();
+	//////////////////////////////////////////////////////////////////////////
 }
 
 
@@ -271,9 +323,16 @@ void StarMatrix::clearMatrixOneByOne(){
 	//转到下一关或者弹出结束游戏的窗口
 	if(GAMEDATA::getInstance()->getCurScore() >= GAMEDATA::getInstance()->getNextScore()){
 		GAMEDATA::getInstance()->setCurLevel(GAMEDATA::getInstance()->getCurLevel() + 1);
-		m_layer->gotoNextLevel();
+		
+		//////////////////////////////////////////////////////////////////////////
+		//m_layer->gotoNextLevel();
+		m_layerGotoNextLevel();
+		//////////////////////////////////////////////////////////////////////////
 	}else{
-		m_layer->gotoGameOver();
+		//////////////////////////////////////////////////////////////////////////
+		//m_layer->gotoGameOver();
+		m_layerGotoGameOver();
+		//////////////////////////////////////////////////////////////////////////
 		CCLOG("GAME OVER");
 	}
 }

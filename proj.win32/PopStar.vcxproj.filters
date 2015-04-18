@@ -45,9 +45,6 @@
     <ClCompile Include="..\Classes\GameData.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\GameLayer.cpp">
-      <Filter>Classes</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\LevelMsgLayer.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
@@ -93,6 +90,9 @@
     <ClCompile Include="..\Classes\Script\PuzzleScene.cpp">
       <Filter>Script</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\Script\PuzzleMatrixLayer.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -117,9 +117,6 @@
       <Filter>Classes</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\GameData.h">
-      <Filter>Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\GameLayer.h">
       <Filter>Classes</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\LevelMsgLayer.h">
@@ -174,6 +171,9 @@
       <Filter>Script</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Script\PuzzleScene.h">
+      <Filter>Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Script\PuzzleMatrixLayer.h">
       <Filter>Script</Filter>
     </ClInclude>
   </ItemGroup>
