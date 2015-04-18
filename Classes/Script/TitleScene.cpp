@@ -85,8 +85,7 @@ std::function<void(cocos2d::Ref*)> TitleScene::impl::createStartButtonCallback()
 	return [](cocos2d::Ref *sender){
 		GAMEDATA::getInstance()->init();
 
-		auto puzzle_scene = GameObject::create();
-		puzzle_scene->addComponent<PuzzleScene>();
+		auto puzzle_scene = GameObject::create([](GameObject *object){object->addComponent<PuzzleScene>(); });
 		SingletonContainer::instance().get<SceneStack>()->replaceAndRun(std::move(puzzle_scene));
 	};
 }

@@ -19,20 +19,28 @@ struct PuzzleMatrixLayer::impl : public cocos2d::Layer
 	impl(){};
 	~impl(){};
 
-	virtual bool init();
 	CREATE_FUNC(PuzzleMatrixLayer::impl);
+
+	void hideLinkNum();
+	void showLinkNum(int size);
+	void floatLeftStarMsg(int leftNum);
+	void refreshMenu();
+	void gotoNextLevel();
+	void gotoGameOver();
+
+
+public:
+	void addTouchListener(PuzzleMatrixLayer::impl *target);
+	std::unique_ptr<GameObject> createBackground();
+	
+private:
+	bool init();
+
 	void floatLevelWord();
 	void floatTargetScoreWord();
 	void removeFloatWord();
 	void showStarMatrix();
 	void update(float delta);
-	bool onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event);
-	void refreshMenu();
-	void showLinkNum(int size);
-	void hideLinkNum();
-	void floatLeftStarMsg(int leftNum);
-	void gotoNextLevel();
-	void gotoGameOver();
 
 	FloatWord* _levelMsg;
 	FloatWord* _targetScore;
@@ -49,14 +57,7 @@ bool PuzzleMatrixLayer::impl::init(){
 	matrix = nullptr;
 	this->scheduleUpdate();
 
-	auto listener = cocos2d::EventListenerTouchOneByOne::create();
-	listener->onTouchBegan = CC_CALLBACK_2(PuzzleMatrixLayer::impl::onTouchBegan, this);
-	cocos2d::Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
-
 	auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
-	auto background = cocos2d::Sprite::create("bg_mainscene.jpg");
-	background->setPosition(visibleSize.width / 2, visibleSize.height / 2);
-	this->addChild(background, -1);
 
 	menu = TopMenu::create();
 	this->addChild(menu);
@@ -114,16 +115,6 @@ void PuzzleMatrixLayer::impl::update(float delta){
 	if (matrix){
 		matrix->updateStar(delta);
 	}
-}
-
-bool PuzzleMatrixLayer::impl::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event){
-	auto p = touch->getLocationInView();
-	p = cocos2d::Director::getInstance()->convertToGL(p);
-	CCLOG("x=%f y=%f", p.x, p.y);
-	if (matrix){
-		matrix->onTouch(p);
-	}
-	return true;
 }
 
 void PuzzleMatrixLayer::impl::refreshMenu(){
@@ -188,10 +179,42 @@ void PuzzleMatrixLayer::impl::gotoGameOver(){
 	});
 }
 
+std::unique_ptr<GameObject> PuzzleMatrixLayer::impl::createBackground()
+{
+	auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
+	
+	auto background_object = GameObject::create();
+	auto background_sprite = background_object->addComponent<DisplayNode>()->
+		initAs<cocos2d::Sprite>([](){return cocos2d::Sprite::create("bg_mainscene.jpg"); });
+
+	background_sprite->setPosition(visibleSize.width / 2, visibleSize.height / 2);
+	background_sprite->setLocalZOrder(-1);
+
+	return background_object;
+}
+
+void PuzzleMatrixLayer::impl::addTouchListener(PuzzleMatrixLayer::impl *target)
+{
+	auto listener = cocos2d::EventListenerTouchOneByOne::create();
+	listener->setSwallowTouches(true);
+
+	listener->onTouchBegan = [target](cocos2d::Touch* touch, cocos2d::Event* event)->bool{
+		if (target->matrix){
+			auto opengl_coordinate = cocos2d::Director::getInstance()->convertToGL(touch->getLocationInView());
+			target->matrix->onTouch(opengl_coordinate);
+		}
+
+		return true;
+	};
+
+	cocos2d::Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, target);
+}
 
 PuzzleMatrixLayer::PuzzleMatrixLayer(GameObject *game_object) :Script("PuzzleMatrixLayer", game_object), pimpl(new impl)
 {
-	game_object->addComponent<DisplayNode>()->initAs<PuzzleMatrixLayer::impl>();
+	auto layer_underlying = game_object->addComponent<DisplayNode>()->initAs<PuzzleMatrixLayer::impl>();
+	pimpl->addTouchListener(layer_underlying);
+	game_object->addChild(pimpl->createBackground());
 }
 
 PuzzleMatrixLayer::~PuzzleMatrixLayer()
