@@ -19,6 +19,9 @@
     <Filter Include="Script">
       <UniqueIdentifier>{ef8c469e-5c7a-42b8-a0b3-cad6c0f00978}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Event">
+      <UniqueIdentifier>{28d53e71-a1b4-4424-98e0-55e49df8bff1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -175,6 +178,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\Script\PuzzleMatrixLayer.h">
       <Filter>Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Event\Event.h">
+      <Filter>Event</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

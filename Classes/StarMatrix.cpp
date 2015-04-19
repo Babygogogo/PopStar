@@ -9,17 +9,10 @@ using namespace cocos2d;
 using namespace std;
 
 float StarMatrix::ONE_CLEAR_TIME = 0.05f;
-//StarMatrix* StarMatrix::create(GameLayer* layer){
-//	StarMatrix* ret = new StarMatrix();
-//	if(ret && ret->init(layer)){
-//		ret->autorelease();
-//		return ret;
-//	}
-//	CC_SAFE_DELETE(ret);
-//	return nullptr;
-//}
 
-StarMatrix * StarMatrix::create(std::function<void()> &&layerHideLinkNum, std::function<void(int)> &&layerShowLinkNum, std::function<void(int)> &&layerFloatLeftStarMsg, std::function<void()> &&layerRefreshMenu, std::function<void()> &&layerGotoNextLevel, std::function<void()> &&layerGotoGameOver)
+StarMatrix * StarMatrix::create(std::function<void()> &&layerHideLinkNum, std::function<void(int)> &&layerShowLinkNum,
+	std::function<void(int)> &&layerFloatLeftStarMsg, std::function<void()> &&layerRefreshMenu,
+	std::function<void()> &&layerGotoNextLevel, std::function<void()> &&layerGotoGameOver)
 {
 	auto matrix = new StarMatrix();
 	if (matrix && matrix->init(std::move(layerHideLinkNum), std::move(layerShowLinkNum), std::move(layerFloatLeftStarMsg),
@@ -32,20 +25,9 @@ StarMatrix * StarMatrix::create(std::function<void()> &&layerHideLinkNum, std::f
 	return nullptr;
 }
 
-//bool StarMatrix::init(GameLayer* layer){
-//	if(!Node::init()){
-//		return false;
-//	}
-//	m_layer = layer;
-//	needClear = false;
-//	clearSumTime = 0;
-//	memset(stars, 0, sizeof(Star*) * ROW_NUM * COL_NUM);
-//	initMatrix();
-//	return true;
-//}
-
 bool StarMatrix::init(std::function<void()> &&layerHideLinkNum, std::function<void(int)> &&layerShowLinkNum,
-	std::function<void(int)> &&layerFloatLeftStarMsg, std::function<void()> &&layerRefreshMenu, std::function<void()> &&layerGotoNextLevel, std::function<void()> &&layerGotoGameOver)
+	std::function<void(int)> &&layerFloatLeftStarMsg, std::function<void()> &&layerRefreshMenu,
+	std::function<void()> &&layerGotoNextLevel, std::function<void()> &&layerGotoGameOver)
 {
 	if (!Node::init())
 		return false;
@@ -62,7 +44,23 @@ bool StarMatrix::init(std::function<void()> &&layerHideLinkNum, std::function<vo
 	memset(stars, 0, sizeof(Star*) * ROW_NUM * COL_NUM);
 	initMatrix();
 
+	registerTouchListener();
+
 	return true;
+}
+
+void StarMatrix::registerTouchListener()
+{
+	auto listener = cocos2d::EventListenerTouchOneByOne::create();
+	listener->setSwallowTouches(true);
+
+	listener->onTouchBegan = [this](cocos2d::Touch* touch, cocos2d::Event* event)->bool{
+		onTouch(cocos2d::Director::getInstance()->convertToGL(touch->getLocationInView()));
+
+		return true;
+	};
+
+	cocos2d::Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 }
 
 void StarMatrix::updateStar(float delta){

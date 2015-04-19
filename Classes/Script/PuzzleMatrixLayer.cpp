@@ -30,7 +30,6 @@ struct PuzzleMatrixLayer::impl : public cocos2d::Layer
 
 
 public:
-	void addTouchListener(PuzzleMatrixLayer::impl *target);
 	std::unique_ptr<GameObject> createBackground();
 	
 private:
@@ -193,27 +192,9 @@ std::unique_ptr<GameObject> PuzzleMatrixLayer::impl::createBackground()
 	return background_object;
 }
 
-void PuzzleMatrixLayer::impl::addTouchListener(PuzzleMatrixLayer::impl *target)
-{
-	auto listener = cocos2d::EventListenerTouchOneByOne::create();
-	listener->setSwallowTouches(true);
-
-	listener->onTouchBegan = [target](cocos2d::Touch* touch, cocos2d::Event* event)->bool{
-		if (target->matrix){
-			auto opengl_coordinate = cocos2d::Director::getInstance()->convertToGL(touch->getLocationInView());
-			target->matrix->onTouch(opengl_coordinate);
-		}
-
-		return true;
-	};
-
-	cocos2d::Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, target);
-}
-
 PuzzleMatrixLayer::PuzzleMatrixLayer(GameObject *game_object) :Script("PuzzleMatrixLayer", game_object), pimpl(new impl)
 {
 	auto layer_underlying = game_object->addComponent<DisplayNode>()->initAs<PuzzleMatrixLayer::impl>();
-	pimpl->addTouchListener(layer_underlying);
 	game_object->addChild(pimpl->createBackground());
 }
 

@@ -52,6 +52,8 @@ public:
 	std::function<void()> m_layerRefreshMenu;
 	std::function<void()> m_layerGotoNextLevel;
 	std::function<void()> m_layerGotoGameOver;
+
+	void registerTouchListener();
 };
 
 #endif
