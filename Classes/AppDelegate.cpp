@@ -40,9 +40,9 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
 	auto title_scene = GameObject::create();
 	title_scene->addComponent<TitleScene>();
-	SingletonContainer::instance().add<::Timer>();
-	SingletonContainer::instance().add<::EventDispatcher>();
-	SingletonContainer::instance().add<SceneStack>()->pushAndRun(std::move(title_scene));
+	SingletonContainer::instance()->add<::Timer>();
+	SingletonContainer::instance()->add<::EventDispatcher>();
+	SingletonContainer::instance()->add<SceneStack>()->pushAndRun(std::move(title_scene));
 
 	return true;
 }

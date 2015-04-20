@@ -2,6 +2,7 @@
 #define __EVENT_DISPATCHER__
 
 #include <memory>
+#include <functional>
 
 #include "Event.h"
 #include "../Script/Script.h"
@@ -12,7 +13,9 @@ public:
 	static std::unique_ptr<EventDispatcher> create();
 	~EventDispatcher();
 
-	void registerListener(Script *script);
+	void registerListener(EventType event_type, void *target, std::function<void()> callback);
+	void deleteListener(void *target);
+
 	void dispatch(std::unique_ptr<Event> &&event);	
 
 private:

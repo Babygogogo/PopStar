@@ -4,7 +4,7 @@
 #include "Star.h"
 #include <deque>
 
-class StarMatrix : public cocos2d::Node
+class LegacyStarMatrix : public cocos2d::Node
 {
 public:
 	void onTouch(const cocos2d::Point& p);
@@ -35,7 +35,9 @@ private:
 	float clearSumTime;
 
 public:
-	static StarMatrix *create(std::function<void()> &&layerHideLinkNum, std::function<void(int)> &&layerShowLinkNum,
+	~LegacyStarMatrix();
+
+	static LegacyStarMatrix *create(std::function<void()> &&layerHideLinkNum, std::function<void(int)> &&layerShowLinkNum,
 		std::function<void(int)> &&layerFloatLeftStarMsg, std::function<void()> &&layerRefreshMenu,
 		std::function<void()> &&layerGotoNextLevel, std::function<void()> &&layerGotoGameOver);
 

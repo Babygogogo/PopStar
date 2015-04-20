@@ -3,7 +3,7 @@
 
 #include "./Classes/FloatWord.h"
 #include "./Classes/TopMenu.h"
-#include "./Classes/StarMatrix.h"
+#include "./Classes/LegacyStarMatrix.h"
 #include "./Classes/Chinese.h"
 #include "./Classes/GameData.h"
 #include "./Classes/Audio.h"
@@ -45,7 +45,7 @@ private:
 	FloatWord* _levelMsg;
 	FloatWord* _targetScore;
 	TopMenu* menu;
-	StarMatrix* matrix;
+	LegacyStarMatrix* matrix;
 	cocos2d::Label* linkNum;
 };
 
@@ -98,8 +98,12 @@ void PuzzleMatrixLayer::impl::removeFloatWord(){
 	_targetScore->floatOut(0.5f, CC_CALLBACK_0(PuzzleMatrixLayer::impl::showStarMatrix, this));
 }
 
-void PuzzleMatrixLayer::impl::showStarMatrix(){
-	matrix = StarMatrix::create(
+void PuzzleMatrixLayer::impl::showStarMatrix()
+{
+	if (matrix)
+		this->removeChild(matrix);
+
+	matrix = LegacyStarMatrix::create(
 		[this](){this->hideLinkNum(); },
 		[this](int num){this->showLinkNum(num); },
 		[this](int num){this->floatLeftStarMsg(num); },
@@ -127,7 +131,8 @@ void PuzzleMatrixLayer::impl::hideLinkNum(){
 	linkNum->setVisible(false);
 }
 
-void PuzzleMatrixLayer::impl::floatLeftStarMsg(int leftNum){
+void PuzzleMatrixLayer::impl::floatLeftStarMsg(int leftNum)
+{
 	auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
 	FloatWord* leftStarMsg1 = FloatWord::create(ChineseWord("shengyu") + cocos2d::String::createWithFormat("%d", leftNum)->_string + ChineseWord("ge"),
 		50, cocos2d::Point(visibleSize.width, visibleSize.height / 2));
@@ -141,10 +146,7 @@ void PuzzleMatrixLayer::impl::floatLeftStarMsg(int leftNum){
 		[=](){
 		hideLinkNum();
 
-		//////////////////////////////////////////////////////////////////////////
-		matrix->setNeedClear(true);
-		//SingletonContainer::instance().get<EventDispatcher>()->dispatch(Event::create(EventType::LevelResultPanelClosed));
-		//////////////////////////////////////////////////////////////////////////
+		SingletonContainer::instance()->get<::EventDispatcher>()->dispatch(Event::create(EventType::LevelResultPanelClosed));
 		
 		GAMEDATA* data = GAMEDATA::getInstance();
 		data->setCurScore(data->getCurScore() + jiangLiScore);
@@ -153,6 +155,7 @@ void PuzzleMatrixLayer::impl::floatLeftStarMsg(int leftNum){
 		}
 		refreshMenu();
 	});
+
 	leftStarMsg2->floatInOut(0.5f, 1.0f, nullptr);
 }
 
@@ -174,7 +177,7 @@ void PuzzleMatrixLayer::impl::gotoGameOver(){
 		[](){
 		auto title_scene = GameObject::create();
 		title_scene->addComponent<TitleScene>();
-		SingletonContainer::instance().get<SceneStack>()->replaceAndRun(std::move(title_scene));
+		SingletonContainer::instance()->get<SceneStack>()->replaceAndRun(std::move(title_scene));
 	});
 }
 

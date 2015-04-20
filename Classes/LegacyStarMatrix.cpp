@@ -1,20 +1,23 @@
-#include "StarMatrix.h"
+#include "LegacyStarMatrix.h"
 #include "GameData.h"
 #include "StarParticle.h"
 #include "ComboEffect.h"
 #include "Audio.h"
 #include <ctime>
 
+#include "./Common/SingletonContainer.h"
+#include "./Event/EventDispatcher.h"
+
 using namespace cocos2d;
 using namespace std;
 
-float StarMatrix::ONE_CLEAR_TIME = 0.05f;
+float LegacyStarMatrix::ONE_CLEAR_TIME = 0.05f;
 
-StarMatrix * StarMatrix::create(std::function<void()> &&layerHideLinkNum, std::function<void(int)> &&layerShowLinkNum,
+LegacyStarMatrix * LegacyStarMatrix::create(std::function<void()> &&layerHideLinkNum, std::function<void(int)> &&layerShowLinkNum,
 	std::function<void(int)> &&layerFloatLeftStarMsg, std::function<void()> &&layerRefreshMenu,
 	std::function<void()> &&layerGotoNextLevel, std::function<void()> &&layerGotoGameOver)
 {
-	auto matrix = new StarMatrix();
+	auto matrix = new LegacyStarMatrix();
 	if (matrix && matrix->init(std::move(layerHideLinkNum), std::move(layerShowLinkNum), std::move(layerFloatLeftStarMsg),
 		std::move(layerRefreshMenu), std::move(layerGotoNextLevel), std::move(layerGotoGameOver))){
 		matrix->autorelease();
@@ -25,7 +28,7 @@ StarMatrix * StarMatrix::create(std::function<void()> &&layerHideLinkNum, std::f
 	return nullptr;
 }
 
-bool StarMatrix::init(std::function<void()> &&layerHideLinkNum, std::function<void(int)> &&layerShowLinkNum,
+bool LegacyStarMatrix::init(std::function<void()> &&layerHideLinkNum, std::function<void(int)> &&layerShowLinkNum,
 	std::function<void(int)> &&layerFloatLeftStarMsg, std::function<void()> &&layerRefreshMenu,
 	std::function<void()> &&layerGotoNextLevel, std::function<void()> &&layerGotoGameOver)
 {
@@ -46,11 +49,12 @@ bool StarMatrix::init(std::function<void()> &&layerHideLinkNum, std::function<vo
 
 	registerTouchListener();
 	this->scheduleUpdate();
+	SingletonContainer::instance()->get<::EventDispatcher>()->registerListener(EventType::LevelResultPanelClosed, this, [this]{setNeedClear(true); });
 
 	return true;
 }
 
-void StarMatrix::registerTouchListener()
+void LegacyStarMatrix::registerTouchListener()
 {
 	auto listener = cocos2d::EventListenerTouchOneByOne::create();
 	listener->setSwallowTouches(true);
@@ -64,7 +68,7 @@ void StarMatrix::registerTouchListener()
 	cocos2d::Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 }
 
-void StarMatrix::update(float delta)
+void LegacyStarMatrix::update(float delta)
 {
 	for (int i = 0; i < ROW_NUM; i++){
 		for (int j = 0; j < COL_NUM; j++){
@@ -82,7 +86,7 @@ void StarMatrix::update(float delta)
 	}
 }
 
-void StarMatrix::onTouch(const cocos2d::Point& p){
+void LegacyStarMatrix::onTouch(const cocos2d::Point& p){
 	Star* s = getStarByTouch(p);
 	if(s){
 	genSelectedList(s);
@@ -91,10 +95,10 @@ void StarMatrix::onTouch(const cocos2d::Point& p){
 	}
 }
 
-void StarMatrix::setNeedClear(bool b){
+void LegacyStarMatrix::setNeedClear(bool b){
 	needClear = b;
 }
-void StarMatrix::initMatrix(){
+void LegacyStarMatrix::initMatrix(){
 	srand(time(0));
 	for(int i=0;i<ROW_NUM;i++){
 		for(int j=0;j<COL_NUM;j++){
@@ -111,13 +115,13 @@ void StarMatrix::initMatrix(){
 	}
 }
 
-Point StarMatrix::getPositionByIndex(int i,int j){
+Point LegacyStarMatrix::getPositionByIndex(int i,int j){
 	float x = j * Star::STAR_WIDTH + Star::STAR_WIDTH/2;
-	float y = (StarMatrix::COL_NUM - i)*Star::STAR_HEIGHT - Star::STAR_HEIGHT/2;
+	float y = (LegacyStarMatrix::COL_NUM - i)*Star::STAR_HEIGHT - Star::STAR_HEIGHT/2;
 	return Point(x,y);
 }
 
-Star* StarMatrix::getStarByTouch(const Point& p){
+Star* LegacyStarMatrix::getStarByTouch(const Point& p){
 	int k = p.y/Star::STAR_HEIGHT;//这里要用K转一下int 不然得不到正确结果
 	int i = ROW_NUM - 1 - k;
 	int j = p.x/Star::STAR_WIDTH;
@@ -131,7 +135,7 @@ Star* StarMatrix::getStarByTouch(const Point& p){
 	}
 }
 
-void StarMatrix::genSelectedList(Star* s){
+void LegacyStarMatrix::genSelectedList(Star* s){
 	selectedList.clear();
 	deque<Star*> travelList;
 	travelList.push_back(s);
@@ -170,7 +174,7 @@ void StarMatrix::genSelectedList(Star* s){
 	}
 }
 
-void StarMatrix::deleteSelectedList(){
+void LegacyStarMatrix::deleteSelectedList(){
 	if(selectedList.size() <= 1){
 
 		//////////////////////////////////////////////////////////////////////////
@@ -214,7 +218,7 @@ void StarMatrix::deleteSelectedList(){
 
 }
 
-void StarMatrix::adjustMatrix(){
+void LegacyStarMatrix::adjustMatrix(){
 	//垂直方向调整
 	for(int i = ROW_NUM-1;i>=0;i--){
 		for(int j = COL_NUM-1;j>=0;j--){
@@ -267,7 +271,7 @@ void StarMatrix::adjustMatrix(){
 }
 
 
-void StarMatrix::refreshScore(){
+void LegacyStarMatrix::refreshScore(){
 	GAMEDATA* data = GAMEDATA::getInstance();
 	data->setCurScore(data->getCurScore() + selectedList.size()*selectedList.size()*5);
 	if(data->getCurScore() > data->getHistoryScore()){
@@ -281,7 +285,7 @@ void StarMatrix::refreshScore(){
 }
 
 
-bool StarMatrix::isEnded(){
+bool LegacyStarMatrix::isEnded(){
 	bool bRet = true;
 	for(int i=0;i<ROW_NUM;i++){
 		for(int j=0;j<COL_NUM;j++){
@@ -305,7 +309,7 @@ bool StarMatrix::isEnded(){
 	return bRet;
 }
 
-void StarMatrix::clearMatrixOneByOne(){
+void LegacyStarMatrix::clearMatrixOneByOne(){
 	for(int i=0;i<ROW_NUM;i++){
 		for(int j=0;j<COL_NUM;j++){
 			if(stars[i][j] == nullptr)
@@ -335,7 +339,7 @@ void StarMatrix::clearMatrixOneByOne(){
 	}
 }
 
-int StarMatrix::getLeftStarNum(){
+int LegacyStarMatrix::getLeftStarNum(){
 	int ret = 0;
 	for(int i=0;i<ROW_NUM;i++){
 		for(int j=0;j<COL_NUM;j++){
@@ -345,4 +349,11 @@ int StarMatrix::getLeftStarNum(){
 		}
 	}
 	return ret;
+}
+
+LegacyStarMatrix::~LegacyStarMatrix()
+{
+	auto singleton_container = SingletonContainer::instance();
+	if (singleton_container)
+		singleton_container->get<::EventDispatcher>()->deleteListener(this);
 }

@@ -10,13 +10,13 @@ SingletonContainer::SingletonContainer() :Object("SingletonContainer")
 
 SingletonContainer::~SingletonContainer()
 {
-
+	m_instance.release();
 }
 
-SingletonContainer & SingletonContainer::instance()
+SingletonContainer * SingletonContainer::instance()
 {
 	if (!m_instance)
 		std::call_once(m_init_flag, []{m_instance.reset(new SingletonContainer); });
 
-	return *m_instance;
+	return m_instance ? m_instance.get() : nullptr;
 }

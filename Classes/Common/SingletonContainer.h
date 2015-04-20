@@ -22,7 +22,7 @@ class SingletonContainer final : public Object
 public:
 	virtual ~SingletonContainer();
 
-	static SingletonContainer &instance();
+	static SingletonContainer *instance();
 
 	//////////////////////////////////////////////////////////////////////////
 	//Methods for adding/getting composites

@@ -54,9 +54,6 @@
     <ClCompile Include="..\Classes\Star.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\StarMatrix.cpp">
-      <Filter>Classes</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\StarParticle.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
@@ -99,6 +96,12 @@
     <ClCompile Include="..\Classes\Event\EventDispatcher.cpp">
       <Filter>Event</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\LegacyStarMatrix.cpp">
+      <Filter>Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Script\StarMatirx.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -129,9 +132,6 @@
       <Filter>Classes</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Star.h">
-      <Filter>Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\StarMatrix.h">
       <Filter>Classes</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\StarParticle.h">
@@ -190,6 +190,12 @@
     </ClInclude>
     <ClInclude Include="..\Classes\Event\EventDispatcher.h">
       <Filter>Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\LegacyStarMatrix.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Script\StarMatrix.h">
+      <Filter>Script</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
