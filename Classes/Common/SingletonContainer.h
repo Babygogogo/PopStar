@@ -29,13 +29,10 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 	template <typename T>
 	T* add(){
-		if (typeid(T) == typeid(SingletonContainer))
-			throw("adding SingletonContainer to SingletonContainer.");
-
 		if (auto existing_composite = get<T>())
 			return existing_composite;
 
-		return dynamic_cast<T*>(m_composites.emplace(typeid(T), std::unique_ptr<T>(new T())).first->second.get());
+		return dynamic_cast<T*>(m_composites.emplace(typeid(T), T::create()).first->second.get());
 	}
 
 	template <typename T>

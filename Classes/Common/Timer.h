@@ -6,7 +6,7 @@
 #include "Object.h"
 
 /*!
- * \class BWTimer
+ * \class Timer
  *
  * \brief Timer of the application. Can register various observers.
  * \
@@ -19,7 +19,7 @@
 class Timer : public Object
 {
 public:
-	Timer();
+	static std::unique_ptr<Timer> create();
 	virtual ~Timer();
 
 	inline time_t getElapsedTimeMS() const;
@@ -53,6 +53,7 @@ public:
 	Timer& operator=(Timer&&) = delete;
 
 private:
+	Timer();
 	void registerUpdateObserverHelper(void* observer, std::function<void(const time_t&)>&& func);
 
 	class impl;

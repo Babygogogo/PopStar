@@ -45,6 +45,7 @@ bool StarMatrix::init(std::function<void()> &&layerHideLinkNum, std::function<vo
 	initMatrix();
 
 	registerTouchListener();
+	this->scheduleUpdate();
 
 	return true;
 }
@@ -63,23 +64,22 @@ void StarMatrix::registerTouchListener()
 	cocos2d::Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 }
 
-void StarMatrix::updateStar(float delta){
-	
-	for(int i = 0;i < ROW_NUM;i++){
-		for(int j = 0;j< COL_NUM;j++){
-			if(stars[i][j]!=nullptr){
+void StarMatrix::update(float delta)
+{
+	for (int i = 0; i < ROW_NUM; i++){
+		for (int j = 0; j < COL_NUM; j++){
+			if (stars[i][j] != nullptr){
 				stars[i][j]->updatePosition();
 			}
 		}
 	}
-	if(needClear){
+	if (needClear){
 		clearSumTime += delta;
-		if(clearSumTime > ONE_CLEAR_TIME){
+		if (clearSumTime > ONE_CLEAR_TIME){
 			clearMatrixOneByOne();
 			clearSumTime = 0;
 		}
 	}
-	
 }
 
 void StarMatrix::onTouch(const cocos2d::Point& p){

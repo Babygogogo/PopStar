@@ -90,6 +90,11 @@ SceneStack::~SceneStack()
 
 }
 
+std::unique_ptr<SceneStack> SceneStack::create()
+{
+	return std::unique_ptr<SceneStack>(new SceneStack());
+}
+
 GameObject* SceneStack::pushAndRun(std::unique_ptr<GameObject> &&scene)
 {
 	pimpl->validate(scene.get());

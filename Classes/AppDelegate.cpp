@@ -4,6 +4,7 @@
 #include "./Common/SingletonContainer.h"
 #include "./Common/Timer.h"
 #include "./Common/SceneStack.h"
+#include "./Event/EventDispatcher.h"
 #include "./Script/TitleScene.h"
 
 USING_NS_CC;
@@ -40,6 +41,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
 	auto title_scene = GameObject::create();
 	title_scene->addComponent<TitleScene>();
 	SingletonContainer::instance().add<::Timer>();
+	SingletonContainer::instance().add<::EventDispatcher>();
 	SingletonContainer::instance().add<SceneStack>()->pushAndRun(std::move(title_scene));
 
 	return true;

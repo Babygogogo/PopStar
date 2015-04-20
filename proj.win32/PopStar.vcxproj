@@ -143,6 +143,7 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClCompile Include="..\Classes\Common\SingletonContainer.cpp" />
     <ClCompile Include="..\Classes\Common\Object.cpp" />
     <ClCompile Include="..\Classes\Common\Timer.cpp" />
+    <ClCompile Include="..\Classes\Event\EventDispatcher.cpp" />
     <ClCompile Include="..\Classes\FloatWord.cpp" />
     <ClCompile Include="..\Classes\GameData.cpp" />
     <ClCompile Include="..\Classes\GameObject\Component.cpp" />
@@ -171,6 +172,8 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClInclude Include="..\Classes\Common\Timer.h" />
     <ClInclude Include="..\Classes\Common\Object.h" />
     <ClInclude Include="..\Classes\Event\Event.h" />
+    <ClInclude Include="..\Classes\Event\EventDispatcher.h" />
+    <ClInclude Include="..\Classes\Event\EventType.h" />
     <ClInclude Include="..\Classes\FloatWord.h" />
     <ClInclude Include="..\Classes\GameData.h" />
     <ClInclude Include="..\Classes\GameObject\Component.h" />

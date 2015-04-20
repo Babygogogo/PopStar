@@ -124,6 +124,11 @@ Timer::~Timer()
 	stop();
 }
 
+std::unique_ptr<Timer> Timer::create()
+{
+	return std::unique_ptr<Timer>(new Timer());
+}
+
 inline time_t Timer::getElapsedTimeMS() const
 {
 	return (pimpl->is_initialized ? pimpl->elapsed_time_ms : 0);

@@ -13,6 +13,8 @@
 #include "../Common/SceneStack.h"
 #include "../GameObject/GameObject.h"
 #include "../GameObject/DisplayNode.h"
+#include "../Event/Event.h"
+#include "../Event/EventDispatcher.h"
 
 struct PuzzleMatrixLayer::impl : public cocos2d::Layer
 {
@@ -39,7 +41,6 @@ private:
 	void floatTargetScoreWord();
 	void removeFloatWord();
 	void showStarMatrix();
-	void update(float delta);
 
 	FloatWord* _levelMsg;
 	FloatWord* _targetScore;
@@ -110,12 +111,6 @@ void PuzzleMatrixLayer::impl::showStarMatrix(){
 	this->addChild(matrix);
 }
 
-void PuzzleMatrixLayer::impl::update(float delta){
-	if (matrix){
-		matrix->updateStar(delta);
-	}
-}
-
 void PuzzleMatrixLayer::impl::refreshMenu(){
 	menu->refresh();
 }
@@ -145,7 +140,12 @@ void PuzzleMatrixLayer::impl::floatLeftStarMsg(int leftNum){
 	leftStarMsg1->floatInOut(0.5f, 1.0f,
 		[=](){
 		hideLinkNum();
+
+		//////////////////////////////////////////////////////////////////////////
 		matrix->setNeedClear(true);
+		//SingletonContainer::instance().get<EventDispatcher>()->dispatch(Event::create(EventType::LevelResultPanelClosed));
+		//////////////////////////////////////////////////////////////////////////
+		
 		GAMEDATA* data = GAMEDATA::getInstance();
 		data->setCurScore(data->getCurScore() + jiangLiScore);
 		if (data->getCurScore() > data->getHistoryScore()){

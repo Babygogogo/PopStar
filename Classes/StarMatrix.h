@@ -7,9 +7,6 @@
 class StarMatrix : public cocos2d::Node
 {
 public:
-	//static StarMatrix* create(GameLayer* layer);
-	//virtual bool init(GameLayer* layer);
-	void updateStar(float delta);
 	void onTouch(const cocos2d::Point& p);
 	void setNeedClear(bool b);
 	void initMatrix();
@@ -54,6 +51,7 @@ public:
 	std::function<void()> m_layerGotoGameOver;
 
 	void registerTouchListener();
+	void update(float delta) override;
 };
 
 #endif

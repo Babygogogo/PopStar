@@ -96,6 +96,9 @@
     <ClCompile Include="..\Classes\Script\PuzzleMatrixLayer.cpp">
       <Filter>Script</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\Event\EventDispatcher.cpp">
+      <Filter>Event</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -180,6 +183,12 @@
       <Filter>Script</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Event\Event.h">
+      <Filter>Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Event\EventType.h">
+      <Filter>Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Event\EventDispatcher.h">
       <Filter>Event</Filter>
     </ClInclude>
   </ItemGroup>
