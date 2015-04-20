@@ -20,6 +20,7 @@ public:
 
 protected:
 	virtual void update(const std::time_t& time_ms) override{ return; };
+	virtual void onEvent(Event *e) override;
 
 private:
 	PuzzleScene(GameObject* game_object);

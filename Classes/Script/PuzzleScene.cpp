@@ -16,3 +16,8 @@ PuzzleScene::~PuzzleScene()
 {
 
 }
+
+void PuzzleScene::onEvent(Event *e)
+{
+
+}

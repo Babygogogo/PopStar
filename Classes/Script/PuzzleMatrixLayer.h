@@ -20,7 +20,8 @@ public:
 	~PuzzleMatrixLayer();
 
 protected:
-	virtual void update(const std::time_t& time_ms) override;
+	inline virtual void update(const std::time_t& time_ms) override;
+	virtual void onEvent(Event *e) override;
 
 private:
 	PuzzleMatrixLayer(GameObject *game_object);

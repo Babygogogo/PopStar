@@ -210,3 +210,8 @@ void PuzzleMatrixLayer::update(const std::time_t& time_ms)
 {
 	return;
 }
+
+void PuzzleMatrixLayer::onEvent(Event *e)
+{
+	
+}
