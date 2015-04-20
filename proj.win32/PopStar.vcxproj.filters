@@ -102,6 +102,12 @@
     <ClCompile Include="..\Classes\Script\StarMatirx.cpp">
       <Filter>Script</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\Script\Label.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Script\StatusBar.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -199,6 +205,12 @@
     </ClInclude>
     <ClInclude Include="..\Classes\Common\IEventListener.h">
       <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Script\Label.h">
+      <Filter>Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Script\StatusBar.h">
+      <Filter>Script</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
