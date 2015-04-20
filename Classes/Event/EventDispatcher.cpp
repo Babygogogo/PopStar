@@ -1,4 +1,5 @@
 #include "EventDispatcher.h"
+#include "../Common/IEventListener.h"
 
 #include <unordered_set>
 #include <unordered_map>
@@ -9,7 +10,7 @@ struct EventDispatcher::impl
 	~impl(){};
 
 	std::unordered_map<EventType, std::unordered_map<void*, std::function<void()>>> m_listeners;
-	std::unordered_map<EventType, std::unordered_set<Script*>> m_script_listeners;
+	std::unordered_map<EventType, std::unordered_set<IEventListener*>> m_script_listeners;
 };
 
 EventDispatcher::EventDispatcher() :Object("EventDispatcher"), pimpl(new impl)
@@ -32,7 +33,7 @@ void EventDispatcher::registerListener(EventType event_type, void *target, std::
 	pimpl->m_listeners[event_type][target] = std::move(callback);
 }
 
-void EventDispatcher::registerListener(EventType event_type, Script *listener)
+void EventDispatcher::registerListener(EventType event_type, IEventListener *listener)
 {
 	pimpl->m_script_listeners[event_type].emplace(std::move(listener));
 }
@@ -43,7 +44,7 @@ void EventDispatcher::deleteListener(void *target)
 		type_target_callback.second.erase(target);
 }
 
-void EventDispatcher::deleteListener(Script *listener)
+void EventDispatcher::deleteListener(IEventListener *listener)
 {
 	for (auto &listener_set : pimpl->m_script_listeners)
 		listener_set.second.erase(listener);

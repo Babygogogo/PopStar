@@ -20,9 +20,6 @@ class StarMatrix final: public Script
 public:
 	~StarMatrix();
 
-protected:
-	virtual void update(const std::time_t& time_ms) override{ return; };
-
 private:
 	StarMatrix(GameObject *game_object);
 

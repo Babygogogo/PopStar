@@ -19,10 +19,6 @@ class PuzzleMatrixLayer final :public Script
 public:
 	~PuzzleMatrixLayer();
 
-protected:
-	inline virtual void update(const std::time_t& time_ms) override;
-	virtual void onEvent(Event *e) override;
-
 private:
 	PuzzleMatrixLayer(GameObject *game_object);
 

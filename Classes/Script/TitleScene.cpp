@@ -102,8 +102,3 @@ TitleScene::~TitleScene()
 {
 
 }
-
-void TitleScene::onEvent(Event *e)
-{
-
-}

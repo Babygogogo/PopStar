@@ -19,10 +19,6 @@ class TitleScene final :public Script
 public:
 	~TitleScene();
 
-protected:
-	virtual void update(const std::time_t& time_ms) override{ return; };
-	virtual void onEvent(Event *e) override;
-
 private:
 	TitleScene(GameObject* game_object);
 

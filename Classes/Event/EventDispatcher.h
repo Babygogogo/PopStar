@@ -7,6 +7,8 @@
 #include "Event.h"
 #include "../Script/Script.h"
 
+class IEventListener;
+
 class EventDispatcher final : public Object
 {
 public:
@@ -14,9 +16,9 @@ public:
 	~EventDispatcher();
 
 	void registerListener(EventType event_type, void *target, std::function<void()> callback);
-	void registerListener(EventType event_type, Script *listener);
+	void registerListener(EventType event_type, IEventListener *listener);
 	void deleteListener(void *target);
-	void deleteListener(Script *listener);
+	void deleteListener(IEventListener *listener);
 
 	void dispatch(std::unique_ptr<Event> &&event);	
 

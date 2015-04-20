@@ -197,6 +197,9 @@
     <ClInclude Include="..\Classes\Script\StarMatrix.h">
       <Filter>Script</Filter>
     </ClInclude>
+    <ClInclude Include="..\Classes\Common\IEventListener.h">
+      <Filter>Common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="game.rc">
