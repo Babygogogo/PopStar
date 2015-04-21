@@ -29,6 +29,8 @@ void GAMEDATA::setCurrentLevel(int level){
 	}
 
 	current_level = level;
+	num_of_previous_exploded_stars = 0;
+
 	SingletonContainer::instance()->get<EventDispatcher>()->dispatch(Event::create(EventType::LevelValueUpdated));
 
 	updateTargetScoreByLevel();
@@ -56,7 +58,7 @@ void GAMEDATA::updateTargetScoreByLevel()
 	}
 }
 
-int GAMEDATA::getJiangli(int size){
+int GAMEDATA::getEndLevelBonus(int num_of_left_stars){
 	static const int jiangli[10][2] =
 	{
 		{0, 2000},
@@ -70,32 +72,32 @@ int GAMEDATA::getJiangli(int size){
 		{8, 720},
 		{9, 380}
 	};
-	if(size>9 || size<0){
+	if(num_of_left_stars>9 || num_of_left_stars<0){
 		return 0;
 	}
-	return jiangli[size][1];
+	return jiangli[num_of_left_stars][1];
 }
 
 
 void GAMEDATA::saveHighestScore(){
-	cocos2d::UserDefault::getInstance()->setIntegerForKey("highestScore",getHistoryScore());
+	cocos2d::UserDefault::getInstance()->setIntegerForKey("highestScore",getHighScore());
 }
 
 void GAMEDATA::setHighScore(int score)
 {
-	if (history_score < score){
-		history_score = score;
+	if (high_score < score){
+		high_score = score;
 		SingletonContainer::instance()->get<EventDispatcher>()->dispatch(Event::create(EventType::HighScoreValueUpdated));
 	}
 }
 
 void GAMEDATA::setCurrentScore(int score)
 {
-	if (score != cur_score){
-		cur_score = score;
+	if (score != current_score){
+		current_score = score;
 		SingletonContainer::instance()->get<EventDispatcher>()->dispatch(Event::create(EventType::CurrentScoreValueUpdated));
 
-		setHighScore(cur_score);
+		setHighScore(current_score);
 	}
 }
 
@@ -112,4 +114,48 @@ int GAMEDATA::getCurrentLevel()
 int GAMEDATA::getTargetScore()
 {
 	return target_score;
+}
+
+void GAMEDATA::updateCurrentScoreWith(int num_of_exploded_stars)
+{
+	if (num_of_exploded_stars <= 0)
+		return;
+
+	num_of_previous_exploded_stars = num_of_exploded_stars;
+	setCurrentScore(current_score + getScoreOf(num_of_exploded_stars));
+
+	SingletonContainer::instance()->get<EventDispatcher>()->dispatch(Event::create(EventType::StarsExploded));
+}
+
+int GAMEDATA::getScoreOf(int num_of_exploded_stars)
+{
+	if (num_of_exploded_stars <= 1)
+		return 0;
+
+	return num_of_exploded_stars * num_of_exploded_stars * 5;
+}
+
+void GAMEDATA::updateEndLevelScoreWith(int num_of_left_stars)
+{
+	setCurrentScore(current_score + getEndLevelBonus(num_of_left_stars));
+}
+
+int GAMEDATA::getNumExplodedStars()
+{
+	return num_of_previous_exploded_stars;
+}
+
+int GAMEDATA::getScoreOfPreviousExplosion()
+{
+	return getScoreOf(num_of_previous_exploded_stars);
+}
+
+int GAMEDATA::getHighScore()
+{
+	return high_score;
+}
+
+int GAMEDATA::getCurrentScore()
+{
+	return current_score;
 }

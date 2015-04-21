@@ -7,18 +7,17 @@ public:
 
 	void levelUp();
 	int getCurrentLevel();
+	
+	void updateCurrentScoreWith(int num_of_exploded_stars);
+	int getScoreOfPreviousExplosion();
+	int getNumExplodedStars();
 
-	inline int getHistoryScore(){return history_score;}
-
-	/*当前分数*/
-	inline void setCurrentScore(int score);
-	inline int getCurScore(){return cur_score;}
-
-	/*通关分数*/
+	int getHighScore();
+	int getCurrentScore();
 	int getTargetScore();
 
-	/*奖励分数*/
-	int getJiangli(int size);
+	void updateEndLevelScoreWith(int num_of_left_stars);
+	int getEndLevelBonus(int num_of_left_stars);
 
 	void saveHighestScore();
 
@@ -29,15 +28,20 @@ private:
 
 private:
 	void setHighScore(int score);
+	void setCurrentScore(int score);
 
 	void setCurrentLevel(int level);
 	void updateTargetScoreByLevel();
 
+	int getScoreOf(int num_of_exploded_stars);
+
 	static GAMEDATA* _instance;
+
 	int current_level;
-	int history_score;
-	int cur_score;
+	int high_score;
+	int current_score;
 	int target_score;
+	int num_of_previous_exploded_stars{ 0 };
 };
 
 #endif

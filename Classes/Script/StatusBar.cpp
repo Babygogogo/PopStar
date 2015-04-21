@@ -6,7 +6,6 @@
 #include "../Event/Event.h"
 #include "../Event/EventType.h"
 
-#include "../Classes/Chinese.h"
 #include "../Classes/GameData.h"
 
 struct StatusBar::impl
@@ -31,15 +30,14 @@ std::unique_ptr<GameObject> StatusBar::impl::createHighScoreLabel()
 	auto label_object = GameObject::create();
 	auto label_underlying = label_object->addComponent<DisplayNode>()->initAs<cocos2d::Label>(
 		[]{return cocos2d::Label::createWithSystemFont(
-			ChineseWord("highestScore") + cocos2d::String::createWithFormat("%d", GAMEDATA::getInstance()->getHistoryScore())->_string, "Verdana - Bold", 30); });
+			std::string("High Score: ") + std::to_string(GAMEDATA::getInstance()->getHighScore()), "Verdana - Bold", 30); });
 
 	auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
 	label_underlying->setPosition(visibleSize.width / 2, visibleSize.height - 50);
 
 	SingletonContainer::instance()->get<EventDispatcher>()->registerListener(EventType::HighScoreValueUpdated, this,
 		[label_underlying](Event*){
-			label_underlying->setString(ChineseWord("highestScore") + cocos2d::String::createWithFormat("%d", GAMEDATA::getInstance()->getHistoryScore())->_string);
-	});
+			label_underlying->setString(std::string("High Score: ") + std::to_string(GAMEDATA::getInstance()->getHighScore())); });
 
 	return label_object;
 }
@@ -49,15 +47,14 @@ std::unique_ptr<GameObject> StatusBar::impl::createCurrentScoreLabel()
 	auto label_object = GameObject::create();
 	auto label_underlying = label_object->addComponent<DisplayNode>()->initAs<cocos2d::Label>(
 		[]{return cocos2d::Label::createWithSystemFont(
-			cocos2d::String::createWithFormat("%d", GAMEDATA::getInstance()->getCurScore())->_string, "Verdana - Bold", 50); });
+			std::string("Current Score: ") + std::to_string(GAMEDATA::getInstance()->getCurrentScore()), "Verdana - Bold", 40); });
 
 	auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
 	label_underlying->setPosition(visibleSize.width / 2, visibleSize.height - 150);
 
 	SingletonContainer::instance()->get<EventDispatcher>()->registerListener(EventType::CurrentScoreValueUpdated, this,
 		[label_underlying](Event*){
-			label_underlying->setString(cocos2d::String::createWithFormat("%d", GAMEDATA::getInstance()->getCurScore())->_string);
-	});
+			label_underlying->setString(std::string("Current Score: ") + std::to_string(GAMEDATA::getInstance()->getCurrentScore())); });
 
 	return label_object;
 }
@@ -67,15 +64,14 @@ std::unique_ptr<GameObject> StatusBar::impl::createTargetScoreLabel()
 	auto label_object = GameObject::create();
 	auto label_underlying = label_object->addComponent<DisplayNode>()->initAs<cocos2d::Label>(
 		[]{return cocos2d::Label::createWithSystemFont(
-			ChineseWord("mubiao") + cocos2d::String::createWithFormat("%d", GAMEDATA::getInstance()->getTargetScore())->_string + ChineseWord("fen"), "Verdana - Bold", 30); });
+			std::string("Target Score: ") + std::to_string(GAMEDATA::getInstance()->getTargetScore()), "Verdana - Bold", 30); });
 
 	auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
-	label_underlying->setPosition(400, visibleSize.height - 100);
+	label_underlying->setPosition(325, visibleSize.height - 100);
 
 	SingletonContainer::instance()->get<EventDispatcher>()->registerListener(EventType::TargetScoreValueUpdated, this,
 		[label_underlying](Event*){
-			label_underlying->setString(ChineseWord("mubiao") + cocos2d::String::createWithFormat("%d", GAMEDATA::getInstance()->getTargetScore())->_string + ChineseWord("fen"));
-	});
+			label_underlying->setString(std::string("Target Score: ") + std::to_string(GAMEDATA::getInstance()->getTargetScore())); });
 
 	return label_object;
 }
@@ -85,15 +81,14 @@ std::unique_ptr<GameObject> StatusBar::impl::createLevelLabel()
 	auto label_object = GameObject::create();
 	auto label_underlying = label_object->addComponent<DisplayNode>()->initAs<cocos2d::Label>(
 		[]{return cocos2d::Label::createWithSystemFont(
-			ChineseWord("guanqia") + cocos2d::String::createWithFormat("%d", GAMEDATA::getInstance()->getCurrentLevel())->_string, "Verdana - Bold", 30); });
+			std::string("Level: ") + std::to_string(GAMEDATA::getInstance()->getCurrentLevel()), "Verdana - Bold", 30); });
 
 	auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
-	label_underlying->setPosition(200, visibleSize.height - 100);
+	label_underlying->setPosition(75, visibleSize.height - 100);
 
 	SingletonContainer::instance()->get<EventDispatcher>()->registerListener(EventType::LevelValueUpdated, this,
 		[label_underlying](Event*){
-			label_underlying->setString(ChineseWord("guanqia") + cocos2d::String::createWithFormat("%d", GAMEDATA::getInstance()->getCurrentLevel())->_string);
-	});
+			label_underlying->setString(std::string("Level: ") + std::to_string(GAMEDATA::getInstance()->getCurrentLevel())); });
 
 	return label_object;
 }

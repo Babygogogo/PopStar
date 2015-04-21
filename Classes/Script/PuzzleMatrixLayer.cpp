@@ -20,18 +20,17 @@
 struct PuzzleMatrixLayer::impl : public cocos2d::Layer
 {
 	impl(){};
-	~impl(){};
+	~impl();
 
 	CREATE_FUNC(PuzzleMatrixLayer::impl);
 
-	void hideLinkNum();
-	void showLinkNum(int size);
 	void floatLeftStarMsg(int leftNum);
 	void gotoNextLevel();
 	void gotoGameOver();
 
 public:
 	std::unique_ptr<GameObject> createBackground();
+	std::unique_ptr<GameObject> createComboLabel();
 	
 private:
 	bool init();
@@ -44,7 +43,6 @@ private:
 	FloatWord* _levelMsg;
 	FloatWord* _targetScore;
 	LegacyStarMatrix* matrix;
-	cocos2d::Label* linkNum;
 };
 
 bool PuzzleMatrixLayer::impl::init(){
@@ -56,11 +54,6 @@ bool PuzzleMatrixLayer::impl::init(){
 	this->scheduleUpdate();
 
 	auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
-
-	linkNum = cocos2d::Label::create("", "Arial", 40);
-	linkNum->setPosition(visibleSize.width / 2, visibleSize.height - 250);
-	linkNum->setVisible(false);
-	this->addChild(linkNum, 1);
 
 	this->floatLevelWord();
 
@@ -99,8 +92,6 @@ void PuzzleMatrixLayer::impl::showStarMatrix()
 		this->removeChild(matrix);
 
 	matrix = LegacyStarMatrix::create(
-		[this](){this->hideLinkNum(); },
-		[this](int num){this->showLinkNum(num); },
 		[this](int num){this->floatLeftStarMsg(num); },
 		[this](){this->gotoNextLevel(); },
 		[this](){this->gotoGameOver(); }
@@ -109,37 +100,22 @@ void PuzzleMatrixLayer::impl::showStarMatrix()
 	this->addChild(matrix);
 }
 
-void PuzzleMatrixLayer::impl::showLinkNum(int size)
-{
-	auto s = cocos2d::String::createWithFormat("%d", size)->_string + ChineseWord("lianji") +
-		cocos2d::String::createWithFormat("%d", size*size * 5)->_string + ChineseWord("fen");
-	linkNum->setString(s);
-	linkNum->setVisible(true);
-}
-
-void PuzzleMatrixLayer::impl::hideLinkNum(){
-	linkNum->setVisible(false);
-}
-
 void PuzzleMatrixLayer::impl::floatLeftStarMsg(int leftNum)
 {
 	auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
 	FloatWord* leftStarMsg1 = FloatWord::create(ChineseWord("shengyu") + cocos2d::String::createWithFormat("%d", leftNum)->_string + ChineseWord("ge"),
 		50, cocos2d::Point(visibleSize.width, visibleSize.height / 2));
 	this->addChild(leftStarMsg1);
-	int jiangLiScore = GAMEDATA::getInstance()->getJiangli(leftNum);
+
+	int jiangLiScore = GAMEDATA::getInstance()->getEndLevelBonus(leftNum);
 	FloatWord* leftStarMsg2 = FloatWord::create(ChineseWord("jiangli") + cocos2d::String::createWithFormat("%d", jiangLiScore)->_string + ChineseWord("fen"),
 		50, cocos2d::Point(visibleSize.width, visibleSize.height / 2 - 50));
 	this->addChild(leftStarMsg2);
 
 	leftStarMsg1->floatInOut(0.5f, 1.0f,
 		[=](){
-		hideLinkNum();
-
-		SingletonContainer::instance()->get<::EventDispatcher>()->dispatch(Event::create(EventType::LevelResultPanelClosed));
-		
-		GAMEDATA* data = GAMEDATA::getInstance();
-		data->setCurrentScore(data->getCurScore() + jiangLiScore);
+		GAMEDATA::getInstance()->updateEndLevelScoreWith(leftNum);
+		SingletonContainer::instance()->get<::EventDispatcher>()->dispatch(Event::create(EventType::LevelResultEnded));
 	});
 
 	leftStarMsg2->floatInOut(0.5f, 1.0f, nullptr);
@@ -180,14 +156,42 @@ std::unique_ptr<GameObject> PuzzleMatrixLayer::impl::createBackground()
 	return background_object;
 }
 
+std::unique_ptr<GameObject> PuzzleMatrixLayer::impl::createComboLabel()
+{
+	auto label_object = GameObject::create();
+	auto label_underlying = label_object->addComponent<DisplayNode>()->initAs<cocos2d::Label>(
+		[]{return cocos2d::Label::createWithSystemFont("", "Arial", 30); });
+
+	auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
+	label_underlying->setPosition(visibleSize.width / 2, visibleSize.height - 250);
+
+	SingletonContainer::instance()->get<EventDispatcher>()->registerListener(EventType::StarsExploded, this, [label_underlying](Event *){
+		auto exploded_stars = std::to_string(GAMEDATA::getInstance()->getNumExplodedStars());
+		auto attained_score = std::to_string(GAMEDATA::getInstance()->getScoreOfPreviousExplosion());
+		label_underlying->setString(std::string("Exploded: ") + exploded_stars + std::string(" Score: ") + attained_score);
+
+		label_underlying->setVisible(true); });
+
+	SingletonContainer::instance()->get<EventDispatcher>()->registerListener(EventType::LevelResultEnded, this, [label_underlying](Event*){
+		label_underlying->setVisible(false); });
+
+	return label_object;
+}
+
+PuzzleMatrixLayer::impl::~impl()
+{
+	if (auto singleton_container = SingletonContainer::instance())
+		singleton_container->get<EventDispatcher>()->deleteListener(this);
+}
+
 PuzzleMatrixLayer::PuzzleMatrixLayer(GameObject *game_object) :Script("PuzzleMatrixLayer", game_object), pimpl(new impl)
 {
 	auto layer_underlying = game_object->addComponent<DisplayNode>()->initAs<PuzzleMatrixLayer::impl>();
 	game_object->addChild(pimpl->createBackground());
 	game_object->addChild(GameObject::create<StatusBar>());
+	game_object->addChild(pimpl->createComboLabel());
 }
 
 PuzzleMatrixLayer::~PuzzleMatrixLayer()
 {
-
 }
