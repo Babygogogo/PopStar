@@ -119,6 +119,7 @@ void PuzzleMatrixLayer::impl::showStarMatrix()
 
 void PuzzleMatrixLayer::impl::refreshMenu(){
 	menu->refresh();
+	SingletonContainer::instance()->get<EventDispatcher>()->dispatch(Event::create(EventType::StarExploded));
 }
 
 void PuzzleMatrixLayer::impl::showLinkNum(int size)

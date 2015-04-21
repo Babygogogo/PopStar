@@ -8,6 +8,7 @@
 #include "./Common/SingletonContainer.h"
 #include "./Event/EventDispatcher.h"
 #include "./Event/EventType.h"
+#include "./Event/Event.h"
 
 using namespace cocos2d;
 using namespace std;
@@ -50,7 +51,7 @@ bool LegacyStarMatrix::init(std::function<void()> &&layerHideLinkNum, std::funct
 
 	registerTouchListener();
 	this->scheduleUpdate();
-	SingletonContainer::instance()->get<::EventDispatcher>()->registerListener(EventType::LevelResultPanelClosed, this, [this]{setNeedClear(true); });
+	SingletonContainer::instance()->get<::EventDispatcher>()->registerListener(EventType::LevelResultPanelClosed, this, [this](::Event*){setNeedClear(true); });
 
 	return true;
 }

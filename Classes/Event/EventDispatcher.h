@@ -24,7 +24,7 @@ public:
 	static std::unique_ptr<EventDispatcher> create();
 	~EventDispatcher();
 
-	void registerListener(EventType event_type, void *target, std::function<void()> callback);
+	void registerListener(EventType event_type, void *target, std::function<void(Event*)> callback);
 	void registerListener(EventType event_type, IEventListener *listener);
 	void deleteListener(void *target);
 	void deleteListener(IEventListener *listener);
