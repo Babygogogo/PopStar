@@ -4,7 +4,10 @@
 enum class EventType
 {
 	LevelResultPanelClosed,
-	StarExploded
+	CurrentScoreValueUpdated,
+	HighScoreValueUpdated,
+	TargetScoreValueUpdated,
+	LevelValueUpdated
 };
 
 #endif // !__EVENT_TYPE__

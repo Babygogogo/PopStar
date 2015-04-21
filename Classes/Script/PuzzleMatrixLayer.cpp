@@ -2,7 +2,6 @@
 #include "cocos2d.h"
 
 #include "./Classes/FloatWord.h"
-#include "./Classes/TopMenu.h"
 #include "./Classes/LegacyStarMatrix.h"
 #include "./Classes/Chinese.h"
 #include "./Classes/GameData.h"
@@ -28,10 +27,8 @@ struct PuzzleMatrixLayer::impl : public cocos2d::Layer
 	void hideLinkNum();
 	void showLinkNum(int size);
 	void floatLeftStarMsg(int leftNum);
-	void refreshMenu();
 	void gotoNextLevel();
 	void gotoGameOver();
-
 
 public:
 	std::unique_ptr<GameObject> createBackground();
@@ -46,7 +43,6 @@ private:
 
 	FloatWord* _levelMsg;
 	FloatWord* _targetScore;
-	TopMenu* menu;
 	LegacyStarMatrix* matrix;
 	cocos2d::Label* linkNum;
 };
@@ -61,9 +57,6 @@ bool PuzzleMatrixLayer::impl::init(){
 
 	auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
 
-	menu = TopMenu::create();
-	this->addChild(menu);
-
 	linkNum = cocos2d::Label::create("", "Arial", 40);
 	linkNum->setPosition(visibleSize.width / 2, visibleSize.height - 250);
 	linkNum->setVisible(false);
@@ -77,7 +70,7 @@ bool PuzzleMatrixLayer::impl::init(){
 void PuzzleMatrixLayer::impl::floatLevelWord(){
 	auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
 	_levelMsg = FloatWord::create(
-		ChineseWord("guanqia") + cocos2d::String::createWithFormat(": %d", GAMEDATA::getInstance()->getNextLevel())->_string,
+		ChineseWord("guanqia") + cocos2d::String::createWithFormat(": %d", GAMEDATA::getInstance()->getCurrentLevel())->_string,
 		50, cocos2d::Point(visibleSize.width, visibleSize.height / 3 * 2)
 		);
 	this->addChild(_levelMsg, 1);
@@ -88,7 +81,7 @@ void PuzzleMatrixLayer::impl::floatLevelWord(){
 void PuzzleMatrixLayer::impl::floatTargetScoreWord(){
 	auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
 	_targetScore = FloatWord::create(
-		ChineseWord("mubiao") + cocos2d::String::createWithFormat(": %d", GAMEDATA::getInstance()->getNextScore())->_string + ChineseWord("fen"),
+		ChineseWord("mubiao") + cocos2d::String::createWithFormat(": %d", GAMEDATA::getInstance()->getTargetScore())->_string + ChineseWord("fen"),
 		50, cocos2d::Point(visibleSize.width, visibleSize.height / 3)
 		);
 	this->addChild(_targetScore, 1);
@@ -109,17 +102,11 @@ void PuzzleMatrixLayer::impl::showStarMatrix()
 		[this](){this->hideLinkNum(); },
 		[this](int num){this->showLinkNum(num); },
 		[this](int num){this->floatLeftStarMsg(num); },
-		[this](){this->refreshMenu(); },
 		[this](){this->gotoNextLevel(); },
 		[this](){this->gotoGameOver(); }
 	);
 
 	this->addChild(matrix);
-}
-
-void PuzzleMatrixLayer::impl::refreshMenu(){
-	menu->refresh();
-	SingletonContainer::instance()->get<EventDispatcher>()->dispatch(Event::create(EventType::StarExploded));
 }
 
 void PuzzleMatrixLayer::impl::showLinkNum(int size)
@@ -152,18 +139,13 @@ void PuzzleMatrixLayer::impl::floatLeftStarMsg(int leftNum)
 		SingletonContainer::instance()->get<::EventDispatcher>()->dispatch(Event::create(EventType::LevelResultPanelClosed));
 		
 		GAMEDATA* data = GAMEDATA::getInstance();
-		data->setCurScore(data->getCurScore() + jiangLiScore);
-		if (data->getCurScore() > data->getHistoryScore()){
-			data->setHistoryScore(data->getCurScore());
-		}
-		refreshMenu();
+		data->setCurrentScore(data->getCurScore() + jiangLiScore);
 	});
 
 	leftStarMsg2->floatInOut(0.5f, 1.0f, nullptr);
 }
 
 void PuzzleMatrixLayer::impl::gotoNextLevel(){
-	refreshMenu();
 	floatLevelWord();
 }
 

@@ -4,20 +4,18 @@
 class GAMEDATA{
 public:
 	static GAMEDATA* getInstance();
-	/*当前等级*/
-	void setCurLevel(int level);
-	inline int getCurLevel(){return cur_level;}
-	/*下一等级*/
-	inline int getNextLevel(){return next_level;}
-	/*最高分*/
-	inline void setHistoryScore(int score){history_score = score;}
+
+	void levelUp();
+	int getCurrentLevel();
+
 	inline int getHistoryScore(){return history_score;}
+
 	/*当前分数*/
-	inline void setCurScore(int score){cur_score = score;}
+	inline void setCurrentScore(int score);
 	inline int getCurScore(){return cur_score;}
+
 	/*通关分数*/
-	inline int getNextScore(){return next_score;}
-	inline int getScoreByLevel(int level);
+	int getTargetScore();
 
 	/*奖励分数*/
 	int getJiangli(int size);
@@ -30,12 +28,16 @@ private:
 	GAMEDATA();
 
 private:
+	void setHighScore(int score);
+
+	void setCurrentLevel(int level);
+	void updateTargetScoreByLevel();
+
 	static GAMEDATA* _instance;
-	int cur_level;
-	int next_level;
+	int current_level;
 	int history_score;
 	int cur_score;
-	int next_score;
-	friend class MenuLayer;
+	int target_score;
 };
+
 #endif

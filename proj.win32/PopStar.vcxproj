@@ -151,7 +151,6 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClCompile Include="..\Classes\GameObject\GameObject.cpp" />
     <ClCompile Include="..\Classes\HelloWorldScene.cpp" />
     <ClCompile Include="..\Classes\LevelMsgLayer.cpp" />
-    <ClCompile Include="..\Classes\Script\Label.cpp" />
     <ClCompile Include="..\Classes\Script\PuzzleMatrixLayer.cpp" />
     <ClCompile Include="..\Classes\Script\PuzzleScene.cpp" />
     <ClCompile Include="..\Classes\Script\StarMatirx.cpp" />
@@ -160,7 +159,6 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClCompile Include="..\Classes\Star.cpp" />
     <ClCompile Include="..\Classes\LegacyStarMatrix.cpp" />
     <ClCompile Include="..\Classes\StarParticle.cpp" />
-    <ClCompile Include="..\Classes\TopMenu.cpp" />
     <ClCompile Include="..\Classes\XMLParser.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
@@ -186,7 +184,6 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClInclude Include="..\Classes\GameObject\SoundPlayer.h" />
     <ClInclude Include="..\Classes\HelloWorldScene.h" />
     <ClInclude Include="..\Classes\LevelMsgLayer.h" />
-    <ClInclude Include="..\Classes\Script\Label.h" />
     <ClInclude Include="..\Classes\Script\PuzzleMatrixLayer.h" />
     <ClInclude Include="..\Classes\Script\PuzzleScene.h" />
     <ClInclude Include="..\Classes\Script\Script.h" />
@@ -196,7 +193,6 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClInclude Include="..\Classes\Star.h" />
     <ClInclude Include="..\Classes\LegacyStarMatrix.h" />
     <ClInclude Include="..\Classes\StarParticle.h" />
-    <ClInclude Include="..\Classes\TopMenu.h" />
     <ClInclude Include="..\Classes\XMLParser.h" />
     <ClInclude Include="main.h" />
   </ItemGroup>

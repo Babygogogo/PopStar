@@ -1,7 +1,12 @@
 #include "GameData.h"
 #include "cocos2d.h"
-using namespace cocos2d;
+#include "./Common/SingletonContainer.h"
+#include "./Event/EventDispatcher.h"
+#include "./Event/EventType.h"
+#include "./Event/Event.h"
+
 GAMEDATA* GAMEDATA::_instance = 0;
+
 GAMEDATA::GAMEDATA(){
 	this->init();
 }
@@ -13,39 +18,42 @@ GAMEDATA* GAMEDATA::getInstance(){
 }
 
 void GAMEDATA::init(){
-    setCurLevel(0);
-	setCurScore(0);
-	setHistoryScore(UserDefault::getInstance()->getIntegerForKey("highestScore",0));
+	setCurrentLevel(1);
+	setCurrentScore(0);
+	setHighScore(cocos2d::UserDefault::getInstance()->getIntegerForKey("highestScore",0));
 }
 
-void GAMEDATA::setCurLevel(int level){
+void GAMEDATA::setCurrentLevel(int level){
 	if(level < 0){
 		return;
 	}
-	cur_level = level;
-	next_level = level + 1;
-	next_score = getScoreByLevel(next_level);
+
+	current_level = level;
+	SingletonContainer::instance()->get<EventDispatcher>()->dispatch(Event::create(EventType::LevelValueUpdated));
+
+	updateTargetScoreByLevel();
 }
 
-int GAMEDATA::getScoreByLevel(int level){
+void GAMEDATA::updateTargetScoreByLevel()
+{
 	int score = 0;
-	if (level == 1)
-	{
+	if (current_level == 1){
 		score = 1000;
 	}
-	else if (level == 2)
-	{
+	else if (current_level == 2){
 		score = 3000;
 	}
-	else if ( (level >=3) && (level <= 10) )
-	{
-		score = 3000 + 3000 * (level - 2);
+	else if ( (current_level >=3) && (current_level <= 10) ){
+		score = 3000 + 3000 * (current_level - 2);
 	}
-	else
-	{
-		score = 27000 + 4000 * (level - 10);
+	else{
+		score = 27000 + 4000 * (current_level - 10);
 	}
-	return score;
+
+	if (score != target_score){
+		target_score = score;
+		SingletonContainer::instance()->get<EventDispatcher>()->dispatch(Event::create(EventType::TargetScoreValueUpdated));
+	}
 }
 
 int GAMEDATA::getJiangli(int size){
@@ -70,5 +78,38 @@ int GAMEDATA::getJiangli(int size){
 
 
 void GAMEDATA::saveHighestScore(){
-	UserDefault::getInstance()->setIntegerForKey("highestScore",getHistoryScore());
+	cocos2d::UserDefault::getInstance()->setIntegerForKey("highestScore",getHistoryScore());
+}
+
+void GAMEDATA::setHighScore(int score)
+{
+	if (history_score < score){
+		history_score = score;
+		SingletonContainer::instance()->get<EventDispatcher>()->dispatch(Event::create(EventType::HighScoreValueUpdated));
+	}
+}
+
+void GAMEDATA::setCurrentScore(int score)
+{
+	if (score != cur_score){
+		cur_score = score;
+		SingletonContainer::instance()->get<EventDispatcher>()->dispatch(Event::create(EventType::CurrentScoreValueUpdated));
+
+		setHighScore(cur_score);
+	}
+}
+
+void GAMEDATA::levelUp()
+{
+	setCurrentLevel(current_level + 1);
+}
+
+int GAMEDATA::getCurrentLevel()
+{
+	return current_level;
+}
+
+int GAMEDATA::getTargetScore()
+{
+	return target_score;
 }

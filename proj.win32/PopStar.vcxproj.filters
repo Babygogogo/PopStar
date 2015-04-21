@@ -57,9 +57,6 @@
     <ClCompile Include="..\Classes\StarParticle.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\TopMenu.cpp">
-      <Filter>Classes</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\XMLParser.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
@@ -102,9 +99,6 @@
     <ClCompile Include="..\Classes\Script\StarMatirx.cpp">
       <Filter>Script</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Script\Label.cpp">
-      <Filter>Script</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\Script\StatusBar.cpp">
       <Filter>Script</Filter>
     </ClCompile>
@@ -141,9 +135,6 @@
       <Filter>Classes</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\StarParticle.h">
-      <Filter>Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\TopMenu.h">
       <Filter>Classes</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\XMLParser.h">
@@ -205,9 +196,6 @@
     </ClInclude>
     <ClInclude Include="..\Classes\Common\IEventListener.h">
       <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Script\Label.h">
-      <Filter>Script</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Script\StatusBar.h">
       <Filter>Script</Filter>

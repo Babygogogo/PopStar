@@ -16,12 +16,11 @@ using namespace std;
 float LegacyStarMatrix::ONE_CLEAR_TIME = 0.05f;
 
 LegacyStarMatrix * LegacyStarMatrix::create(std::function<void()> &&layerHideLinkNum, std::function<void(int)> &&layerShowLinkNum,
-	std::function<void(int)> &&layerFloatLeftStarMsg, std::function<void()> &&layerRefreshMenu,
-	std::function<void()> &&layerGotoNextLevel, std::function<void()> &&layerGotoGameOver)
+	std::function<void(int)> &&layerFloatLeftStarMsg, std::function<void()> &&layerGotoNextLevel, std::function<void()> &&layerGotoGameOver)
 {
 	auto matrix = new LegacyStarMatrix();
 	if (matrix && matrix->init(std::move(layerHideLinkNum), std::move(layerShowLinkNum), std::move(layerFloatLeftStarMsg),
-		std::move(layerRefreshMenu), std::move(layerGotoNextLevel), std::move(layerGotoGameOver))){
+		std::move(layerGotoNextLevel), std::move(layerGotoGameOver))){
 		matrix->autorelease();
 		return matrix;
 	}
@@ -31,8 +30,7 @@ LegacyStarMatrix * LegacyStarMatrix::create(std::function<void()> &&layerHideLin
 }
 
 bool LegacyStarMatrix::init(std::function<void()> &&layerHideLinkNum, std::function<void(int)> &&layerShowLinkNum,
-	std::function<void(int)> &&layerFloatLeftStarMsg, std::function<void()> &&layerRefreshMenu,
-	std::function<void()> &&layerGotoNextLevel, std::function<void()> &&layerGotoGameOver)
+	std::function<void(int)> &&layerFloatLeftStarMsg, std::function<void()> &&layerGotoNextLevel, std::function<void()> &&layerGotoGameOver)
 {
 	if (!Node::init())
 		return false;
@@ -40,7 +38,6 @@ bool LegacyStarMatrix::init(std::function<void()> &&layerHideLinkNum, std::funct
 	m_layerHideLinkNum = std::move(layerHideLinkNum);
 	m_layerShowLinkNum = std::move(layerShowLinkNum);
 	m_layerFloatLeftStarMsg = std::move(layerFloatLeftStarMsg);
-	m_layerRefreshMenu = std::move(layerRefreshMenu);
 	m_layerGotoNextLevel = std::move(layerGotoNextLevel);
 	m_layerGotoGameOver = std::move(layerGotoGameOver);
 
@@ -275,15 +272,7 @@ void LegacyStarMatrix::adjustMatrix(){
 
 void LegacyStarMatrix::refreshScore(){
 	GAMEDATA* data = GAMEDATA::getInstance();
-	data->setCurScore(data->getCurScore() + selectedList.size()*selectedList.size()*5);
-	if(data->getCurScore() > data->getHistoryScore()){
-		data->setHistoryScore(data->getCurScore());
-	}
-
-	//////////////////////////////////////////////////////////////////////////
-	//m_layer->refreshMenu();
-	m_layerRefreshMenu();
-	//////////////////////////////////////////////////////////////////////////
+	data->setCurrentScore(data->getCurScore() + selectedList.size()*selectedList.size()*5);
 }
 
 
@@ -325,8 +314,8 @@ void LegacyStarMatrix::clearMatrixOneByOne(){
 	//能够执行到这一句说明Matrix全为空，不在需要清空
 	needClear = false;
 	//转到下一关或者弹出结束游戏的窗口
-	if(GAMEDATA::getInstance()->getCurScore() >= GAMEDATA::getInstance()->getNextScore()){
-		GAMEDATA::getInstance()->setCurLevel(GAMEDATA::getInstance()->getCurLevel() + 1);
+	if(GAMEDATA::getInstance()->getCurScore() >= GAMEDATA::getInstance()->getTargetScore()){
+		GAMEDATA::getInstance()->levelUp();
 		
 		//////////////////////////////////////////////////////////////////////////
 		//m_layer->gotoNextLevel();

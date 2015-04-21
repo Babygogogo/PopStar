@@ -38,17 +38,14 @@ public:
 	~LegacyStarMatrix();
 
 	static LegacyStarMatrix *create(std::function<void()> &&layerHideLinkNum, std::function<void(int)> &&layerShowLinkNum,
-		std::function<void(int)> &&layerFloatLeftStarMsg, std::function<void()> &&layerRefreshMenu,
-		std::function<void()> &&layerGotoNextLevel, std::function<void()> &&layerGotoGameOver);
+		std::function<void(int)> &&layerFloatLeftStarMsg, std::function<void()> &&layerGotoNextLevel, std::function<void()> &&layerGotoGameOver);
 
 	bool init(std::function<void()> &&layerHideLinkNum, std::function<void(int)> &&layerShowLinkNum,
-		std::function<void(int)> &&layerFloatLeftStarMsg, std::function<void()> &&layerRefreshMenu,
-		std::function<void()> &&layerGotoNextLevel, std::function<void()> &&layerGotoGameOver);
+		std::function<void(int)> &&layerFloatLeftStarMsg, std::function<void()> &&layerGotoNextLevel, std::function<void()> &&layerGotoGameOver);
 
 	std::function<void()> m_layerHideLinkNum;
 	std::function<void(int)> m_layerShowLinkNum;
 	std::function<void(int)> m_layerFloatLeftStarMsg;
-	std::function<void()> m_layerRefreshMenu;
 	std::function<void()> m_layerGotoNextLevel;
 	std::function<void()> m_layerGotoGameOver;
 
