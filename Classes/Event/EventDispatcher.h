@@ -4,13 +4,22 @@
 #include <memory>
 #include <functional>
 
-#include "Event.h"
-#include "../Script/Script.h"
+#include "../Common/Object.h"
 
 class IEventListener;
+class Event;
+enum class EventType;
 
 class EventDispatcher final : public Object
 {
+	//////////////////////////////////////////////////////////////////////////
+	//Disable copy/move constructor and operator=.
+	//////////////////////////////////////////////////////////////////////////
+	EventDispatcher(const EventDispatcher&) = delete;
+	EventDispatcher(EventDispatcher&&) = delete;
+	EventDispatcher& operator=(const EventDispatcher&) = delete;
+	EventDispatcher& operator=(EventDispatcher&&) = delete;
+	
 public:
 	static std::unique_ptr<EventDispatcher> create();
 	~EventDispatcher();

@@ -2,7 +2,6 @@
 #define __GAME_OBJECT__
 
 #include <memory>
-#include <string>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
@@ -12,7 +11,8 @@
 
 #include "../Common/Object.h"
 #include "../Common/IUpdateable.h"
-#include "Component.h"
+
+class Component;
 
 /*!
  * \brief	Almost everything in the game is a GameObject, such as an unit, a strategy map, an effect of an explosion, and so on.
@@ -27,7 +27,7 @@
  * \author	Babygogogo
  * \date	2015.03
  */
-class GameObject final : public Object, public IUpdateable
+class GameObject final : public Object
 {
 public:
 	//////////////////////////////////////////////////////////////////////////
@@ -46,7 +46,23 @@ public:
 			additional_task(game_object.get());
 
 		return game_object;
-	};
+	}
+
+	//	You can also supply a concrete Component type as the template argument:
+	//auto game_object = GameObject::create<...>();
+	//The according component will be added to the game object.
+	template <typename Component_,
+		typename std::enable_if_t<std::is_base_of<Component, Component_>::value>* = nullptr
+	>
+	static std::unique_ptr<GameObject> create(std::function<void(GameObject*)> &&additional_task = nullptr)
+	{
+		auto game_object = GameObject::create();
+		game_object->addComponent<Component_>();
+		if (additional_task)
+			additional_task(game_object.get());
+
+		return game_object;
+	}
 
 	~GameObject();
 
@@ -97,7 +113,7 @@ private:
 
 	friend class Timer;
 	//Only the current scene owned by the SceneStack, and the (indirect) children of that scene, will be "update" once a frame.
-	void update(const time_t &time_ms) override
+	void update(const time_t &time_ms)
 	{
 		for (auto &updateable : m_updateables)
 			updateable->update(time_ms);
@@ -135,7 +151,7 @@ private:
 	//////////////////////////////////////////////////////////////////////////
 	//Data members of components and children.
 	//////////////////////////////////////////////////////////////////////////
-	std::unordered_map<std::type_index, std::unique_ptr<Component>> m_components;
+	std::unordered_map<std::type_index, std::unique_ptr<::Component>> m_components;
 	std::unordered_set<IUpdateable*> m_updateables;
 	std::vector<std::unique_ptr<GameObject>> m_children;
 

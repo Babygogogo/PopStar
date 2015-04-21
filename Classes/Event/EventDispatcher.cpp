@@ -1,4 +1,5 @@
 #include "EventDispatcher.h"
+#include "Event.h"
 #include "../Common/IEventListener.h"
 
 #include <unordered_set>

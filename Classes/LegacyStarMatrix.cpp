@@ -7,6 +7,7 @@
 
 #include "./Common/SingletonContainer.h"
 #include "./Event/EventDispatcher.h"
+#include "./Event/EventType.h"
 
 using namespace cocos2d;
 using namespace std;

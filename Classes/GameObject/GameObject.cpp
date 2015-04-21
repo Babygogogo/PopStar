@@ -2,35 +2,32 @@
 
 #include "GameObject.h"
 #include "DisplayNode.h"
-#include "../Script/TitleScene.h"
-
-using std::unique_ptr;
-
-template<typename Element, typename Container>
-unique_ptr<Element> stealOwnership(Element *raw_ptr, Container &container)
-{
-	//find the ownership in container; if not found, return nullptr.
-	auto iter_found = std::find_if(container.begin(), container.end(),
-		[raw_ptr](const unique_ptr<Element>& p){return p.get() == raw_ptr;});
-	if (iter_found == container.end())
-		return nullptr;
-
-	//steal the ownership
-	iter_found->release();
-	container.erase(iter_found);
-	return unique_ptr<Element>(raw_ptr);
-}
 
 class GameObject::impl
 {
 public:
-	impl(const std::string &name);
+	impl();
 	~impl();
+
+	template<typename Element, typename Container>
+	std::unique_ptr<Element> stealOwnership(Element *raw_ptr, Container &container)
+	{
+		//find the ownership in container; if not found, return nullptr.
+		auto iter_found = std::find_if(container.begin(), container.end(),
+			[raw_ptr](const std::unique_ptr<Element>& p){return p.get() == raw_ptr; });
+		if (iter_found == container.end())
+			return nullptr;
+
+		//steal the ownership
+		iter_found->release();
+		container.erase(iter_found);
+		return std::unique_ptr<Element>(raw_ptr);
+	}
 
 	GameObject *m_parent{ nullptr };
 };
 
-GameObject::impl::impl(const std::string &name)
+GameObject::impl::impl()
 {
 }
 
@@ -38,7 +35,7 @@ GameObject::impl::~impl()
 {
 }
 
-GameObject::GameObject(const std::string &name /*= ""*/) :Object(name), pimpl(new impl(name))
+GameObject::GameObject(const std::string &name /*= ""*/) :Object(name), pimpl(new impl())
 {
 
 }
@@ -90,7 +87,7 @@ std::unique_ptr<GameObject> GameObject::getOwnershipFromParent()
 		if (auto display_node = getComponent<DisplayNode>())
 			display_node->removeFromParent();
 
-		return stealOwnership(this, parent->m_children);
+		return pimpl->stealOwnership(this, parent->m_children);
 	}
 
 	return nullptr;

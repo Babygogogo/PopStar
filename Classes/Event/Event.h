@@ -4,12 +4,22 @@
 #include <memory>
 
 #include "../Common/Object.h"
-#include "EventType.h"
+
+enum class EventType;
 
 class Event : public Object
 {
+	//////////////////////////////////////////////////////////////////////////
+	//Disable copy/move constructor and operator=.
+	//////////////////////////////////////////////////////////////////////////
+	Event(const Event&) = delete;
+	Event(Event&&) = delete;
+	Event& operator=(const Event&) = delete;
+	Event& operator=(Event&&) = delete;
+	
 public:
-	static std::unique_ptr<Event> create(EventType event_type, std::unique_ptr<Object> &&event_arg = nullptr){
+	static std::unique_ptr<Event> create(EventType event_type, std::unique_ptr<Object> &&event_arg = nullptr)
+	{
 		return std::unique_ptr<Event>(new Event("Event", event_type, std::move(event_arg)));
 	}
 

@@ -15,6 +15,7 @@
 #include "../GameObject/GameObject.h"
 #include "../GameObject/DisplayNode.h"
 #include "../Event/Event.h"
+#include "../Event/EventType.h"
 #include "../Event/EventDispatcher.h"
 
 struct PuzzleMatrixLayer::impl : public cocos2d::Layer
@@ -34,7 +35,6 @@ struct PuzzleMatrixLayer::impl : public cocos2d::Layer
 
 public:
 	std::unique_ptr<GameObject> createBackground();
-	std::unique_ptr<GameObject> createStatusBar();
 	
 private:
 	bool init();
@@ -197,18 +197,11 @@ std::unique_ptr<GameObject> PuzzleMatrixLayer::impl::createBackground()
 	return background_object;
 }
 
-std::unique_ptr<GameObject> PuzzleMatrixLayer::impl::createStatusBar()
-{
-	auto status_bar_object = GameObject::create([](GameObject *object){object->addComponent<StatusBar>(); });
-
-	return status_bar_object;
-}
-
 PuzzleMatrixLayer::PuzzleMatrixLayer(GameObject *game_object) :Script("PuzzleMatrixLayer", game_object), pimpl(new impl)
 {
 	auto layer_underlying = game_object->addComponent<DisplayNode>()->initAs<PuzzleMatrixLayer::impl>();
 	game_object->addChild(pimpl->createBackground());
-	game_object->addChild(pimpl->createStatusBar());
+	game_object->addChild(GameObject::create<StatusBar>());
 }
 
 PuzzleMatrixLayer::~PuzzleMatrixLayer()

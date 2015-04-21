@@ -10,6 +10,14 @@ class Label final: public Script, public IEventListener
 {
 	friend class GameObject;
 
+	//////////////////////////////////////////////////////////////////////////
+	//Disable copy/move constructor and operator=.
+	//////////////////////////////////////////////////////////////////////////
+	Label(const Label&) = delete;
+	Label(Label&&) = delete;
+	Label& operator=(const Label&) = delete;
+	Label& operator=(Label&&) = delete;
+	
 public:
 	~Label();
 

@@ -3,7 +3,8 @@
 
 enum class EventType
 {
-	LevelResultPanelClosed
+	LevelResultPanelClosed,
+	StarExploded
 };
 
 #endif // !__EVENT_TYPE__
