@@ -102,6 +102,9 @@
     <ClCompile Include="..\Classes\Script\StatusBar.cpp">
       <Filter>Script</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\Script\Stepper.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -198,6 +201,9 @@
       <Filter>Common</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Script\StatusBar.h">
+      <Filter>Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Script\Stepper.h">
       <Filter>Script</Filter>
     </ClInclude>
   </ItemGroup>

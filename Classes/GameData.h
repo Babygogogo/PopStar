@@ -1,7 +1,8 @@
 #ifndef _GAMEDATA_H_
 #define _GAMEDATA_H_
 
-class GAMEDATA{
+class GAMEDATA
+{
 public:
 	static GAMEDATA* getInstance();
 
@@ -18,9 +19,7 @@ public:
 
 	void updateEndLevelScoreWith(int num_of_left_stars);
 	int getEndLevelBonus(int num_of_left_stars);
-
-	void saveHighestScore();
-
+	
 	void init();
 
 private:
@@ -35,10 +34,12 @@ private:
 
 	int getScoreOf(int num_of_exploded_stars);
 
+	void saveHighScore();
+
 	static GAMEDATA* _instance;
 
 	int current_level;
-	int high_score;
+	int high_score{ 0 };
 	int current_score;
 	int target_score;
 	int num_of_previous_exploded_stars{ 0 };

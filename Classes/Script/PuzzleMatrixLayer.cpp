@@ -13,6 +13,7 @@
 #include "../Common/SceneStack.h"
 #include "../GameObject/GameObject.h"
 #include "../GameObject/DisplayNode.h"
+#include "../Script/Stepper.h"
 #include "../Event/Event.h"
 #include "../Event/EventType.h"
 #include "../Event/EventDispatcher.h"
@@ -23,25 +24,32 @@ struct PuzzleMatrixLayer::impl : public cocos2d::Layer
 	~impl();
 
 	CREATE_FUNC(PuzzleMatrixLayer::impl);
+	bool init();
 
 	void floatLeftStarMsg(int leftNum);
-	void gotoNextLevel();
 	void gotoGameOver();
 
 public:
+	enum class State{
+		BeforeLevelPreparation,
+		LevelPreparationIdle,
+		LevelInProgress
+	};
+	
+	PuzzleMatrixLayer::impl *initializeLayer(GameObject *game_object);
 	std::unique_ptr<GameObject> createBackground();
-	std::unique_ptr<GameObject> createComboLabel();
+	std::unique_ptr<GameObject> createScoringLabel();
+	std::unique_ptr<GameObject> createLevelPreparationLabel();
+
+	void handleLayerTouch();
+
+	State m_state{ State::BeforeLevelPreparation };
+	GameObject *m_game_object{ nullptr };
+	Stepper *XXX_preparation_label_stepper{ nullptr };
 	
 private:
-	bool init();
-
-	void floatLevelWord();
-	void floatTargetScoreWord();
-	void removeFloatWord();
 	void showStarMatrix();
 
-	FloatWord* _levelMsg;
-	FloatWord* _targetScore;
 	LegacyStarMatrix* matrix;
 };
 
@@ -53,37 +61,7 @@ bool PuzzleMatrixLayer::impl::init(){
 	matrix = nullptr;
 	this->scheduleUpdate();
 
-	auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
-
-	this->floatLevelWord();
-
 	return true;
-}
-
-void PuzzleMatrixLayer::impl::floatLevelWord(){
-	auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
-	_levelMsg = FloatWord::create(
-		ChineseWord("guanqia") + cocos2d::String::createWithFormat(": %d", GAMEDATA::getInstance()->getCurrentLevel())->_string,
-		50, cocos2d::Point(visibleSize.width, visibleSize.height / 3 * 2)
-		);
-	this->addChild(_levelMsg, 1);
-	_levelMsg->floatIn(0.5f, CC_CALLBACK_0(PuzzleMatrixLayer::impl::floatTargetScoreWord, this));
-	Audio::getInstance()->playReadyGo();
-}
-
-void PuzzleMatrixLayer::impl::floatTargetScoreWord(){
-	auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
-	_targetScore = FloatWord::create(
-		ChineseWord("mubiao") + cocos2d::String::createWithFormat(": %d", GAMEDATA::getInstance()->getTargetScore())->_string + ChineseWord("fen"),
-		50, cocos2d::Point(visibleSize.width, visibleSize.height / 3)
-		);
-	this->addChild(_targetScore, 1);
-	_targetScore->floatIn(0.5f, CC_CALLBACK_0(PuzzleMatrixLayer::impl::removeFloatWord, this));
-}
-
-void PuzzleMatrixLayer::impl::removeFloatWord(){
-	_levelMsg->floatOut(0.5f, nullptr);
-	_targetScore->floatOut(0.5f, CC_CALLBACK_0(PuzzleMatrixLayer::impl::showStarMatrix, this));
 }
 
 void PuzzleMatrixLayer::impl::showStarMatrix()
@@ -93,7 +71,6 @@ void PuzzleMatrixLayer::impl::showStarMatrix()
 
 	matrix = LegacyStarMatrix::create(
 		[this](int num){this->floatLeftStarMsg(num); },
-		[this](){this->gotoNextLevel(); },
 		[this](){this->gotoGameOver(); }
 	);
 
@@ -121,13 +98,7 @@ void PuzzleMatrixLayer::impl::floatLeftStarMsg(int leftNum)
 	leftStarMsg2->floatInOut(0.5f, 1.0f, nullptr);
 }
 
-void PuzzleMatrixLayer::impl::gotoNextLevel(){
-	floatLevelWord();
-}
-
 void PuzzleMatrixLayer::impl::gotoGameOver(){
-	//������߷�?
-	GAMEDATA::getInstance()->saveHighestScore();
 	//Ʈ�֣��л�scene
 	auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
 	FloatWord* gameOver = FloatWord::create(
@@ -140,6 +111,24 @@ void PuzzleMatrixLayer::impl::gotoGameOver(){
 		title_scene->addComponent<TitleScene>();
 		SingletonContainer::instance()->get<SceneStack>()->replaceAndRun(std::move(title_scene));
 	});
+}
+
+PuzzleMatrixLayer::impl * PuzzleMatrixLayer::impl::initializeLayer(GameObject *game_object)
+{
+	auto layer_underlying = game_object->addComponent<DisplayNode>()->initAs<PuzzleMatrixLayer::impl>();
+	layer_underlying->m_game_object = game_object;
+
+	auto touch_listener = cocos2d::EventListenerTouchOneByOne::create();
+	touch_listener->setSwallowTouches(true);
+	touch_listener->onTouchBegan = [layer_underlying](cocos2d::Touch* touch, cocos2d::Event* event)->bool{
+		layer_underlying->handleLayerTouch();
+		return true; };
+	cocos2d::Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(touch_listener, layer_underlying);
+
+	SingletonContainer::instance()->get<EventDispatcher>()->registerListener(EventType::LevelUp, layer_underlying,
+		[layer_underlying](Event *){layer_underlying->m_state = State::BeforeLevelPreparation; });
+
+	return layer_underlying;
 }
 
 std::unique_ptr<GameObject> PuzzleMatrixLayer::impl::createBackground()
@@ -156,7 +145,7 @@ std::unique_ptr<GameObject> PuzzleMatrixLayer::impl::createBackground()
 	return background_object;
 }
 
-std::unique_ptr<GameObject> PuzzleMatrixLayer::impl::createComboLabel()
+std::unique_ptr<GameObject> PuzzleMatrixLayer::impl::createScoringLabel()
 {
 	auto label_object = GameObject::create();
 	auto label_underlying = label_object->addComponent<DisplayNode>()->initAs<cocos2d::Label>(
@@ -178,18 +167,59 @@ std::unique_ptr<GameObject> PuzzleMatrixLayer::impl::createComboLabel()
 	return label_object;
 }
 
+std::unique_ptr<GameObject> PuzzleMatrixLayer::impl::createLevelPreparationLabel()
+{
+	auto label_object = GameObject::create();
+	auto label_underlying = label_object->addComponent<DisplayNode>()->initAs<cocos2d::Label>(
+		[]{return cocos2d::Label::createWithSystemFont(
+			std::string("Level: ") + std::to_string(GAMEDATA::getInstance()->getCurrentLevel()) + '\n' + std::string(" Start!")
+			, "Verdana-Bold", 50); });
+
+	auto visible_size = cocos2d::Director::getInstance()->getVisibleSize();
+	label_underlying->setPosition(visible_size.width + label_underlying->getContentSize().width / 2, visible_size.height / 2);
+
+	auto stepper = XXX_preparation_label_stepper = label_object->addComponent<Stepper>();
+	stepper->addStep(0.6f, visible_size.width / 2, visible_size.height / 2);
+	stepper->addStep(0.6f, -label_underlying->getContentSize().width / 2, visible_size.height / 2, [this]{showStarMatrix(); });
+	
+	Audio::getInstance()->playReadyGo();
+
+	return label_object;
+}
+
 PuzzleMatrixLayer::impl::~impl()
 {
 	if (auto singleton_container = SingletonContainer::instance())
 		singleton_container->get<EventDispatcher>()->deleteListener(this);
 }
 
+void PuzzleMatrixLayer::impl::handleLayerTouch()
+{
+	switch (m_state)
+	{
+	case State::BeforeLevelPreparation:
+		m_game_object->addChild(createLevelPreparationLabel());
+		if (XXX_preparation_label_stepper->nextStep())
+			m_state = State::LevelPreparationIdle;
+		break;
+	case State::LevelPreparationIdle:
+		if (XXX_preparation_label_stepper->nextStep())
+			m_state = State::LevelInProgress;
+		break;
+	default:
+		break;
+	}
+}
+
 PuzzleMatrixLayer::PuzzleMatrixLayer(GameObject *game_object) :Script("PuzzleMatrixLayer", game_object), pimpl(new impl)
 {
-	auto layer_underlying = game_object->addComponent<DisplayNode>()->initAs<PuzzleMatrixLayer::impl>();
+	auto layer = pimpl->initializeLayer(game_object);
+
 	game_object->addChild(pimpl->createBackground());
 	game_object->addChild(GameObject::create<StatusBar>());
-	game_object->addChild(pimpl->createComboLabel());
+	game_object->addChild(pimpl->createScoringLabel());
+
+	layer->handleLayerTouch();
 }
 
 PuzzleMatrixLayer::~PuzzleMatrixLayer()

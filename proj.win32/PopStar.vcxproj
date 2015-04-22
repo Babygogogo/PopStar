@@ -155,6 +155,7 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClCompile Include="..\Classes\Script\PuzzleScene.cpp" />
     <ClCompile Include="..\Classes\Script\StarMatirx.cpp" />
     <ClCompile Include="..\Classes\Script\StatusBar.cpp" />
+    <ClCompile Include="..\Classes\Script\Stepper.cpp" />
     <ClCompile Include="..\Classes\Script\TitleScene.cpp" />
     <ClCompile Include="..\Classes\Star.cpp" />
     <ClCompile Include="..\Classes\LegacyStarMatrix.cpp" />
@@ -189,6 +190,7 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClInclude Include="..\Classes\Script\Script.h" />
     <ClInclude Include="..\Classes\Script\StarMatrix.h" />
     <ClInclude Include="..\Classes\Script\StatusBar.h" />
+    <ClInclude Include="..\Classes\Script\Stepper.h" />
     <ClInclude Include="..\Classes\Script\TitleScene.h" />
     <ClInclude Include="..\Classes\Star.h" />
     <ClInclude Include="..\Classes\LegacyStarMatrix.h" />

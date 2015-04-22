@@ -37,12 +37,11 @@ private:
 public:
 	~LegacyStarMatrix();
 
-	static LegacyStarMatrix *create(std::function<void(int)> &&layerFloatLeftStarMsg, std::function<void()> &&layerGotoNextLevel, std::function<void()> &&layerGotoGameOver);
+	static LegacyStarMatrix *create(std::function<void(int)> &&layerFloatLeftStarMsg, std::function<void()> &&layerGotoGameOver);
 
-	bool init(std::function<void(int)> &&layerFloatLeftStarMsg, std::function<void()> &&layerGotoNextLevel, std::function<void()> &&layerGotoGameOver);
+	bool init(std::function<void(int)> &&layerFloatLeftStarMsg, std::function<void()> &&layerGotoGameOver);
 
 	std::function<void(int)> m_layerFloatLeftStarMsg;
-	std::function<void()> m_layerGotoNextLevel;
 	std::function<void()> m_layerGotoGameOver;
 
 	void registerTouchListener();

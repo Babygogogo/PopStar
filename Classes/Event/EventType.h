@@ -7,6 +7,9 @@ enum class EventType
 
 	LevelResultBegan,
 	LevelResultEnded,
+	LevelUp,
+
+	PuzzleLayerTouched,
 
 	CurrentScoreValueUpdated,
 	HighScoreValueUpdated,

@@ -79,7 +79,8 @@ int GAMEDATA::getEndLevelBonus(int num_of_left_stars){
 }
 
 
-void GAMEDATA::saveHighestScore(){
+void GAMEDATA::saveHighScore()
+{
 	cocos2d::UserDefault::getInstance()->setIntegerForKey("highestScore",getHighScore());
 }
 
@@ -87,6 +88,8 @@ void GAMEDATA::setHighScore(int score)
 {
 	if (high_score < score){
 		high_score = score;
+		saveHighScore();
+
 		SingletonContainer::instance()->get<EventDispatcher>()->dispatch(Event::create(EventType::HighScoreValueUpdated));
 	}
 }
