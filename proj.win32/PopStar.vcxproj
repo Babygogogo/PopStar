@@ -140,6 +140,8 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClCompile Include="..\Classes\Chinese.cpp" />
     <ClCompile Include="..\Classes\ComboEffect.cpp" />
     <ClCompile Include="..\Classes\Common\SceneStack.cpp" />
+    <ClCompile Include="..\Classes\Common\SequentialInvoker.cpp" />
+    <ClCompile Include="..\Classes\Common\SequentialInvokerContainer.cpp" />
     <ClCompile Include="..\Classes\Common\SingletonContainer.cpp" />
     <ClCompile Include="..\Classes\Common\Object.cpp" />
     <ClCompile Include="..\Classes\Common\Timer.cpp" />
@@ -149,7 +151,6 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClCompile Include="..\Classes\GameObject\Component.cpp" />
     <ClCompile Include="..\Classes\GameObject\DisplayNode.cpp" />
     <ClCompile Include="..\Classes\GameObject\GameObject.cpp" />
-    <ClCompile Include="..\Classes\GameObject\Stepper.cpp" />
     <ClCompile Include="..\Classes\HelloWorldScene.cpp" />
     <ClCompile Include="..\Classes\LevelMsgLayer.cpp" />
     <ClCompile Include="..\Classes\Script\PuzzleMatrixLayer.cpp" />
@@ -171,6 +172,8 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClInclude Include="..\Classes\Common\IEventListener.h" />
     <ClInclude Include="..\Classes\Common\IUpdateable.h" />
     <ClInclude Include="..\Classes\Common\SceneStack.h" />
+    <ClInclude Include="..\Classes\Common\SequentialInvoker.h" />
+    <ClInclude Include="..\Classes\Common\SequentialInvokerContainer.h" />
     <ClInclude Include="..\Classes\Common\SingletonContainer.h" />
     <ClInclude Include="..\Classes\Common\Timer.h" />
     <ClInclude Include="..\Classes\Common\Object.h" />
@@ -184,7 +187,6 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClInclude Include="..\Classes\GameObject\DisplayNode.h" />
     <ClInclude Include="..\Classes\GameObject\GameObject.h" />
     <ClInclude Include="..\Classes\GameObject\SoundPlayer.h" />
-    <ClInclude Include="..\Classes\GameObject\Stepper.h" />
     <ClInclude Include="..\Classes\HelloWorldScene.h" />
     <ClInclude Include="..\Classes\LevelMsgLayer.h" />
     <ClInclude Include="..\Classes\Script\PuzzleMatrixLayer.h" />

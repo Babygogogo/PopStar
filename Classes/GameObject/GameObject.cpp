@@ -2,6 +2,8 @@
 
 #include "GameObject.h"
 #include "DisplayNode.h"
+#include "../Common/SingletonContainer.h"
+#include "../Common/SequentialInvokerContainer.h"
 
 class GameObject::impl
 {
@@ -43,6 +45,8 @@ GameObject::GameObject(const std::string &name /*= ""*/) :Object(name), pimpl(ne
 GameObject::~GameObject()
 {
 	CCLOG("GameObject %s destructing.", m_name.c_str());
+	if (auto singleton_container = SingletonContainer::instance())
+		singleton_container->get<SequentialInvokerContainer>()->deleteTarget(this);
 }
 
 void GameObject::addChild(std::unique_ptr<GameObject>&& child)
