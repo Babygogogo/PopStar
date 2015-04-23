@@ -102,8 +102,8 @@
     <ClCompile Include="..\Classes\Script\StatusBar.cpp">
       <Filter>Script</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Script\Stepper.cpp">
-      <Filter>Script</Filter>
+    <ClCompile Include="..\Classes\GameObject\Stepper.cpp">
+      <Filter>GameObjectAndComponent</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -203,8 +203,8 @@
     <ClInclude Include="..\Classes\Script\StatusBar.h">
       <Filter>Script</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\Script\Stepper.h">
-      <Filter>Script</Filter>
+    <ClInclude Include="..\Classes\GameObject\Stepper.h">
+      <Filter>GameObjectAndComponent</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

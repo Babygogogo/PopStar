@@ -53,7 +53,7 @@ Stepper::~Stepper()
 
 }
 
-Stepper::Stepper(GameObject *game_object) :Script("Stepper", game_object), pimpl(new impl)
+Stepper::Stepper(GameObject *game_object) :Component("Stepper", game_object), pimpl(new impl)
 {
 
 }

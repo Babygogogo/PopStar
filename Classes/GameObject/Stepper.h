@@ -4,9 +4,9 @@
 #include <memory>
 #include <functional>
 
-#include "Script.h"
+#include "Component.h"
 
-class Stepper final :public Script
+class Stepper final :public Component
 {
 	friend class GameObject;
 

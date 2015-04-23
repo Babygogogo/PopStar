@@ -13,7 +13,7 @@
 #include "../Common/SceneStack.h"
 #include "../GameObject/GameObject.h"
 #include "../GameObject/DisplayNode.h"
-#include "../Script/Stepper.h"
+#include "../GameObject/Stepper.h"
 #include "../Event/Event.h"
 #include "../Event/EventType.h"
 #include "../Event/EventDispatcher.h"
@@ -30,22 +30,18 @@ struct PuzzleMatrixLayer::impl : public cocos2d::Layer
 	void gotoGameOver();
 
 public:
-	enum class State{
-		BeforeLevelPreparation,
-		LevelPreparationIdle,
-		LevelInProgress
-	};
-	
 	PuzzleMatrixLayer::impl *initializeLayer(GameObject *game_object);
 	std::unique_ptr<GameObject> createBackground();
 	std::unique_ptr<GameObject> createScoringLabel();
+
 	std::unique_ptr<GameObject> createLevelPreparationLabel();
+	void resetLevelPreparationLabel();
+	void resetTouchListenerForPreparationLabel();
+	void resetStepperForPreparationLabel();
 
-	void handleLayerTouch();
+	void startLevel();
 
-	State m_state{ State::BeforeLevelPreparation };
-	GameObject *m_game_object{ nullptr };
-	Stepper *XXX_preparation_label_stepper{ nullptr };
+	GameObject *m_preparation_label{ nullptr };
 	
 private:
 	void showStarMatrix();
@@ -59,7 +55,6 @@ bool PuzzleMatrixLayer::impl::init(){
 	}
 
 	matrix = nullptr;
-	this->scheduleUpdate();
 
 	return true;
 }
@@ -116,17 +111,9 @@ void PuzzleMatrixLayer::impl::gotoGameOver(){
 PuzzleMatrixLayer::impl * PuzzleMatrixLayer::impl::initializeLayer(GameObject *game_object)
 {
 	auto layer_underlying = game_object->addComponent<DisplayNode>()->initAs<PuzzleMatrixLayer::impl>();
-	layer_underlying->m_game_object = game_object;
-
-	auto touch_listener = cocos2d::EventListenerTouchOneByOne::create();
-	touch_listener->setSwallowTouches(true);
-	touch_listener->onTouchBegan = [layer_underlying](cocos2d::Touch* touch, cocos2d::Event* event)->bool{
-		layer_underlying->handleLayerTouch();
-		return true; };
-	cocos2d::Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(touch_listener, layer_underlying);
 
 	SingletonContainer::instance()->get<EventDispatcher>()->registerListener(EventType::LevelUp, layer_underlying,
-		[layer_underlying](Event *){layer_underlying->m_state = State::BeforeLevelPreparation; });
+		[layer_underlying](Event *){layer_underlying->startLevel(); });
 
 	return layer_underlying;
 }
@@ -170,21 +157,48 @@ std::unique_ptr<GameObject> PuzzleMatrixLayer::impl::createScoringLabel()
 std::unique_ptr<GameObject> PuzzleMatrixLayer::impl::createLevelPreparationLabel()
 {
 	auto label_object = GameObject::create();
-	auto label_underlying = label_object->addComponent<DisplayNode>()->initAs<cocos2d::Label>(
-		[]{return cocos2d::Label::createWithSystemFont(
-			std::string("Level: ") + std::to_string(GAMEDATA::getInstance()->getCurrentLevel()) + '\n' + std::string(" Start!")
-			, "Verdana-Bold", 50); });
 
+	label_object->addComponent<DisplayNode>()->initAs<cocos2d::Label>([]{return cocos2d::Label::createWithSystemFont("", "Verdana-Bold", 50); });
+	label_object->addComponent<Stepper>();
+
+	return label_object;
+}
+
+void PuzzleMatrixLayer::impl::resetLevelPreparationLabel()
+{
+	auto label_underlying = m_preparation_label->getComponent<DisplayNode>()->getAs<cocos2d::Label>();
+	label_underlying->setString(std::string("Level: ") + std::to_string(GAMEDATA::getInstance()->getCurrentLevel()) + '\n' + std::string(" Start!"));
+	label_underlying->setVisible(true);
+
+	resetStepperForPreparationLabel();
+	resetTouchListenerForPreparationLabel();
+}
+
+void PuzzleMatrixLayer::impl::resetTouchListenerForPreparationLabel()
+{
+	auto stepper = m_preparation_label->getComponent<Stepper>();
+	auto touch_listener = cocos2d::EventListenerTouchOneByOne::create();
+	touch_listener->onTouchBegan = [stepper](cocos2d::Touch* touch, cocos2d::Event* event)->bool{
+		stepper->nextStep();
+		return true; };
+
+	auto label_underlying = m_preparation_label->getComponent<DisplayNode>()->getAs<cocos2d::Label>();
+	cocos2d::Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(touch_listener, label_underlying);
+}
+
+void PuzzleMatrixLayer::impl::resetStepperForPreparationLabel()
+{
+	auto label_underlying = m_preparation_label->getComponent<DisplayNode>()->getAs<cocos2d::Label>();
 	auto visible_size = cocos2d::Director::getInstance()->getVisibleSize();
 	label_underlying->setPosition(visible_size.width + label_underlying->getContentSize().width / 2, visible_size.height / 2);
 
-	auto stepper = XXX_preparation_label_stepper = label_object->addComponent<Stepper>();
+	auto stepper = m_preparation_label->getComponent<Stepper>();
 	stepper->addStep(0.6f, visible_size.width / 2, visible_size.height / 2);
-	stepper->addStep(0.6f, -label_underlying->getContentSize().width / 2, visible_size.height / 2, [this]{showStarMatrix(); });
-	
-	Audio::getInstance()->playReadyGo();
-
-	return label_object;
+	stepper->addStep(0.6f, -label_underlying->getContentSize().width / 2, visible_size.height / 2, [this, label_underlying]{
+		showStarMatrix();
+		label_underlying->setVisible(false);
+		cocos2d::Director::getInstance()->getEventDispatcher()->removeEventListenersForTarget(label_underlying); });
+		stepper->nextStep();
 }
 
 PuzzleMatrixLayer::impl::~impl()
@@ -193,22 +207,11 @@ PuzzleMatrixLayer::impl::~impl()
 		singleton_container->get<EventDispatcher>()->deleteListener(this);
 }
 
-void PuzzleMatrixLayer::impl::handleLayerTouch()
+void PuzzleMatrixLayer::impl::startLevel()
 {
-	switch (m_state)
-	{
-	case State::BeforeLevelPreparation:
-		m_game_object->addChild(createLevelPreparationLabel());
-		if (XXX_preparation_label_stepper->nextStep())
-			m_state = State::LevelPreparationIdle;
-		break;
-	case State::LevelPreparationIdle:
-		if (XXX_preparation_label_stepper->nextStep())
-			m_state = State::LevelInProgress;
-		break;
-	default:
-		break;
-	}
+	resetLevelPreparationLabel();
+
+	Audio::getInstance()->playReadyGo();
 }
 
 PuzzleMatrixLayer::PuzzleMatrixLayer(GameObject *game_object) :Script("PuzzleMatrixLayer", game_object), pimpl(new impl)
@@ -219,7 +222,11 @@ PuzzleMatrixLayer::PuzzleMatrixLayer(GameObject *game_object) :Script("PuzzleMat
 	game_object->addChild(GameObject::create<StatusBar>());
 	game_object->addChild(pimpl->createScoringLabel());
 
-	layer->handleLayerTouch();
+	auto preparation_label = pimpl->createLevelPreparationLabel();
+	layer->m_preparation_label = preparation_label.get();
+	game_object->addChild(std::move(preparation_label));
+
+	layer->startLevel();
 }
 
 PuzzleMatrixLayer::~PuzzleMatrixLayer()
