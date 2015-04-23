@@ -206,6 +206,9 @@
     <ClInclude Include="..\Classes\GameObject\Stepper.h">
       <Filter>GameObjectAndComponent</Filter>
     </ClInclude>
+    <ClInclude Include="..\Classes\Event\EventArg1.h">
+      <Filter>Event</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="game.rc">

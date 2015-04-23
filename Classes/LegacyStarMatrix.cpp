@@ -9,16 +9,17 @@
 #include "./Event/EventDispatcher.h"
 #include "./Event/EventType.h"
 #include "./Event/Event.h"
+#include "./Event/EventArg1.h"
 
 using namespace cocos2d;
 using namespace std;
 
 float LegacyStarMatrix::ONE_CLEAR_TIME = 0.05f;
 
-LegacyStarMatrix * LegacyStarMatrix::create(std::function<void(int)> &&layerFloatLeftStarMsg, std::function<void()> &&layerGotoGameOver)
+LegacyStarMatrix * LegacyStarMatrix::create()
 {
 	auto matrix = new LegacyStarMatrix();
-	if (matrix && matrix->init(std::move(layerFloatLeftStarMsg), std::move(layerGotoGameOver))){
+	if (matrix && matrix->init()){
 		matrix->autorelease();
 		return matrix;
 	}
@@ -27,13 +28,10 @@ LegacyStarMatrix * LegacyStarMatrix::create(std::function<void(int)> &&layerFloa
 	return nullptr;
 }
 
-bool LegacyStarMatrix::init(std::function<void(int)> &&layerFloatLeftStarMsg, std::function<void()> &&layerGotoGameOver)
+bool LegacyStarMatrix::init()
 {
 	if (!Node::init())
 		return false;
-
-	m_layerFloatLeftStarMsg = std::move(layerFloatLeftStarMsg);
-	m_layerGotoGameOver = std::move(layerGotoGameOver);
 
 	needClear = false;
 	clearSumTime = 0;
@@ -191,7 +189,7 @@ void LegacyStarMatrix::deleteSelectedList(){
 	if(isEnded()){
 		//////////////////////////////////////////////////////////////////////////
 		//m_layer->floatLeftStarMsg(getLeftStarNum());//通知layer弹出剩余星星的信息
-		m_layerFloatLeftStarMsg(getLeftStarNum());
+		SingletonContainer::instance()->get<::EventDispatcher>()->dispatch(::Event::create(EventType::LevelNoMoreMove, EventArg1::create(getLeftStarNum())));
 		//////////////////////////////////////////////////////////////////////////
 		
 		CCLOG("ENDED");
@@ -305,7 +303,8 @@ void LegacyStarMatrix::clearMatrixOneByOne(){
 	}else{
 		//////////////////////////////////////////////////////////////////////////
 		//m_layer->gotoGameOver();
-		m_layerGotoGameOver();
+		//m_layerGotoGameOver();
+		SingletonContainer::instance()->get<::EventDispatcher>()->dispatch(::Event::create(EventType::GameOver));
 		//////////////////////////////////////////////////////////////////////////
 		CCLOG("GAME OVER");
 	}

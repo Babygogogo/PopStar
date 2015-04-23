@@ -17,20 +17,19 @@
 #include "../Event/Event.h"
 #include "../Event/EventType.h"
 #include "../Event/EventDispatcher.h"
+#include "../Event/EventArg1.h"
 
-struct PuzzleMatrixLayer::impl : public cocos2d::Layer
+struct PuzzleMatrixLayer::impl
 {
 	impl(){};
 	~impl();
-
-	CREATE_FUNC(PuzzleMatrixLayer::impl);
-	bool init();
 
 	void floatLeftStarMsg(int leftNum);
 	void gotoGameOver();
 
 public:
-	PuzzleMatrixLayer::impl *initializeLayer(GameObject *game_object);
+	void initializeLayer(GameObject *game_object);
+
 	std::unique_ptr<GameObject> createBackground();
 	std::unique_ptr<GameObject> createScoringLabel();
 
@@ -41,35 +40,22 @@ public:
 
 	void startLevel();
 
+	cocos2d::Layer *m_layer_underlying{ nullptr };
 	GameObject *m_preparation_label{ nullptr };
 	
 private:
 	void showStarMatrix();
 
-	LegacyStarMatrix* matrix;
+	LegacyStarMatrix* matrix{nullptr};
 };
-
-bool PuzzleMatrixLayer::impl::init(){
-	if (!Layer::init()){
-		return false;
-	}
-
-	matrix = nullptr;
-
-	return true;
-}
 
 void PuzzleMatrixLayer::impl::showStarMatrix()
 {
 	if (matrix)
-		this->removeChild(matrix);
+		m_layer_underlying->removeChild(matrix);
 
-	matrix = LegacyStarMatrix::create(
-		[this](int num){this->floatLeftStarMsg(num); },
-		[this](){this->gotoGameOver(); }
-	);
-
-	this->addChild(matrix);
+	matrix = LegacyStarMatrix::create();
+	m_layer_underlying->addChild(matrix);
 }
 
 void PuzzleMatrixLayer::impl::floatLeftStarMsg(int leftNum)
@@ -77,12 +63,12 @@ void PuzzleMatrixLayer::impl::floatLeftStarMsg(int leftNum)
 	auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
 	FloatWord* leftStarMsg1 = FloatWord::create(ChineseWord("shengyu") + cocos2d::String::createWithFormat("%d", leftNum)->_string + ChineseWord("ge"),
 		50, cocos2d::Point(visibleSize.width, visibleSize.height / 2));
-	this->addChild(leftStarMsg1);
+	m_layer_underlying->addChild(leftStarMsg1);
 
 	int jiangLiScore = GAMEDATA::getInstance()->getEndLevelBonus(leftNum);
 	FloatWord* leftStarMsg2 = FloatWord::create(ChineseWord("jiangli") + cocos2d::String::createWithFormat("%d", jiangLiScore)->_string + ChineseWord("fen"),
 		50, cocos2d::Point(visibleSize.width, visibleSize.height / 2 - 50));
-	this->addChild(leftStarMsg2);
+	m_layer_underlying->addChild(leftStarMsg2);
 
 	leftStarMsg1->floatInOut(0.5f, 1.0f,
 		[=](){
@@ -98,7 +84,8 @@ void PuzzleMatrixLayer::impl::gotoGameOver(){
 	auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
 	FloatWord* gameOver = FloatWord::create(
 		"GAME OVER", 80, cocos2d::Point(visibleSize.width, visibleSize.height / 2));
-	this->addChild(gameOver);
+	//this->addChild(gameOver);
+	m_layer_underlying->addChild(gameOver);
 
 	gameOver->floatIn(1.0f,
 		[](){
@@ -108,14 +95,16 @@ void PuzzleMatrixLayer::impl::gotoGameOver(){
 	});
 }
 
-PuzzleMatrixLayer::impl * PuzzleMatrixLayer::impl::initializeLayer(GameObject *game_object)
+void PuzzleMatrixLayer::impl::initializeLayer(GameObject *game_object)
 {
-	auto layer_underlying = game_object->addComponent<DisplayNode>()->initAs<PuzzleMatrixLayer::impl>();
+	m_layer_underlying = game_object->addComponent<DisplayNode>()->initAs<cocos2d::Layer>();
 
-	SingletonContainer::instance()->get<EventDispatcher>()->registerListener(EventType::LevelUp, layer_underlying,
-		[layer_underlying](Event *){layer_underlying->startLevel(); });
-
-	return layer_underlying;
+	SingletonContainer::instance()->get<EventDispatcher>()->registerListener(EventType::LevelUp, this,
+		[this](Event *){startLevel(); });
+	SingletonContainer::instance()->get<EventDispatcher>()->registerListener(EventType::LevelNoMoreMove, this,
+		[this](Event *e){floatLeftStarMsg(static_cast<EventArg1*>(e->getArg())->getInt()); });
+	SingletonContainer::instance()->get<EventDispatcher>()->registerListener(EventType::GameOver, this,
+		[this](Event *){gotoGameOver(); });
 }
 
 std::unique_ptr<GameObject> PuzzleMatrixLayer::impl::createBackground()
@@ -216,17 +205,17 @@ void PuzzleMatrixLayer::impl::startLevel()
 
 PuzzleMatrixLayer::PuzzleMatrixLayer(GameObject *game_object) :Script("PuzzleMatrixLayer", game_object), pimpl(new impl)
 {
-	auto layer = pimpl->initializeLayer(game_object);
+	pimpl->initializeLayer(game_object);
 
 	game_object->addChild(pimpl->createBackground());
 	game_object->addChild(GameObject::create<StatusBar>());
 	game_object->addChild(pimpl->createScoringLabel());
 
 	auto preparation_label = pimpl->createLevelPreparationLabel();
-	layer->m_preparation_label = preparation_label.get();
+	pimpl->m_preparation_label = preparation_label.get();
 	game_object->addChild(std::move(preparation_label));
 
-	layer->startLevel();
+	pimpl->startLevel();
 }
 
 PuzzleMatrixLayer::~PuzzleMatrixLayer()
