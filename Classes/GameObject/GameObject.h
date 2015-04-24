@@ -56,8 +56,7 @@ public:
 	>
 	static std::unique_ptr<GameObject> create(std::function<void(GameObject*)> &&additional_task = nullptr)
 	{
-		auto game_object = GameObject::create();
-		game_object->addComponent<Component_>();
+		auto game_object = GameObject::create([](GameObject *game_object){game_object->addComponent<Component_>(); });
 		if (additional_task)
 			additional_task(game_object.get());
 

@@ -4,7 +4,6 @@
 #include "./Common/SingletonContainer.h"
 #include "./Common/Timer.h"
 #include "./Common/SceneStack.h"
-#include "./Common/SequentialInvokerContainer.h"
 #include "./Event/EventDispatcher.h"
 #include "./Script/TitleScene.h"
 
@@ -43,7 +42,6 @@ bool AppDelegate::applicationDidFinishLaunching() {
 	title_scene->addComponent<TitleScene>();
 	SingletonContainer::instance()->add<::Timer>();
 	SingletonContainer::instance()->add<::EventDispatcher>();
-	SingletonContainer::instance()->add<SequentialInvokerContainer>();
 	SingletonContainer::instance()->add<SceneStack>()->pushAndRun(std::move(title_scene));
 
 	return true;

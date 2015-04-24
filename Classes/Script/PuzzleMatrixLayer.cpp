@@ -10,10 +10,9 @@
 #include "StatusBar.h"
 #include "../Common/SingletonContainer.h"
 #include "../Common/SceneStack.h"
-#include "../Common/SequentialInvoker.h"
-#include "../Common/SequentialInvokerContainer.h"
 #include "../GameObject/GameObject.h"
 #include "../GameObject/DisplayNode.h"
+#include "../GameObject/SequentialInvoker.h"
 #include "../Event/Event.h"
 #include "../Event/EventType.h"
 #include "../Event/EventDispatcher.h"
@@ -67,7 +66,7 @@ void PuzzleMatrixLayer::impl::onGameOver(){
 	auto label_size = label_underlying->getContentSize();
 	label_underlying->setPosition(visible_size.width / 2, visible_size.height + label_size.height / 2);
 
-	auto invoker = SingletonContainer::instance()->get<SequentialInvokerContainer>()->registerTarget(game_over_label.get());
+	auto invoker = game_over_label->addComponent<SequentialInvoker>();
 	invoker->addMoveTo(0.8f, visible_size.width / 2, visible_size.height / 2,
 		[]{SingletonContainer::instance()->get<SceneStack>()->replaceAndRun(GameObject::create<TitleScene>()); });
 	invoker->invoke();
@@ -125,6 +124,7 @@ void PuzzleMatrixLayer::impl::createAndAttachLevelMessageLabel(GameObject *layer
 	auto new_label_object = GameObject::create();
 	new_label_object->addComponent<DisplayNode>()->initAs<cocos2d::Label>(
 		[]{return cocos2d::Label::createWithSystemFont("", "Verdana-Bold", 50); })->setLocalZOrder(1);
+	new_label_object->addComponent<SequentialInvoker>();
 
 	label_object = new_label_object.get();
 	layer_object->addChild(std::move(new_label_object));
@@ -146,7 +146,7 @@ void PuzzleMatrixLayer::impl::resetStepperForLevelMessageLabel(GameObject *label
 	auto visible_size = cocos2d::Director::getInstance()->getVisibleSize();
 	label_underlying->setPosition(visible_size.width + label_underlying->getContentSize().width / 2, visible_size.height / 2);
 
-	auto invoker = SingletonContainer::instance()->get<SequentialInvokerContainer>()->registerTarget(label_object);
+	auto invoker = label_object->getComponent<SequentialInvoker>();
 	invoker->addMoveTo(0.6f, visible_size.width / 2, visible_size.height / 2);
 	invoker->addMoveTo(0.6f, -label_underlying->getContentSize().width / 2, visible_size.height / 2, std::move(callback_after_disappear));
 	invoker->invoke();
@@ -154,7 +154,7 @@ void PuzzleMatrixLayer::impl::resetStepperForLevelMessageLabel(GameObject *label
 
 void PuzzleMatrixLayer::impl::resetTouchListenerForLevelMessageLabel(GameObject *label_object)
 {
-	auto invoker = SingletonContainer::instance()->get<SequentialInvokerContainer>()->getInvokerBy(label_object);
+	auto invoker = label_object->getComponent<SequentialInvoker>();
 	auto touch_listener = cocos2d::EventListenerTouchOneByOne::create();
 	touch_listener->onTouchBegan = [invoker](cocos2d::Touch* touch, cocos2d::Event* event)->bool{
 		invoker->invoke();

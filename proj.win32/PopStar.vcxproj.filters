@@ -102,11 +102,8 @@
     <ClCompile Include="..\Classes\Script\StatusBar.cpp">
       <Filter>Script</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Common\SequentialInvoker.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Common\SequentialInvokerContainer.cpp">
-      <Filter>Common</Filter>
+    <ClCompile Include="..\Classes\GameObject\SequentialInvoker.cpp">
+      <Filter>GameObjectAndComponent</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -209,11 +206,8 @@
     <ClInclude Include="..\Classes\Event\EventArg1.h">
       <Filter>Event</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\Common\SequentialInvoker.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Common\SequentialInvokerContainer.h">
-      <Filter>Common</Filter>
+    <ClInclude Include="..\Classes\GameObject\SequentialInvoker.h">
+      <Filter>GameObjectAndComponent</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

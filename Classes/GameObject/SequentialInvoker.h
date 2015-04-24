@@ -1,16 +1,14 @@
-#ifndef __SEQUENTIAL_INVOKER__
-#define __SEQUENTIAL_INVOKER__
+#ifndef __STEPPER__
+#define __STEPPER__
 
 #include <memory>
 #include <functional>
 
-#include "Object.h"
+#include "Component.h"
 
-class GameObject;
-
-class SequentialInvoker final : public Object
+class SequentialInvoker final :public Component
 {
-	friend class SequentialInvokerContainer;
+	friend class GameObject;
 
 	//////////////////////////////////////////////////////////////////////////
 	//Disable copy/move constructor and operator=.
@@ -22,18 +20,17 @@ class SequentialInvoker final : public Object
 	
 public:
 	~SequentialInvoker();
-
-	bool isInvoking() const;
+		
 	void addMoveTo(float duration, float x, float y, std::function<void()> &&callback = nullptr);
-
+	
 	bool invoke();
+	bool isInvoking() const;
 
 private:
-	static std::unique_ptr<SequentialInvoker> create(GameObject *game_object);
 	SequentialInvoker(GameObject *game_object);
 
 	struct impl;
 	std::unique_ptr<impl> pimpl;
 };
 
-#endif // !__SEQUENTIAL_INVOKER__
+#endif // !__STEPPER__

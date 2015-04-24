@@ -53,7 +53,7 @@ void DisplayNode::addChild(DisplayNode *child)
 		if (this->m_node)
 			this->m_node->addChild(child->m_node);
 		else
-			this->initAs<DefaultNode>()->addChild(child->m_node);
+			this->initAs<cocos2d::Node>()->addChild(child->m_node);
 	}
 
 	child->pimpl->m_parent = this;
@@ -71,7 +71,7 @@ void DisplayNode::attachToParent()
 		if (parent->m_node)
 			parent->m_node->addChild(this->m_node);
 		else
-			parent->initAs<DefaultNode>()->addChild(this->m_node);
+			parent->initAs<cocos2d::Node>()->addChild(this->m_node);
 	}
 }
 

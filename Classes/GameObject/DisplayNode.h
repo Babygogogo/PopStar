@@ -52,8 +52,6 @@ public:
 	DisplayNode& operator=(DisplayNode&&) = delete;
 
 private:
-	using DefaultNode = cocos2d::Sprite;
-
 	DisplayNode(GameObject *game_object);
 
 	void addChild(DisplayNode *child);
