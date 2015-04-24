@@ -1,5 +1,5 @@
-#ifndef __STEPPER__
-#define __STEPPER__
+#ifndef __SEQUENTIAL_INVOKER__
+#define __SEQUENTIAL_INVOKER__
 
 #include <memory>
 #include <functional>
@@ -22,6 +22,7 @@ public:
 	~SequentialInvoker();
 		
 	void addMoveTo(float duration, float x, float y, std::function<void()> &&callback = nullptr);
+	void addCallback(std::function<void()> &&callback);
 	
 	bool invoke();
 	bool isInvoking() const;
@@ -33,4 +34,4 @@ private:
 	std::unique_ptr<impl> pimpl;
 };
 
-#endif // !__STEPPER__
+#endif // !__SEQUENTIAL_INVOKER__

@@ -1,15 +1,14 @@
 #include "PuzzleMatrixLayer.h"
 #include "cocos2d.h"
 
-#include "./Classes/FloatWord.h"
 #include "./Classes/LegacyStarMatrix.h"
-#include "./Classes/GameData.h"
 #include "./Classes/Audio.h"
 
 #include "TitleScene.h"
 #include "StatusBar.h"
 #include "../Common/SingletonContainer.h"
 #include "../Common/SceneStack.h"
+#include "../Common/GameData.h"
 #include "../GameObject/GameObject.h"
 #include "../GameObject/DisplayNode.h"
 #include "../GameObject/SequentialInvoker.h"
@@ -28,8 +27,8 @@ struct PuzzleMatrixLayer::impl
 
 	void createAndAttachLevelMessageLabel(GameObject *layer_object, GameObject *&label_object);
 	void resetLevelMessageLabel(GameObject *label_object, const std::string &text, std::function<void()> &&callback_after_disappear);
-	void resetTouchListenerForLevelMessageLabel(GameObject *label_object);
-	void resetStepperForLevelMessageLabel(GameObject *label_object, std::function<void()> &&callback_after_disappear);
+	void resetTouchListenerForInvoker(GameObject *game_object);
+	void resetInvokerForLevelMessageLabel(GameObject *label_object, std::function<void()> &&callback_after_disappear);
 
 	void addEventListeners();
 
@@ -57,7 +56,8 @@ void PuzzleMatrixLayer::impl::showStarMatrix()
 	m_layer_underlying->addChild(matrix);
 }
 
-void PuzzleMatrixLayer::impl::onGameOver(){
+void PuzzleMatrixLayer::impl::onGameOver()
+{
 	auto game_over_label = GameObject::create();
 
 	auto label_underlying = game_over_label->addComponent<DisplayNode>()->initAs<cocos2d::Label>([]{
@@ -67,9 +67,10 @@ void PuzzleMatrixLayer::impl::onGameOver(){
 	label_underlying->setPosition(visible_size.width / 2, visible_size.height + label_size.height / 2);
 
 	auto invoker = game_over_label->addComponent<SequentialInvoker>();
-	invoker->addMoveTo(0.8f, visible_size.width / 2, visible_size.height / 2,
-		[]{SingletonContainer::instance()->get<SceneStack>()->replaceAndRun(GameObject::create<TitleScene>()); });
+	invoker->addMoveTo(1, visible_size.width / 2, visible_size.height / 2);
+	invoker->addCallback([]{SingletonContainer::instance()->get<SceneStack>()->replaceAndRun(GameObject::create<TitleScene>()); });
 	invoker->invoke();
+	resetTouchListenerForInvoker(game_over_label.get());
 
 	m_game_object->addChild(std::move(game_over_label));
 }
@@ -107,8 +108,8 @@ std::unique_ptr<GameObject> PuzzleMatrixLayer::impl::createScoringLabel()
 	label_underlying->setPosition(visibleSize.width / 2, visibleSize.height - 250);
 
 	SingletonContainer::instance()->get<EventDispatcher>()->registerListener(EventType::StarsExploded, this, [label_underlying](Event *){
-		auto exploded_stars = std::to_string(GAMEDATA::getInstance()->getNumExplodedStars());
-		auto attained_score = std::to_string(GAMEDATA::getInstance()->getScoreOfPreviousExplosion());
+		auto exploded_stars = std::to_string(SingletonContainer::instance()->get<GameData>()->getNumExplodedStars());
+		auto attained_score = std::to_string(SingletonContainer::instance()->get<GameData>()->getScoreOfPreviousExplosion());
 		label_underlying->setString(std::string("Exploded: ") + exploded_stars + std::string(" Score: ") + attained_score);
 
 		label_underlying->setVisible(true); });
@@ -136,11 +137,11 @@ void PuzzleMatrixLayer::impl::resetLevelMessageLabel(GameObject *label_object, c
 	label_underlying->setString(text);
 	label_underlying->setVisible(true);
 
-	resetStepperForLevelMessageLabel(label_object, std::move(callback_after_disappear));
-	resetTouchListenerForLevelMessageLabel(label_object);
+	resetInvokerForLevelMessageLabel(label_object, std::move(callback_after_disappear));
+	resetTouchListenerForInvoker(label_object);
 }
 
-void PuzzleMatrixLayer::impl::resetStepperForLevelMessageLabel(GameObject *label_object, std::function<void()> &&callback_after_disappear)
+void PuzzleMatrixLayer::impl::resetInvokerForLevelMessageLabel(GameObject *label_object, std::function<void()> &&callback_after_disappear)
 {
 	auto label_underlying = label_object->getComponent<DisplayNode>()->getAs<cocos2d::Label>();
 	auto visible_size = cocos2d::Director::getInstance()->getVisibleSize();
@@ -152,16 +153,16 @@ void PuzzleMatrixLayer::impl::resetStepperForLevelMessageLabel(GameObject *label
 	invoker->invoke();
 }
 
-void PuzzleMatrixLayer::impl::resetTouchListenerForLevelMessageLabel(GameObject *label_object)
+void PuzzleMatrixLayer::impl::resetTouchListenerForInvoker(GameObject *game_object)
 {
-	auto invoker = label_object->getComponent<SequentialInvoker>();
+	auto invoker = game_object->getComponent<SequentialInvoker>();
 	auto touch_listener = cocos2d::EventListenerTouchOneByOne::create();
 	touch_listener->onTouchBegan = [invoker](cocos2d::Touch* touch, cocos2d::Event* event)->bool{
 		invoker->invoke();
 		return true; };
 
-	auto label_underlying = label_object->getComponent<DisplayNode>()->getAs<cocos2d::Label>();
-	cocos2d::Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(touch_listener, label_underlying);
+	auto node_underlying = game_object->getComponent<DisplayNode>()->getAs<cocos2d::Node>();
+	cocos2d::Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(touch_listener, node_underlying);
 }
 
 PuzzleMatrixLayer::impl::~impl()
@@ -173,7 +174,7 @@ PuzzleMatrixLayer::impl::~impl()
 void PuzzleMatrixLayer::impl::startLevel()
 {
 	auto label_underlying = m_preparation_label->getComponent<DisplayNode>()->getAs<cocos2d::Label>();
-	resetLevelMessageLabel(m_preparation_label, std::string("Level: ") + std::to_string(GAMEDATA::getInstance()->getCurrentLevel()) + '\n' + std::string(" Start!"),
+	resetLevelMessageLabel(m_preparation_label, std::string("Level: ") + std::to_string(SingletonContainer::instance()->get<GameData>()->getCurrentLevel()) + '\n' + std::string(" Start!"),
 		[this, label_underlying]{
 			showStarMatrix();
 			label_underlying->setVisible(false);
@@ -186,9 +187,9 @@ void PuzzleMatrixLayer::impl::showLevelSummary(int num_stars_left)
 {
 	auto label_underlying = m_summary_label->getComponent<DisplayNode>()->getAs<cocos2d::Label>();
 	resetLevelMessageLabel(m_preparation_label,
-		std::string("Stars Left: ") + std::to_string(num_stars_left) + '\n' + std::string("Bonus: ") + std::to_string(GAMEDATA::getInstance()->getEndLevelBonus(num_stars_left)),
+		std::string("Stars Left: ") + std::to_string(num_stars_left) + '\n' + std::string("Bonus: ") + std::to_string(SingletonContainer::instance()->get<GameData>()->getEndLevelBonus(num_stars_left)),
 		[this, label_underlying, num_stars_left]{
-			GAMEDATA::getInstance()->updateEndLevelScoreWith(num_stars_left);
+			SingletonContainer::instance()->get<GameData>()->updateEndLevelScoreWith(num_stars_left);
 			SingletonContainer::instance()->get<::EventDispatcher>()->dispatch(Event::create(EventType::LevelResultEnded));
 			label_underlying->setVisible(false);
 			cocos2d::Director::getInstance()->getEventDispatcher()->removeEventListenersForTarget(label_underlying); });

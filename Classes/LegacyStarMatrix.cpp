@@ -1,11 +1,11 @@
 #include "LegacyStarMatrix.h"
-#include "GameData.h"
 #include "StarParticle.h"
 #include "ComboEffect.h"
 #include "Audio.h"
 #include <ctime>
 
 #include "./Common/SingletonContainer.h"
+#include "./Common/GameData.h"
 #include "./Event/EventDispatcher.h"
 #include "./Event/EventType.h"
 #include "./Event/Event.h"
@@ -251,7 +251,7 @@ void LegacyStarMatrix::adjustMatrix(){
 
 void LegacyStarMatrix::refreshScore()
 {
-	GAMEDATA::getInstance()->updateCurrentScoreWith(selectedList.size());
+	SingletonContainer::instance()->get<GameData>()->updateCurrentScoreWith(selectedList.size());
 }
 
 bool LegacyStarMatrix::isEnded(){
@@ -291,9 +291,11 @@ void LegacyStarMatrix::clearMatrixOneByOne(){
 	}
 	//能够执行到这一句说明Matrix全为空，不在需要清空
 	needClear = false;
+	
 	//转到下一关或者弹出结束游戏的窗口
-	if(GAMEDATA::getInstance()->getCurrentScore() >= GAMEDATA::getInstance()->getTargetScore()){
-		GAMEDATA::getInstance()->levelUp();
+	auto game_data = SingletonContainer::instance()->get<GameData>();
+	if(game_data->getCurrentScore() >= game_data->getTargetScore()){
+		game_data->levelUp();
 		
 		//////////////////////////////////////////////////////////////////////////
 		//m_layer->gotoNextLevel();

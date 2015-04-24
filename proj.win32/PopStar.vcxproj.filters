@@ -36,28 +36,13 @@
     <ClCompile Include="..\Classes\Audio.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Chinese.cpp">
-      <Filter>Classes</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\ComboEffect.cpp">
-      <Filter>Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\FloatWord.cpp">
-      <Filter>Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\GameData.cpp">
-      <Filter>Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\LevelMsgLayer.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\Star.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\StarParticle.cpp">
-      <Filter>Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\XMLParser.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\GameObject\GameObject.cpp">
@@ -105,6 +90,9 @@
     <ClCompile Include="..\Classes\GameObject\SequentialInvoker.cpp">
       <Filter>GameObjectAndComponent</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\Common\GameData.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -119,28 +107,13 @@
     <ClInclude Include="..\Classes\Audio.h">
       <Filter>Classes</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\Chinese.h">
-      <Filter>Classes</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\ComboEffect.h">
-      <Filter>Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\FloatWord.h">
-      <Filter>Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\GameData.h">
-      <Filter>Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\LevelMsgLayer.h">
       <Filter>Classes</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Star.h">
       <Filter>Classes</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\StarParticle.h">
-      <Filter>Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\XMLParser.h">
       <Filter>Classes</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\GameObject\GameObject.h">
@@ -208,6 +181,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\GameObject\SequentialInvoker.h">
       <Filter>GameObjectAndComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Common\GameData.h">
+      <Filter>Common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -2,11 +2,10 @@
 #include "../GameObject/GameObject.h"
 #include "../GameObject/DisplayNode.h"
 #include "../Common/SingletonContainer.h"
+#include "../Common/GameData.h"
 #include "../Event/EventDispatcher.h"
 #include "../Event/Event.h"
 #include "../Event/EventType.h"
-
-#include "../Classes/GameData.h"
 
 struct StatusBar::impl
 {
@@ -28,16 +27,14 @@ StatusBar::impl::~impl()
 std::unique_ptr<GameObject> StatusBar::impl::createHighScoreLabel()
 {
 	auto label_object = GameObject::create();
-	auto label_underlying = label_object->addComponent<DisplayNode>()->initAs<cocos2d::Label>(
-		[]{return cocos2d::Label::createWithSystemFont(
-			std::string("High Score: ") + std::to_string(GAMEDATA::getInstance()->getHighScore()), "Verdana - Bold", 30); });
+	auto label_underlying = label_object->addComponent<DisplayNode>()->initAs<cocos2d::Label>([]{return cocos2d::Label::createWithSystemFont(
+		std::string("High Score: ") + std::to_string(SingletonContainer::instance()->get<GameData>()->getHighScore()), "Verdana - Bold", 30); });
 
 	auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
 	label_underlying->setPosition(visibleSize.width / 2, visibleSize.height - 50);
 
-	SingletonContainer::instance()->get<EventDispatcher>()->registerListener(EventType::HighScoreValueUpdated, this,
-		[label_underlying](Event*){
-			label_underlying->setString(std::string("High Score: ") + std::to_string(GAMEDATA::getInstance()->getHighScore())); });
+	SingletonContainer::instance()->get<EventDispatcher>()->registerListener(EventType::HighScoreValueUpdated, this, [label_underlying](Event*){
+		label_underlying->setString(std::string("High Score: ") + std::to_string(SingletonContainer::instance()->get<GameData>()->getHighScore())); });
 
 	return label_object;
 }
@@ -45,16 +42,14 @@ std::unique_ptr<GameObject> StatusBar::impl::createHighScoreLabel()
 std::unique_ptr<GameObject> StatusBar::impl::createCurrentScoreLabel()
 {
 	auto label_object = GameObject::create();
-	auto label_underlying = label_object->addComponent<DisplayNode>()->initAs<cocos2d::Label>(
-		[]{return cocos2d::Label::createWithSystemFont(
-			std::string("Current Score: ") + std::to_string(GAMEDATA::getInstance()->getCurrentScore()), "Verdana - Bold", 40); });
+	auto label_underlying = label_object->addComponent<DisplayNode>()->initAs<cocos2d::Label>([]{return cocos2d::Label::createWithSystemFont(
+		std::string("Current Score: ") + std::to_string(SingletonContainer::instance()->get<GameData>()->getCurrentScore()), "Verdana - Bold", 40); });
 
 	auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
 	label_underlying->setPosition(visibleSize.width / 2, visibleSize.height - 150);
 
-	SingletonContainer::instance()->get<EventDispatcher>()->registerListener(EventType::CurrentScoreValueUpdated, this,
-		[label_underlying](Event*){
-			label_underlying->setString(std::string("Current Score: ") + std::to_string(GAMEDATA::getInstance()->getCurrentScore())); });
+	SingletonContainer::instance()->get<EventDispatcher>()->registerListener(EventType::CurrentScoreValueUpdated, this, [label_underlying](Event*){
+		label_underlying->setString(std::string("Current Score: ") + std::to_string(SingletonContainer::instance()->get<GameData>()->getCurrentScore())); });
 
 	return label_object;
 }
@@ -62,16 +57,14 @@ std::unique_ptr<GameObject> StatusBar::impl::createCurrentScoreLabel()
 std::unique_ptr<GameObject> StatusBar::impl::createTargetScoreLabel()
 {
 	auto label_object = GameObject::create();
-	auto label_underlying = label_object->addComponent<DisplayNode>()->initAs<cocos2d::Label>(
-		[]{return cocos2d::Label::createWithSystemFont(
-			std::string("Target Score: ") + std::to_string(GAMEDATA::getInstance()->getTargetScore()), "Verdana - Bold", 30); });
+	auto label_underlying = label_object->addComponent<DisplayNode>()->initAs<cocos2d::Label>([]{return cocos2d::Label::createWithSystemFont(
+		std::string("Target Score: ") + std::to_string(SingletonContainer::instance()->get<GameData>()->getTargetScore()), "Verdana - Bold", 30); });
 
 	auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
 	label_underlying->setPosition(325, visibleSize.height - 100);
 
-	SingletonContainer::instance()->get<EventDispatcher>()->registerListener(EventType::TargetScoreValueUpdated, this,
-		[label_underlying](Event*){
-			label_underlying->setString(std::string("Target Score: ") + std::to_string(GAMEDATA::getInstance()->getTargetScore())); });
+	SingletonContainer::instance()->get<EventDispatcher>()->registerListener(EventType::TargetScoreValueUpdated, this, [label_underlying](Event*){
+		label_underlying->setString(std::string("Target Score: ") + std::to_string(SingletonContainer::instance()->get<GameData>()->getTargetScore())); });
 
 	return label_object;
 }
@@ -79,16 +72,14 @@ std::unique_ptr<GameObject> StatusBar::impl::createTargetScoreLabel()
 std::unique_ptr<GameObject> StatusBar::impl::createLevelLabel()
 {
 	auto label_object = GameObject::create();
-	auto label_underlying = label_object->addComponent<DisplayNode>()->initAs<cocos2d::Label>(
-		[]{return cocos2d::Label::createWithSystemFont(
-			std::string("Level: ") + std::to_string(GAMEDATA::getInstance()->getCurrentLevel()), "Verdana - Bold", 30); });
+	auto label_underlying = label_object->addComponent<DisplayNode>()->initAs<cocos2d::Label>([]{return cocos2d::Label::createWithSystemFont(
+		std::string("Level: ") + std::to_string(SingletonContainer::instance()->get<GameData>()->getCurrentLevel()), "Verdana - Bold", 30); });
 
 	auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
 	label_underlying->setPosition(75, visibleSize.height - 100);
 
-	SingletonContainer::instance()->get<EventDispatcher>()->registerListener(EventType::LevelValueUpdated, this,
-		[label_underlying](Event*){
-			label_underlying->setString(std::string("Level: ") + std::to_string(GAMEDATA::getInstance()->getCurrentLevel())); });
+	SingletonContainer::instance()->get<EventDispatcher>()->registerListener(EventType::LevelValueUpdated, this, [label_underlying](Event*){
+		label_underlying->setString(std::string("Level: ") + std::to_string(SingletonContainer::instance()->get<GameData>()->getCurrentLevel())); });
 
 	return label_object;
 }

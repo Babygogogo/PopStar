@@ -4,8 +4,8 @@
 #include "../GameObject/DisplayNode.h"
 #include "../Common/SingletonContainer.h"
 #include "../Common/SceneStack.h"
+#include "../Common/GameData.h"
 #include "../Classes/Audio.h"
-#include "../Classes/GameData.h"
 
 struct TitleScene::impl
 {
@@ -83,7 +83,7 @@ std::unique_ptr<GameObject> TitleScene::impl::createStartButton()
 std::function<void(cocos2d::Ref*)> TitleScene::impl::createStartButtonCallback()
 {
 	return [](cocos2d::Ref *sender){
-		GAMEDATA::getInstance()->init();
+		SingletonContainer::instance()->get<GameData>()->reset();
 
 		auto puzzle_scene = GameObject::create<PuzzleScene>();
 		SingletonContainer::instance()->get<SceneStack>()->replaceAndRun(std::move(puzzle_scene));

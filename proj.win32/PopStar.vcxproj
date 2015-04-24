@@ -137,21 +137,18 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
   <ItemGroup>
     <ClCompile Include="..\Classes\AppDelegate.cpp" />
     <ClCompile Include="..\Classes\Audio.cpp" />
-    <ClCompile Include="..\Classes\Chinese.cpp" />
     <ClCompile Include="..\Classes\ComboEffect.cpp" />
+    <ClCompile Include="..\Classes\Common\GameData.cpp" />
     <ClCompile Include="..\Classes\Common\SceneStack.cpp" />
     <ClCompile Include="..\Classes\Common\SingletonContainer.cpp" />
     <ClCompile Include="..\Classes\Common\Object.cpp" />
     <ClCompile Include="..\Classes\Common\Timer.cpp" />
     <ClCompile Include="..\Classes\Event\EventDispatcher.cpp" />
-    <ClCompile Include="..\Classes\FloatWord.cpp" />
-    <ClCompile Include="..\Classes\GameData.cpp" />
     <ClCompile Include="..\Classes\GameObject\Component.cpp" />
     <ClCompile Include="..\Classes\GameObject\DisplayNode.cpp" />
     <ClCompile Include="..\Classes\GameObject\GameObject.cpp" />
     <ClCompile Include="..\Classes\GameObject\SequentialInvoker.cpp" />
     <ClCompile Include="..\Classes\HelloWorldScene.cpp" />
-    <ClCompile Include="..\Classes\LevelMsgLayer.cpp" />
     <ClCompile Include="..\Classes\Script\PuzzleMatrixLayer.cpp" />
     <ClCompile Include="..\Classes\Script\PuzzleScene.cpp" />
     <ClCompile Include="..\Classes\Script\StarMatirx.cpp" />
@@ -160,14 +157,13 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClCompile Include="..\Classes\Star.cpp" />
     <ClCompile Include="..\Classes\LegacyStarMatrix.cpp" />
     <ClCompile Include="..\Classes\StarParticle.cpp" />
-    <ClCompile Include="..\Classes\XMLParser.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Classes\AppDelegate.h" />
     <ClInclude Include="..\Classes\Audio.h" />
-    <ClInclude Include="..\Classes\Chinese.h" />
     <ClInclude Include="..\Classes\ComboEffect.h" />
+    <ClInclude Include="..\Classes\Common\GameData.h" />
     <ClInclude Include="..\Classes\Common\IEventListener.h" />
     <ClInclude Include="..\Classes\Common\IUpdateable.h" />
     <ClInclude Include="..\Classes\Common\SceneStack.h" />
@@ -178,15 +174,12 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClInclude Include="..\Classes\Event\EventArg1.h" />
     <ClInclude Include="..\Classes\Event\EventDispatcher.h" />
     <ClInclude Include="..\Classes\Event\EventType.h" />
-    <ClInclude Include="..\Classes\FloatWord.h" />
-    <ClInclude Include="..\Classes\GameData.h" />
     <ClInclude Include="..\Classes\GameObject\Component.h" />
     <ClInclude Include="..\Classes\GameObject\DisplayNode.h" />
     <ClInclude Include="..\Classes\GameObject\GameObject.h" />
     <ClInclude Include="..\Classes\GameObject\SoundPlayer.h" />
     <ClInclude Include="..\Classes\GameObject\SequentialInvoker.h" />
     <ClInclude Include="..\Classes\HelloWorldScene.h" />
-    <ClInclude Include="..\Classes\LevelMsgLayer.h" />
     <ClInclude Include="..\Classes\Script\PuzzleMatrixLayer.h" />
     <ClInclude Include="..\Classes\Script\PuzzleScene.h" />
     <ClInclude Include="..\Classes\Script\Script.h" />
@@ -196,7 +189,6 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClInclude Include="..\Classes\Star.h" />
     <ClInclude Include="..\Classes\LegacyStarMatrix.h" />
     <ClInclude Include="..\Classes\StarParticle.h" />
-    <ClInclude Include="..\Classes\XMLParser.h" />
     <ClInclude Include="main.h" />
   </ItemGroup>
   <ItemGroup>

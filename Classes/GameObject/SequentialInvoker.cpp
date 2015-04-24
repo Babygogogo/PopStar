@@ -10,13 +10,13 @@ struct SequentialInvoker::impl
 	impl(GameObject *game_object, cocos2d::Node *target_node) :m_target(game_object), m_target_node(target_node){};
 	~impl();
 
-	void pushBackStep(cocos2d::Sequence *step);
+	void pushBackStep(cocos2d::Action *step);
 	void popFrontStep();
 
 	GameObject *m_target;
 	cocos2d::Node *m_target_node;
 	bool m_is_front_step_invoked{ false };
-	std::list<cocos2d::Sequence*> m_step_list;
+	std::list<cocos2d::Action*> m_step_list;
 };
 
 void SequentialInvoker::impl::popFrontStep()
@@ -29,7 +29,7 @@ void SequentialInvoker::impl::popFrontStep()
 	m_step_list.pop_front();
 }
 
-void SequentialInvoker::impl::pushBackStep(cocos2d::Sequence *step)
+void SequentialInvoker::impl::pushBackStep(cocos2d::Action *step)
 {
 	step->retain();
 	m_step_list.push_back(step);
@@ -88,4 +88,9 @@ void SequentialInvoker::addMoveTo(float duration, float x, float y, std::functio
 		cocos2d::Sequence::create(move_to, nullptr);
 
 	pimpl->pushBackStep(step);
+}
+
+void SequentialInvoker::addCallback(std::function<void()> &&callback)
+{
+	pimpl->pushBackStep(cocos2d::CallFunc::create(callback));
 }
