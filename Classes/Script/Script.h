@@ -9,7 +9,7 @@ public:
 	virtual ~Script(){};
 
 protected:
-	Script(const std::string &name, GameObject *game_object) :Component(name, game_object){};
+	Script(std::string &&name, GameObject *game_object) :Component(std::move(name), game_object){};
 };
 
 #endif // !__SCRIPT__

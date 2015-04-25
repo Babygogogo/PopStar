@@ -151,7 +151,7 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClCompile Include="..\Classes\HelloWorldScene.cpp" />
     <ClCompile Include="..\Classes\Script\PuzzleMatrixLayer.cpp" />
     <ClCompile Include="..\Classes\Script\PuzzleScene.cpp" />
-    <ClCompile Include="..\Classes\Script\StarMatirx.cpp" />
+    <ClCompile Include="..\Classes\Script\StarMatrix.cpp" />
     <ClCompile Include="..\Classes\Script\StatusBar.cpp" />
     <ClCompile Include="..\Classes\Script\TitleScene.cpp" />
     <ClCompile Include="..\Classes\Star.cpp" />

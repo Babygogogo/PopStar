@@ -27,7 +27,7 @@ public:
 	}
 
 protected:
-	Object(const std::string &name) :m_name(name), m_instance_id(instance_id_counter++){};
+	Object(std::string &&name) :m_name(std::move(name)), m_instance_id(instance_id_counter++){};
 
 	const std::string m_name;
 	const int m_instance_id;

@@ -4,8 +4,9 @@
 #include <memory>
 
 #include "Script.h"
+#include "../Common/IUpdateable.h"
 
-class StarMatrix final: public Script
+class StarMatrix final: public Script, public IUpdateable
 {
 	friend class GameObject;
 
@@ -22,6 +23,8 @@ public:
 
 private:
 	StarMatrix(GameObject *game_object);
+
+	virtual void update(const std::time_t& time_ms);
 
 	struct impl;
 	std::unique_ptr<impl> pimpl;

@@ -3,6 +3,8 @@
 #include "GameObject.h"
 #include "DisplayNode.h"
 
+#include <list>
+
 class GameObject::impl
 {
 public:
@@ -24,6 +26,7 @@ public:
 		return std::unique_ptr<Element>(raw_ptr);
 	}
 
+	std::list<std::unique_ptr<GameObject>> m_children;
 	GameObject *m_parent{ nullptr };
 };
 
@@ -35,7 +38,7 @@ GameObject::impl::~impl()
 {
 }
 
-GameObject::GameObject(const std::string &name /*= ""*/) :Object(name), pimpl(new impl())
+GameObject::GameObject(std::string &&name) :Object(std::move(name)), pimpl(new impl())
 {
 
 }
@@ -45,10 +48,10 @@ GameObject::~GameObject()
 	CCLOG("GameObject %s destructing.", m_name.c_str());
 }
 
-void GameObject::addChild(std::unique_ptr<GameObject>&& child)
+GameObject * GameObject::addChild(std::unique_ptr<GameObject>&& child)
 {
 	if (!child || child->pimpl->m_parent)
-		return;
+		return nullptr;
 
 	child->pimpl->m_parent = this;
 
@@ -56,7 +59,8 @@ void GameObject::addChild(std::unique_ptr<GameObject>&& child)
 	if (auto child_display_node = child->getComponent<DisplayNode>())
 		this->addComponent<DisplayNode>()->addChild(child_display_node);
 	
-	m_children.emplace_back(std::move(child));
+	pimpl->m_children.emplace_back(std::move(child));
+	return pimpl->m_children.back().get();
 }
 
 bool GameObject::isAncestorOf(const GameObject *child) const
@@ -80,15 +84,24 @@ GameObject * GameObject::getParent() const
 	return pimpl->m_parent;
 }
 
-std::unique_ptr<GameObject> GameObject::getOwnershipFromParent()
+std::unique_ptr<GameObject> GameObject::removeFromParent()
 {
 	if (auto parent = getParent()){
 		this->pimpl->m_parent = nullptr;
 		if (auto display_node = getComponent<DisplayNode>())
 			display_node->removeFromParent();
 
-		return pimpl->stealOwnership(this, parent->m_children);
+		return pimpl->stealOwnership(this, parent->pimpl->m_children);
 	}
 
 	return nullptr;
+}
+
+void GameObject::update(const time_t &time_ms)
+{
+	for (auto &updateable : m_updateable_components)
+		updateable->update(time_ms);
+
+	for (auto &child : pimpl->m_children)
+		child->update(time_ms);
 }

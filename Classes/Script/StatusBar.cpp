@@ -26,7 +26,7 @@ StatusBar::impl::~impl()
 
 std::unique_ptr<GameObject> StatusBar::impl::createHighScoreLabel()
 {
-	auto label_object = GameObject::create();
+	auto label_object = GameObject::create("HighScoreLabel");
 	auto label_underlying = label_object->addComponent<DisplayNode>()->initAs<cocos2d::Label>([]{return cocos2d::Label::createWithSystemFont(
 		std::string("High Score: ") + std::to_string(SingletonContainer::instance()->get<GameData>()->getHighScore()), "Verdana - Bold", 30); });
 
@@ -41,7 +41,7 @@ std::unique_ptr<GameObject> StatusBar::impl::createHighScoreLabel()
 
 std::unique_ptr<GameObject> StatusBar::impl::createCurrentScoreLabel()
 {
-	auto label_object = GameObject::create();
+	auto label_object = GameObject::create("CurrentScoreLabel");
 	auto label_underlying = label_object->addComponent<DisplayNode>()->initAs<cocos2d::Label>([]{return cocos2d::Label::createWithSystemFont(
 		std::string("Current Score: ") + std::to_string(SingletonContainer::instance()->get<GameData>()->getCurrentScore()), "Verdana - Bold", 40); });
 
@@ -56,7 +56,7 @@ std::unique_ptr<GameObject> StatusBar::impl::createCurrentScoreLabel()
 
 std::unique_ptr<GameObject> StatusBar::impl::createTargetScoreLabel()
 {
-	auto label_object = GameObject::create();
+	auto label_object = GameObject::create("TargetScoreLabel");
 	auto label_underlying = label_object->addComponent<DisplayNode>()->initAs<cocos2d::Label>([]{return cocos2d::Label::createWithSystemFont(
 		std::string("Target Score: ") + std::to_string(SingletonContainer::instance()->get<GameData>()->getTargetScore()), "Verdana - Bold", 30); });
 
@@ -71,7 +71,7 @@ std::unique_ptr<GameObject> StatusBar::impl::createTargetScoreLabel()
 
 std::unique_ptr<GameObject> StatusBar::impl::createLevelLabel()
 {
-	auto label_object = GameObject::create();
+	auto label_object = GameObject::create("LevelLabel");
 	auto label_underlying = label_object->addComponent<DisplayNode>()->initAs<cocos2d::Label>([]{return cocos2d::Label::createWithSystemFont(
 		std::string("Level: ") + std::to_string(SingletonContainer::instance()->get<GameData>()->getCurrentLevel()), "Verdana - Bold", 30); });
 

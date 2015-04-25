@@ -81,9 +81,6 @@
     <ClCompile Include="..\Classes\LegacyStarMatrix.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Script\StarMatirx.cpp">
-      <Filter>Script</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\Script\StatusBar.cpp">
       <Filter>Script</Filter>
     </ClCompile>
@@ -92,6 +89,9 @@
     </ClCompile>
     <ClCompile Include="..\Classes\Common\GameData.cpp">
       <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Script\StarMatrix.cpp">
+      <Filter>Script</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

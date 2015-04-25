@@ -1,11 +1,11 @@
 #include "PuzzleMatrixLayer.h"
 #include "cocos2d.h"
 
-#include "./Classes/LegacyStarMatrix.h"
 #include "./Classes/Audio.h"
 
 #include "TitleScene.h"
 #include "StatusBar.h"
+#include "StarMatrix.h"
 #include "../Common/SingletonContainer.h"
 #include "../Common/SceneStack.h"
 #include "../Common/GameData.h"
@@ -25,40 +25,35 @@ struct PuzzleMatrixLayer::impl
 	std::unique_ptr<GameObject> createBackground();
 	std::unique_ptr<GameObject> createScoringLabel();
 
-	void createAndAttachLevelMessageLabel(GameObject *layer_object, GameObject *&label_object);
+	void createAndAttachLevelMessageLabel(GameObject *layer_object, GameObject *&label_object, std::string label_name);
 	void resetLevelMessageLabel(GameObject *label_object, const std::string &text, std::function<void()> &&callback_after_disappear);
-	void resetTouchListenerForInvoker(GameObject *game_object);
 	void resetInvokerForLevelMessageLabel(GameObject *label_object, std::function<void()> &&callback_after_disappear);
+	void resetTouchListenerForInvoker(GameObject *game_object);
 
 	void addEventListeners();
 
 	void startLevel();
+	void showStarMatrix();
 	void showLevelSummary(int num_stars_left);
 	void onGameOver();
 
 	GameObject *m_game_object{ nullptr };
-	cocos2d::Layer *m_layer_underlying{ nullptr };
 	GameObject *m_preparation_label{ nullptr };
 	GameObject *m_summary_label{ nullptr };
-	
-private:
-	void showStarMatrix();
-
-	LegacyStarMatrix* matrix{nullptr};
+	GameObject *m_matrix{ nullptr };
 };
 
 void PuzzleMatrixLayer::impl::showStarMatrix()
 {
-	if (matrix)
-		m_layer_underlying->removeChild(matrix);
+	if (m_matrix)
+		m_matrix->removeFromParent();
 
-	matrix = LegacyStarMatrix::create();
-	m_layer_underlying->addChild(matrix);
+	m_matrix = m_game_object->addChild(GameObject::create<StarMatrix>("StarMatrix"));
 }
 
 void PuzzleMatrixLayer::impl::onGameOver()
 {
-	auto game_over_label = GameObject::create();
+	auto game_over_label = GameObject::create("GameOverLabel");
 
 	auto label_underlying = game_over_label->addComponent<DisplayNode>()->initAs<cocos2d::Label>([]{
 		return cocos2d::Label::createWithSystemFont("Game Over", "Verdana-Bold", 80); });
@@ -68,7 +63,7 @@ void PuzzleMatrixLayer::impl::onGameOver()
 
 	auto invoker = game_over_label->addComponent<SequentialInvoker>();
 	invoker->addMoveTo(1, visible_size.width / 2, visible_size.height / 2);
-	invoker->addCallback([]{SingletonContainer::instance()->get<SceneStack>()->replaceAndRun(GameObject::create<TitleScene>()); });
+	invoker->addCallback([]{SingletonContainer::instance()->get<SceneStack>()->replaceAndRun(GameObject::create<TitleScene>("TitleScene")); });
 	invoker->invoke();
 	resetTouchListenerForInvoker(game_over_label.get());
 
@@ -87,7 +82,7 @@ void PuzzleMatrixLayer::impl::addEventListeners()
 
 std::unique_ptr<GameObject> PuzzleMatrixLayer::impl::createBackground()
 {
-	auto background_object = GameObject::create();
+	auto background_object = GameObject::create("PuzzleBackgroundSprite");
 	auto background_sprite = background_object->addComponent<DisplayNode>()->
 		initAs<cocos2d::Sprite>([](){return cocos2d::Sprite::create("bg_mainscene.jpg"); });
 
@@ -100,7 +95,7 @@ std::unique_ptr<GameObject> PuzzleMatrixLayer::impl::createBackground()
 
 std::unique_ptr<GameObject> PuzzleMatrixLayer::impl::createScoringLabel()
 {
-	auto label_object = GameObject::create();
+	auto label_object = GameObject::create("StepScroingLabel");
 	auto label_underlying = label_object->addComponent<DisplayNode>()->initAs<cocos2d::Label>(
 		[]{return cocos2d::Label::createWithSystemFont("", "Arial", 30); });
 
@@ -120,9 +115,9 @@ std::unique_ptr<GameObject> PuzzleMatrixLayer::impl::createScoringLabel()
 	return label_object;
 }
 
-void PuzzleMatrixLayer::impl::createAndAttachLevelMessageLabel(GameObject *layer_object, GameObject *&label_object)
+void PuzzleMatrixLayer::impl::createAndAttachLevelMessageLabel(GameObject *layer_object, GameObject *&label_object, std::string label_name)
 {
-	auto new_label_object = GameObject::create();
+	auto new_label_object = GameObject::create(std::move(label_name));
 	new_label_object->addComponent<DisplayNode>()->initAs<cocos2d::Label>(
 		[]{return cocos2d::Label::createWithSystemFont("", "Verdana-Bold", 50); })->setLocalZOrder(1);
 	new_label_object->addComponent<SequentialInvoker>();
@@ -197,14 +192,14 @@ void PuzzleMatrixLayer::impl::showLevelSummary(int num_stars_left)
 
 PuzzleMatrixLayer::PuzzleMatrixLayer(GameObject *game_object) :Script("PuzzleMatrixLayer", game_object), pimpl(new impl(game_object))
 {
-	pimpl->m_layer_underlying = game_object->addComponent<DisplayNode>()->initAs<cocos2d::Layer>();
+	game_object->addComponent<DisplayNode>()->initAs<cocos2d::Layer>();
 
 	game_object->addChild(pimpl->createBackground());
-	game_object->addChild(GameObject::create<StatusBar>());
+	game_object->addChild(GameObject::create<StatusBar>("PuzzleUpperStatusBar"));
 	game_object->addChild(pimpl->createScoringLabel());
 
-	pimpl->createAndAttachLevelMessageLabel(game_object, pimpl->m_preparation_label);
-	pimpl->createAndAttachLevelMessageLabel(game_object, pimpl->m_summary_label);
+	pimpl->createAndAttachLevelMessageLabel(game_object, pimpl->m_preparation_label, "PuzzleLevelPreparationLabel");
+	pimpl->createAndAttachLevelMessageLabel(game_object, pimpl->m_summary_label, "PuzzleLevelSummaryLabel");
 
 	pimpl->addEventListeners();
 	pimpl->startLevel();

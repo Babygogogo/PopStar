@@ -35,7 +35,7 @@ struct TitleScene::impl
 
 std::unique_ptr<GameObject> TitleScene::impl::createTitleLayer()
 {
-	auto title_layer_object = GameObject::create(
+	auto title_layer_object = GameObject::create("TitleLayer",
 		[](GameObject* object){object->addComponent<DisplayNode>()->initAs<cocos2d::Layer>(); });
 
 	title_layer_object->addChild(createBackground());
@@ -48,7 +48,7 @@ std::unique_ptr<GameObject> TitleScene::impl::createBackground()
 {
 	auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
 
-	auto background_object = GameObject::create();
+	auto background_object = GameObject::create("TitleBackgroundSprite");
 	auto background_sprite = background_object->addComponent<DisplayNode>()->
 		initAs<cocos2d::Sprite>([](){return cocos2d::Sprite::create("bg_menuscene.jpg"); });
 	background_sprite->setPosition(visibleSize.width / 2, visibleSize.height / 2);
@@ -60,7 +60,7 @@ std::unique_ptr<GameObject> TitleScene::impl::createTitleMenu()
 {
 	auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
 
-	auto menu_object = GameObject::create();
+	auto menu_object = GameObject::create("TitleMenu");
 	auto menu_underlying = menu_object->addComponent<DisplayNode>()->initAs<cocos2d::Menu>();
 
 	menu_object->addChild(createStartButton());
@@ -72,7 +72,7 @@ std::unique_ptr<GameObject> TitleScene::impl::createTitleMenu()
 
 std::unique_ptr<GameObject> TitleScene::impl::createStartButton()
 {
-	auto button_object = GameObject::create();
+	auto button_object = GameObject::create("StartButton");
 	button_object->addComponent<DisplayNode>()->initAs<cocos2d::MenuItemImage>(
 		[this](){return cocos2d::MenuItemImage::create("menu_start.png", "menu_start.png", createStartButtonCallback()); }
 	);
@@ -85,7 +85,7 @@ std::function<void(cocos2d::Ref*)> TitleScene::impl::createStartButtonCallback()
 	return [](cocos2d::Ref *sender){
 		SingletonContainer::instance()->get<GameData>()->reset();
 
-		auto puzzle_scene = GameObject::create<PuzzleScene>();
+		auto puzzle_scene = GameObject::create<PuzzleScene>("PuzzleScene");
 		SingletonContainer::instance()->get<SceneStack>()->replaceAndRun(std::move(puzzle_scene));
 	};
 }

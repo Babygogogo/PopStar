@@ -4,7 +4,6 @@
 #include <memory>
 #include <unordered_map>
 #include <unordered_set>
-#include <vector>
 #include <typeindex>
 #include <type_traits>
 #include <functional>
@@ -29,6 +28,16 @@ class Component;
  */
 class GameObject final : public Object
 {
+	friend class Timer;
+
+	//////////////////////////////////////////////////////////////////////////
+	//Disable copy/move constructor and operator=.
+	//////////////////////////////////////////////////////////////////////////
+	GameObject(const GameObject&) = delete;
+	GameObject(GameObject&&) = delete;
+	GameObject& operator=(const GameObject&) = delete;
+	GameObject& operator=(GameObject&&) = delete;
+
 public:
 	//////////////////////////////////////////////////////////////////////////
 	//Factory method.
@@ -39,9 +48,9 @@ public:
 	//auto game_object = GameObject::create();
 	//game_object->addComponent<...>();...;
 	//	No matter which approach you prefer, make sure that your code is readable.
-	static std::unique_ptr<GameObject> create(std::function<void(GameObject*)> &&additional_task = nullptr)
+	static std::unique_ptr<GameObject> create(std::string name, std::function<void(GameObject*)> &&additional_task = nullptr)
 	{
-		auto game_object = std::unique_ptr<GameObject>(new GameObject);
+		auto game_object = std::unique_ptr<GameObject>(new GameObject(std::move(name)));
 		if (additional_task)
 			additional_task(game_object.get());
 
@@ -54,9 +63,9 @@ public:
 	template <typename Component_,
 		typename std::enable_if_t<std::is_base_of<Component, Component_>::value>* = nullptr
 	>
-	static std::unique_ptr<GameObject> create(std::function<void(GameObject*)> &&additional_task = nullptr)
+	static std::unique_ptr<GameObject> create(std::string name, std::function<void(GameObject*)> &&additional_task = nullptr)
 	{
-		auto game_object = GameObject::create([](GameObject *game_object){game_object->addComponent<Component_>(); });
+		auto game_object = GameObject::create(std::move(name), [](GameObject *game_object){game_object->addComponent<Component_>(); });
 		if (additional_task)
 			additional_task(game_object.get());
 
@@ -68,13 +77,13 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 	//Stuff for organizing the GameObjects as trees.
 	//////////////////////////////////////////////////////////////////////////
-	void addChild(std::unique_ptr<GameObject>&& child);
+	GameObject *addChild(std::unique_ptr<GameObject>&& child);
 	GameObject *getParent() const;
 	bool isAncestorOf(const GameObject *child) const;
 
 	//If the game object has no parent, nothing happens, and nullptr is returned.
 	//Otherwise, the ownership is returned. Keep it, or the object along with its children will be destroyed.
-	std::unique_ptr<GameObject> getOwnershipFromParent();
+	std::unique_ptr<GameObject> removeFromParent();
 
 	//////////////////////////////////////////////////////////////////////////
 	//Stuff for adding/getting components or scripts.
@@ -98,28 +107,14 @@ public:
 			dynamic_cast<T*>(component_iter->second.get());
 	};
 
-	//////////////////////////////////////////////////////////////////////////
-	//Disable copy/move constructor and operator=.
-	//////////////////////////////////////////////////////////////////////////
-	GameObject(const GameObject&) = delete;
-	GameObject(GameObject&&) = delete;
-	GameObject& operator=(const GameObject&) = delete;
-	GameObject& operator=(GameObject&&) = delete;
+
 
 private:
 	//Constructor is private because game objects are managed using std::unique_ptr and I provide a factory method for that.
-	GameObject(const std::string &name = "");
+	GameObject(std::string &&name);
 
-	friend class Timer;
 	//Only the current scene owned by the SceneStack, and the (indirect) children of that scene, will be "update" once a frame.
-	void update(const time_t &time_ms)
-	{
-		for (auto &updateable : m_updateables)
-			updateable->update(time_ms);
-
-		for (auto &child : m_children)
-			child->update(time_ms);
-	};
+	void update(const time_t &time_ms);
 
 	//////////////////////////////////////////////////////////////////////////
 	//Helper methods for adding components.
@@ -142,7 +137,7 @@ private:
 	> T* addComponentHelper()
 	{
 		auto component = emplaceComponent<T>();
-		m_updateables.emplace(component);
+		m_updateable_components.emplace(component);
 
 		return component;
 	};
@@ -151,8 +146,7 @@ private:
 	//Data members of components and children.
 	//////////////////////////////////////////////////////////////////////////
 	std::unordered_map<std::type_index, std::unique_ptr<::Component>> m_components;
-	std::unordered_set<IUpdateable*> m_updateables;
-	std::vector<std::unique_ptr<GameObject>> m_children;
+	std::unordered_set<IUpdateable*> m_updateable_components;
 
 	class impl;
 	std::unique_ptr<impl> pimpl;

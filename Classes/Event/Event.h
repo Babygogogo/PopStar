@@ -30,8 +30,8 @@ public:
 	}
 
 protected:
-	Event(const std::string &name, EventType event_type, std::unique_ptr<Object> &&event_arg)
-		:Object(name), m_event_type(std::move(event_type)), m_event_arg(std::move(event_arg)){};
+	Event(std::string &&name, EventType event_type, std::unique_ptr<Object> &&event_arg)
+		:Object(std::move(name)), m_event_type(std::move(event_type)), m_event_arg(std::move(event_arg)){};
 
 private:
 	EventType m_event_type;

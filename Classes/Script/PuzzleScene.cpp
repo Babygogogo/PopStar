@@ -7,7 +7,7 @@
 PuzzleScene::PuzzleScene(GameObject* game_object) :Script("PuzzleScene", game_object)
 {
 	game_object->addComponent<DisplayNode>()->initAs<cocos2d::Scene>();
-	game_object->addChild(GameObject::create<PuzzleMatrixLayer>());
+	game_object->addChild(GameObject::create<PuzzleMatrixLayer>("PuzzleMatrixLayer"));
 
 	Audio::getInstance()->playBGM();
 }

@@ -21,7 +21,7 @@ public:
 	virtual ~Component();
 
 protected:
-	Component(const std::string& name, GameObject *game_object);
+	Component(std::string &&name, GameObject *game_object);
 
 	GameObject *m_game_object;
 };
