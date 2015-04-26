@@ -53,7 +53,7 @@ void PuzzleMatrixLayer::impl::showStarMatrix()
 
 void PuzzleMatrixLayer::impl::onGameOver()
 {
-	auto game_over_label = GameObject::create("GameOverLabel");
+	auto game_over_label = GameObject::create("GameOverLabel", [](GameObject *obj){obj->setNeedUpdate(false); });
 
 	auto label_underlying = game_over_label->addComponent<DisplayNode>()->initAs<cocos2d::Label>([]{
 		return cocos2d::Label::createWithSystemFont("Game Over", "Verdana-Bold", 80); });
@@ -115,14 +115,14 @@ std::unique_ptr<GameObject> PuzzleMatrixLayer::impl::createScoringLabel()
 	return label_object;
 }
 
-void PuzzleMatrixLayer::impl::createAndAttachLevelMessageLabel(GameObject *layer_object, GameObject *&label_object, std::string label_name)
+void PuzzleMatrixLayer::impl::createAndAttachLevelMessageLabel(GameObject *layer_object, GameObject *&label_object_ref, std::string label_name)
 {
-	auto new_label_object = GameObject::create(std::move(label_name));
+	auto new_label_object = GameObject::create(std::move(label_name), [](GameObject* obj){obj->setNeedUpdate(false); });
 	new_label_object->addComponent<DisplayNode>()->initAs<cocos2d::Label>(
 		[]{return cocos2d::Label::createWithSystemFont("", "Verdana-Bold", 50); })->setLocalZOrder(1);
 	new_label_object->addComponent<SequentialInvoker>();
 
-	label_object = new_label_object.get();
+	label_object_ref = new_label_object.get();
 	layer_object->addChild(std::move(new_label_object));
 }
 

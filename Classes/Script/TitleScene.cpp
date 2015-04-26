@@ -92,6 +92,7 @@ std::function<void(cocos2d::Ref*)> TitleScene::impl::createStartButtonCallback()
 
 TitleScene::TitleScene(GameObject* game_object) :Script("TitleScene", game_object), pimpl(new impl)
 {
+	game_object->setNeedUpdate(false);
 	game_object->addComponent<DisplayNode>()->initAs<cocos2d::Scene>();
 	game_object->addChild(pimpl->createTitleLayer());
 

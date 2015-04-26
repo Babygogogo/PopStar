@@ -86,6 +86,7 @@ std::unique_ptr<GameObject> StatusBar::impl::createLevelLabel()
 
 StatusBar::StatusBar(GameObject *game_object) :Script("StatusBar", game_object), pimpl(new impl)
 {
+	game_object->setNeedUpdate(false);
 	game_object->addComponent<DisplayNode>()->initAs<cocos2d::Node>();
 
 	game_object->addChild(pimpl->createHighScoreLabel());

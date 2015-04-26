@@ -107,7 +107,7 @@ public:
 			dynamic_cast<T*>(component_iter->second.get());
 	};
 
-
+	void setNeedUpdate(bool is_need);
 
 private:
 	//Constructor is private because game objects are managed using std::unique_ptr and I provide a factory method for that.
