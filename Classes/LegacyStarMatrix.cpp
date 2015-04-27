@@ -99,7 +99,7 @@ void LegacyStarMatrix::initMatrix(){
 			stars[i][j] = star;
 			star->setPosition(getPositionByIndex(i, j) + cocos2d::Point(0, 100));
 			star->setDesPosition(getPositionByIndex(i,j));
-			star->setIndex_ij(i,j);
+			star->setMatrixIndex(i,j);
 			this->addChild(star);
 		}
 	}
@@ -133,8 +133,8 @@ void LegacyStarMatrix::genSelectedList(Star* s){
 	for(it= travelList.begin();it != travelList.end();){
 		Star* star = *it;
 		Star* linkStar = nullptr;
-		int index_i = star->getIndexI();
-		int index_j = star->getIndexJ();
+		int index_i = star->getRowNum();
+		int index_j = star->getColNum();
 		//上
 		if(index_i-1 >= 0 && (linkStar = stars[index_i-1][index_j]) ){
 			if(!linkStar->isSelected() && linkStar->getColor() == star->getColor())
@@ -174,7 +174,7 @@ void LegacyStarMatrix::deleteSelectedList(){
 		Star* star = *it;
 		//粒子效果
 		showStarParticleEffect(star->getColor(),star->getPosition(),this);
-		stars[star->getIndexI()][star->getIndexJ()] = nullptr;
+		stars[star->getRowNum()][star->getColNum()] = nullptr;
 		star->removeFromParentAndCleanup(true);
 		//播放音效
 		Audio::getInstance()->playPop();
@@ -216,7 +216,7 @@ void LegacyStarMatrix::adjustMatrix(){
 					if(stars[begin_i][j] == nullptr)
 						continue;
 					Star* s = stars[begin_i + dis][j] = stars[begin_i][j];
-					s->setIndex_ij(begin_i + dis,j);
+					s->setMatrixIndex(begin_i + dis,j);
 					s->setDesPosition(getPositionByIndex(begin_i + dis,j));
 					stars[begin_i][j] = nullptr;
 				}
@@ -239,7 +239,7 @@ void LegacyStarMatrix::adjustMatrix(){
 					if(stars[begin_i][begin_j] == nullptr)
 						continue;
 					Star* s = stars[begin_i][begin_j - des] = stars[begin_i][begin_j];
-					s->setIndex_ij(begin_i,begin_j - des);
+					s->setMatrixIndex(begin_i,begin_j - des);
 					s->setDesPosition(getPositionByIndex(begin_i,begin_j - des));
 					stars[begin_i][begin_j] = nullptr;
 				}

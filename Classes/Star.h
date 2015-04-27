@@ -19,9 +19,9 @@ public:
 	void setDesPosition(const cocos2d::Point& p);
 	inline cocos2d::Point getDesPosition(){ return desPosition; }
 	void updatePosition();
-	inline int getIndexI(){return index_i;}
-	inline int getIndexJ(){return index_j;}
-	inline void setIndex_ij(int i,int j){index_i = i;index_j = j;}
+	inline int getRowNum(){return index_i;}
+	inline int getColNum(){return index_j;}
+	inline void setMatrixIndex(int i,int j){index_i = i;index_j = j;}
 private:
 	char* getImage(int color);
 
