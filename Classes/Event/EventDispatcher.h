@@ -29,7 +29,7 @@ public:
 	void deleteListener(void *target);
 	void deleteListener(IEventListener *listener);
 
-	void dispatch(std::unique_ptr<Event> &&event);	
+	void dispatch(std::unique_ptr<Event> &&event, void *target = nullptr);	
 
 private:
 	EventDispatcher();

@@ -51,13 +51,23 @@ void EventDispatcher::deleteListener(IEventListener *listener)
 		listener_set.second.erase(listener);
 }
 
-void EventDispatcher::dispatch(std::unique_ptr<Event> &&event)
+void EventDispatcher::dispatch(std::unique_ptr<Event> &&event, void *target /*= nullptr*/)
 {
 	auto event_ptr = event.get();
 
-	for (auto &target_callback : pimpl->m_listeners[event->getType()])
-		target_callback.second(event_ptr);
+	if (!target){
+		for (auto &target_callback : pimpl->m_listeners[event->getType()])
+			target_callback.second(event_ptr);
 
-	for (auto &listener : pimpl->m_script_listeners[event->getType()])
-		listener->onEvent(event_ptr);
+		for (auto &listener : pimpl->m_script_listeners[event->getType()])
+			listener->onEvent(event_ptr);
+	}else{
+		auto range = pimpl->m_listeners[event->getType()].equal_range(target);
+		for (auto target_callback_iter = range.first; target_callback_iter != range.second; ++target_callback_iter)
+			target_callback_iter->second(event_ptr);
+
+		for (auto &listener : pimpl->m_script_listeners[event->getType()])
+			if (listener == target)
+				listener->onEvent(event_ptr);
+	}
 }

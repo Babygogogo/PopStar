@@ -3,6 +3,8 @@
 
 enum class EventType
 {
+	SequentialInvokerFinishOneAction,
+
 	StarsExploded,
 
 	LevelResultBegan,
