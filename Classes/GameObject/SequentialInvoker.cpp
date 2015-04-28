@@ -134,6 +134,8 @@ void SequentialInvoker::addCallback(std::function<void()> &&callback)
 void SequentialInvoker::addFiniteTimeAction(cocos2d::FiniteTimeAction* action)
 {
 	pimpl->pushBackStep(cocos2d::Sequence::create(action, pimpl->createDispatchCallback(), nullptr));
+	if (pimpl->m_invoke_continuously)
+		invoke();
 }
 
 void SequentialInvoker::setInvokeContinuously(bool continuously)

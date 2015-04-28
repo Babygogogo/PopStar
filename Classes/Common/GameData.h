@@ -20,19 +20,19 @@ class GameData final : public Object
 public:
 	~GameData();
 
-	void levelUp();
-	int getCurrentLevel();
+	void levelEnd();
+	int getCurrentLevel() const;
 	
 	void updateCurrentScoreWith(int num_of_exploded_stars);
-	int getScoreOfPreviousExplosion();
-	int getNumExplodedStars();
+	int getScoreOfPreviousExplosion() const;
+	int getNumExplodedStars() const;
 
-	int getHighScore();
-	int getCurrentScore();
-	int getTargetScore();
+	int getHighScore() const;
+	int getCurrentScore() const;
+	int getTargetScore() const;
 
 	void updateEndLevelScoreWith(int num_of_left_stars);
-	int getEndLevelBonus(int num_of_left_stars);
+	int getEndLevelBonus(int num_of_left_stars) const;
 
 	void reset();
 

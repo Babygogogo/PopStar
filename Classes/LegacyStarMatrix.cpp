@@ -293,23 +293,24 @@ void LegacyStarMatrix::clearMatrixOneByOne(){
 	needClear = false;
 	
 	//转到下一关或者弹出结束游戏的窗口
-	auto game_data = SingletonContainer::instance()->get<GameData>();
-	if(game_data->getCurrentScore() >= game_data->getTargetScore()){
-		game_data->levelUp();
-		
-		//////////////////////////////////////////////////////////////////////////
-		//m_layer->gotoNextLevel();
-		//m_layerGotoNextLevel();
-		SingletonContainer::instance()->get<::EventDispatcher>()->dispatch(::Event::create(EventType::LevelUp));
-		//////////////////////////////////////////////////////////////////////////
-	}else{
-		//////////////////////////////////////////////////////////////////////////
-		//m_layer->gotoGameOver();
-		//m_layerGotoGameOver();
-		SingletonContainer::instance()->get<::EventDispatcher>()->dispatch(::Event::create(EventType::GameOver));
-		//////////////////////////////////////////////////////////////////////////
-		CCLOG("GAME OVER");
-	}
+	//auto game_data = SingletonContainer::instance()->get<GameData>();
+	//if(game_data->getCurrentScore() >= game_data->getTargetScore()){
+	//	game_data->levelUp();
+	//	
+	//	//////////////////////////////////////////////////////////////////////////
+	//	//m_layer->gotoNextLevel();
+	//	//m_layerGotoNextLevel();
+	//	SingletonContainer::instance()->get<::EventDispatcher>()->dispatch(::Event::create(EventType::LevelUp));
+	//	//////////////////////////////////////////////////////////////////////////
+	//}else{
+	//	//////////////////////////////////////////////////////////////////////////
+	//	//m_layer->gotoGameOver();
+	//	//m_layerGotoGameOver();
+	//	SingletonContainer::instance()->get<::EventDispatcher>()->dispatch(::Event::create(EventType::GameOver));
+	//	//////////////////////////////////////////////////////////////////////////
+	//	CCLOG("GAME OVER");
+	//}
+	SingletonContainer::instance()->get<GameData>()->levelEnd();
 }
 
 int LegacyStarMatrix::getLeftStarNum(){

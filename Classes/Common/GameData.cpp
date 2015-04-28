@@ -99,7 +99,7 @@ GameData::GameData() :Object("GameData"), pimpl(new impl)
 	reset();
 }
 
-int GameData::getEndLevelBonus(int num_of_left_stars){
+int GameData::getEndLevelBonus(int num_of_left_stars) const{
 	static const int jiangli[10][2] =
 	{
 		{0, 2000},
@@ -119,17 +119,22 @@ int GameData::getEndLevelBonus(int num_of_left_stars){
 	return jiangli[num_of_left_stars][1];
 }
 
-void GameData::levelUp()
+void GameData::levelEnd()
 {
-	pimpl->setCurrentLevel(pimpl->current_level + 1);
+	if (pimpl->current_score < pimpl->target_score)
+		SingletonContainer::instance()->get<::EventDispatcher>()->dispatch(::Event::create(EventType::GameOver));
+	else{
+		pimpl->setCurrentLevel(pimpl->current_level + 1);
+		SingletonContainer::instance()->get<::EventDispatcher>()->dispatch(::Event::create(EventType::LevelUp));
+	}
 }
 
-int GameData::getCurrentLevel()
+int GameData::getCurrentLevel() const
 {
 	return pimpl->current_level;
 }
 
-int GameData::getTargetScore()
+int GameData::getTargetScore() const
 {
 	return pimpl->target_score;
 }
@@ -150,22 +155,22 @@ void GameData::updateEndLevelScoreWith(int num_of_left_stars)
 	pimpl->setCurrentScore(pimpl->current_score + getEndLevelBonus(num_of_left_stars));
 }
 
-int GameData::getNumExplodedStars()
+int GameData::getNumExplodedStars() const
 {
 	return pimpl->num_of_previous_exploded_stars;
 }
 
-int GameData::getScoreOfPreviousExplosion()
+int GameData::getScoreOfPreviousExplosion() const
 {
 	return pimpl->getScoreOf(pimpl->num_of_previous_exploded_stars);
 }
 
-int GameData::getHighScore()
+int GameData::getHighScore() const
 {
 	return pimpl->high_score;
 }
 
-int GameData::getCurrentScore()
+int GameData::getCurrentScore() const
 {
 	return pimpl->current_score;
 }
