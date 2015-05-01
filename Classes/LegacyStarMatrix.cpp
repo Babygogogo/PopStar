@@ -35,7 +35,7 @@ bool LegacyStarMatrix::init()
 
 	needClear = false;
 	clearSumTime = 0;
-	memset(stars, 0, sizeof(Star*) * ROW_NUM * COL_NUM);
+	memset(stars, 0, sizeof(LegacyStar*) * ROW_NUM * COL_NUM);
 	initMatrix();
 
 	registerTouchListener();
@@ -77,7 +77,7 @@ void LegacyStarMatrix::update(float delta)
 }
 
 void LegacyStarMatrix::onTouch(const cocos2d::Point& p){
-	Star* s = getStarByTouch(p);
+	LegacyStar* s = getStarByTouch(p);
 	if(s){
 	genSelectedList(s);
 	CCLOG("SIZE = %d",selectedList.size());
@@ -92,10 +92,10 @@ void LegacyStarMatrix::initMatrix(){
 	srand(time(0));
 	for(int i=0;i<ROW_NUM;i++){
 		for(int j=0;j<COL_NUM;j++){
-			int color = abs(rand()%Star::COLOR_MAX_NUM);
+			int color = abs(rand()%LegacyStar::COLOR_MAX_NUM);
 			if(color < 0)
 				CCLOG("color i=%d,j=%d");
-			Star* star = Star::create(color);
+			LegacyStar* star = LegacyStar::create(color);
 			stars[i][j] = star;
 			star->setPosition(getPositionByIndex(i, j) + cocos2d::Point(0, 100));
 			star->setDesPosition(getPositionByIndex(i,j));
@@ -106,15 +106,15 @@ void LegacyStarMatrix::initMatrix(){
 }
 
 Point LegacyStarMatrix::getPositionByIndex(int i,int j){
-	float x = j * Star::STAR_WIDTH + Star::STAR_WIDTH/2;
-	float y = (LegacyStarMatrix::COL_NUM - i)*Star::STAR_HEIGHT - Star::STAR_HEIGHT/2;
+	float x = j * LegacyStar::STAR_WIDTH + LegacyStar::STAR_WIDTH/2;
+	float y = (LegacyStarMatrix::COL_NUM - i)*LegacyStar::STAR_HEIGHT - LegacyStar::STAR_HEIGHT/2;
 	return Point(x,y);
 }
 
-Star* LegacyStarMatrix::getStarByTouch(const Point& p){
-	int k = p.y/Star::STAR_HEIGHT;//这里要用K转一下int 不然得不到正确结果
+LegacyStar* LegacyStarMatrix::getStarByTouch(const Point& p){
+	int k = p.y/LegacyStar::STAR_HEIGHT;//这里要用K转一下int 不然得不到正确结果
 	int i = ROW_NUM - 1 - k;
-	int j = p.x/Star::STAR_WIDTH;
+	int j = p.x/LegacyStar::STAR_WIDTH;
 	if(i >= 0 && i < ROW_NUM && 
 	   j >= 0 && j < COL_NUM &&
 	   stars[i][j] != nullptr){
@@ -125,14 +125,14 @@ Star* LegacyStarMatrix::getStarByTouch(const Point& p){
 	}
 }
 
-void LegacyStarMatrix::genSelectedList(Star* s){
+void LegacyStarMatrix::genSelectedList(LegacyStar* s){
 	selectedList.clear();
-	deque<Star*> travelList;
+	deque<LegacyStar*> travelList;
 	travelList.push_back(s);
-	deque<Star*>::iterator it;
+	deque<LegacyStar*>::iterator it;
 	for(it= travelList.begin();it != travelList.end();){
-		Star* star = *it;
-		Star* linkStar = nullptr;
+		LegacyStar* star = *it;
+		LegacyStar* linkStar = nullptr;
 		int index_i = star->getRowNum();
 		int index_j = star->getColNum();
 		//上
@@ -171,7 +171,7 @@ void LegacyStarMatrix::deleteSelectedList(){
 	}
 
 	for(auto it = selectedList.begin();it != selectedList.end();it++){
-		Star* star = *it;
+		LegacyStar* star = *it;
 		//粒子效果
 		showStarParticleEffect(star->getColor(),star->getPosition(),this);
 		stars[star->getRowNum()][star->getColNum()] = nullptr;
@@ -215,7 +215,7 @@ void LegacyStarMatrix::adjustMatrix(){
 				for(int begin_i = i - dis;begin_i >= 0;begin_i--){
 					if(stars[begin_i][j] == nullptr)
 						continue;
-					Star* s = stars[begin_i + dis][j] = stars[begin_i][j];
+					LegacyStar* s = stars[begin_i + dis][j] = stars[begin_i][j];
 					s->setMatrixIndex(begin_i + dis,j);
 					s->setDesPosition(getPositionByIndex(begin_i + dis,j));
 					stars[begin_i][j] = nullptr;
@@ -238,7 +238,7 @@ void LegacyStarMatrix::adjustMatrix(){
 				for(int begin_j = j + des;begin_j < COL_NUM;begin_j++){
 					if(stars[begin_i][begin_j] == nullptr)
 						continue;
-					Star* s = stars[begin_i][begin_j - des] = stars[begin_i][begin_j];
+					LegacyStar* s = stars[begin_i][begin_j - des] = stars[begin_i][begin_j];
 					s->setMatrixIndex(begin_i,begin_j - des);
 					s->setDesPosition(getPositionByIndex(begin_i,begin_j - des));
 					stars[begin_i][begin_j] = nullptr;

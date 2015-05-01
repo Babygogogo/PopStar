@@ -1,5 +1,5 @@
 #include "StarParticle.h"
-#include "Star.h"
+#include "LegacyStar.h"
 
 using namespace cocos2d;
 
@@ -22,16 +22,16 @@ void showStarParticleEffect(int color,Point position,Node* node){
 
 Color4F getColor4F(int color){
 	switch(color){
-	case Star::color::PURPLE:
+	case LegacyStar::color::PURPLE:
 		return Color4F(0.74,0.30,0.99,1);
 		//return Color4F(189,78,253,1);
-	case Star::color::BLUE:
+	case LegacyStar::color::BLUE:
 		return Color4F(84/255.0f,203/255.0f,254/255.0f,1);
-	case Star::color::RED:
+	case LegacyStar::color::RED:
 		return Color4F(253/255.0f,80/255.0f,126/255.0f,1);
-	case Star::color::YELLOW:
+	case LegacyStar::color::YELLOW:
 		return Color4F(253/255.0f,234/255.0f,84/255.0f,1);
-	case Star::color::GREEN:
+	case LegacyStar::color::GREEN:
 		return Color4F(132/255.0f,226/255.0f,111/255.0f,1);
 	}
 	return Color4F(1,1,1,0);

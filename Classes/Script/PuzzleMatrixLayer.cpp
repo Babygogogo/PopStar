@@ -19,7 +19,7 @@
 
 struct PuzzleMatrixLayer::impl
 {
-	impl(GameObject *game_object) :m_game_object(game_object){};
+	impl(GameObject *game_object) :m_layer(game_object){};
 	~impl();
 
 	std::unique_ptr<GameObject> createBackground();
@@ -33,23 +33,14 @@ struct PuzzleMatrixLayer::impl
 	void addEventListeners();
 
 	void startLevel();
-	void showStarMatrix();
 	void showLevelSummary(int num_stars_left);
 	void onGameOver();
 
-	GameObject *m_game_object{ nullptr };
+	GameObject *m_layer{ nullptr };
 	GameObject *m_preparation_label{ nullptr };
 	GameObject *m_summary_label{ nullptr };
 	GameObject *m_matrix{ nullptr };
 };
-
-void PuzzleMatrixLayer::impl::showStarMatrix()
-{
-	if (m_matrix)
-		m_matrix->removeFromParent();
-
-	m_matrix = m_game_object->addChild(GameObject::create<StarMatrix>("StarMatrix"));
-}
 
 void PuzzleMatrixLayer::impl::onGameOver()
 {
@@ -67,7 +58,7 @@ void PuzzleMatrixLayer::impl::onGameOver()
 	invoker->invoke();
 	resetTouchListenerForInvoker(game_over_label.get());
 
-	m_game_object->addChild(std::move(game_over_label));
+	m_layer->addChild(std::move(game_over_label));
 }
 
 void PuzzleMatrixLayer::impl::addEventListeners()
@@ -171,7 +162,7 @@ void PuzzleMatrixLayer::impl::startLevel()
 	auto label_underlying = m_preparation_label->getComponent<DisplayNode>()->getAs<cocos2d::Label>();
 	resetLevelMessageLabel(m_preparation_label, std::string("Level: ") + std::to_string(SingletonContainer::instance()->get<GameData>()->getCurrentLevel()) + '\n' + std::string(" Start!"),
 		[this, label_underlying]{
-			showStarMatrix();
+			m_matrix->getComponent<StarMatrix>()->reset();
 			label_underlying->setVisible(false);
 			cocos2d::Director::getInstance()->getEventDispatcher()->removeEventListenersForTarget(label_underlying); });
 
@@ -197,6 +188,7 @@ PuzzleMatrixLayer::PuzzleMatrixLayer(GameObject *game_object) :Script("PuzzleMat
 	game_object->addChild(pimpl->createBackground());
 	game_object->addChild(GameObject::create<StatusBar>("PuzzleUpperStatusBar"));
 	game_object->addChild(pimpl->createScoringLabel());
+	pimpl->m_matrix = game_object->addChild(GameObject::create<StarMatrix>("StarMatrix"));
 
 	pimpl->createAndAttachLevelMessageLabel(game_object, pimpl->m_preparation_label, "PuzzleLevelPreparationLabel");
 	pimpl->createAndAttachLevelMessageLabel(game_object, pimpl->m_summary_label, "PuzzleLevelSummaryLabel");

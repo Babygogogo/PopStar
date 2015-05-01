@@ -39,9 +39,6 @@
     <ClCompile Include="..\Classes\ComboEffect.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Star.cpp">
-      <Filter>Classes</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\StarParticle.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
@@ -93,6 +90,12 @@
     <ClCompile Include="..\Classes\Script\StarMatrix.cpp">
       <Filter>Script</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\LegacyStar.cpp">
+      <Filter>Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Script\Star.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -108,9 +111,6 @@
       <Filter>Classes</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\ComboEffect.h">
-      <Filter>Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Star.h">
       <Filter>Classes</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\StarParticle.h">
@@ -184,6 +184,12 @@
     </ClInclude>
     <ClInclude Include="..\Classes\Common\GameData.h">
       <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\LegacyStar.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Script\Star.h">
+      <Filter>Script</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -13,76 +13,82 @@ struct SequentialInvoker::impl
 	impl(GameObject *game_object, cocos2d::Node *target_node);
 	~impl();
 
-	void pushBackStep(cocos2d::Action *step);
-	void popFrontStep();
+	void pushBack(cocos2d::Action *action);
+	void popFront();
+	void eraseCurrent();
 
 	bool invoke(bool is_called_by_event_dispatcher);
 	bool isInvoking() const;
 
 	cocos2d::CallFunc *createDispatchCallback() const;
 
-	GameObject *m_target;
-	cocos2d::Node *m_target_node;
+	GameObject *m_target{ nullptr };
+	cocos2d::Node *m_target_node{ nullptr };
+	cocos2d::Action *m_current_action{ nullptr };
 	bool m_invoke_continuously{ false };
-	bool m_is_front_step_invoked{ false };
-	std::list<cocos2d::Action*> m_step_list;
+	std::list<cocos2d::Action*> m_action_list;
 };
 
 SequentialInvoker::impl::impl(GameObject *game_object, cocos2d::Node *target_node) :m_target(game_object), m_target_node(target_node)
 {
 	SingletonContainer::instance()->get<EventDispatcher>()->registerListener(
-		EventType::SequentialInvokerFinishOneAction, this, [this](Event *e){invoke(true); });
+		EventType::SequentialInvokerFinishOneAction, this, [this](Event *e){eraseCurrent(); invoke(true); });
 }
 
 SequentialInvoker::impl::~impl()
 {
-	while (!m_step_list.empty())
-		popFrontStep();
+	while (!m_action_list.empty())
+		popFront();
+	eraseCurrent();
 
 	if (auto singleton_container = SingletonContainer::instance())
 		singleton_container->get<EventDispatcher>()->deleteListener(this);
 }
 
-void SequentialInvoker::impl::popFrontStep()
+void SequentialInvoker::impl::popFront()
 {
-	if (m_step_list.empty())
+	if (m_action_list.empty())
 		return;
 
-	m_is_front_step_invoked = false;
-	m_step_list.front()->release();
-	m_step_list.pop_front();
+	m_action_list.front()->release();
+	m_action_list.pop_front();
 }
 
-void SequentialInvoker::impl::pushBackStep(cocos2d::Action *step)
+void SequentialInvoker::impl::pushBack(cocos2d::Action *action)
 {
-	step->retain();
-	m_step_list.push_back(step);
+	action->retain();
+	m_action_list.push_back(action);
+}
+
+void SequentialInvoker::impl::eraseCurrent()
+{
+	if (!m_current_action)
+		return;
+
+	m_current_action->release();
+	m_current_action = nullptr;
 }
 
 bool SequentialInvoker::impl::invoke(bool is_called_by_event_dispatcher)
 {
 	if (is_called_by_event_dispatcher && !m_invoke_continuously)
 		return false;
-	if (isInvoking())
+	if (isInvoking() || m_action_list.empty())
 		return false;
 
-	if (m_is_front_step_invoked)
-		popFrontStep();
+	m_current_action = m_action_list.front();
+	m_action_list.pop_front();
+	m_target_node->runAction(m_current_action);
 
-	if (!m_step_list.empty()){
-		m_target_node->runAction(m_step_list.front());
-		return m_is_front_step_invoked = true;
-	}
-
-	return false;
+	return true;
 }
 
 bool SequentialInvoker::impl::isInvoking() const
 {
-	if (m_step_list.empty())
+	if (!m_current_action)
 		return false;
 
-	return m_is_front_step_invoked && !m_step_list.front()->isDone();
+	return !m_current_action->isDone();
 }
 
 cocos2d::CallFunc * SequentialInvoker::impl::createDispatchCallback() const
@@ -93,10 +99,9 @@ cocos2d::CallFunc * SequentialInvoker::impl::createDispatchCallback() const
 
 SequentialInvoker::SequentialInvoker(GameObject *game_object) :Component("SequentialInvoker2", game_object)
 {
-	auto display_node = game_object->addComponent<DisplayNode>();
-	auto target_node = display_node->getAs<cocos2d::Node>();
+	auto target_node = game_object->addComponent<DisplayNode>()->getAs<cocos2d::Node>();
 	if (!target_node)
-		target_node = display_node->initAs<cocos2d::Node>();
+		throw("Add SequentialInvoker to a GameObject without an initialized DisplayNode.");
 
 	pimpl.reset(new impl(game_object, target_node));
 }
@@ -133,7 +138,7 @@ void SequentialInvoker::addCallback(std::function<void()> &&callback)
 
 void SequentialInvoker::addFiniteTimeAction(cocos2d::FiniteTimeAction* action)
 {
-	pimpl->pushBackStep(cocos2d::Sequence::create(action, pimpl->createDispatchCallback(), nullptr));
+	pimpl->pushBack(cocos2d::Sequence::create(action, pimpl->createDispatchCallback(), nullptr));
 	if (pimpl->m_invoke_continuously)
 		invoke();
 }
@@ -141,4 +146,10 @@ void SequentialInvoker::addFiniteTimeAction(cocos2d::FiniteTimeAction* action)
 void SequentialInvoker::setInvokeContinuously(bool continuously)
 {
 	pimpl->m_invoke_continuously = continuously;
+}
+
+void SequentialInvoker::clear()
+{
+	while (!pimpl->m_action_list.empty())
+		pimpl->popFront();
 }

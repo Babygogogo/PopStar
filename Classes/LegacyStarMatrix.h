@@ -1,7 +1,7 @@
 #ifndef _STARMATRIX_H_
 #define _STARMATRIX_H_
 #include "cocos2d.h"
-#include "Star.h"
+#include "LegacyStar.h"
 #include <deque>
 
 class LegacyStarMatrix : public cocos2d::Node
@@ -13,8 +13,8 @@ public:
 
 private:
 	cocos2d::Point getPositionByIndex(int i, int j);
-	Star* getStarByTouch(const cocos2d::Point& p);
-	void genSelectedList(Star* s);
+	LegacyStar* getStarByTouch(const cocos2d::Point& p);
+	void genSelectedList(LegacyStar* s);
 	void deleteSelectedList();
 	void adjustMatrix();
 	void refreshScore();
@@ -27,8 +27,8 @@ public:
 	const static int COL_NUM = 10;
 
 private:
-	Star* stars[ROW_NUM][COL_NUM];
-	std::deque<Star*> selectedList;
+	LegacyStar* stars[ROW_NUM][COL_NUM];
+	std::deque<LegacyStar*> selectedList;
 	//GameLayer* m_layer;
 	bool needClear;
 	static float ONE_CLEAR_TIME;

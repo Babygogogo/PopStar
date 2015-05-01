@@ -3,7 +3,7 @@
 
 #include "cocos2d.h"
 
-class Star : public cocos2d::Sprite{
+class LegacyStar : public cocos2d::Sprite{
 public:
 	enum color{
 		GREEN,
@@ -12,7 +12,7 @@ public:
 		PURPLE,
 		BLUE
 	};
-	static Star* create(int color);
+	static LegacyStar* create(int color);
 	bool isSelected();
 	inline void setSelected(bool b){selected = b;}
 	int getColor();

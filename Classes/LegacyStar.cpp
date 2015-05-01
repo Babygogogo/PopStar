@@ -1,7 +1,7 @@
-#include "Star.h"
+#include "LegacyStar.h"
 
-Star* Star::create(int color){
-	Star* ret = new Star();
+LegacyStar* LegacyStar::create(int color){
+	LegacyStar* ret = new LegacyStar();
 	if(ret && ret->initWithFile(ret->getImage(color))){
 		ret->color = color;
 		ret->selected = false;
@@ -12,7 +12,7 @@ Star* Star::create(int color){
 	return nullptr;
 }
 
-char* Star::getImage(int color){
+char* LegacyStar::getImage(int color){
 	switch(color){
 	case color::BLUE:
 		return "blue.png";
@@ -27,19 +27,19 @@ char* Star::getImage(int color){
 	}
 }
 
-bool Star::isSelected(){
+bool LegacyStar::isSelected(){
 	return selected;
 }
 
-int Star::getColor(){
+int LegacyStar::getColor(){
 	return color;
 }
 
-void Star::setDesPosition(const cocos2d::Point& p){
+void LegacyStar::setDesPosition(const cocos2d::Point& p){
 	desPosition = p;
 }
 
-void Star::updatePosition(){
+void LegacyStar::updatePosition(){
 	if(desPosition.y != getPositionY()){
 		setPositionY(getPositionY() - MOVE_SPEED);
 		if(getPositionY() < desPosition.y){

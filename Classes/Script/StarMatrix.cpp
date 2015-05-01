@@ -1,4 +1,5 @@
 #include "StarMatrix.h"
+#include "Star.h"
 #include "../GameObject/DisplayNode.h"
 #include "../GameObject/SequentialInvoker.h"
 #include "../GameObject/GameObject.h"
@@ -12,21 +13,22 @@
 #include "../Classes/StarParticle.h"
 #include "../Classes/ComboEffect.h"
 #include "../Classes/Audio.h"
-#include "../Classes/Star.h"
 
 #include <list>
 #include <array>
-#include <random>
 #include <functional>
 
 struct StarMatrix::impl
 {
-	impl(){};
+	impl(GameObject *game_object):m_game_object(game_object){};
 	~impl(){};
 
 public:
-	void randomizeMatrix();
-	void registerTouchListener();
+	void addStars();
+	void randomize();
+	void registerAsEventListeners();
+	void unregisterAsEventListeners();
+
 	void onTouch(const cocos2d::Point& p);
 
 	bool isRowNumValid(int row_num) const;
@@ -48,49 +50,57 @@ public:
 
 	void update(float delta);
 
-public:
 	const static int ROWS_TOTAL = 10;
 	const static int COLS_TOTAL = 10;
 	const static std::array<std::array<int, 2>, 4> NEIGHBOR_INDEXES;
 
+	GameObject *m_game_object{ nullptr };
 	cocos2d::Node *m_node_underlying{ nullptr };
 	SequentialInvoker *m_invoker{ nullptr };
-	std::array<std::array<Star*, COLS_TOTAL>, ROWS_TOTAL> m_stars;
+	std::array<std::array<Star*, COLS_TOTAL>, ROWS_TOTAL> m_stars = {};
+	std::array<std::array<Star*, COLS_TOTAL>, ROWS_TOTAL> m_initial_stars = {};
 };
 
 const std::array<std::array<int, 2>, 4> StarMatrix::impl::NEIGHBOR_INDEXES = { { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } } };
 
-void StarMatrix::impl::randomizeMatrix()
+void StarMatrix::impl::addStars()
 {
-	std::random_device rd;
-	std::default_random_engine e(rd());
-	std::uniform_int_distribution<> u_color(0, Star::COLOR_MAX_NUM - 1);
-	std::uniform_int_distribution<> u_position(-300, 300);
-
-	for (auto row_num = 0; row_num < ROWS_TOTAL; ++row_num){
+	for (auto row_num = 0; row_num < ROWS_TOTAL; ++row_num)
 		for (auto col_num = 0; col_num < COLS_TOTAL; ++col_num){
-			auto star = Star::create(u_color(e));
-			star->setMatrixIndex(row_num, col_num);
-
-			auto position = getStarDefaultPosition(row_num, col_num);
-			star->setPosition(position + cocos2d::Point(u_position(e), u_position(e)));
-			star->setDesPosition(position);
-
-			m_stars[row_num][col_num] = star;
-			m_node_underlying->addChild(star);
+			auto star_object = GameObject::create("Star");
+			m_stars[row_num][col_num] = m_initial_stars[row_num][col_num] = star_object->addComponent<Star>();
+			m_game_object->addChild(std::move(star_object));
 		}
-	}
 }
 
-void StarMatrix::impl::registerTouchListener()
+void StarMatrix::impl::randomize()
+{
+	for (auto row_num = 0; row_num < ROWS_TOTAL; ++row_num)
+		for (auto col_num = 0; col_num < COLS_TOTAL; ++col_num)
+			(m_stars[row_num][col_num] = m_initial_stars[row_num][col_num])->reset(row_num, col_num);
+}
+
+void StarMatrix::impl::registerAsEventListeners()
 {
 	auto listener = cocos2d::EventListenerTouchOneByOne::create();
 	listener->onTouchBegan = [this](cocos2d::Touch* touch, cocos2d::Event* event)->bool{
 		onTouch(cocos2d::Director::getInstance()->convertToGL(touch->getLocationInView()));
 		return true;
 	};
-
 	cocos2d::Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, m_node_underlying);
+
+	SingletonContainer::instance()->get<::EventDispatcher>()->registerListener(EventType::LevelResultEnded, this, [this](::Event*){
+		clearStarsOneByOne();
+		unregisterAsEventListeners();
+	});
+}
+
+void StarMatrix::impl::unregisterAsEventListeners()
+{
+	cocos2d::Director::getInstance()->getEventDispatcher()->removeEventListenersForTarget(m_node_underlying);
+
+	if (auto singleton_container = SingletonContainer::instance())
+		singleton_container->get<EventDispatcher>()->deleteListener(this);
 }
 
 void StarMatrix::impl::onTouch(const cocos2d::Point& p)
@@ -110,8 +120,8 @@ bool StarMatrix::impl::isColNumValid(int col_num) const
 
 Star* StarMatrix::impl::getStarByTouch(const cocos2d::Point& position) const
 {
-	auto row_num = ROWS_TOTAL - 1 - static_cast<int>(position.y / Star::STAR_HEIGHT);
-	auto col_num = static_cast<int>(position.x / Star::STAR_WIDTH);
+	auto row_num = ROWS_TOTAL - 1 - static_cast<int>(position.y / Star::HEIGHT);
+	auto col_num = static_cast<int>(position.x / Star::WIDTH);
 
 	if (isRowNumValid(row_num) && isColNumValid(col_num))
 		return m_stars[row_num][col_num];
@@ -126,11 +136,11 @@ std::list<Star*> StarMatrix::impl::findGroupingStars(Star* touched_star)
 	touched_star->setSelected(true);
 	auto group_stars = std::list < Star* > {touched_star};
 
-	for (auto star : group_stars)
-		iterateNeighborStars(star->getRowNum(), star->getColNum(), [&group_stars, star](Star* n_star){
-			if (!n_star->isSelected() && n_star->getColor() == star->getColor()){
-				n_star->setSelected(true);
-				group_stars.push_back(n_star);
+	for (auto current_star : group_stars)
+		iterateNeighborStars(current_star->getRowNum(), current_star->getColNum(), [&group_stars, current_star](Star* neighbor_star){
+			if (!neighbor_star->isSelected() && neighbor_star->canGroupWith(current_star)){
+				neighbor_star->setSelected(true);
+				group_stars.push_back(neighbor_star);
 			}
 		});
 
@@ -152,9 +162,9 @@ void StarMatrix::impl::explode(Star* star)
 	if (!star)
 		return;
 
-	showStarParticleEffect(star->getColor(), star->getPosition(), m_node_underlying);
+	showStarParticleEffect(star->getColorNum(), { star->getPositionX(), star->getPositionY() }, m_node_underlying);
 	m_stars[star->getRowNum()][star->getColNum()] = nullptr;
-	star->removeFromParentAndCleanup(true);
+	star->setVisible(false);
 }
 
 void StarMatrix::impl::explodeGroupingStars(std::list<Star*> &&group_stars)
@@ -197,10 +207,8 @@ void StarMatrix::impl::shrink()
 	for (auto row_num = 0; row_num < ROWS_TOTAL; ++row_num)
 		for (auto col_num = 0; col_num < COLS_TOTAL; ++col_num){
 			auto star = m_stars[row_num][col_num];
-			if (star && (star->getRowNum() != row_num || star->getColNum() != col_num)){
-				star->setMatrixIndex(row_num, col_num);
-				star->setDesPosition(getStarDefaultPosition(row_num, col_num));
-			}
+			if (star && (star->getRowNum() != row_num || star->getColNum() != col_num))
+				star->moveTo(row_num, col_num);
 		}
 }
 
@@ -248,8 +256,8 @@ void StarMatrix::impl::moveColumnsLeftward()
 
 cocos2d::Point StarMatrix::impl::getStarDefaultPosition(int row_num, int col_num) const
 {
-	return cocos2d::Point( col_num * Star::STAR_WIDTH + Star::STAR_WIDTH / 2,
-		(ROWS_TOTAL - row_num) * Star::STAR_HEIGHT - Star::STAR_HEIGHT / 2 );
+	return cocos2d::Point( col_num * Star::WIDTH + Star::WIDTH / 2,
+		(ROWS_TOTAL - row_num) * Star::HEIGHT - Star::HEIGHT / 2 );
 }
 
 bool StarMatrix::impl::isNoMoreMove() const
@@ -259,22 +267,13 @@ bool StarMatrix::impl::isNoMoreMove() const
 			if (!m_stars[row_num][col_num])
 				break;
 
-			const auto current_color = m_stars[row_num][col_num]->getColor();
-			if (	(isRowNumValid(row_num - 1) && m_stars[row_num - 1][col_num] && m_stars[row_num - 1][col_num]->getColor() == current_color)
-				||	(isColNumValid(col_num + 1) && m_stars[row_num][col_num + 1] && m_stars[row_num][col_num + 1]->getColor() == current_color))
-				return false;
+			if (	(isRowNumValid(row_num - 1) && m_stars[row_num - 1][col_num] && m_stars[row_num - 1][col_num]->canGroupWith(m_stars[row_num][col_num]))
+				||	(isColNumValid(col_num + 1) && m_stars[row_num][col_num + 1] && m_stars[row_num][col_num + 1]->canGroupWith(m_stars[row_num][col_num])))
+			return false;
 		}
 	}
 
 	return true;
-}
-
-void StarMatrix::impl::update(float delta)
-{
-	for (int row_num = 0; row_num < ROWS_TOTAL; row_num++)
-		for (int col_num = 0; col_num < COLS_TOTAL; col_num++)
-			if (m_stars[row_num][col_num])
-				m_stars[row_num][col_num]->updatePosition();
 }
 
 void StarMatrix::impl::clearStarsOneByOne()
@@ -288,15 +287,12 @@ void StarMatrix::impl::clearStarsOneByOne()
 	m_invoker->addFiniteTimeAction(cocos2d::CallFunc::create([]{SingletonContainer::instance()->get<GameData>()->levelEnd(); }));
 }
 
-StarMatrix::StarMatrix(GameObject *game_object) : Script("StarMatrix", game_object), pimpl(new impl)
+StarMatrix::StarMatrix(GameObject *game_object) : Script("StarMatrix", game_object), pimpl(new impl(game_object))
 {
 	pimpl->m_node_underlying = game_object->addComponent<DisplayNode>()->initAs<cocos2d::Layer>();
 	(pimpl->m_invoker = game_object->addComponent<SequentialInvoker>())->setInvokeContinuously(true);	
 
-	pimpl->randomizeMatrix();
-	pimpl->registerTouchListener();
-	SingletonContainer::instance()->get<::EventDispatcher>()->registerListener(EventType::LevelResultEnded, this,
-		[this](::Event*){pimpl->clearStarsOneByOne(); });
+	pimpl->addStars();
 }
 
 StarMatrix::~StarMatrix()
@@ -305,7 +301,8 @@ StarMatrix::~StarMatrix()
 		singleton_container->get<EventDispatcher>()->deleteListener(this);
 }
 
-void StarMatrix::update(const std::time_t& time_ms)
+void StarMatrix::reset()
 {
-	pimpl->update(time_ms);
+	pimpl->randomize();
+	pimpl->registerAsEventListeners();
 }

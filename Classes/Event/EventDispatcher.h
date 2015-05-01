@@ -25,9 +25,9 @@ public:
 	~EventDispatcher();
 
 	void registerListener(EventType event_type, void *target, std::function<void(Event*)> callback);
-	void registerListener(EventType event_type, IEventListener *listener);
+//	void registerListener(EventType event_type, IEventListener *listener);
 	void deleteListener(void *target);
-	void deleteListener(IEventListener *listener);
+//	void deleteListener(IEventListener *listener);
 
 	void dispatch(std::unique_ptr<Event> &&event, void *target = nullptr);	
 
