@@ -25,7 +25,7 @@ public:
 	
 	void updateCurrentScoreWith(int num_of_exploded_stars);
 	int getScoreOfPreviousExplosion() const;
-	int getNumExplodedStars() const;
+	int getExplodedStarsNum() const;
 
 	int getHighScore() const;
 	int getCurrentScore() const;

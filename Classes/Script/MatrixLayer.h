@@ -4,23 +4,23 @@
 #include <memory>
 #include "Script.h"
 
-class PuzzleMatrixLayer final :public Script
+class MatrixLayer final :public Script
 {
 	friend class GameObject;
 
 	//////////////////////////////////////////////////////////////////////////
 	//Disable copy/move constructor and operator=.
 	//////////////////////////////////////////////////////////////////////////
-	PuzzleMatrixLayer(const PuzzleMatrixLayer&) = delete;
-	PuzzleMatrixLayer(PuzzleMatrixLayer&&) = delete;
-	PuzzleMatrixLayer& operator=(const PuzzleMatrixLayer&) = delete;
-	PuzzleMatrixLayer& operator=(PuzzleMatrixLayer&&) = delete;
+	MatrixLayer(const MatrixLayer&) = delete;
+	MatrixLayer(MatrixLayer&&) = delete;
+	MatrixLayer& operator=(const MatrixLayer&) = delete;
+	MatrixLayer& operator=(MatrixLayer&&) = delete;
 	
 public:
-	~PuzzleMatrixLayer();
+	~MatrixLayer();
 
 private:
-	PuzzleMatrixLayer(GameObject *game_object);
+	MatrixLayer(GameObject *game_object);
 
 	struct impl;
 	std::unique_ptr<impl> pimpl;

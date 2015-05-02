@@ -3,6 +3,8 @@
 
 #include "Script.h"
 
+#include <memory>
+
 class PuzzleScene final :public Script
 {
 	friend class GameObject;
@@ -20,6 +22,9 @@ public:
 
 private:
 	PuzzleScene(GameObject* game_object);
+
+	struct impl;
+	std::unique_ptr<impl> pimpl;
 };
 
 #endif // !__PUZZLE_SCENE__

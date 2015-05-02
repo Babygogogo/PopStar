@@ -9,13 +9,12 @@
 
 struct TitleScene::impl
 {
-	impl(){};
-	~impl(){};
+	impl(GameObject *game_object);
+	~impl();
 
-	std::unique_ptr<GameObject> createTitleLayer();
+	std::unique_ptr<GameObject> createDisplayObjects();
 
 	std::unique_ptr<GameObject> createBackground();
-
 	//HACK: It seems that the cocos2d-x engine has a mysterious bug here.
 	//	If you create Menu with its factory method (e.g. auto menu = Menu::create(some_item..., NULL),
 	//or auto menu = Menu::create(); menu->addChild(some_item);)
@@ -33,39 +32,52 @@ struct TitleScene::impl
 	std::function<void(cocos2d::Ref*)> createStartButtonCallback();
 };
 
-std::unique_ptr<GameObject> TitleScene::impl::createTitleLayer()
+TitleScene::impl::impl(GameObject *game_object)
 {
-	auto title_layer_object = GameObject::create("TitleLayer",
-		[](GameObject* object){object->addComponent<DisplayNode>()->initAs<cocos2d::Layer>(); });
+	game_object->setNeedUpdate(false);
+	game_object->addComponent<DisplayNode>()->initAs<cocos2d::Scene>();
 
-	title_layer_object->addChild(createBackground());
-	title_layer_object->addChild(createTitleMenu());
+	game_object->addChild(createDisplayObjects());
 
-	return title_layer_object;
+	Audio::getInstance()->playBGM();
+}
+
+TitleScene::impl::~impl()
+{
+
+}
+
+std::unique_ptr<GameObject> TitleScene::impl::createDisplayObjects()
+{
+	auto layer_object = GameObject::create("TitleLayer");
+	layer_object->addComponent<DisplayNode>()->initAs<cocos2d::Layer>();
+
+	layer_object->addChild(createBackground());
+	layer_object->addChild(createTitleMenu());
+
+	return layer_object;
 }
 
 std::unique_ptr<GameObject> TitleScene::impl::createBackground()
 {
-	auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
-
 	auto background_object = GameObject::create("TitleBackgroundSprite");
-	auto background_sprite = background_object->addComponent<DisplayNode>()->
-		initAs<cocos2d::Sprite>([](){return cocos2d::Sprite::create("bg_menuscene.jpg"); });
-	background_sprite->setPosition(visibleSize.width / 2, visibleSize.height / 2);
+	auto background_sprite = background_object->addComponent<DisplayNode>()->initAs<cocos2d::Sprite>([]{return cocos2d::Sprite::create("bg_menuscene.jpg"); });
+
+	auto visible_size = cocos2d::Director::getInstance()->getVisibleSize();
+	background_sprite->setPosition(visible_size.width / 2, visible_size.height / 2);
 
 	return background_object;
 }
 
 std::unique_ptr<GameObject> TitleScene::impl::createTitleMenu()
 {
-	auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
-
 	auto menu_object = GameObject::create("TitleMenu");
 	auto menu_underlying = menu_object->addComponent<DisplayNode>()->initAs<cocos2d::Menu>();
 
 	menu_object->addChild(createStartButton());
-	menu_underlying->alignItemsVertically();
-	menu_underlying->setPosition(visibleSize.width / 2, visibleSize.height / 2);
+
+	auto visible_size = cocos2d::Director::getInstance()->getVisibleSize();
+	menu_underlying->setPosition(visible_size.width / 2, visible_size.height / 2);
 
 	return menu_object;
 }
@@ -74,29 +86,22 @@ std::unique_ptr<GameObject> TitleScene::impl::createStartButton()
 {
 	auto button_object = GameObject::create("StartButton");
 	button_object->addComponent<DisplayNode>()->initAs<cocos2d::MenuItemImage>(
-		[this](){return cocos2d::MenuItemImage::create("menu_start.png", "menu_start.png", createStartButtonCallback()); }
-	);
+		[this](){return cocos2d::MenuItemImage::create("menu_start.png", "menu_start.png", createStartButtonCallback()); });
 
 	return button_object;
 }
 
 std::function<void(cocos2d::Ref*)> TitleScene::impl::createStartButtonCallback()
 {
-	return [](cocos2d::Ref *sender){
+	return [](cocos2d::Ref*){
 		SingletonContainer::instance()->get<GameData>()->reset();
-
-		auto puzzle_scene = GameObject::create<PuzzleScene>("PuzzleScene");
-		SingletonContainer::instance()->get<SceneStack>()->replaceAndRun(std::move(puzzle_scene));
+		SingletonContainer::instance()->get<SceneStack>()->replaceAndRun(GameObject::create<PuzzleScene>("PuzzleScene"));
 	};
 }
 
-TitleScene::TitleScene(GameObject* game_object) :Script("TitleScene", game_object), pimpl(new impl)
+TitleScene::TitleScene(GameObject* game_object) :Script("TitleScene", game_object), pimpl(new impl(game_object))
 {
-	game_object->setNeedUpdate(false);
-	game_object->addComponent<DisplayNode>()->initAs<cocos2d::Scene>();
-	game_object->addChild(pimpl->createTitleLayer());
 
-	Audio::getInstance()->playBGM();
 }
 
 TitleScene::~TitleScene()

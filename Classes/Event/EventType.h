@@ -5,7 +5,7 @@ enum class EventType
 {
 	SequentialInvokerFinishOneAction,
 
-	StarsExploded,
+	CurrentScoreIncreased,
 
 	LevelResultBegan,
 	LevelResultEnded,

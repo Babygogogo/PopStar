@@ -22,6 +22,18 @@
     <Filter Include="Event">
       <UniqueIdentifier>{28d53e71-a1b4-4424-98e0-55e49df8bff1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Script\TitleScene">
+      <UniqueIdentifier>{3e1fe857-fe56-491e-bd05-2bf7a94e88f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\PuzzleScene">
+      <UniqueIdentifier>{36ee4515-8f98-45b8-9721-2e6f3c38a06d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\PuzzleScene\StatusLayer">
+      <UniqueIdentifier>{6ab8240e-ad84-459d-9588-7e912c349061}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script\PuzzleScene\MatrixLayer">
+      <UniqueIdentifier>{2ea29d1d-797c-4a94-a7c2-d781d66ecabe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -63,23 +75,11 @@
     <ClCompile Include="..\Classes\Common\SceneStack.cpp">
       <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Script\TitleScene.cpp">
-      <Filter>Script</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Script\PuzzleScene.cpp">
-      <Filter>Script</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Script\PuzzleMatrixLayer.cpp">
-      <Filter>Script</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\Event\EventDispatcher.cpp">
       <Filter>Event</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\LegacyStarMatrix.cpp">
       <Filter>Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Script\StatusBar.cpp">
-      <Filter>Script</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\GameObject\SequentialInvoker.cpp">
       <Filter>GameObjectAndComponent</Filter>
@@ -87,14 +87,32 @@
     <ClCompile Include="..\Classes\Common\GameData.cpp">
       <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Script\StarMatrix.cpp">
-      <Filter>Script</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\LegacyStar.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\Script\TitleScene.cpp">
+      <Filter>Script\TitleScene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Script\PuzzleScene.cpp">
+      <Filter>Script\PuzzleScene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Script\StatusBar.cpp">
+      <Filter>Script\PuzzleScene\StatusLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Script\StatusLayer.cpp">
+      <Filter>Script\PuzzleScene\StatusLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Script\MatrixLayer.cpp">
+      <Filter>Script\PuzzleScene\MatrixLayer</Filter>
+    </ClCompile>
     <ClCompile Include="..\Classes\Script\Star.cpp">
-      <Filter>Script</Filter>
+      <Filter>Script\PuzzleScene\MatrixLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Script\StarMatrix.cpp">
+      <Filter>Script\PuzzleScene\MatrixLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Script\GetScoreLabel.cpp">
+      <Filter>Script\PuzzleScene\StatusLayer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -143,16 +161,7 @@
     <ClInclude Include="..\Classes\GameObject\SoundPlayer.h">
       <Filter>GameObjectAndComponent</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\Script\TitleScene.h">
-      <Filter>Script</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\Script\Script.h">
-      <Filter>Script</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Script\PuzzleScene.h">
-      <Filter>Script</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Script\PuzzleMatrixLayer.h">
       <Filter>Script</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Event\Event.h">
@@ -167,14 +176,8 @@
     <ClInclude Include="..\Classes\LegacyStarMatrix.h">
       <Filter>Classes</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\Script\StarMatrix.h">
-      <Filter>Script</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\Common\IEventListener.h">
       <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Script\StatusBar.h">
-      <Filter>Script</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Event\EventArg1.h">
       <Filter>Event</Filter>
@@ -188,8 +191,29 @@
     <ClInclude Include="..\Classes\LegacyStar.h">
       <Filter>Classes</Filter>
     </ClInclude>
+    <ClInclude Include="..\Classes\Script\TitleScene.h">
+      <Filter>Script\TitleScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Script\PuzzleScene.h">
+      <Filter>Script\PuzzleScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Script\StatusBar.h">
+      <Filter>Script\PuzzleScene\StatusLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Script\StatusLayer.h">
+      <Filter>Script\PuzzleScene\StatusLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Script\MatrixLayer.h">
+      <Filter>Script\PuzzleScene\MatrixLayer</Filter>
+    </ClInclude>
     <ClInclude Include="..\Classes\Script\Star.h">
-      <Filter>Script</Filter>
+      <Filter>Script\PuzzleScene\MatrixLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Script\StarMatrix.h">
+      <Filter>Script\PuzzleScene\MatrixLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Script\GetScoreLabel.h">
+      <Filter>Script\PuzzleScene\StatusLayer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

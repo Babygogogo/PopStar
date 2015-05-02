@@ -147,7 +147,7 @@ void GameData::updateCurrentScoreWith(int num_of_exploded_stars)
 	pimpl->num_of_previous_exploded_stars = num_of_exploded_stars;
 	pimpl->setCurrentScore(pimpl->current_score + pimpl->getScoreOf(num_of_exploded_stars));
 
-	SingletonContainer::instance()->get<EventDispatcher>()->dispatch(Event::create(EventType::StarsExploded));
+	SingletonContainer::instance()->get<EventDispatcher>()->dispatch(Event::create(EventType::CurrentScoreIncreased));
 }
 
 void GameData::updateEndLevelScoreWith(int num_of_left_stars)
@@ -155,7 +155,7 @@ void GameData::updateEndLevelScoreWith(int num_of_left_stars)
 	pimpl->setCurrentScore(pimpl->current_score + getEndLevelBonus(num_of_left_stars));
 }
 
-int GameData::getNumExplodedStars() const
+int GameData::getExplodedStarsNum() const
 {
 	return pimpl->num_of_previous_exploded_stars;
 }
