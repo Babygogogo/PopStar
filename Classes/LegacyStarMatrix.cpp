@@ -40,7 +40,7 @@ bool LegacyStarMatrix::init()
 
 	registerTouchListener();
 	this->scheduleUpdate();
-	SingletonContainer::instance()->get<::EventDispatcher>()->registerListener(EventType::LevelResultEnded, this, [this](::Event*){setNeedClear(true); });
+	SingletonContainer::instance()->get<::EventDispatcher>()->registerListener(EventType::LevelSummaryLabelDisappeared, this, [this](::Event*){setNeedClear(true); });
 
 	return true;
 }

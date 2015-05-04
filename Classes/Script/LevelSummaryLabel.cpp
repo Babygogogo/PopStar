@@ -1,4 +1,4 @@
-#include "StartLevelLabel.h"
+#include "LevelSummaryLabel.h"
 #include "../GameObject/GameObject.h"
 #include "../GameObject/DisplayNode.h"
 #include "../GameObject/SequentialInvoker.h"
@@ -7,8 +7,9 @@
 #include "../Event/EventDispatcher.h"
 #include "../Event/EventType.h"
 #include "../Event/Event.h"
+#include "../Event/EventArg1.h"
 
-struct StartLevelLabel::impl
+struct LevelSummaryLabel::impl
 {
 	impl(GameObject *game_object);
 	~impl();
@@ -19,13 +20,13 @@ struct StartLevelLabel::impl
 	void reset();
 	void resetInvoker();
 
-	std::string createStartLevelText() const;
+	std::string createSummaryText() const;
 
 	cocos2d::Label *m_label_underlying{ nullptr };
 	SequentialInvoker *m_invoker{ nullptr };
 };
 
-StartLevelLabel::impl::impl(GameObject *game_object)
+LevelSummaryLabel::impl::impl(GameObject *game_object)
 {
 	game_object->setNeedUpdate(false);
 	m_label_underlying = game_object->addComponent<DisplayNode>()->initAs<cocos2d::Label>(
@@ -33,18 +34,17 @@ StartLevelLabel::impl::impl(GameObject *game_object)
 	m_invoker = game_object->addComponent<SequentialInvoker>();
 
 	registerAsEventListener();
-	reset();
 }
 
-StartLevelLabel::impl::~impl()
+LevelSummaryLabel::impl::~impl()
 {
 	unregisterAsEventListener();
 }
 
-void StartLevelLabel::impl::registerAsEventListener()
+void LevelSummaryLabel::impl::registerAsEventListener()
 {
-	SingletonContainer::instance()->get<EventDispatcher>()->registerListener(EventType::LevelStarted, this,
-		[this](Event *){reset(); });
+	SingletonContainer::instance()->get<EventDispatcher>()->registerListener(EventType::LevelNoMoreMove, this,
+		[this](Event*){reset(); });
 
 	auto touch_listener = cocos2d::EventListenerTouchOneByOne::create();
 	touch_listener->onTouchBegan = [this](cocos2d::Touch* touch, cocos2d::Event* event)->bool{
@@ -54,15 +54,15 @@ void StartLevelLabel::impl::registerAsEventListener()
 	cocos2d::Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(touch_listener, m_label_underlying);
 }
 
-void StartLevelLabel::impl::unregisterAsEventListener()
+void LevelSummaryLabel::impl::unregisterAsEventListener()
 {
 	if (auto singleton_container = SingletonContainer::instance())
 		singleton_container->get<EventDispatcher>()->deleteListener(this);
 }
 
-void StartLevelLabel::impl::reset()
+void LevelSummaryLabel::impl::reset()
 {
-	m_label_underlying->setString(createStartLevelText());
+	m_label_underlying->setString(createSummaryText());
 	m_label_underlying->setVisible(true);
 
 	auto visible_size = cocos2d::Director::getInstance()->getVisibleSize();
@@ -72,28 +72,31 @@ void StartLevelLabel::impl::reset()
 	m_invoker->invoke();
 }
 
-void StartLevelLabel::impl::resetInvoker()
+void LevelSummaryLabel::impl::resetInvoker()
 {
 	auto visible_size = cocos2d::Director::getInstance()->getVisibleSize();
 	m_invoker->addMoveTo(0.6f, visible_size.width / 2, visible_size.height / 2);
 	m_invoker->addMoveTo(0.6f, -m_label_underlying->getContentSize().width / 2, visible_size.height / 2, [this]{
 		m_label_underlying->setVisible(false);
-		SingletonContainer::instance()->get<EventDispatcher>()->dispatch(Event::create(EventType::StartLevelLabelDisappeared));
+		SingletonContainer::instance()->get<GameData>()->updateScoreWithEndLevelBonus();
+		SingletonContainer::instance()->get<EventDispatcher>()->dispatch(Event::create(EventType::LevelSummaryLabelDisappeared));
 	});
 }
 
-std::string StartLevelLabel::impl::createStartLevelText() const
+std::string LevelSummaryLabel::impl::createSummaryText() const
 {
-	auto level_text = std::to_string(SingletonContainer::instance()->get<GameData>()->getCurrentLevel()) + '\n';
-	return std::string("Level: ") + level_text + std::string(" Start!");
+	auto stars_num_text = std::string("Stars Left: ") + std::to_string(SingletonContainer::instance()->get<GameData>()->getStarsLeftNum()) + '\n';
+	auto bonus_text = std::string("Bonus: ") + std::to_string(SingletonContainer::instance()->get<GameData>()->getEndLevelBonus());
+
+	return stars_num_text + bonus_text;
 }
 
-StartLevelLabel::StartLevelLabel(GameObject *game_object) :Script("StartLevelLabel", game_object), pimpl(new impl(game_object))
+LevelSummaryLabel::LevelSummaryLabel(GameObject *game_object) :Script("LevelSummaryLabel", game_object), pimpl(new impl(game_object))
 {
 
 }
 
-StartLevelLabel::~StartLevelLabel()
+LevelSummaryLabel::~LevelSummaryLabel()
 {
 
 }

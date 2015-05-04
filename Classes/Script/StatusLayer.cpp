@@ -2,6 +2,7 @@
 #include "StatusBar.h"
 #include "GetScoreLabel.h"
 #include "StartLevelLabel.h"
+#include "LevelSummaryLabel.h"
 #include "../GameObject/GameObject.h"
 #include "../GameObject/DisplayNode.h"
 
@@ -18,6 +19,7 @@ StatusLayer::impl::impl(GameObject *game_object)
 	game_object->addChild(GameObject::create<StatusBar>("StatusBar"));
 	game_object->addChild(GameObject::create<StartLevelLabel>("StartLevelLabel"));
 	game_object->addChild(GameObject::create<GetScoreLabel>("GetScoreLabel"));
+	game_object->addChild(GameObject::create<LevelSummaryLabel>("LevelSummaryLabel"));
 }
 
 StatusLayer::impl::~impl()

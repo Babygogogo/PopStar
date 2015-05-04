@@ -48,7 +48,7 @@ void GetScoreLabel::impl::registerAsEventListeners(cocos2d::Label *label_underly
 		label_underlying->setVisible(true);
 	});
 
-	SingletonContainer::instance()->get<EventDispatcher>()->registerListener(EventType::LevelResultEnded, this, [label_underlying](Event*){
+	SingletonContainer::instance()->get<EventDispatcher>()->registerListener(EventType::LevelSummaryLabelDisappeared, this, [label_underlying](Event*){
 		label_underlying->setVisible(false);
 	});
 }

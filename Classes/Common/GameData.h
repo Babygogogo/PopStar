@@ -31,8 +31,10 @@ public:
 	int getCurrentScore() const;
 	int getTargetScore() const;
 
-	void updateEndLevelScoreWith(int num_of_left_stars);
-	int getEndLevelBonus(int num_of_left_stars) const;
+	int getStarsLeftNum() const;
+	void setStarsLeftNum(int stars_left_num);
+	void updateScoreWithEndLevelBonus();
+	int getEndLevelBonus() const;
 
 	void reset();
 

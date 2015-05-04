@@ -8,11 +8,11 @@ enum class EventType
 	CurrentScoreIncreased,
 
 	LevelResultBegan,
-	LevelResultEnded,
 	LevelNoMoreMove,
 
 	LevelStarted,
 	StartLevelLabelDisappeared,
+	LevelSummaryLabelDisappeared,
 
 	GameOver,
 

@@ -89,7 +89,7 @@ void StarMatrix::impl::registerAsEventListeners()
 	};
 	cocos2d::Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, m_node_underlying);
 
-	SingletonContainer::instance()->get<::EventDispatcher>()->registerListener(EventType::LevelResultEnded, this, [this](::Event*){
+	SingletonContainer::instance()->get<::EventDispatcher>()->registerListener(EventType::LevelSummaryLabelDisappeared, this, [this](::Event*){
 		clearStarsOneByOne();
 		unregisterAsEventListeners();
 	});
@@ -185,8 +185,11 @@ void StarMatrix::impl::explodeGroupingStars(std::list<Star*> &&group_stars)
 	Audio::getInstance()->playCombo(group_stars.size());
 	Audio::getInstance()->playPop();
 
-	if (isNoMoreMove())
-		SingletonContainer::instance()->get<::EventDispatcher>()->dispatch(::Event::create(EventType::LevelNoMoreMove, EventArg1::create(countStarsLeft())));
+	if (isNoMoreMove()){
+		SingletonContainer::instance()->get<GameData>()->setStarsLeftNum(countStarsLeft());
+//		SingletonContainer::instance()->get<::EventDispatcher>()->dispatch(::Event::create(EventType::LevelNoMoreMove, EventArg1::create(countStarsLeft())));
+		SingletonContainer::instance()->get<::EventDispatcher>()->dispatch(::Event::create(EventType::LevelNoMoreMove));
+	}
 }
 
 int StarMatrix::impl::countStarsLeft() const
