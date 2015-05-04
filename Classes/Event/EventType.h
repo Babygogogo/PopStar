@@ -9,8 +9,10 @@ enum class EventType
 
 	LevelResultBegan,
 	LevelResultEnded,
-	LevelUp,
 	LevelNoMoreMove,
+
+	LevelStarted,
+	StartLevelLabelDisappeared,
 
 	GameOver,
 

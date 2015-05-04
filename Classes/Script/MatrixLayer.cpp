@@ -16,7 +16,7 @@
 
 struct MatrixLayer::impl
 {
-	impl(GameObject *game_object) :m_layer(game_object){};
+	impl(GameObject *game_object);
 	~impl();
 
 	void createAndAttachLevelMessageLabel(GameObject *layer_object, GameObject *&label_object, std::string label_name);
@@ -30,11 +30,21 @@ struct MatrixLayer::impl
 	void showLevelSummary(int num_stars_left);
 	void onGameOver();
 
-	GameObject *m_layer{ nullptr };
-	GameObject *m_preparation_label{ nullptr };
+	GameObject *m_layer_object{ nullptr };
 	GameObject *m_summary_label{ nullptr };
 	GameObject *m_matrix{ nullptr };
 };
+
+MatrixLayer::impl::impl(GameObject *game_object) :m_layer_object(game_object)
+{
+	game_object->addComponent<DisplayNode>()->initAs<cocos2d::Layer>();
+
+	m_matrix = game_object->addChild(GameObject::create<StarMatrix>("StarMatrix"));
+
+	createAndAttachLevelMessageLabel(game_object, m_summary_label, "PuzzleLevelSummaryLabel");
+
+	addEventListeners();
+}
 
 void MatrixLayer::impl::onGameOver()
 {
@@ -52,12 +62,12 @@ void MatrixLayer::impl::onGameOver()
 	invoker->invoke();
 	resetTouchListenerForInvoker(game_over_label.get());
 
-	m_layer->addChild(std::move(game_over_label));
+	m_layer_object->addChild(std::move(game_over_label));
 }
 
 void MatrixLayer::impl::addEventListeners()
 {
-	SingletonContainer::instance()->get<EventDispatcher>()->registerListener(EventType::LevelUp, this,
+	SingletonContainer::instance()->get<EventDispatcher>()->registerListener(EventType::StartLevelLabelDisappeared, this,
 		[this](Event *){startLevel(); });
 	SingletonContainer::instance()->get<EventDispatcher>()->registerListener(EventType::LevelNoMoreMove, this,
 		[this](Event *e){showLevelSummary(static_cast<EventArg1*>(e->getArg())->getInt()); });
@@ -118,20 +128,14 @@ MatrixLayer::impl::~impl()
 
 void MatrixLayer::impl::startLevel()
 {
-	auto label_underlying = m_preparation_label->getComponent<DisplayNode>()->getAs<cocos2d::Label>();
-	resetLevelMessageLabel(m_preparation_label, std::string("Level: ") + std::to_string(SingletonContainer::instance()->get<GameData>()->getCurrentLevel()) + '\n' + std::string(" Start!"),
-		[this, label_underlying]{
-			m_matrix->getComponent<StarMatrix>()->reset();
-			label_underlying->setVisible(false);
-			cocos2d::Director::getInstance()->getEventDispatcher()->removeEventListenersForTarget(label_underlying); });
-
+	m_matrix->getComponent<StarMatrix>()->reset();
 	Audio::getInstance()->playReadyGo();
 }
 
 void MatrixLayer::impl::showLevelSummary(int num_stars_left)
 {
 	auto label_underlying = m_summary_label->getComponent<DisplayNode>()->getAs<cocos2d::Label>();
-	resetLevelMessageLabel(m_preparation_label,
+	resetLevelMessageLabel(m_summary_label,
 		std::string("Stars Left: ") + std::to_string(num_stars_left) + '\n' + std::string("Bonus: ") + std::to_string(SingletonContainer::instance()->get<GameData>()->getEndLevelBonus(num_stars_left)),
 		[this, label_underlying, num_stars_left]{
 			SingletonContainer::instance()->get<GameData>()->updateEndLevelScoreWith(num_stars_left);
@@ -142,15 +146,7 @@ void MatrixLayer::impl::showLevelSummary(int num_stars_left)
 
 MatrixLayer::MatrixLayer(GameObject *game_object) :Script("PuzzleMatrixLayer", game_object), pimpl(new impl(game_object))
 {
-	game_object->addComponent<DisplayNode>()->initAs<cocos2d::Layer>();
 
-	pimpl->m_matrix = game_object->addChild(GameObject::create<StarMatrix>("StarMatrix"));
-
-	pimpl->createAndAttachLevelMessageLabel(game_object, pimpl->m_preparation_label, "PuzzleLevelPreparationLabel");
-	pimpl->createAndAttachLevelMessageLabel(game_object, pimpl->m_summary_label, "PuzzleLevelSummaryLabel");
-
-	pimpl->addEventListeners();
-	pimpl->startLevel();
 }
 
 MatrixLayer::~MatrixLayer()

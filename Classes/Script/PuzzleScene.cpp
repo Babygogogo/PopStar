@@ -7,11 +7,27 @@
 
 struct PuzzleScene::impl
 {
-	impl(){};
-	~impl(){};
+	impl(GameObject *game_object);
+	~impl();
 
 	std::unique_ptr<GameObject> createBackground();
 };
+
+PuzzleScene::impl::impl(GameObject *game_object)
+{
+	game_object->addComponent<DisplayNode>()->initAs<cocos2d::Scene>();
+
+	game_object->addChild(createBackground());
+	game_object->addChild(GameObject::create<MatrixLayer>("MatrixLayer"));
+	game_object->addChild(GameObject::create<StatusLayer>("PuzzleStatusLayer"));
+
+	Audio::getInstance()->playBGM();
+}
+
+PuzzleScene::impl::~impl()
+{
+
+}
 
 std::unique_ptr<GameObject> PuzzleScene::impl::createBackground()
 {
@@ -25,15 +41,9 @@ std::unique_ptr<GameObject> PuzzleScene::impl::createBackground()
 	return background_object;
 }
 
-PuzzleScene::PuzzleScene(GameObject* game_object) :Script("PuzzleScene", game_object)
+PuzzleScene::PuzzleScene(GameObject* game_object) :Script("PuzzleScene", game_object), pimpl(new impl(game_object))
 {
-	game_object->addComponent<DisplayNode>()->initAs<cocos2d::Scene>();
 
-	game_object->addChild(pimpl->createBackground());
-	game_object->addChild(GameObject::create<MatrixLayer>("MatrixLayer"));
-	game_object->addChild(GameObject::create<StatusLayer>("PuzzleStatusLayer"));
-
-	Audio::getInstance()->playBGM();
 }
 
 PuzzleScene::~PuzzleScene()

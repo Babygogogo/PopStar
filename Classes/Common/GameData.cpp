@@ -125,7 +125,7 @@ void GameData::levelEnd()
 		SingletonContainer::instance()->get<::EventDispatcher>()->dispatch(::Event::create(EventType::GameOver));
 	else{
 		pimpl->setCurrentLevel(pimpl->current_level + 1);
-		SingletonContainer::instance()->get<::EventDispatcher>()->dispatch(::Event::create(EventType::LevelUp));
+		SingletonContainer::instance()->get<::EventDispatcher>()->dispatch(::Event::create(EventType::LevelStarted));
 	}
 }
 

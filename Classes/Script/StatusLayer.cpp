@@ -1,6 +1,7 @@
 #include "StatusLayer.h"
 #include "StatusBar.h"
 #include "GetScoreLabel.h"
+#include "StartLevelLabel.h"
 #include "../GameObject/GameObject.h"
 #include "../GameObject/DisplayNode.h"
 
@@ -15,6 +16,7 @@ StatusLayer::impl::impl(GameObject *game_object)
 	game_object->addComponent<DisplayNode>()->initAs<cocos2d::Layer>();
 
 	game_object->addChild(GameObject::create<StatusBar>("StatusBar"));
+	game_object->addChild(GameObject::create<StartLevelLabel>("StartLevelLabel"));
 	game_object->addChild(GameObject::create<GetScoreLabel>("GetScoreLabel"));
 }
 

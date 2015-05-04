@@ -12,9 +12,9 @@ struct TitleScene::impl
 	impl(GameObject *game_object);
 	~impl();
 
-	std::unique_ptr<GameObject> createDisplayObjects();
+	std::unique_ptr<GameObject> createDisplayObjects() const;
 
-	std::unique_ptr<GameObject> createBackground();
+	std::unique_ptr<GameObject> createBackground() const;
 	//HACK: It seems that the cocos2d-x engine has a mysterious bug here.
 	//	If you create Menu with its factory method (e.g. auto menu = Menu::create(some_item..., NULL),
 	//or auto menu = Menu::create(); menu->addChild(some_item);)
@@ -27,9 +27,9 @@ struct TitleScene::impl
 	//before:	if (kScriptTypeNone != _scriptType)
 	//after:	if (kScriptTypeNone != _scriptType && ScriptEngineManager::getInstance()->getScriptEngine())
 	//	This change should be reasonable, but the better solution is to understand why the CCMenuItem::_scriptType is changed.
-	std::unique_ptr<GameObject> createTitleMenu();
-	std::unique_ptr<GameObject> createStartButton();
-	std::function<void(cocos2d::Ref*)> createStartButtonCallback();
+	std::unique_ptr<GameObject> createTitleMenu() const;
+	std::unique_ptr<GameObject> createStartButton() const;
+	std::function<void(cocos2d::Ref*)> createStartButtonCallback() const;
 };
 
 TitleScene::impl::impl(GameObject *game_object)
@@ -47,7 +47,7 @@ TitleScene::impl::~impl()
 
 }
 
-std::unique_ptr<GameObject> TitleScene::impl::createDisplayObjects()
+std::unique_ptr<GameObject> TitleScene::impl::createDisplayObjects() const
 {
 	auto layer_object = GameObject::create("TitleLayer");
 	layer_object->addComponent<DisplayNode>()->initAs<cocos2d::Layer>();
@@ -58,10 +58,11 @@ std::unique_ptr<GameObject> TitleScene::impl::createDisplayObjects()
 	return layer_object;
 }
 
-std::unique_ptr<GameObject> TitleScene::impl::createBackground()
+std::unique_ptr<GameObject> TitleScene::impl::createBackground() const
 {
 	auto background_object = GameObject::create("TitleBackgroundSprite");
-	auto background_sprite = background_object->addComponent<DisplayNode>()->initAs<cocos2d::Sprite>([]{return cocos2d::Sprite::create("bg_menuscene.jpg"); });
+	auto background_sprite = background_object->addComponent<DisplayNode>()->initAs<cocos2d::Sprite>(
+		[]{return cocos2d::Sprite::create("bg_menuscene.jpg"); });
 
 	auto visible_size = cocos2d::Director::getInstance()->getVisibleSize();
 	background_sprite->setPosition(visible_size.width / 2, visible_size.height / 2);
@@ -69,7 +70,7 @@ std::unique_ptr<GameObject> TitleScene::impl::createBackground()
 	return background_object;
 }
 
-std::unique_ptr<GameObject> TitleScene::impl::createTitleMenu()
+std::unique_ptr<GameObject> TitleScene::impl::createTitleMenu() const
 {
 	auto menu_object = GameObject::create("TitleMenu");
 	auto menu_underlying = menu_object->addComponent<DisplayNode>()->initAs<cocos2d::Menu>();
@@ -82,16 +83,16 @@ std::unique_ptr<GameObject> TitleScene::impl::createTitleMenu()
 	return menu_object;
 }
 
-std::unique_ptr<GameObject> TitleScene::impl::createStartButton()
+std::unique_ptr<GameObject> TitleScene::impl::createStartButton() const
 {
 	auto button_object = GameObject::create("StartButton");
 	button_object->addComponent<DisplayNode>()->initAs<cocos2d::MenuItemImage>(
-		[this](){return cocos2d::MenuItemImage::create("menu_start.png", "menu_start.png", createStartButtonCallback()); });
+		[this]{return cocos2d::MenuItemImage::create("menu_start.png", "menu_start.png", createStartButtonCallback()); });
 
 	return button_object;
 }
 
-std::function<void(cocos2d::Ref*)> TitleScene::impl::createStartButtonCallback()
+std::function<void(cocos2d::Ref*)> TitleScene::impl::createStartButtonCallback() const
 {
 	return [](cocos2d::Ref*){
 		SingletonContainer::instance()->get<GameData>()->reset();

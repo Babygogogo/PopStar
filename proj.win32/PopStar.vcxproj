@@ -154,6 +154,7 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClCompile Include="..\Classes\Script\PuzzleScene.cpp" />
     <ClCompile Include="..\Classes\Script\Star.cpp" />
     <ClCompile Include="..\Classes\Script\StarMatrix.cpp" />
+    <ClCompile Include="..\Classes\Script\StartLevelLabel.cpp" />
     <ClCompile Include="..\Classes\Script\StatusBar.cpp" />
     <ClCompile Include="..\Classes\Script\StatusLayer.cpp" />
     <ClCompile Include="..\Classes\Script\TitleScene.cpp" />
@@ -189,6 +190,7 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClInclude Include="..\Classes\Script\Script.h" />
     <ClInclude Include="..\Classes\Script\Star.h" />
     <ClInclude Include="..\Classes\Script\StarMatrix.h" />
+    <ClInclude Include="..\Classes\Script\StartLevelLabel.h" />
     <ClInclude Include="..\Classes\Script\StatusBar.h" />
     <ClInclude Include="..\Classes\Script\StatusLayer.h" />
     <ClInclude Include="..\Classes\Script\TitleScene.h" />

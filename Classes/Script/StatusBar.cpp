@@ -9,7 +9,7 @@
 
 struct StatusBar::impl
 {
-	impl(){};
+	impl(GameObject *game_object);
 	~impl();
 
 	std::unique_ptr<GameObject> createHighScoreLabel();
@@ -17,6 +17,17 @@ struct StatusBar::impl
 	std::unique_ptr<GameObject> createTargetScoreLabel();
 	std::unique_ptr<GameObject> createLevelLabel();
 };
+
+StatusBar::impl::impl(GameObject *game_object)
+{
+	game_object->setNeedUpdate(false);
+	game_object->addComponent<DisplayNode>()->initAs<cocos2d::Node>();
+
+	game_object->addChild(createHighScoreLabel());
+	game_object->addChild(createCurrentScoreLabel());
+	game_object->addChild(createTargetScoreLabel());
+	game_object->addChild(createLevelLabel());
+}
 
 StatusBar::impl::~impl()
 {
@@ -30,8 +41,8 @@ std::unique_ptr<GameObject> StatusBar::impl::createHighScoreLabel()
 	auto label_underlying = label_object->addComponent<DisplayNode>()->initAs<cocos2d::Label>([]{return cocos2d::Label::createWithSystemFont(
 		std::string("High Score: ") + std::to_string(SingletonContainer::instance()->get<GameData>()->getHighScore()), "Verdana - Bold", 30); });
 
-	auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
-	label_underlying->setPosition(visibleSize.width / 2, visibleSize.height - 50);
+	auto visible_size = cocos2d::Director::getInstance()->getVisibleSize();
+	label_underlying->setPosition(visible_size.width / 2, visible_size.height - 50);
 
 	SingletonContainer::instance()->get<EventDispatcher>()->registerListener(EventType::HighScoreValueUpdated, this, [label_underlying](Event*){
 		label_underlying->setString(std::string("High Score: ") + std::to_string(SingletonContainer::instance()->get<GameData>()->getHighScore())); });
@@ -45,8 +56,8 @@ std::unique_ptr<GameObject> StatusBar::impl::createCurrentScoreLabel()
 	auto label_underlying = label_object->addComponent<DisplayNode>()->initAs<cocos2d::Label>([]{return cocos2d::Label::createWithSystemFont(
 		std::string("Current Score: ") + std::to_string(SingletonContainer::instance()->get<GameData>()->getCurrentScore()), "Verdana - Bold", 40); });
 
-	auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
-	label_underlying->setPosition(visibleSize.width / 2, visibleSize.height - 150);
+	auto visible_size = cocos2d::Director::getInstance()->getVisibleSize();
+	label_underlying->setPosition(visible_size.width / 2, visible_size.height - 150);
 
 	SingletonContainer::instance()->get<EventDispatcher>()->registerListener(EventType::CurrentScoreValueUpdated, this, [label_underlying](Event*){
 		label_underlying->setString(std::string("Current Score: ") + std::to_string(SingletonContainer::instance()->get<GameData>()->getCurrentScore())); });
@@ -60,8 +71,8 @@ std::unique_ptr<GameObject> StatusBar::impl::createTargetScoreLabel()
 	auto label_underlying = label_object->addComponent<DisplayNode>()->initAs<cocos2d::Label>([]{return cocos2d::Label::createWithSystemFont(
 		std::string("Target Score: ") + std::to_string(SingletonContainer::instance()->get<GameData>()->getTargetScore()), "Verdana - Bold", 30); });
 
-	auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
-	label_underlying->setPosition(325, visibleSize.height - 100);
+	auto visible_size = cocos2d::Director::getInstance()->getVisibleSize();
+	label_underlying->setPosition(325, visible_size.height - 100);
 
 	SingletonContainer::instance()->get<EventDispatcher>()->registerListener(EventType::TargetScoreValueUpdated, this, [label_underlying](Event*){
 		label_underlying->setString(std::string("Target Score: ") + std::to_string(SingletonContainer::instance()->get<GameData>()->getTargetScore())); });
@@ -75,8 +86,8 @@ std::unique_ptr<GameObject> StatusBar::impl::createLevelLabel()
 	auto label_underlying = label_object->addComponent<DisplayNode>()->initAs<cocos2d::Label>([]{return cocos2d::Label::createWithSystemFont(
 		std::string("Level: ") + std::to_string(SingletonContainer::instance()->get<GameData>()->getCurrentLevel()), "Verdana - Bold", 30); });
 
-	auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
-	label_underlying->setPosition(75, visibleSize.height - 100);
+	auto visible_size = cocos2d::Director::getInstance()->getVisibleSize();
+	label_underlying->setPosition(75, visible_size.height - 100);
 
 	SingletonContainer::instance()->get<EventDispatcher>()->registerListener(EventType::LevelValueUpdated, this, [label_underlying](Event*){
 		label_underlying->setString(std::string("Level: ") + std::to_string(SingletonContainer::instance()->get<GameData>()->getCurrentLevel())); });
@@ -84,15 +95,9 @@ std::unique_ptr<GameObject> StatusBar::impl::createLevelLabel()
 	return label_object;
 }
 
-StatusBar::StatusBar(GameObject *game_object) :Script("StatusBar", game_object), pimpl(new impl)
+StatusBar::StatusBar(GameObject *game_object) :Script("StatusBar", game_object), pimpl(new impl(game_object))
 {
-	game_object->setNeedUpdate(false);
-	game_object->addComponent<DisplayNode>()->initAs<cocos2d::Node>();
 
-	game_object->addChild(pimpl->createHighScoreLabel());
-	game_object->addChild(pimpl->createCurrentScoreLabel());
-	game_object->addChild(pimpl->createTargetScoreLabel());
-	game_object->addChild(pimpl->createLevelLabel());
 }
 
 StatusBar::~StatusBar()
