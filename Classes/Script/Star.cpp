@@ -5,26 +5,26 @@
 
 #include <random>
 
-struct Star::impl{
+struct Star::impl
+{
 	impl(GameObject *game_object);
-	~impl(){};
+	~impl();
 
 	std::string getImageFileName(int random_int);
-	void setRandomPosition(int row_num, int col_num);
+	void setRandomPosition(float pos_x, float pos_y);
 
-	float calculateMoveTime(int to_row_num, int to_col_num);
-	cocos2d::Vec2 calculatePosition(int row_num, int col_num);
+	float calculateMoveTime(float to_pos_x, float to_pos_y, float speed);
+	void moveTo(float pos_x, float pos_y, float speed = Star::impl::MOVE_SPEED);
 
-	GameObject *m_game_object{ nullptr };
 	cocos2d::Sprite *m_sprite{ nullptr };
 	SequentialInvoker *m_invoker{ nullptr };
 
 	int m_color_num{ 0 };
 	bool m_is_selected{ false };
 	int m_row_num{ 0 }, m_col_num{ 0 };
+	float m_pos_x{ 0.0f }, m_pos_y{ 0.0f };
 
 	const static float MOVE_SPEED;
-	const static int ROWS_TOTAL = 10;
 
 	static std::random_device rd;
 	static std::default_random_engine random_engine;
@@ -37,10 +37,19 @@ const float Star::impl::MOVE_SPEED = 250.0f;
 std::random_device Star::impl::rd;
 std::default_random_engine Star::impl::random_engine(rd());
 std::uniform_int_distribution<> Star::impl::random_color_num(0, 4);
-std::uniform_int_distribution<> Star::impl::random_pos_offset(-100, 100);
+std::uniform_int_distribution<> Star::impl::random_pos_offset(-135, 135);
 
-Star::impl::impl(GameObject *game_object) :m_game_object(game_object)
+Star::impl::impl(GameObject *game_object)
 {
+	m_sprite = game_object->addComponent<DisplayNode>()->initAs<cocos2d::Sprite>();
+	
+	m_invoker = game_object->addComponent<SequentialInvoker>();
+	m_invoker->setInvokeContinuously(true);
+}
+
+Star::impl::~impl()
+{
+
 }
 
 std::string Star::impl::getImageFileName(int color_num)
@@ -61,36 +70,35 @@ std::string Star::impl::getImageFileName(int color_num)
 	}
 }
 
-void Star::impl::setRandomPosition(int row_num, int col_num)
+void Star::impl::setRandomPosition(float pos_x, float pos_y)
 {
-	m_row_num = row_num;
-	m_col_num = col_num;
+	m_pos_x = pos_x + random_pos_offset(random_engine);
+	m_pos_y = pos_y + random_pos_offset(random_engine);
 
-	auto position = calculatePosition(m_row_num, m_col_num);
-	position.x += random_pos_offset(random_engine);
-	position.y += random_pos_offset(random_engine);
-	m_sprite->setPosition(position);
+	m_sprite->setPosition(m_pos_x, m_pos_y);
 }
 
-cocos2d::Vec2 Star::impl::calculatePosition(int row_num, int col_num)
+float Star::impl::calculateMoveTime(float to_pos_x, float to_pos_y, float speed)
 {
-	return cocos2d::Point(col_num * Star::WIDTH + Star::WIDTH / 2, (ROWS_TOTAL - row_num) * Star::HEIGHT - Star::HEIGHT / 2);
+	auto delta_x = m_pos_x - to_pos_x;
+	auto delta_y = m_pos_y - to_pos_y;
+
+	return sqrt(delta_x * delta_x + delta_y * delta_y) / speed;
 }
 
-float Star::impl::calculateMoveTime(int to_row_num, int to_col_num)
+void Star::impl::moveTo(float pos_x, float pos_y, float speed /*= Star::impl::MOVE_SPEED*/)
 {
-	auto current_pos = calculatePosition(m_row_num, m_col_num);
-	auto to_pos = calculatePosition(to_row_num, to_col_num);
-	auto delta_x = current_pos.x - to_pos.x;
-	auto delta_y = current_pos.y - to_pos.y;
+	if (pos_x == m_pos_x && pos_y == m_pos_y)
+		return;
 
-	return sqrt(delta_x * delta_x + delta_y * delta_y) / MOVE_SPEED;
+	m_invoker->addMoveTo(calculateMoveTime(pos_x, pos_y, speed), pos_x, pos_y);
+	m_pos_x = pos_x;
+	m_pos_y = pos_y;
 }
 
 Star::Star(GameObject *game_object) :Script("Star", game_object), pimpl(new impl(game_object))
 {
-	pimpl->m_sprite = game_object->addComponent<DisplayNode>()->initAs<cocos2d::Sprite>();
-	(pimpl->m_invoker = game_object->addComponent<SequentialInvoker>())->setInvokeContinuously(true);
+
 }
 
 Star::~Star()
@@ -98,26 +106,23 @@ Star::~Star()
 
 }
 
-void Star::reset(int row_num, int col_num)
+void Star::randomize(int row_num, int col_num, float pos_x, float pos_y)
 {
 	pimpl->m_color_num = pimpl->random_color_num(pimpl->random_engine);
 	pimpl->m_sprite->setTexture(pimpl->getImageFileName(pimpl->m_color_num));
-
 	pimpl->m_sprite->setVisible(true);
+
 	pimpl->m_is_selected = false;
-
-	pimpl->setRandomPosition(row_num, col_num);
-	pimpl->m_invoker->addFiniteTimeAction(cocos2d::MoveTo::create(0.7f, pimpl->calculatePosition(row_num, col_num)));
-}
-
-void Star::moveTo(int row_num, int col_num)
-{
-	if (row_num == pimpl->m_row_num && col_num == pimpl->m_col_num)
-		return;
-
-	pimpl->m_invoker->addFiniteTimeAction(cocos2d::MoveTo::create(pimpl->calculateMoveTime(row_num, col_num), pimpl->calculatePosition(row_num, col_num)));
 	pimpl->m_row_num = row_num;
 	pimpl->m_col_num = col_num;
+
+	pimpl->setRandomPosition(pos_x, pos_y);
+	pimpl->moveTo(pos_x, pos_y, Star::impl::MOVE_SPEED * 0.6f);
+}
+
+void Star::moveTo(float pos_x, float pos_y)
+{
+	pimpl->moveTo(pos_x, pos_y);
 }
 
 bool Star::isSelected() const
@@ -150,7 +155,7 @@ void Star::setColNum(int col_num)
 	pimpl->m_col_num = col_num;
 }
 
-bool Star::canGroupWith(Star *star)
+bool Star::canGroupWith(Star *star) const
 {
 	return this != star && pimpl->m_color_num == star->pimpl->m_color_num;
 }

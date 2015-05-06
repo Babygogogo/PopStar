@@ -20,11 +20,11 @@ class Star final :public Script
 public:
 	~Star();
 
-	void reset(int row_num, int col_num);
+	void randomize(int row_num, int col_num, float pos_x, float pos_y);
 
-	void moveTo(int row_num, int col_num);
+	void moveTo(float pos_x, float pos_y);
 
-	bool canGroupWith(Star *star);
+	bool canGroupWith(Star *star) const;
 
 	int getColorNum() const;
 	float getPositionX() const;
