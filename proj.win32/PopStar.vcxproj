@@ -149,6 +149,7 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClCompile Include="..\Classes\GameObject\GameObject.cpp" />
     <ClCompile Include="..\Classes\GameObject\SequentialInvoker.cpp" />
     <ClCompile Include="..\Classes\HelloWorldScene.cpp" />
+    <ClCompile Include="..\Classes\Script\GameOverLabel.cpp" />
     <ClCompile Include="..\Classes\Script\GetScoreLabel.cpp" />
     <ClCompile Include="..\Classes\Script\LevelSummaryLabel.cpp" />
     <ClCompile Include="..\Classes\Script\MatrixLayer.cpp" />
@@ -185,6 +186,7 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClInclude Include="..\Classes\GameObject\SoundPlayer.h" />
     <ClInclude Include="..\Classes\GameObject\SequentialInvoker.h" />
     <ClInclude Include="..\Classes\HelloWorldScene.h" />
+    <ClInclude Include="..\Classes\Script\GameOverLabel.h" />
     <ClInclude Include="..\Classes\Script\GetScoreLabel.h" />
     <ClInclude Include="..\Classes\Script\LevelSummaryLabel.h" />
     <ClInclude Include="..\Classes\Script\MatrixLayer.h" />

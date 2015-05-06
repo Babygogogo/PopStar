@@ -120,6 +120,9 @@
     <ClCompile Include="..\Classes\Script\LevelSummaryLabel.cpp">
       <Filter>Script\PuzzleScene\StatusLayer</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\Script\GameOverLabel.cpp">
+      <Filter>Script\PuzzleScene\StatusLayer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -225,6 +228,9 @@
       <Filter>Script\PuzzleScene\StatusLayer</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Script\LevelSummaryLabel.h">
+      <Filter>Script\PuzzleScene\StatusLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Script\GameOverLabel.h">
       <Filter>Script\PuzzleScene\StatusLayer</Filter>
     </ClInclude>
   </ItemGroup>
