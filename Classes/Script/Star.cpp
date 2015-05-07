@@ -10,7 +10,8 @@ struct Star::impl
 	impl(GameObject *game_object);
 	~impl();
 
-	std::string getImageFileName(int random_int);
+	void setRandomColor();
+	std::string getImageFileName();
 	void setRandomPosition(float pos_x, float pos_y);
 
 	float calculateMoveTime(float to_pos_x, float to_pos_y, float speed);
@@ -19,7 +20,9 @@ struct Star::impl
 	cocos2d::Sprite *m_sprite{ nullptr };
 	SequentialInvoker *m_invoker{ nullptr };
 
-	int m_color_num{ 0 };
+	enum class Color{ BLUE, GREEN, ORANGE, RED, PURPLE } m_color;
+	cocos2d::Color4F m_color4f;
+	std::string m_texture_name;
 	bool m_is_selected{ false };
 	int m_row_num{ 0 }, m_col_num{ 0 };
 	float m_pos_x{ 0.0f }, m_pos_y{ 0.0f };
@@ -52,22 +55,18 @@ Star::impl::~impl()
 
 }
 
-std::string Star::impl::getImageFileName(int color_num)
+void Star::impl::setRandomColor()
 {
-	switch (color_num % 5){
-	case 0:
-		return "blue.png";
-	case 1:
-		return "green.png";
-	case 2:
-		return "orange.png";
-	case 3:
-		return "red.png";
-	case 4:
-		return "purple.png";
-	default:
-		return{};
-	}
+	switch (random_color_num(random_engine)){
+	case 0:	m_color = Color::BLUE;		m_texture_name = "blue.png";	m_color4f = cocos2d::Color4F(84.0f / 255.0f, 203.0f / 255.0f, 254.0f / 255.0f, 1);	break;
+	case 1:	m_color = Color::GREEN;		m_texture_name = "green.png";	m_color4f = cocos2d::Color4F(132.0f / 255.0f, 226.0f / 255.0f, 111.0f / 255.0f, 1);	break;
+	case 2:	m_color = Color::ORANGE;	m_texture_name = "orange.png";	m_color4f = cocos2d::Color4F(253.0f / 255.0f, 234.0f / 255.0f, 84.0f / 255.0f, 1);	break;
+	case 3:	m_color = Color::PURPLE;	m_texture_name = "purple.png";	m_color4f = cocos2d::Color4F(189.0f / 255.0f, 78.0f / 255.0f, 253.0f / 255.0f, 1);	break;
+	case 4:	m_color = Color::RED;		m_texture_name = "red.png";		m_color4f = cocos2d::Color4F(253.0f / 255.0f, 80.0f / 255.0f, 126.0f / 255.0f, 1);	break;
+	default:m_color = Color::BLUE;		m_texture_name = "blue.png";	m_color4f = cocos2d::Color4F(84.0f / 255.0f, 203.0f / 255.0f, 254.0f / 255.0f, 1);	break;
+	};
+
+	m_sprite->setTexture(m_texture_name);
 }
 
 void Star::impl::setRandomPosition(float pos_x, float pos_y)
@@ -108,8 +107,7 @@ Star::~Star()
 
 void Star::randomize(int row_num, int col_num, float pos_x, float pos_y)
 {
-	pimpl->m_color_num = pimpl->random_color_num(pimpl->random_engine);
-	pimpl->m_sprite->setTexture(pimpl->getImageFileName(pimpl->m_color_num));
+	pimpl->setRandomColor();
 	pimpl->m_sprite->setVisible(true);
 
 	pimpl->m_is_selected = false;
@@ -157,12 +155,17 @@ void Star::setColNum(int col_num)
 
 bool Star::canGroupWith(Star *star) const
 {
-	return this != star && pimpl->m_color_num == star->pimpl->m_color_num;
+	return this != star && pimpl->m_color == star->pimpl->m_color;
 }
 
-int Star::getColorNum() const
+//int Star::getColorNum() const
+//{
+//	return pimpl->m_color_num;
+//}
+
+cocos2d::Color4F Star::getColor4F() const
 {
-	return pimpl->m_color_num;
+	return pimpl->m_color4f;
 }
 
 float Star::getPositionX() const

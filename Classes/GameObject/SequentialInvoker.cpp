@@ -121,14 +121,22 @@ bool SequentialInvoker::invoke()
 	return pimpl->invoke(false);
 }
 
-void SequentialInvoker::addMoveTo(float duration, float x, float y, std::function<void()> &&callback /*= nullptr*/)
+void SequentialInvoker::addMoveTo(float duration_s, float x, float y, std::function<void()> &&callback /*= nullptr*/)
 {
-	auto move_to = cocos2d::MoveTo::create(duration, { x, y });
+	auto move_to = cocos2d::MoveTo::create(duration_s, { x, y });
 	auto step = callback ?
 		cocos2d::Sequence::create(move_to, cocos2d::CallFunc::create(callback), nullptr) :
 		cocos2d::Sequence::create(move_to, nullptr);
 
 	addFiniteTimeAction(step);
+}
+
+void SequentialInvoker::addDelay(float delay_s)
+{
+	if (delay_s <= 0)
+		throw("addDelay with negative time in SequentialInvoker.");
+
+	addFiniteTimeAction(cocos2d::DelayTime::create(delay_s));
 }
 
 void SequentialInvoker::addCallback(std::function<void()> &&callback)

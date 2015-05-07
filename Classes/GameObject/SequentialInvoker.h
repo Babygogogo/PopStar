@@ -22,7 +22,8 @@ class SequentialInvoker final :public Component
 public:
 	~SequentialInvoker();
 		
-	void addMoveTo(float duration, float x, float y, std::function<void()> &&callback = nullptr);
+	void addMoveTo(float duration_s, float x, float y, std::function<void()> &&callback = nullptr);
+	void addDelay(float delay_s);
 	void addCallback(std::function<void()> &&callback);
 	void addFiniteTimeAction(cocos2d::FiniteTimeAction* action);
 	void clear();

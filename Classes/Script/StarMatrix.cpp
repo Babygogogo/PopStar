@@ -1,5 +1,6 @@
 #include "StarMatrix.h"
 #include "Star.h"
+#include "StarParticleEffect.h"
 #include "../GameObject/DisplayNode.h"
 #include "../GameObject/SequentialInvoker.h"
 #include "../GameObject/GameObject.h"
@@ -8,7 +9,6 @@
 #include "../Event/EventDispatcher.h"
 #include "../Event/EventType.h"
 #include "../Event/Event.h"
-#include "../Event/EventArg1.h"
 
 #include "../Classes/StarParticle.h"
 #include "../Classes/ComboEffect.h"
@@ -23,7 +23,6 @@ struct StarMatrix::impl
 	impl(GameObject *game_object);
 	~impl();
 
-public:
 	void addStars();
 	void randomize();
 	void registerAsEventListeners();
@@ -92,7 +91,6 @@ void StarMatrix::impl::randomize()
 {
 	for (auto row_num = 0; row_num < ROWS_TOTAL; ++row_num)
 		for (auto col_num = 0; col_num < COLS_TOTAL; ++col_num){
-			//(m_stars[row_num][col_num] = m_initial_stars[row_num][col_num])->randomize(row_num, col_num);
 			m_stars[row_num][col_num] = m_initial_stars[row_num][col_num];
 
 			auto position = getStarDefaultPosition(row_num, col_num);
@@ -141,7 +139,7 @@ bool StarMatrix::impl::isColNumValid(int col_num) const
 
 Star* StarMatrix::impl::getStarByPoint(const cocos2d::Point& position) const
 {
-	auto row_num = ROWS_TOTAL - 1 - static_cast<int>(position.y / Star::HEIGHT);
+	auto row_num = static_cast<int>(position.y / Star::HEIGHT);
 	auto col_num = static_cast<int>(position.x / Star::WIDTH);
 
 	if (isRowNumValid(row_num) && isColNumValid(col_num))
@@ -165,6 +163,9 @@ std::list<Star*> StarMatrix::impl::findGroupingStars(Star* touched_star)
 			}
 		});
 
+	for (auto &star : group_stars)
+		star->setSelected(false);
+
 	return group_stars;
 }
 
@@ -183,18 +184,18 @@ void StarMatrix::impl::explode(Star* star)
 	if (!star)
 		return;
 
-	showStarParticleEffect(star->getColorNum(), { star->getPositionX(), star->getPositionY() }, m_node_underlying);
+	auto particle_effect = GameObject::create("StarParticleEffect");
+	particle_effect->addComponent<StarParticleEffect>()->reset(star);
+	m_game_object->addChild(std::move(particle_effect));
+
 	m_stars[star->getRowNum()][star->getColNum()] = nullptr;
 	star->setVisible(false);
 }
 
 void StarMatrix::impl::explodeGroupingStars(std::list<Star*> &&group_stars)
 {
-	if (group_stars.size() <= 1){
-		if (!group_stars.empty())
-			group_stars.front()->setSelected(false);
+	if (group_stars.size() <= 1)
 		return;
-	}
 
 	for (auto &star : group_stars)
 		explode(star);
@@ -244,13 +245,13 @@ void StarMatrix::impl::shrink()
 void StarMatrix::impl::moveColumnsDownward()
 {
 	for (auto col_num = 0; col_num < COLS_TOTAL; ++col_num){
-		auto row_offset = -1;
-		for (auto row_num = COLS_TOTAL - 1; row_num >= 0; --row_num){
+		auto row_offset = 1;
+		for (auto row_num = 0; row_num < ROWS_TOTAL; ++row_num){
 			if (m_stars[row_num][col_num])
 				continue;
 
 			while (isRowNumValid(row_num + row_offset) && !m_stars[row_num + row_offset][col_num])
-				--row_offset;
+				++row_offset;
 
 			auto non_null_row_num = row_num + row_offset;
 			if (!isRowNumValid(non_null_row_num))
@@ -266,17 +267,17 @@ void StarMatrix::impl::moveColumnsLeftward()
 {
 	auto col_offset = 1;
 	for (auto col_num = 0; col_num < COLS_TOTAL; ++col_num){
-		if (m_stars[ROWS_TOTAL - 1][col_num])
+		if (m_stars[0][col_num])
 			continue;
 
-		while (isColNumValid(col_num + col_offset) && !m_stars[ROWS_TOTAL - 1][col_num + col_offset])
+		while (isColNumValid(col_num + col_offset) && !m_stars[0][col_num + col_offset])
 			++col_offset;
 
 		auto non_null_col_num = col_num + col_offset;
 		if (!isColNumValid(non_null_col_num))
 			break;
 
-		for (auto row_num = ROWS_TOTAL - 1; row_num >= 0 && m_stars[row_num][non_null_col_num]; --row_num){
+		for (auto row_num = 0; row_num < ROWS_TOTAL && m_stars[row_num][non_null_col_num]; ++row_num){
 			m_stars[row_num][col_num] = m_stars[row_num][non_null_col_num];
 			m_stars[row_num][non_null_col_num] = nullptr;
 		}
@@ -285,18 +286,17 @@ void StarMatrix::impl::moveColumnsLeftward()
 
 cocos2d::Point StarMatrix::impl::getStarDefaultPosition(int row_num, int col_num) const
 {
-	return cocos2d::Point( col_num * Star::WIDTH + Star::WIDTH / 2,
-		(ROWS_TOTAL - row_num) * Star::HEIGHT - Star::HEIGHT / 2 );
+	return cocos2d::Point(col_num * Star::WIDTH + Star::WIDTH / 2, row_num * Star::HEIGHT + Star::HEIGHT / 2);
 }
 
 bool StarMatrix::impl::isNoMoreMove() const
 {
 	for (auto col_num = 0; col_num < COLS_TOTAL; ++col_num){
-		for (auto row_num = ROWS_TOTAL - 1; row_num >= 0; --row_num){
+		for (auto row_num = 0; row_num < ROWS_TOTAL; ++row_num){
 			if (!m_stars[row_num][col_num])
 				break;
 
-			if (	(isRowNumValid(row_num - 1) && m_stars[row_num - 1][col_num] && m_stars[row_num - 1][col_num]->canGroupWith(m_stars[row_num][col_num]))
+			if (	(isRowNumValid(row_num + 1) && m_stars[row_num + 1][col_num] && m_stars[row_num + 1][col_num]->canGroupWith(m_stars[row_num][col_num]))
 				||	(isColNumValid(col_num + 1) && m_stars[row_num][col_num + 1] && m_stars[row_num][col_num + 1]->canGroupWith(m_stars[row_num][col_num])))
 			return false;
 		}

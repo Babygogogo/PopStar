@@ -2,6 +2,7 @@
 #define __STAR__
 
 #include "Script.h"
+#include "cocos2d.h"
 
 #include <memory>
 
@@ -26,7 +27,9 @@ public:
 
 	bool canGroupWith(Star *star) const;
 
-	int getColorNum() const;
+	//int getColorNum() const;
+	cocos2d::Color4F getColor4F() const;
+
 	float getPositionX() const;
 	float getPositionY() const;
 
