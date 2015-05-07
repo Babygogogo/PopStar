@@ -7,7 +7,8 @@ enum class EventType
 
 	CurrentScoreIncreased,
 
-	LevelResultBegan,
+	UserClickedStarsExploded,
+
 	LevelNoMoreMove,
 
 	LevelStarted,

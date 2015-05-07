@@ -9,9 +9,8 @@
 #include "../Event/EventDispatcher.h"
 #include "../Event/EventType.h"
 #include "../Event/Event.h"
+#include "../Event/EventArg1.h"
 
-#include "../Classes/StarParticle.h"
-#include "../Classes/ComboEffect.h"
 #include "../Classes/Audio.h"
 
 #include <list>
@@ -199,13 +198,11 @@ void StarMatrix::impl::explodeGroupingStars(std::list<Star*> &&group_stars)
 
 	for (auto &star : group_stars)
 		explode(star);
+	Audio::getInstance()->playPop();
 
-	showComboEffect(group_stars.size(), m_node_underlying);
 	shrink();
 	SingletonContainer::instance()->get<GameData>()->updateCurrentScoreWith(group_stars.size());
-
-	Audio::getInstance()->playCombo(group_stars.size());
-	Audio::getInstance()->playPop();
+	SingletonContainer::instance()->get<EventDispatcher>()->dispatch(Event::create(EventType::UserClickedStarsExploded, EventArg1::create(group_stars.size())));
 
 	if (isNoMoreMove()){
 		SingletonContainer::instance()->get<GameData>()->setStarsLeftNum(countStarsLeft());

@@ -1,4 +1,4 @@
-#include "ComboEffect.h"
+#include "LegacyComboEffect.h"
 
 using namespace cocos2d;
 

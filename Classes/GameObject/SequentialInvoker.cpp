@@ -160,4 +160,7 @@ void SequentialInvoker::clear()
 {
 	while (!pimpl->m_action_list.empty())
 		pimpl->popFront();
+
+	pimpl->m_target_node->stopAllActions();
+	pimpl->eraseCurrent();
 }

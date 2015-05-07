@@ -1,6 +1,6 @@
 #include "LegacyStarMatrix.h"
 #include "StarParticle.h"
-#include "ComboEffect.h"
+#include "LegacyComboEffect.h"
 #include "Audio.h"
 #include <ctime>
 

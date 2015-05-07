@@ -22,12 +22,9 @@ public:
 	~Star();
 
 	void randomize(int row_num, int col_num, float pos_x, float pos_y);
-
 	void moveTo(float pos_x, float pos_y);
-
 	bool canGroupWith(Star *star) const;
 
-	//int getColorNum() const;
 	cocos2d::Color4F getColor4F() const;
 
 	float getPositionX() const;

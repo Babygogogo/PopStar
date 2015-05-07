@@ -158,11 +158,6 @@ bool Star::canGroupWith(Star *star) const
 	return this != star && pimpl->m_color == star->pimpl->m_color;
 }
 
-//int Star::getColorNum() const
-//{
-//	return pimpl->m_color_num;
-//}
-
 cocos2d::Color4F Star::getColor4F() const
 {
 	return pimpl->m_color4f;

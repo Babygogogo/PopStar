@@ -1,5 +1,6 @@
 #include "MatrixLayer.h"
 #include "StarMatrix.h"
+#include "ComboEffect.h"
 #include "../Common/SingletonContainer.h"
 #include "../GameObject/GameObject.h"
 #include "../GameObject/DisplayNode.h"
@@ -26,6 +27,7 @@ MatrixLayer::impl::impl(GameObject *game_object)
 	game_object->addComponent<DisplayNode>()->initAs<cocos2d::Layer>();
 
 	m_matrix = game_object->addChild(GameObject::create<StarMatrix>("StarMatrix"));
+	game_object->addChild(GameObject::create<ComboEffect>("ComboEffect"));
 
 	registerAsEventListeners();
 }
