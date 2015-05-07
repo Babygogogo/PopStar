@@ -148,9 +148,6 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClCompile Include="..\Classes\GameObject\GameObject.cpp" />
     <ClCompile Include="..\Classes\GameObject\SequentialInvoker.cpp" />
     <ClCompile Include="..\Classes\HelloWorldScene.cpp" />
-    <ClCompile Include="..\Classes\LegacyComboEffect.cpp" />
-    <ClCompile Include="..\Classes\LegacyStar.cpp" />
-    <ClCompile Include="..\Classes\LegacyStarMatrix.cpp" />
     <ClCompile Include="..\Classes\Script\ComboEffect.cpp" />
     <ClCompile Include="..\Classes\Script\GameOverLabel.cpp" />
     <ClCompile Include="..\Classes\Script\GetScoreLabel.cpp" />
@@ -164,7 +161,6 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClCompile Include="..\Classes\Script\StatusBar.cpp" />
     <ClCompile Include="..\Classes\Script\StatusLayer.cpp" />
     <ClCompile Include="..\Classes\Script\TitleScene.cpp" />
-    <ClCompile Include="..\Classes\StarParticle.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -187,9 +183,6 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClInclude Include="..\Classes\GameObject\SoundPlayer.h" />
     <ClInclude Include="..\Classes\GameObject\SequentialInvoker.h" />
     <ClInclude Include="..\Classes\HelloWorldScene.h" />
-    <ClInclude Include="..\Classes\LegacyComboEffect.h" />
-    <ClInclude Include="..\Classes\LegacyStar.h" />
-    <ClInclude Include="..\Classes\LegacyStarMatrix.h" />
     <ClInclude Include="..\Classes\Script\ComboEffect.h" />
     <ClInclude Include="..\Classes\Script\GameOverLabel.h" />
     <ClInclude Include="..\Classes\Script\GetScoreLabel.h" />
@@ -204,7 +197,6 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClInclude Include="..\Classes\Script\StatusBar.h" />
     <ClInclude Include="..\Classes\Script\StatusLayer.h" />
     <ClInclude Include="..\Classes\Script\TitleScene.h" />
-    <ClInclude Include="..\Classes\StarParticle.h" />
     <ClInclude Include="main.h" />
   </ItemGroup>
   <ItemGroup>

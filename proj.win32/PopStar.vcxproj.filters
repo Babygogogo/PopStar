@@ -117,18 +117,6 @@
     <ClCompile Include="..\Classes\Script\ComboEffect.cpp">
       <Filter>Script\PuzzleScene\MatrixLayer</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\LegacyComboEffect.cpp">
-      <Filter>Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\LegacyStar.cpp">
-      <Filter>Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\LegacyStarMatrix.cpp">
-      <Filter>Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\StarParticle.cpp">
-      <Filter>Classes</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -232,18 +220,6 @@
     </ClInclude>
     <ClInclude Include="..\Classes\Script\ComboEffect.h">
       <Filter>Script\PuzzleScene\MatrixLayer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\LegacyComboEffect.h">
-      <Filter>Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\LegacyStar.h">
-      <Filter>Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\LegacyStarMatrix.h">
-      <Filter>Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\StarParticle.h">
-      <Filter>Classes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
