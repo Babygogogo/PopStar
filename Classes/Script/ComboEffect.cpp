@@ -45,13 +45,13 @@ ComboEffect::impl::~impl()
 
 void ComboEffect::impl::registerAsEventListeners()
 {
-	SingletonContainer::instance()->get<EventDispatcher>()->registerListener(EventType::UserClickedStarsExploded, this,
+	SingletonContainer::getInstance()->get<EventDispatcher>()->registerListener(EventType::UserClickedStarsExploded, this,
 		[this](Event *e){show(static_cast<EventArg1*>(e->getArg())->getInt()); });
 }
 
 void ComboEffect::impl::unregisterAsEventListeners()
 {
-	if (auto singleton_container = SingletonContainer::instance())
+	if (auto& singleton_container = SingletonContainer::getInstance())
 		singleton_container->get<EventDispatcher>()->deleteListener(this);
 }
 

@@ -1,22 +1,70 @@
 #include "SingletonContainer.h"
 
-std::once_flag SingletonContainer::m_init_flag;
-std::unique_ptr<SingletonContainer> SingletonContainer::m_instance{ nullptr };
+#include <mutex>
 
-SingletonContainer::SingletonContainer() :Object("SingletonContainer")
+//////////////////////////////////////////////////////////////////////////
+//definition of impl
+//////////////////////////////////////////////////////////////////////////
+
+struct SingletonContainer::SingletonContainerImpl
+{
+public:
+	SingletonContainerImpl();
+	~SingletonContainerImpl();
+
+	std::unordered_map<std::type_index, std::shared_ptr<void>> m_Objects;
+};
+
+SingletonContainer::SingletonContainerImpl::SingletonContainerImpl()
+{
+
+}
+
+SingletonContainer::SingletonContainerImpl::~SingletonContainerImpl()
+{
+
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+//implementation of SingletonContainer
+//////////////////////////////////////////////////////////////////////////
+
+std::unique_ptr<SingletonContainer> SingletonContainer::s_Instance;
+
+SingletonContainer::SingletonContainer() :pimpl(new SingletonContainerImpl)
 {
 
 }
 
 SingletonContainer::~SingletonContainer()
 {
-	m_instance.release();
+	//Must manually release here, otherwise the m_instance may point to a deleted instance of SingletonContainer,
+	//making method calls (get() for example) result in undefined behavior. 
+	s_Instance.release();
 }
 
-SingletonContainer * SingletonContainer::instance()
+const std::unique_ptr<SingletonContainer> & SingletonContainer::getInstance()
 {
-	if (!m_instance)
-		std::call_once(m_init_flag, []{m_instance.reset(new SingletonContainer); });
+	static std::once_flag s_InitFlag;
 
-	return m_instance ? m_instance.get() : nullptr;
+	if (!s_Instance)
+		std::call_once(s_InitFlag, []{s_Instance.reset(new SingletonContainer); });
+
+	return s_Instance;
+}
+
+const std::shared_ptr<void> & SingletonContainer::getHelper(const std::type_index & typeIndex) const
+{
+	auto objectIter = pimpl->m_Objects.find(typeIndex);
+	return objectIter == pimpl->m_Objects.end() ?
+		nullptr :
+		objectIter->second;
+}
+
+const std::shared_ptr<void> & SingletonContainer::setHelper(std::type_index && typeIndex, std::shared_ptr<void> && obj)
+{
+	auto emplaceResult = pimpl->m_Objects.emplace(std::move(typeIndex), std::move(obj));
+
+	return emplaceResult.first->second;
 }

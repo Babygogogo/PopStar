@@ -45,7 +45,7 @@ LevelSummaryLabel::impl::~impl()
 
 void LevelSummaryLabel::impl::registerAsEventListener()
 {
-	SingletonContainer::instance()->get<EventDispatcher>()->registerListener(EventType::LevelNoMoreMove, this,
+	SingletonContainer::getInstance()->get<EventDispatcher>()->registerListener(EventType::LevelNoMoreMove, this,
 		[this](Event*){reset(); });
 
 	auto touch_listener = cocos2d::EventListenerTouchOneByOne::create();
@@ -58,7 +58,7 @@ void LevelSummaryLabel::impl::registerAsEventListener()
 
 void LevelSummaryLabel::impl::unregisterAsEventListener()
 {
-	if (auto singleton_container = SingletonContainer::instance())
+	if (auto& singleton_container = SingletonContainer::getInstance())
 		singleton_container->get<EventDispatcher>()->deleteListener(this);
 }
 
@@ -80,15 +80,15 @@ void LevelSummaryLabel::impl::resetInvoker()
 	m_invoker->addMoveTo(0.6f, visible_size.width / 2, visible_size.height / 2);
 	m_invoker->addMoveTo(0.6f, -m_label_underlying->getContentSize().width / 2, visible_size.height / 2, [this]{
 		m_label_underlying->setVisible(false);
-		SingletonContainer::instance()->get<GameData>()->updateScoreWithEndLevelBonus();
-		SingletonContainer::instance()->get<EventDispatcher>()->dispatch(Event::create(EventType::LevelSummaryLabelDisappeared));
+		SingletonContainer::getInstance()->get<GameData>()->updateScoreWithEndLevelBonus();
+		SingletonContainer::getInstance()->get<EventDispatcher>()->dispatch(Event::create(EventType::LevelSummaryLabelDisappeared));
 	});
 }
 
 std::string LevelSummaryLabel::impl::createSummaryText() const
 {
-	auto stars_num_text = std::string("Stars Left: ") + std::to_string(SingletonContainer::instance()->get<GameData>()->getStarsLeftNum()) + '\n';
-	auto bonus_text = std::string("Bonus: ") + std::to_string(SingletonContainer::instance()->get<GameData>()->getEndLevelBonus());
+	auto stars_num_text = std::string("Stars Left: ") + std::to_string(SingletonContainer::getInstance()->get<GameData>()->getStarsLeftNum()) + '\n';
+	auto bonus_text = std::string("Bonus: ") + std::to_string(SingletonContainer::getInstance()->get<GameData>()->getEndLevelBonus());
 
 	return stars_num_text + bonus_text;
 }

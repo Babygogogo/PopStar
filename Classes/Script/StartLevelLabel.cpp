@@ -46,7 +46,7 @@ StartLevelLabel::impl::~impl()
 
 void StartLevelLabel::impl::registerAsEventListener()
 {
-	SingletonContainer::instance()->get<EventDispatcher>()->registerListener(EventType::LevelStarted, this,
+	SingletonContainer::getInstance()->get<EventDispatcher>()->registerListener(EventType::LevelStarted, this,
 		[this](Event *){reset(); });
 
 	auto touch_listener = cocos2d::EventListenerTouchOneByOne::create();
@@ -59,7 +59,7 @@ void StartLevelLabel::impl::registerAsEventListener()
 
 void StartLevelLabel::impl::unregisterAsEventListener()
 {
-	if (auto singleton_container = SingletonContainer::instance())
+	if (auto& singleton_container = SingletonContainer::getInstance())
 		singleton_container->get<EventDispatcher>()->deleteListener(this);
 }
 
@@ -81,13 +81,13 @@ void StartLevelLabel::impl::resetInvoker()
 	m_invoker->addMoveTo(0.6f, visible_size.width / 2, visible_size.height / 2);
 	m_invoker->addMoveTo(0.6f, -m_label_underlying->getContentSize().width / 2, visible_size.height / 2, [this]{
 		m_label_underlying->setVisible(false);
-		SingletonContainer::instance()->get<EventDispatcher>()->dispatch(Event::create(EventType::StartLevelLabelDisappeared));
+		SingletonContainer::getInstance()->get<EventDispatcher>()->dispatch(Event::create(EventType::StartLevelLabelDisappeared));
 	});
 }
 
 std::string StartLevelLabel::impl::createStartLevelText() const
 {
-	auto level_text = std::to_string(SingletonContainer::instance()->get<GameData>()->getCurrentLevel()) + '\n';
+	auto level_text = std::to_string(SingletonContainer::getInstance()->get<GameData>()->getCurrentLevel()) + '\n';
 	return std::string("Level: ") + level_text + std::string(" Start!");
 }
 

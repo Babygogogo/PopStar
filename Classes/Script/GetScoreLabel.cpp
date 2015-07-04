@@ -35,27 +35,27 @@ GetScoreLabel::impl::~impl()
 
 std::string GetScoreLabel::impl::createGetScoreText() const
 {
-	auto exploded_stars_num = std::to_string(SingletonContainer::instance()->get<GameData>()->getExplodedStarsNum());
-	auto attained_score = std::to_string(SingletonContainer::instance()->get<GameData>()->getScoreOfPreviousExplosion());
+	auto exploded_stars_num = std::to_string(SingletonContainer::getInstance()->get<GameData>()->getExplodedStarsNum());
+	auto attained_score = std::to_string(SingletonContainer::getInstance()->get<GameData>()->getScoreOfPreviousExplosion());
 
 	return std::string("Exploded: ") + exploded_stars_num + std::string(" Score: ") + attained_score;
 }
 
 void GetScoreLabel::impl::registerAsEventListeners(cocos2d::Label *label_underlying)
 {
-	SingletonContainer::instance()->get<EventDispatcher>()->registerListener(EventType::CurrentScoreIncreased, this, [this, label_underlying](Event *){
+	SingletonContainer::getInstance()->get<EventDispatcher>()->registerListener(EventType::CurrentScoreIncreased, this, [this, label_underlying](Event *){
 		label_underlying->setString(createGetScoreText());
 		label_underlying->setVisible(true);
 	});
 
-	SingletonContainer::instance()->get<EventDispatcher>()->registerListener(EventType::LevelSummaryLabelDisappeared, this, [label_underlying](Event*){
+	SingletonContainer::getInstance()->get<EventDispatcher>()->registerListener(EventType::LevelSummaryLabelDisappeared, this, [label_underlying](Event*){
 		label_underlying->setVisible(false);
 	});
 }
 
 void GetScoreLabel::impl::unregisterAsEventListeners()
 {
-	if (auto singleton_container = SingletonContainer::instance())
+	if (auto& singleton_container = SingletonContainer::getInstance())
 		singleton_container->get<EventDispatcher>()->deleteListener(this);
 }
 

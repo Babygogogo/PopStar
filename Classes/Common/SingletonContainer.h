@@ -1,12 +1,9 @@
-#ifndef __BW_SINGLETONS__
-#define __BW_SINGLETONS__
+#ifndef __SINGLETON_CONTAINER__
+#define __SINGLETON_CONTAINER__
 
 #include <memory>
-#include <mutex>
 #include <unordered_map>
 #include <typeindex>
-#include <functional>
-#include "Object.h"
 
 /*!
  * \brief Container of the singleton objects of the game. 
@@ -17,30 +14,30 @@
  * \author Babygogogo
  * \date 2015.3
  */
-class SingletonContainer final : public Object
+class SingletonContainer final
 {
 public:
-	virtual ~SingletonContainer();
+	~SingletonContainer();
 
-	static SingletonContainer *instance();
+	static const std::unique_ptr<SingletonContainer> & getInstance();
 
 	//////////////////////////////////////////////////////////////////////////
 	//Methods for adding/getting composites
 	//////////////////////////////////////////////////////////////////////////
 	template <typename T>
-	T* add(){
+	T* set(){
 		if (auto existing_composite = get<T>())
 			return existing_composite;
 
-		return dynamic_cast<T*>(m_composites.emplace(typeid(T), T::create()).first->second.get());
+		return static_cast<T*>(m_Objects.emplace(typeid(T), T::create()).first->second.get());
 	}
 
 	template <typename T>
 	T* get() const{
-		auto composite_iter = m_composites.find(typeid(T));
-		return composite_iter == m_composites.end() ?
+		auto composite_iter = m_Objects.find(typeid(T));
+		return composite_iter == m_Objects.end() ?
 			nullptr :
-			dynamic_cast<T*>(composite_iter->second.get());
+			static_cast<T*>(composite_iter->second.get());
 	}
 
 	//////////////////////////////////////////////////////////////////////////
@@ -54,10 +51,17 @@ public:
 private:
 	SingletonContainer();
 
-	static std::once_flag m_init_flag;
-	static std::unique_ptr<SingletonContainer> m_instance;
+	//helper function for set/get object
+	const std::shared_ptr<void> & getHelper(const std::type_index & typeIndex) const;
+	const std::shared_ptr<void> & setHelper(std::type_index && typeIndex, std::shared_ptr<void> && obj);
 
-	std::unordered_map<std::type_index, std::unique_ptr<Object>> m_composites;
+	//the only and one instance
+	static std::unique_ptr<SingletonContainer> s_Instance;
+
+	struct SingletonContainerImpl;
+	std::unique_ptr<SingletonContainerImpl> pimpl;
+
+	std::unordered_map<std::type_index, std::shared_ptr<void>> m_Objects;
 };
 
-#endif // !__BW_SINGLETONS__
+#endif // !__SINGLETON_CONTAINER__

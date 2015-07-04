@@ -31,7 +31,7 @@ struct SequentialInvoker::impl
 
 SequentialInvoker::impl::impl(GameObject *game_object, cocos2d::Node *target_node) :m_target(game_object), m_target_node(target_node)
 {
-	SingletonContainer::instance()->get<EventDispatcher>()->registerListener(
+	SingletonContainer::getInstance()->get<EventDispatcher>()->registerListener(
 		EventType::SequentialInvokerFinishOneAction, this, [this](Event *e){eraseCurrent(); invoke(true); });
 }
 
@@ -41,7 +41,7 @@ SequentialInvoker::impl::~impl()
 		popFront();
 	eraseCurrent();
 
-	if (auto singleton_container = SingletonContainer::instance())
+	if (auto& singleton_container = SingletonContainer::getInstance())
 		singleton_container->get<EventDispatcher>()->deleteListener(this);
 }
 
@@ -93,7 +93,7 @@ bool SequentialInvoker::impl::isInvoking() const
 
 cocos2d::CallFunc * SequentialInvoker::impl::createDispatchCallback() const
 {
-	return cocos2d::CallFunc::create([this]{if (auto singleton_container = SingletonContainer::instance())
+	return cocos2d::CallFunc::create([this]{if (auto& singleton_container = SingletonContainer::getInstance())
 		singleton_container->get<EventDispatcher>()->dispatch(Event::create(EventType::SequentialInvokerFinishOneAction), const_cast<SequentialInvoker::impl*>(this)); });
 }
 

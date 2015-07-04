@@ -95,8 +95,8 @@ std::unique_ptr<GameObject> TitleScene::impl::createStartButton() const
 std::function<void(cocos2d::Ref*)> TitleScene::impl::createStartButtonCallback() const
 {
 	return [](cocos2d::Ref*){
-		SingletonContainer::instance()->get<GameData>()->reset();
-		SingletonContainer::instance()->get<SceneStack>()->replaceAndRun(GameObject::create<PuzzleScene>("PuzzleScene"));
+		SingletonContainer::getInstance()->get<GameData>()->reset();
+		SingletonContainer::getInstance()->get<SceneStack>()->replaceAndRun(GameObject::create<PuzzleScene>("PuzzleScene"));
 	};
 }
 

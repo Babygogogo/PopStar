@@ -39,10 +39,10 @@ bool AppDelegate::applicationDidFinishLaunching() {
 	// create a scene and run
 	Audio::getInstance()->prepare();
 
-	SingletonContainer::instance()->add<::Timer>()->init();
-	SingletonContainer::instance()->add<::EventDispatcher>();
-	SingletonContainer::instance()->add<GameData>();
-	SingletonContainer::instance()->add<SceneStack>()->pushAndRun(GameObject::create<TitleScene>("TitleScene"));
+	SingletonContainer::getInstance()->set<::Timer>()->init();
+	SingletonContainer::getInstance()->set<::EventDispatcher>();
+	SingletonContainer::getInstance()->set<GameData>();
+	SingletonContainer::getInstance()->set<SceneStack>()->pushAndRun(GameObject::create<TitleScene>("TitleScene"));
 
 	return true;
 }

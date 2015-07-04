@@ -34,9 +34,9 @@ SceneStack::impl::~impl()
 void SceneStack::impl::switchUpdate(GameObject *scene, bool enable /*= true*/)
 {
 	if (enable)
-		SingletonContainer::instance()->get<Timer>()->registerUpdateObserver(scene);
+		SingletonContainer::getInstance()->get<Timer>()->registerUpdateObserver(scene);
 	else
-		SingletonContainer::instance()->get<Timer>()->removeUpdateObserver(scene);
+		SingletonContainer::getInstance()->get<Timer>()->removeUpdateObserver(scene);
 }
 
 void SceneStack::impl::pushSceneToDirector(GameObject *scene)

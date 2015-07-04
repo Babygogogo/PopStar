@@ -45,7 +45,7 @@ GameOverLabel::impl::~impl()
 
 void GameOverLabel::impl::registerAsEventListeners()
 {
-	SingletonContainer::instance()->get<EventDispatcher>()->registerListener(EventType::GameOver, this,
+	SingletonContainer::getInstance()->get<EventDispatcher>()->registerListener(EventType::GameOver, this,
 		[this](Event *){reset(); });
 
 	auto touch_listener = cocos2d::EventListenerTouchOneByOne::create();
@@ -58,7 +58,7 @@ void GameOverLabel::impl::registerAsEventListeners()
 
 void GameOverLabel::impl::unregisterAsEventListeners()
 {
-	if (auto singleton_container = SingletonContainer::instance())
+	if (auto& singleton_container = SingletonContainer::getInstance())
 		singleton_container->get<EventDispatcher>()->deleteListener(this);
 }
 
@@ -79,7 +79,7 @@ void GameOverLabel::impl::resetInvoker()
 {
 	auto visible_size = cocos2d::Director::getInstance()->getVisibleSize();
 	m_invoker->addMoveTo(1, visible_size.width / 2, visible_size.height / 2);
-	m_invoker->addCallback([]{SingletonContainer::instance()->get<SceneStack>()->replaceAndRun(GameObject::create<TitleScene>("TitleScene")); });
+	m_invoker->addCallback([]{SingletonContainer::getInstance()->get<SceneStack>()->replaceAndRun(GameObject::create<TitleScene>("TitleScene")); });
 }
 
 std::string GameOverLabel::impl::createGameOverText() const

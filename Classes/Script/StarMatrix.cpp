@@ -106,9 +106,9 @@ void StarMatrix::impl::registerAsEventListeners()
 	};
 	cocos2d::Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, m_node_underlying);
 
-	SingletonContainer::instance()->get<::EventDispatcher>()->registerListener(EventType::LevelSummaryLabelDisappeared, this, [this](::Event*){
+	SingletonContainer::getInstance()->get<::EventDispatcher>()->registerListener(EventType::LevelSummaryLabelDisappeared, this, [this](::Event*){
 		explodeAllLeftStars();
-		m_invoker->addCallback([]{SingletonContainer::instance()->get<GameData>()->levelEnd(); });
+		m_invoker->addCallback([]{SingletonContainer::getInstance()->get<GameData>()->levelEnd(); });
 		unregisterAsEventListeners();
 	});
 }
@@ -117,7 +117,7 @@ void StarMatrix::impl::unregisterAsEventListeners()
 {
 	cocos2d::Director::getInstance()->getEventDispatcher()->removeEventListenersForTarget(m_node_underlying);
 
-	if (auto singleton_container = SingletonContainer::instance())
+	if (auto& singleton_container = SingletonContainer::getInstance())
 		singleton_container->get<EventDispatcher>()->deleteListener(this);
 }
 
@@ -201,12 +201,12 @@ void StarMatrix::impl::explodeGroupingStars(std::list<Star*> &&group_stars)
 	Audio::getInstance()->playPop();
 
 	shrink();
-	SingletonContainer::instance()->get<GameData>()->updateCurrentScoreWith(group_stars.size());
-	SingletonContainer::instance()->get<EventDispatcher>()->dispatch(Event::create(EventType::UserClickedStarsExploded, EventArg1::create(group_stars.size())));
+	SingletonContainer::getInstance()->get<GameData>()->updateCurrentScoreWith(group_stars.size());
+	SingletonContainer::getInstance()->get<EventDispatcher>()->dispatch(Event::create(EventType::UserClickedStarsExploded, EventArg1::create(group_stars.size())));
 
 	if (isNoMoreMove()){
-		SingletonContainer::instance()->get<GameData>()->setStarsLeftNum(countStarsLeft());
-		SingletonContainer::instance()->get<::EventDispatcher>()->dispatch(::Event::create(EventType::LevelNoMoreMove));
+		SingletonContainer::getInstance()->get<GameData>()->setStarsLeftNum(countStarsLeft());
+		SingletonContainer::getInstance()->get<::EventDispatcher>()->dispatch(::Event::create(EventType::LevelNoMoreMove));
 	}
 }
 
