@@ -1,6 +1,7 @@
 #include "SingletonContainer.h"
 
 #include <mutex>
+#include <unordered_map>
 
 //////////////////////////////////////////////////////////////////////////
 //definition of impl
@@ -54,7 +55,7 @@ const std::unique_ptr<SingletonContainer> & SingletonContainer::getInstance()
 	return s_Instance;
 }
 
-const std::shared_ptr<void> & SingletonContainer::getHelper(const std::type_index & typeIndex) const
+std::shared_ptr<void> SingletonContainer::getHelper(const std::type_index & typeIndex) const
 {
 	auto objectIter = pimpl->m_Objects.find(typeIndex);
 	return objectIter == pimpl->m_Objects.end() ?
@@ -62,7 +63,7 @@ const std::shared_ptr<void> & SingletonContainer::getHelper(const std::type_inde
 		objectIter->second;
 }
 
-const std::shared_ptr<void> & SingletonContainer::setHelper(std::type_index && typeIndex, std::shared_ptr<void> && obj)
+std::shared_ptr<void> SingletonContainer::setHelper(std::type_index && typeIndex, std::shared_ptr<void> && obj)
 {
 	auto emplaceResult = pimpl->m_Objects.emplace(std::move(typeIndex), std::move(obj));
 

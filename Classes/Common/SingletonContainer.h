@@ -2,7 +2,6 @@
 #define __SINGLETON_CONTAINER__
 
 #include <memory>
-#include <unordered_map>
 #include <typeindex>
 
 /*!
@@ -19,30 +18,21 @@ class SingletonContainer final
 public:
 	~SingletonContainer();
 
+	//get the one and only instance (will create the instance if necessary)
 	static const std::unique_ptr<SingletonContainer> & getInstance();
 
-	//////////////////////////////////////////////////////////////////////////
-	//Methods for adding/getting composites
-	//////////////////////////////////////////////////////////////////////////
+	//method templates for get/set object
 	template <typename T>
-	T* set(){
-		if (auto existing_composite = get<T>())
-			return existing_composite;
-
-		return static_cast<T*>(m_Objects.emplace(typeid(T), T::create()).first->second.get());
+	std::shared_ptr<T> get() const{
+		return std::static_pointer_cast<T>(getHelper(typeid(T)));
 	}
 
 	template <typename T>
-	T* get() const{
-		auto composite_iter = m_Objects.find(typeid(T));
-		return composite_iter == m_Objects.end() ?
-			nullptr :
-			static_cast<T*>(composite_iter->second.get());
+	std::shared_ptr<T> set(){
+		return std::static_pointer_cast<T>(setHelper(typeid(T), T::create()));
 	}
 
-	//////////////////////////////////////////////////////////////////////////
-	//Disable copy/move constructor and operator=.
-	//////////////////////////////////////////////////////////////////////////
+	//delete copy/move constructor and operator=.
 	SingletonContainer(const SingletonContainer&) = delete;
 	SingletonContainer(SingletonContainer&&) = delete;
 	SingletonContainer& operator=(const SingletonContainer&) = delete;
@@ -51,17 +41,16 @@ public:
 private:
 	SingletonContainer();
 
-	//helper function for set/get object
-	const std::shared_ptr<void> & getHelper(const std::type_index & typeIndex) const;
-	const std::shared_ptr<void> & setHelper(std::type_index && typeIndex, std::shared_ptr<void> && obj);
+	//non-template helper functions for set/get object
+	std::shared_ptr<void> getHelper(const std::type_index & typeIndex) const;
+	std::shared_ptr<void> setHelper(std::type_index && typeIndex, std::shared_ptr<void> && obj);
 
-	//the only and one instance
+	//the one and only instance
 	static std::unique_ptr<SingletonContainer> s_Instance;
 
+	//the implementation stuff
 	struct SingletonContainerImpl;
 	std::unique_ptr<SingletonContainerImpl> pimpl;
-
-	std::unordered_map<std::type_index, std::shared_ptr<void>> m_Objects;
 };
 
 #endif // !__SINGLETON_CONTAINER__
