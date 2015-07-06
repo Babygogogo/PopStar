@@ -1,6 +1,6 @@
 #include "EventDispatcher.h"
+#include "IEventListener.h"
 #include "Event.h"
-#include "../Common/IEventListener.h"
 
 #include <unordered_set>
 #include <unordered_map>

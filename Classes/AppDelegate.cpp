@@ -2,11 +2,11 @@
 #include "Audio.h"
 
 #include "Engine/Utilities/SingletonContainer.h"
-#include "./Common/Timer.h"
-#include "./Common/SceneStack.h"
-#include "./Common/GameData.h"
-#include "./Event/EventDispatcher.h"
-#include "./Script/TitleScene.h"
+#include "Common/Timer.h"
+#include "Common/SceneStack.h"
+#include "Common/GameData.h"
+#include "Engine/Event/EventDispatcher.h"
+#include "Script/TitleScene.h"
 
 USING_NS_CC;
 

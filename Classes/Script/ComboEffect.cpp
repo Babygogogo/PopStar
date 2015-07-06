@@ -3,10 +3,10 @@
 #include "../GameObject/DisplayNode.h"
 #include "../GameObject/SequentialInvoker.h"
 #include "../Engine/Utilities/SingletonContainer.h"
-#include "../Event/EventDispatcher.h"
-#include "../Event/Event.h"
-#include "../Event/EventType.h"
-#include "../Event/EventArg1.h"
+#include "../Engine/Event/EventDispatcher.h"
+#include "../Engine/Event/Event.h"
+#include "../Engine/Event/EventType.h"
+#include "../Engine/Event/EventArg1.h"
 
 #include "../Audio.h"
 

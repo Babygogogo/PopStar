@@ -5,8 +5,8 @@
 #include "../GameObject/SequentialInvoker.h"
 #include "../Engine/Utilities/SingletonContainer.h"
 #include "../Common/SceneStack.h"
-#include "../Event/EventDispatcher.h"
-#include "../Event/EventType.h"
+#include "../Engine/Event/EventDispatcher.h"
+#include "../Engine/Event/EventType.h"
 
 struct GameOverLabel::impl
 {

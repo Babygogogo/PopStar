@@ -4,9 +4,9 @@
 #include "../GameObject/SequentialInvoker.h"
 #include "../Engine/Utilities/SingletonContainer.h"
 #include "../Common/GameData.h"
-#include "../Event/EventDispatcher.h"
-#include "../Event/EventType.h"
-#include "../Event/Event.h"
+#include "../Engine/Event/EventDispatcher.h"
+#include "../Engine/Event/EventType.h"
+#include "../Engine/Event/Event.h"
 
 struct LevelSummaryLabel::impl
 {

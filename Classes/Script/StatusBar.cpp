@@ -3,9 +3,9 @@
 #include "../GameObject/DisplayNode.h"
 #include "../Engine/Utilities/SingletonContainer.h"
 #include "../Common/GameData.h"
-#include "../Event/EventDispatcher.h"
-#include "../Event/Event.h"
-#include "../Event/EventType.h"
+#include "../Engine/Event/EventDispatcher.h"
+#include "../Engine/Event/Event.h"
+#include "../Engine/Event/EventType.h"
 
 struct StatusBar::impl
 {

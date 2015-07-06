@@ -6,10 +6,10 @@
 #include "../GameObject/GameObject.h"
 #include "../Engine/Utilities/SingletonContainer.h"
 #include "../Common/GameData.h"
-#include "../Event/EventDispatcher.h"
-#include "../Event/EventType.h"
-#include "../Event/Event.h"
-#include "../Event/EventArg1.h"
+#include "../Engine/Event/EventDispatcher.h"
+#include "../Engine/Event/EventType.h"
+#include "../Engine/Event/Event.h"
+#include "../Engine/Event/EventArg1.h"
 
 #include "../Classes/Audio.h"
 

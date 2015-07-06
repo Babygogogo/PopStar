@@ -2,9 +2,9 @@
 #include "../GameObject/GameObject.h"
 #include "../GameObject/DisplayNode.h"
 #include "../Engine/Utilities/SingletonContainer.h"
-#include "../Event/EventDispatcher.h"
-#include "../Event/EventType.h"
-#include "../Event/Event.h"
+#include "../Engine/Event/EventDispatcher.h"
+#include "../Engine/Event/EventType.h"
+#include "../Engine/Event/Event.h"
 
 #include <list>
 

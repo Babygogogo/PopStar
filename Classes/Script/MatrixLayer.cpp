@@ -4,8 +4,8 @@
 #include "../Engine/Utilities/SingletonContainer.h"
 #include "../GameObject/GameObject.h"
 #include "../GameObject/DisplayNode.h"
-#include "../Event/EventType.h"
-#include "../Event/EventDispatcher.h"
+#include "../Engine/Event/EventType.h"
+#include "../Engine/Event/EventDispatcher.h"
 
 #include "./Classes/Audio.h"
 
