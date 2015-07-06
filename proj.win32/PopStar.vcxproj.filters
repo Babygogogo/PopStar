@@ -34,6 +34,12 @@
     <Filter Include="Script\PuzzleScene\MatrixLayer">
       <UniqueIdentifier>{2ea29d1d-797c-4a94-a7c2-d781d66ecabe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine">
+      <UniqueIdentifier>{8a734a2b-f696-4575-a6ea-5c35a5201b16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Utilities">
+      <UniqueIdentifier>{c7678c21-27a6-4d3c-9a44-1b575a8d9533}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -61,9 +67,6 @@
       <Filter>Common</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\Common\Object.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Common\SingletonContainer.cpp">
       <Filter>Common</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\Common\SceneStack.cpp">
@@ -117,6 +120,9 @@
     <ClCompile Include="..\Classes\Script\ComboEffect.cpp">
       <Filter>Script\PuzzleScene\MatrixLayer</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Utilities\SingletonContainer.cpp">
+      <Filter>Engine\Utilities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -144,9 +150,6 @@
       <Filter>Common</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Common\Timer.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Common\SingletonContainer.h">
       <Filter>Common</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Common\SceneStack.h">
@@ -220,6 +223,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\Script\ComboEffect.h">
       <Filter>Script\PuzzleScene\MatrixLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Utilities\SingletonContainer.h">
+      <Filter>Engine\Utilities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

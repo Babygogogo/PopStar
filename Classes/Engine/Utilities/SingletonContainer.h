@@ -18,15 +18,16 @@ class SingletonContainer final
 public:
 	~SingletonContainer();
 
-	//get the one and only instance (will create the instance if necessary)
+	//get the one and only instance (creates the instance on the first call)
 	static const std::unique_ptr<SingletonContainer> & getInstance();
 
-	//method templates for get/set object
+	//Get an object of a given type. nullptr is returned if the object doesn't exist.
 	template <typename T>
 	std::shared_ptr<T> get() const{
 		return std::static_pointer_cast<T>(getHelper(typeid(T)));
 	}
 
+	//Set an object of a given type (will replace the old one of the same type if exists).
 	template <typename T>
 	std::shared_ptr<T> set(){
 		return std::static_pointer_cast<T>(setHelper(typeid(T), T::create()));

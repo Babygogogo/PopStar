@@ -139,9 +139,9 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClCompile Include="..\Classes\Audio.cpp" />
     <ClCompile Include="..\Classes\Common\GameData.cpp" />
     <ClCompile Include="..\Classes\Common\SceneStack.cpp" />
-    <ClCompile Include="..\Classes\Common\SingletonContainer.cpp" />
     <ClCompile Include="..\Classes\Common\Object.cpp" />
     <ClCompile Include="..\Classes\Common\Timer.cpp" />
+    <ClCompile Include="..\Classes\Engine\Utilities\SingletonContainer.cpp" />
     <ClCompile Include="..\Classes\Event\EventDispatcher.cpp" />
     <ClCompile Include="..\Classes\GameObject\Component.cpp" />
     <ClCompile Include="..\Classes\GameObject\DisplayNode.cpp" />
@@ -170,9 +170,9 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClInclude Include="..\Classes\Common\IEventListener.h" />
     <ClInclude Include="..\Classes\Common\IUpdateable.h" />
     <ClInclude Include="..\Classes\Common\SceneStack.h" />
-    <ClInclude Include="..\Classes\Common\SingletonContainer.h" />
     <ClInclude Include="..\Classes\Common\Timer.h" />
     <ClInclude Include="..\Classes\Common\Object.h" />
+    <ClInclude Include="..\Classes\Engine\Utilities\SingletonContainer.h" />
     <ClInclude Include="..\Classes\Event\Event.h" />
     <ClInclude Include="..\Classes\Event\EventArg1.h" />
     <ClInclude Include="..\Classes\Event\EventDispatcher.h" />

@@ -1,4 +1,5 @@
 #include "SingletonContainer.h"
+#include "cocos2d.h"
 
 #include <mutex>
 #include <unordered_map>
@@ -65,7 +66,11 @@ std::shared_ptr<void> SingletonContainer::getHelper(const std::type_index & type
 
 std::shared_ptr<void> SingletonContainer::setHelper(std::type_index && typeIndex, std::shared_ptr<void> && obj)
 {
-	auto emplaceResult = pimpl->m_Objects.emplace(std::move(typeIndex), std::move(obj));
+	//if an object of the same type doesn't exist, simply emplace the new object and return it
+	if (pimpl->m_Objects.find(typeIndex) == pimpl->m_Objects.end())
+		return pimpl->m_Objects.emplace(std::move(typeIndex), std::move(obj)).first->second;
 
-	return emplaceResult.first->second;
+	//else, log and replace the object with the new one
+	cocos2d::log("SingletonContainer::set : An object of %s already exists and is being replaced.", typeIndex.name());
+	return pimpl->m_Objects[std::move(typeIndex)] = std::move(obj);
 }
