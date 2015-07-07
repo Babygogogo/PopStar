@@ -1,27 +1,31 @@
 #include "EventDispatcher.h"
 #include "IEventListener.h"
 #include "Event.h"
+#include "EventType.h"
 
 #include <unordered_set>
 #include <unordered_map>
 
-struct EventDispatcher::impl
+//////////////////////////////////////////////////////////////////////////
+//definition of EventDispatcherImpl
+//////////////////////////////////////////////////////////////////////////
+struct EventDispatcher::EventDispatcherImpl
 {
-	impl(){};
-	~impl(){};
+	EventDispatcherImpl(){};
+	~EventDispatcherImpl(){};
 
 	void handleNewListeners();
 
 	bool m_is_dispatching{ false };
 
-	std::unordered_map<EventType, std::unordered_multimap<void*, std::function<void(Event*)>>> m_listeners;
-	std::unordered_map<EventType, std::unordered_multimap<void*, std::function<void(Event*)>>> m_listeners_to_add;
+	std::unordered_map<LegacyEventType, std::unordered_multimap<void*, std::function<void(Event*)>>> m_listeners;
+	std::unordered_map<LegacyEventType, std::unordered_multimap<void*, std::function<void(Event*)>>> m_listeners_to_add;
 	std::unordered_set<void*> m_listeners_to_delete;
 
-	std::unordered_map<EventType, std::unordered_set<IEventListener*>> m_script_listeners;
+	std::unordered_map<LegacyEventType, std::unordered_set<IEventListener*>> m_script_listeners;
 };
 
-void EventDispatcher::impl::handleNewListeners()
+void EventDispatcher::EventDispatcherImpl::handleNewListeners()
 {
 	for (auto &listener_to_delete:m_listeners_to_delete)
 		for (auto &type_target_callback : m_listeners)
@@ -35,7 +39,10 @@ void EventDispatcher::impl::handleNewListeners()
 	m_listeners_to_delete.clear();
 }
 
-EventDispatcher::EventDispatcher() :Object("EventDispatcher"), pimpl(new impl)
+//////////////////////////////////////////////////////////////////////////
+//implementation of EventDispatcher
+//////////////////////////////////////////////////////////////////////////
+EventDispatcher::EventDispatcher() : pimpl(new EventDispatcherImpl)
 {
 
 }
@@ -50,7 +57,7 @@ std::unique_ptr<EventDispatcher> EventDispatcher::create()
 	return std::unique_ptr<EventDispatcher>(new EventDispatcher);
 }
 
-void EventDispatcher::registerListener(EventType event_type, void *target, std::function<void(Event*)> callback)
+void EventDispatcher::registerListener(LegacyEventType event_type, void *target, std::function<void(Event*)> callback)
 {
 	if (pimpl->m_is_dispatching)
 		pimpl->m_listeners_to_add[event_type].emplace(std::move(target), std::move(callback));
@@ -105,4 +112,39 @@ void EventDispatcher::dispatch(std::unique_ptr<Event> &&event, void *target /*= 
 	}
 
 	pimpl->m_is_dispatching = false;
+}
+
+void EventDispatcher::vAddListener(const EventType & eType, const std::weak_ptr<IEventListener> & eListener)
+{
+	throw std::logic_error("The method or operation is not implemented.");
+}
+
+void EventDispatcher::vAddListener(const EventType & eType, std::weak_ptr<IEventListener> && eListener)
+{
+	throw std::logic_error("The method or operation is not implemented.");
+}
+
+void EventDispatcher::vRemoveListener(const EventType & eType, const std::weak_ptr<IEventListener> & eListener)
+{
+	throw std::logic_error("The method or operation is not implemented.");
+}
+
+void EventDispatcher::vQueueEvent(std::shared_ptr<IEventData> eData)
+{
+	throw std::logic_error("The method or operation is not implemented.");
+}
+
+void EventDispatcher::vAbortEvent(const EventType & eType, bool allOfThisType /*= false*/)
+{
+	throw std::logic_error("The method or operation is not implemented.");
+}
+
+void EventDispatcher::vTrigger(std::shared_ptr<IEventData> eData)
+{
+	throw std::logic_error("The method or operation is not implemented.");
+}
+
+void EventDispatcher::vDispatchQueuedEvents(time_t timeOutMs /*= 10*/)
+{
+	throw std::logic_error("The method or operation is not implemented.");
 }

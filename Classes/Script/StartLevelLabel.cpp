@@ -46,7 +46,7 @@ StartLevelLabel::impl::~impl()
 
 void StartLevelLabel::impl::registerAsEventListener()
 {
-	SingletonContainer::getInstance()->get<EventDispatcher>()->registerListener(EventType::LevelStarted, this,
+	SingletonContainer::getInstance()->get<EventDispatcher>()->registerListener(LegacyEventType::LevelStarted, this,
 		[this](Event *){reset(); });
 
 	auto touch_listener = cocos2d::EventListenerTouchOneByOne::create();
@@ -81,7 +81,7 @@ void StartLevelLabel::impl::resetInvoker()
 	m_invoker->addMoveTo(0.6f, visible_size.width / 2, visible_size.height / 2);
 	m_invoker->addMoveTo(0.6f, -m_label_underlying->getContentSize().width / 2, visible_size.height / 2, [this]{
 		m_label_underlying->setVisible(false);
-		SingletonContainer::getInstance()->get<EventDispatcher>()->dispatch(Event::create(EventType::StartLevelLabelDisappeared));
+		SingletonContainer::getInstance()->get<EventDispatcher>()->dispatch(Event::create(LegacyEventType::StartLevelLabelDisappeared));
 	});
 }
 

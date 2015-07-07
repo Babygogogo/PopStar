@@ -227,6 +227,9 @@
     <ClInclude Include="..\Classes\Engine\Event\IEventListener.h">
       <Filter>Classes\Engine\Event</Filter>
     </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Event\IEventDispatcher.h">
+      <Filter>Classes\Engine\Event</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="game.rc">

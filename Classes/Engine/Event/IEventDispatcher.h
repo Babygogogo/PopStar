@@ -1,0 +1,60 @@
+#ifndef __I_EVENT_DISPATCHER__
+#define __I_EVENT_DISPATCHER__
+
+#include <memory>
+
+#include "EventType.h"
+
+class IEventData;
+class IEventListener;
+
+/*!
+ * \class IEventDispatcher
+ *
+ * \brief The interface of EventDispatcher. Used for dispatching events to listeners.
+ *
+ * \details
+ *	There are two ways to dispatch an event: vQueueEvent() and vTrigger().
+ *	vQueueEvent() is the preferred way because it avoids the problem of circular dispatch.  
+ *
+ *	You must call vAddListener() before a listener can listen to any events.
+ *	If a listener dies, it will be removed from the listener list automatically.
+ *
+ * \author Babygogogo
+ * \date 2015.7
+ */
+
+class IEventDispatcher
+{
+public:
+	virtual ~IEventDispatcher(){};
+
+	//Add an event listener to an given event type.
+	//If it's added already, an assertion will be triggered.
+	virtual void vAddListener(const EventType & eType, const std::weak_ptr<IEventListener> & eListener) = 0;
+	virtual void vAddListener(const EventType & eType, std::weak_ptr<IEventListener> && eListener) = 0;
+	
+	//Remove an event listener to an given event type.
+	//Call this only if you want to remove a listener before it dies.
+	virtual void vRemoveListener(const EventType & eType, const std::weak_ptr<IEventListener> & eListener) = 0;
+
+	//Queue an event. The event will be dispatched in vDispatchQueuedEvents().
+	//This is the preferred way to dispatch an event.
+	virtual void vQueueEvent(std::shared_ptr<IEventData> eData) = 0;
+
+	//Abort the first event of the given type in the queue.
+	//If allOfThisType is true, all of the events of the given type will be aborted.
+	virtual void vAbortEvent(const EventType & eType, bool allOfThisType = false) = 0;
+
+	//Dispatch an event immediately. Should be called only if you have a good reason to.
+	virtual void vTrigger(std::shared_ptr<IEventData> eData) = 0;
+
+	//Dispatch all events in the queue. Should be called at the beginning of each game loop.
+	//If the time for dispatching events exceeds timeOutMs, the events left will be dispatched on the next call.
+	virtual void vDispatchQueuedEvents(time_t timeOutMs = 10) = 0;
+
+protected:
+	IEventDispatcher(){};
+};
+
+#endif // !__I_EVENT_DISPATCHER__

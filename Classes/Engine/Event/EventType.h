@@ -1,7 +1,9 @@
 #ifndef __EVENT_TYPE__
 #define __EVENT_TYPE__
 
-enum class EventType
+using EventType = unsigned long;
+
+enum class LegacyEventType
 {
 	SequentialInvokerFinishOneAction,
 

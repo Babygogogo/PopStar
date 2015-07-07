@@ -42,7 +42,7 @@ void GameData::impl::setCurrentScore(int score)
 {
 	if (score != m_current_score){
 		m_current_score = score;
-		SingletonContainer::getInstance()->get<EventDispatcher>()->dispatch(Event::create(EventType::CurrentScoreValueUpdated));
+		SingletonContainer::getInstance()->get<EventDispatcher>()->dispatch(Event::create(LegacyEventType::CurrentScoreValueUpdated));
 
 		setHighScore(m_current_score);
 	}
@@ -54,7 +54,7 @@ void GameData::impl::setHighScore(int score)
 		m_high_score = score;
 		saveHighScore();
 
-		SingletonContainer::getInstance()->get<EventDispatcher>()->dispatch(Event::create(EventType::HighScoreValueUpdated));
+		SingletonContainer::getInstance()->get<EventDispatcher>()->dispatch(Event::create(LegacyEventType::HighScoreValueUpdated));
 	}
 }
 
@@ -79,7 +79,7 @@ void GameData::impl::setCurrentLevel(int level)
 	m_current_level = level;
 	m_previous_exploded_stars_num = 0;
 
-	SingletonContainer::getInstance()->get<EventDispatcher>()->dispatch(Event::create(EventType::LevelValueUpdated));
+	SingletonContainer::getInstance()->get<EventDispatcher>()->dispatch(Event::create(LegacyEventType::LevelValueUpdated));
 
 	updateTargetScoreByCurrentLevel();
 }
@@ -101,7 +101,7 @@ void GameData::impl::updateTargetScoreByCurrentLevel()
 
 	if (score != m_target_score){
 		m_target_score = score;
-		SingletonContainer::getInstance()->get<EventDispatcher>()->dispatch(Event::create(EventType::TargetScoreValueUpdated));
+		SingletonContainer::getInstance()->get<EventDispatcher>()->dispatch(Event::create(LegacyEventType::TargetScoreValueUpdated));
 	}
 }
 
@@ -128,10 +128,10 @@ int GameData::getEndLevelBonus() const
 void GameData::levelEnd()
 {
 	if (pimpl->m_current_score < pimpl->m_target_score)
-		SingletonContainer::getInstance()->get<::EventDispatcher>()->dispatch(::Event::create(EventType::GameOver));
+		SingletonContainer::getInstance()->get<::EventDispatcher>()->dispatch(::Event::create(LegacyEventType::GameOver));
 	else{
 		pimpl->setCurrentLevel(pimpl->m_current_level + 1);
-		SingletonContainer::getInstance()->get<::EventDispatcher>()->dispatch(::Event::create(EventType::LevelStarted));
+		SingletonContainer::getInstance()->get<::EventDispatcher>()->dispatch(::Event::create(LegacyEventType::LevelStarted));
 	}
 }
 
@@ -153,7 +153,7 @@ void GameData::updateCurrentScoreWith(int num_of_exploded_stars)
 	pimpl->m_previous_exploded_stars_num = num_of_exploded_stars;
 	pimpl->setCurrentScore(pimpl->m_current_score + pimpl->getScoreOf(num_of_exploded_stars));
 
-	SingletonContainer::getInstance()->get<EventDispatcher>()->dispatch(Event::create(EventType::CurrentScoreIncreased));
+	SingletonContainer::getInstance()->get<EventDispatcher>()->dispatch(Event::create(LegacyEventType::CurrentScoreIncreased));
 }
 
 int GameData::getStarsLeftNum() const

@@ -5,7 +5,7 @@
 
 #include "../../Common/Object.h"
 
-enum class EventType;
+enum class LegacyEventType;
 
 class Event : public Object
 {
@@ -18,23 +18,23 @@ class Event : public Object
 	Event& operator=(Event&&) = delete;
 	
 public:
-	static std::unique_ptr<Event> create(EventType event_type, std::unique_ptr<Object> &&event_arg = nullptr)
+	static std::unique_ptr<Event> create(LegacyEventType event_type, std::unique_ptr<Object> &&event_arg = nullptr)
 	{
 		return std::unique_ptr<Event>(new Event("Event", event_type, std::move(event_arg)));
 	}
 
-	EventType getType() const{ return m_event_type; }
+	LegacyEventType getType() const{ return m_event_type; }
 	Object *getArg() const
 	{
 		return m_event_arg ? m_event_arg.get() : nullptr;
 	}
 
 protected:
-	Event(std::string &&name, EventType event_type, std::unique_ptr<Object> &&event_arg)
+	Event(std::string &&name, LegacyEventType event_type, std::unique_ptr<Object> &&event_arg)
 		:Object(std::move(name)), m_event_type(std::move(event_type)), m_event_arg(std::move(event_arg)){};
 
 private:
-	EventType m_event_type;
+	LegacyEventType m_event_type;
 	std::unique_ptr<Object> m_event_arg;
 };
 

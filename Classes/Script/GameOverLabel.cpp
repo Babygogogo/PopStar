@@ -45,7 +45,7 @@ GameOverLabel::impl::~impl()
 
 void GameOverLabel::impl::registerAsEventListeners()
 {
-	SingletonContainer::getInstance()->get<EventDispatcher>()->registerListener(EventType::GameOver, this,
+	SingletonContainer::getInstance()->get<EventDispatcher>()->registerListener(LegacyEventType::GameOver, this,
 		[this](Event *){reset(); });
 
 	auto touch_listener = cocos2d::EventListenerTouchOneByOne::create();

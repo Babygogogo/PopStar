@@ -45,7 +45,7 @@ ComboEffect::impl::~impl()
 
 void ComboEffect::impl::registerAsEventListeners()
 {
-	SingletonContainer::getInstance()->get<EventDispatcher>()->registerListener(EventType::UserClickedStarsExploded, this,
+	SingletonContainer::getInstance()->get<EventDispatcher>()->registerListener(LegacyEventType::UserClickedStarsExploded, this,
 		[this](Event *e){show(static_cast<EventArg1*>(e->getArg())->getInt()); });
 }
 
