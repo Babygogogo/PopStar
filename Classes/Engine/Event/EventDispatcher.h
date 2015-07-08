@@ -41,9 +41,9 @@ private:
 	virtual void vQueueEvent(std::shared_ptr<IEventData> && eData) override;
 	virtual void vAbortEvent(const EventType & eType, bool allOfThisType = false) override;
 	virtual void vTrigger(const std::shared_ptr<IEventData> & eData) override;
-	virtual void vTrigger(std::shared_ptr<IEventData> && eData) override;
-	virtual void vDispatchQueuedEvents(time_t timeOutMs = 10) override;
+	virtual void vDispatchQueuedEvents(const std::chrono::milliseconds & timeOutMs = std::chrono::milliseconds{ 10 }) override;
 
+	//implementation stuff
 	struct EventDispatcherImpl;
 	std::unique_ptr<EventDispatcherImpl> pimpl;
 };

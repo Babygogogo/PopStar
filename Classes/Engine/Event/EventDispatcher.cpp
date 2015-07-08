@@ -1,10 +1,12 @@
 #include <unordered_set>
 #include <unordered_map>
 #include <list>
+#include <array>
 #include <cassert>
 
 #include "EventDispatcher.h"
 #include "IEventListener.h"
+#include "IEventData.h"
 #include "LegacyEvent.h"
 #include "EventType.h"
 #include "cocos2d.h"
@@ -25,15 +27,26 @@ struct EventDispatcher::EventDispatcherImpl
 	//Check if there is a same listener to an event type already.
 	bool hasSameListener(const EventType & eType, const std::shared_ptr<void> & eListener) const;
 
-	bool m_is_dispatching{ false };
+	//Get the next index of the event queue for the given index.
+	int getNextQueueIndex(const int & index) const;
+
+	//Dispatch an event immediately. Remove the dead listeners by the way.
+	void dispatchEvent(const std::shared_ptr<IEventData> & eData);
+
+	static const int EVENT_QUEUE_COUNT = 2;
+
+	int m_NextQueueIndex{ 0 };
+	bool m_IsDispatchingQueue{ false };
+
+	std::unordered_map<EventType, std::list<ListenerCallback>> m_ListenerCallbackLists;
+	std::array<std::list<std::shared_ptr<IEventData>>, EVENT_QUEUE_COUNT> m_EventQueues;
+	std::list<std::function<void()>> m_CachedOperations;
 
 	std::unordered_map<LegacyEventType, std::unordered_multimap<void*, std::function<void(LegacyEvent*)>>> m_listeners;
 	std::unordered_map<LegacyEventType, std::unordered_multimap<void*, std::function<void(LegacyEvent*)>>> m_listeners_to_add;
 	std::unordered_set<void*> m_listeners_to_delete;
 
 	std::unordered_map<LegacyEventType, std::unordered_set<IEventListener*>> m_script_listeners;
-
-	std::unordered_map<EventType, std::list<ListenerCallback>> m_Listeners;
 };
 
 void EventDispatcher::EventDispatcherImpl::handleNewListeners()
@@ -68,12 +81,12 @@ bool EventDispatcher::EventDispatcherImpl::canAddListenerCallback(const EventTyp
 bool EventDispatcher::EventDispatcherImpl::hasSameListener(const EventType & eType, const std::shared_ptr<void> & eListener) const
 {
 	//If there is no event type the same as eType in the list, there is of course no the same listener in it.
-	auto typeIter = m_Listeners.find(eType);
-	if (typeIter == m_Listeners.end())
+	auto listenerCallbackListIter = m_ListenerCallbackLists.find(eType);
+	if (listenerCallbackListIter == m_ListenerCallbackLists.end())
 		return false;
 
 	//Traverse the listener list to see if there is a same listener.
-	for (const auto &listenerInList : typeIter->second){
+	for (const auto &listenerInList : listenerCallbackListIter->second){
 		//If the current listener is dead, simply ignore it.
 		if (listenerInList.first.expired())
 			continue;
@@ -85,6 +98,34 @@ bool EventDispatcher::EventDispatcherImpl::hasSameListener(const EventType & eTy
 
 	//There is no the same listener in the list. Return false.
 	return false;
+}
+
+int EventDispatcher::EventDispatcherImpl::getNextQueueIndex(const int & index) const
+{
+	return (index + 1) % EVENT_QUEUE_COUNT;
+}
+
+void EventDispatcher::EventDispatcherImpl::dispatchEvent(const std::shared_ptr<IEventData> & eData)
+{
+	//If there is no listener listening to the event type, simply return.
+	auto listenerCallbackListIter = m_ListenerCallbackLists.find(eData->getEventType());
+	if (listenerCallbackListIter == m_ListenerCallbackLists.end())
+		return;
+
+	//Traverse all the listeners.
+	//Don't use for(xx:yy) because if a dead listener is encountered, it should be remove from the list.
+	auto listenerCallbackIter = listenerCallbackListIter->second.begin();
+	while (listenerCallbackIter != listenerCallbackListIter->second.end()){
+		//Save the current iterator and ++listenerCallbackIter so that the listenerCallbackIter won't be invalidate if the removal occurs.
+		auto currentIter = listenerCallbackIter;
+		++listenerCallbackIter;
+
+		//If the current listener is dead, remove if from the list.
+		if (currentIter->first.expired())
+			listenerCallbackListIter->second.erase(currentIter);
+		else //If not dead, call its associated callback.
+			currentIter->second(eData);
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -107,7 +148,7 @@ std::unique_ptr<EventDispatcher> EventDispatcher::create()
 
 void EventDispatcher::registerListener(LegacyEventType event_type, void *target, std::function<void(LegacyEvent*)> callback)
 {
-	if (pimpl->m_is_dispatching)
+	if (pimpl->m_IsDispatchingQueue)
 		pimpl->m_listeners_to_add[event_type].emplace(std::move(target), std::move(callback));
 	else
 		pimpl->m_listeners[event_type].emplace(std::move(target), std::move(callback));
@@ -120,7 +161,7 @@ void EventDispatcher::registerListener(LegacyEventType event_type, void *target,
 
 void EventDispatcher::deleteListener(void *target)
 {
-	if (pimpl->m_is_dispatching)
+	if (pimpl->m_IsDispatchingQueue)
 		pimpl->m_listeners_to_delete.emplace(target);
 	else
 		for (auto &type_target_callback : pimpl->m_listeners)
@@ -135,11 +176,11 @@ void EventDispatcher::deleteListener(void *target)
 
 void EventDispatcher::dispatch(std::unique_ptr<LegacyEvent> &&event, void *target /*= nullptr*/)
 {
-	if (pimpl->m_is_dispatching)
+	if (pimpl->m_IsDispatchingQueue)
 		throw("Recursive dispatch");
 	
 	pimpl->handleNewListeners();
-	pimpl->m_is_dispatching = true;
+	pimpl->m_IsDispatchingQueue = true;
 
 	auto event_ptr = event.get();
 
@@ -159,30 +200,36 @@ void EventDispatcher::dispatch(std::unique_ptr<LegacyEvent> &&event, void *targe
 		//		listener->onEvent(event_ptr);
 	}
 
-	pimpl->m_is_dispatching = false;
+	pimpl->m_IsDispatchingQueue = false;
 }
 
 void EventDispatcher::vAddListener(const EventType & eType, const ListenerCallback & eListenerCallback)
 {
 	if (pimpl->canAddListenerCallback(eType, eListenerCallback))
-		pimpl->m_Listeners[eType].emplace_back(eListenerCallback);
+		pimpl->m_ListenerCallbackLists[eType].emplace_back(eListenerCallback);
 }
 
 void EventDispatcher::vAddListener(const EventType & eType, ListenerCallback && eListenerCallback)
 {
 	if (pimpl->canAddListenerCallback(eType, eListenerCallback))
-		pimpl->m_Listeners[eType].emplace_back(std::move(eListenerCallback));
+		pimpl->m_ListenerCallbackLists[eType].emplace_back(std::move(eListenerCallback));
 }
 
 void EventDispatcher::vRemoveListener(const EventType & eType, const std::weak_ptr<void> & eListener)
 {
 	//If the eListener is dead or there is no eType in the listener list, simply return.
-	if (eListener.expired() || pimpl->m_Listeners.find(eType) == pimpl->m_Listeners.end())
+	if (eListener.expired() || pimpl->m_ListenerCallbackLists.find(eType) == pimpl->m_ListenerCallbackLists.end())
 		return;
+
+	//If it's dispatching, we should cache this operation and call it after the dispatch.
+	if (pimpl->m_IsDispatchingQueue){
+		pimpl->m_CachedOperations.emplace_back([this, eType, eListener](){vRemoveListener(eType, eListener); });
+		return;
+	}
 
 	//Prepare for traversing the listener list.
 	const auto strongListener = eListener.lock();
-	auto & listenerListOfType = pimpl->m_Listeners[eType];
+	auto & listenerListOfType = pimpl->m_ListenerCallbackLists[eType];
 
 	//Traverse the listener list to see if there is an listener to be removed.
 	//Don't use for(xx:yy) because there is at most one listener to remove from the list. Once we find it, we can simply remove it and return.
@@ -201,30 +248,99 @@ void EventDispatcher::vRemoveListener(const EventType & eType, const std::weak_p
 
 void EventDispatcher::vQueueEvent(const std::shared_ptr<IEventData> & eData)
 {
-	throw std::logic_error("The method or operation is not implemented.");
+	pimpl->m_EventQueues[pimpl->m_NextQueueIndex].emplace_back(eData);
 }
 
 void EventDispatcher::vQueueEvent(std::shared_ptr<IEventData> && eData)
 {
-	throw std::logic_error("The method or operation is not implemented.");
+	pimpl->m_EventQueues[pimpl->m_NextQueueIndex].emplace_back(std::move(eData));
 }
 
 void EventDispatcher::vAbortEvent(const EventType & eType, bool allOfThisType /*= false*/)
 {
-	throw std::logic_error("The method or operation is not implemented.");
+	//If it's dispatching, cache this operation and call it after the dispatch.
+	if (pimpl->m_IsDispatchingQueue){
+		pimpl->m_CachedOperations.emplace_back([this, eType, allOfThisType](){vAbortEvent(eType, allOfThisType); });
+		return;
+	}
+
+	//We should traverse all of the event queues and we should begin with the next one.
+	auto queueIndex = pimpl->m_NextQueueIndex;
+	for (auto traverseCount = 0; traverseCount < EventDispatcherImpl::EVENT_QUEUE_COUNT; ++traverseCount){
+		auto & eventQueue = pimpl->m_EventQueues[queueIndex];
+		auto eventIter = eventQueue.begin();
+
+		//Traverse through the queue.
+		while (eventIter != eventQueue.end()){
+			//Save the current iterator and ++eventIter so that the eventIter won't be invalidate if the removal occurs.
+			auto currentIter = eventIter;
+			++eventIter;
+
+			//If we find the event to delete, remove it from the queue.
+			if ((*currentIter)->getEventType() == eType){
+				eventQueue.erase(currentIter);
+
+				//If allOfThisType is false, we simply return because there's no need to remove the other events.
+				if (!allOfThisType)
+					return;
+			}
+		}
+
+		//Update the queue index so that we can deal with the next queue in the next loop.
+		queueIndex = pimpl->getNextQueueIndex(queueIndex);
+	}
 }
 
 void EventDispatcher::vTrigger(const std::shared_ptr<IEventData> & eData)
 {
-	throw std::logic_error("The method or operation is not implemented.");
+	pimpl->dispatchEvent(eData);
 }
 
-void EventDispatcher::vTrigger(std::shared_ptr<IEventData> && eData)
+void EventDispatcher::vDispatchQueuedEvents(const std::chrono::milliseconds & timeOutMs /*= 10ms*/)
 {
-	throw std::logic_error("The method or operation is not implemented.");
-}
+	//Make sure that vDispatchQueueEvents isn't called recursively.
+	assert(!pimpl->m_IsDispatchingQueue);
 
-void EventDispatcher::vDispatchQueuedEvents(time_t timeOutMs /*= 10*/)
-{
-	throw std::logic_error("The method or operation is not implemented.");
+	//Set the flag for dispatching.
+	pimpl->m_IsDispatchingQueue = true;
+
+	//Save the current time point. It will be used for calculating the time period of dispatch.
+	const auto beginningTimePoint = std::chrono::steady_clock::now();
+
+	//Get the queue for dispatching.
+	auto & eventQueue = pimpl->m_EventQueues[pimpl->m_NextQueueIndex];
+	while (!eventQueue.empty()){
+		//For each event in the queue, dispatch it and then remove it from the queue.
+		pimpl->dispatchEvent(eventQueue.front());
+		eventQueue.pop_front();
+
+		//Check if time runs out.
+		auto elapsedTimeMs = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - beginningTimePoint);
+		if (elapsedTimeMs >= timeOutMs){
+			//If there is any event left in the queue, we must move it into the next queue.
+			if (!eventQueue.empty()){
+				//Make a log.
+				cocos2d::log("EventDispatcher::vDispatchQueuedEvent time out");
+
+				//Move the events left in the queue into the beginning of the next queue.
+				auto & nextQueue = pimpl->m_EventQueues[pimpl->getNextQueueIndex(pimpl->m_NextQueueIndex)];
+				nextQueue.splice(nextQueue.begin(), std::move(eventQueue));
+			}
+
+			//End the dispatch.
+			break;
+		}
+	}
+
+	//Unset the flag for dispatching.
+	pimpl->m_IsDispatchingQueue = false;
+
+	//Update the next queue index.
+	pimpl->m_NextQueueIndex = pimpl->getNextQueueIndex(pimpl->m_NextQueueIndex);
+
+	//Call the cached operations.
+	while (!pimpl->m_CachedOperations.empty()){
+		pimpl->m_CachedOperations.front()();
+		pimpl->m_CachedOperations.pop_front();
+	}
 }

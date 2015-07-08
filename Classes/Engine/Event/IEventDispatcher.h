@@ -2,6 +2,7 @@
 #define __I_EVENT_DISPATCHER__
 
 #include <memory>
+#include <chrono>
 
 #include "EventType.h"
 
@@ -51,11 +52,10 @@ public:
 
 	//Dispatch an event immediately. Should be called only if you have a good reason to.
 	virtual void vTrigger(const std::shared_ptr<IEventData> & eData) = 0;
-	virtual void vTrigger(std::shared_ptr<IEventData> && eData) = 0;
 
 	//Dispatch all events in the queue. Should be called at the beginning of each game loop.
 	//If the time for dispatching events exceeds timeOutMs, the events left will be dispatched on the next call.
-	virtual void vDispatchQueuedEvents(time_t timeOutMs = 10) = 0;
+	virtual void vDispatchQueuedEvents(const std::chrono::milliseconds & timeOutMs = std::chrono::milliseconds{ 10 }) = 0;
 
 protected:
 	IEventDispatcher(){};
