@@ -1,5 +1,5 @@
-#ifndef __EVENT__
-#define __EVENT__
+#ifndef __LEGACY_EVENT__
+#define __LEGACY_EVENT__
 
 #include <memory>
 
@@ -7,20 +7,20 @@
 
 enum class LegacyEventType;
 
-class Event : public Object
+class LegacyEvent : public Object
 {
 	//////////////////////////////////////////////////////////////////////////
 	//Disable copy/move constructor and operator=.
 	//////////////////////////////////////////////////////////////////////////
-	Event(const Event&) = delete;
-	Event(Event&&) = delete;
-	Event& operator=(const Event&) = delete;
-	Event& operator=(Event&&) = delete;
+	LegacyEvent(const LegacyEvent&) = delete;
+	LegacyEvent(LegacyEvent&&) = delete;
+	LegacyEvent& operator=(const LegacyEvent&) = delete;
+	LegacyEvent& operator=(LegacyEvent&&) = delete;
 	
 public:
-	static std::unique_ptr<Event> create(LegacyEventType event_type, std::unique_ptr<Object> &&event_arg = nullptr)
+	static std::unique_ptr<LegacyEvent> create(LegacyEventType event_type, std::unique_ptr<Object> &&event_arg = nullptr)
 	{
-		return std::unique_ptr<Event>(new Event("Event", event_type, std::move(event_arg)));
+		return std::unique_ptr<LegacyEvent>(new LegacyEvent("Event", event_type, std::move(event_arg)));
 	}
 
 	LegacyEventType getType() const{ return m_event_type; }
@@ -30,7 +30,7 @@ public:
 	}
 
 protected:
-	Event(std::string &&name, LegacyEventType event_type, std::unique_ptr<Object> &&event_arg)
+	LegacyEvent(std::string &&name, LegacyEventType event_type, std::unique_ptr<Object> &&event_arg)
 		:Object(std::move(name)), m_event_type(std::move(event_type)), m_event_arg(std::move(event_arg)){};
 
 private:
@@ -38,4 +38,4 @@ private:
 	std::unique_ptr<Object> m_event_arg;
 };
 
-#endif // !__EVENT__
+#endif // !__LEGACY_EVENT__

@@ -1,14 +1,30 @@
 #ifndef __I_EVENT_LISTENER__
 #define __I_EVENT_LISTENER__
 
-class Event;
+#include <memory>
 
+class LegacyEvent;
+class IEventData;
+
+/*!
+ * \class IEventListener
+ *
+ * \brief The interface of EventListener. Can listen to events after registering to IEventDispatcher.
+ *
+ * \author Babygogogo
+ * \date 2015.7
+ */
 class IEventListener
 {
-	friend class EventDispatcher;
+public:
+	~IEventListener(){};
+
+	//Callback function for events.
+	virtual void onEvent(LegacyEvent* e) = 0;
+	virtual void onEvent(const std::shared_ptr<IEventData> & e) = 0;
 
 protected:
-	inline virtual void onEvent(Event* e) = 0;
+	IEventListener(){};
 };
 
 #endif // !__I_EVENT_LISTENER__

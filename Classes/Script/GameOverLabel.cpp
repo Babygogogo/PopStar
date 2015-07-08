@@ -46,7 +46,7 @@ GameOverLabel::impl::~impl()
 void GameOverLabel::impl::registerAsEventListeners()
 {
 	SingletonContainer::getInstance()->get<EventDispatcher>()->registerListener(LegacyEventType::GameOver, this,
-		[this](Event *){reset(); });
+		[this](LegacyEvent *){reset(); });
 
 	auto touch_listener = cocos2d::EventListenerTouchOneByOne::create();
 	touch_listener->onTouchBegan = [this](cocos2d::Touch* touch, cocos2d::Event* event)->bool{

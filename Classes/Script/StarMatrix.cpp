@@ -8,7 +8,7 @@
 #include "../Common/GameData.h"
 #include "../Engine/Event/EventDispatcher.h"
 #include "../Engine/Event/EventType.h"
-#include "../Engine/Event/Event.h"
+#include "../Engine/Event/LegacyEvent.h"
 #include "../Engine/Event/EventArg1.h"
 
 #include "../Classes/Audio.h"
@@ -106,7 +106,7 @@ void StarMatrix::impl::registerAsEventListeners()
 	};
 	cocos2d::Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, m_node_underlying);
 
-	SingletonContainer::getInstance()->get<::EventDispatcher>()->registerListener(LegacyEventType::LevelSummaryLabelDisappeared, this, [this](::Event*){
+	SingletonContainer::getInstance()->get<::EventDispatcher>()->registerListener(LegacyEventType::LevelSummaryLabelDisappeared, this, [this](::LegacyEvent*){
 		explodeAllLeftStars();
 		m_invoker->addCallback([]{SingletonContainer::getInstance()->get<GameData>()->levelEnd(); });
 		unregisterAsEventListeners();
@@ -202,11 +202,11 @@ void StarMatrix::impl::explodeGroupingStars(std::list<Star*> &&group_stars)
 
 	shrink();
 	SingletonContainer::getInstance()->get<GameData>()->updateCurrentScoreWith(group_stars.size());
-	SingletonContainer::getInstance()->get<EventDispatcher>()->dispatch(Event::create(LegacyEventType::UserClickedStarsExploded, EventArg1::create(group_stars.size())));
+	SingletonContainer::getInstance()->get<EventDispatcher>()->dispatch(LegacyEvent::create(LegacyEventType::UserClickedStarsExploded, EventArg1::create(group_stars.size())));
 
 	if (isNoMoreMove()){
 		SingletonContainer::getInstance()->get<GameData>()->setStarsLeftNum(countStarsLeft());
-		SingletonContainer::getInstance()->get<::EventDispatcher>()->dispatch(::Event::create(LegacyEventType::LevelNoMoreMove));
+		SingletonContainer::getInstance()->get<::EventDispatcher>()->dispatch(::LegacyEvent::create(LegacyEventType::LevelNoMoreMove));
 	}
 }
 

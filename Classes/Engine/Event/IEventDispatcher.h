@@ -6,7 +6,6 @@
 #include "EventType.h"
 
 class IEventData;
-class IEventListener;
 
 /*!
  * \class IEventDispatcher
@@ -29,25 +28,30 @@ class IEventDispatcher
 public:
 	virtual ~IEventDispatcher(){};
 
+	//Type shortcut of the pair of listener and its callback.
+	using ListenerCallback = std::pair < std::weak_ptr<void>, std::function<void(const std::shared_ptr<IEventData> &)> > ;
+
 	//Add an event listener to an given event type.
-	//If it's added already, an assertion will be triggered.
-	virtual void vAddListener(const EventType & eType, const std::weak_ptr<IEventListener> & eListener) = 0;
-	virtual void vAddListener(const EventType & eType, std::weak_ptr<IEventListener> && eListener) = 0;
+	//If it's added twice, the second one will be ignored.
+	virtual void vAddListener(const EventType & eType, const ListenerCallback & eListenerCallback) = 0;
+	virtual void vAddListener(const EventType & eType, ListenerCallback && eListenerCallback) = 0;
 	
 	//Remove an event listener to an given event type.
 	//Call this only if you want to remove a listener before it dies.
-	virtual void vRemoveListener(const EventType & eType, const std::weak_ptr<IEventListener> & eListener) = 0;
+	virtual void vRemoveListener(const EventType & eType, const std::weak_ptr<void> & eListener) = 0;
 
 	//Queue an event. The event will be dispatched in vDispatchQueuedEvents().
 	//This is the preferred way to dispatch an event.
-	virtual void vQueueEvent(std::shared_ptr<IEventData> eData) = 0;
+	virtual void vQueueEvent(const std::shared_ptr<IEventData> & eData) = 0;
+	virtual void vQueueEvent(std::shared_ptr<IEventData> && eData) = 0;
 
 	//Abort the first event of the given type in the queue.
 	//If allOfThisType is true, all of the events of the given type will be aborted.
 	virtual void vAbortEvent(const EventType & eType, bool allOfThisType = false) = 0;
 
 	//Dispatch an event immediately. Should be called only if you have a good reason to.
-	virtual void vTrigger(std::shared_ptr<IEventData> eData) = 0;
+	virtual void vTrigger(const std::shared_ptr<IEventData> & eData) = 0;
+	virtual void vTrigger(std::shared_ptr<IEventData> && eData) = 0;
 
 	//Dispatch all events in the queue. Should be called at the beginning of each game loop.
 	//If the time for dispatching events exceeds timeOutMs, the events left will be dispatched on the next call.

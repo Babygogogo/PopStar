@@ -1,10 +1,13 @@
-#include "EventDispatcher.h"
-#include "IEventListener.h"
-#include "Event.h"
-#include "EventType.h"
-
 #include <unordered_set>
 #include <unordered_map>
+#include <list>
+#include <cassert>
+
+#include "EventDispatcher.h"
+#include "IEventListener.h"
+#include "LegacyEvent.h"
+#include "EventType.h"
+#include "cocos2d.h"
 
 //////////////////////////////////////////////////////////////////////////
 //definition of EventDispatcherImpl
@@ -16,13 +19,21 @@ struct EventDispatcher::EventDispatcherImpl
 
 	void handleNewListeners();
 
+	//Determine if we can add a listener and callback pair into the listener list.
+	bool canAddListenerCallback(const EventType & eType, const ListenerCallback & eListenerCallback) const;
+
+	//Check if there is a same listener to an event type already.
+	bool hasSameListener(const EventType & eType, const std::shared_ptr<void> & eListener) const;
+
 	bool m_is_dispatching{ false };
 
-	std::unordered_map<LegacyEventType, std::unordered_multimap<void*, std::function<void(Event*)>>> m_listeners;
-	std::unordered_map<LegacyEventType, std::unordered_multimap<void*, std::function<void(Event*)>>> m_listeners_to_add;
+	std::unordered_map<LegacyEventType, std::unordered_multimap<void*, std::function<void(LegacyEvent*)>>> m_listeners;
+	std::unordered_map<LegacyEventType, std::unordered_multimap<void*, std::function<void(LegacyEvent*)>>> m_listeners_to_add;
 	std::unordered_set<void*> m_listeners_to_delete;
 
 	std::unordered_map<LegacyEventType, std::unordered_set<IEventListener*>> m_script_listeners;
+
+	std::unordered_map<EventType, std::list<ListenerCallback>> m_Listeners;
 };
 
 void EventDispatcher::EventDispatcherImpl::handleNewListeners()
@@ -37,6 +48,43 @@ void EventDispatcher::EventDispatcherImpl::handleNewListeners()
 
 	m_listeners_to_add.clear();
 	m_listeners_to_delete.clear();
+}
+
+bool EventDispatcher::EventDispatcherImpl::canAddListenerCallback(const EventType & eType, const ListenerCallback & eListenerCallback) const
+{
+	//If the new listener is already dead, we can't add it to the listener list.
+	if (eListenerCallback.first.expired())
+		return false;
+
+	//If there is a same listener to the same event type, we can't add it to the list either.
+	if (hasSameListener(eType, eListenerCallback.first.lock())){
+		cocos2d::log("EventDispatcher::vAddListener trying to double-register a listener.");
+		return false;
+	}
+
+	return true;
+}
+
+bool EventDispatcher::EventDispatcherImpl::hasSameListener(const EventType & eType, const std::shared_ptr<void> & eListener) const
+{
+	//If there is no event type the same as eType in the list, there is of course no the same listener in it.
+	auto typeIter = m_Listeners.find(eType);
+	if (typeIter == m_Listeners.end())
+		return false;
+
+	//Traverse the listener list to see if there is a same listener.
+	for (const auto &listenerInList : typeIter->second){
+		//If the current listener is dead, simply ignore it.
+		if (listenerInList.first.expired())
+			continue;
+
+		//If the current listener is the same as eListener, return true.
+		if (listenerInList.first.lock() == eListener)
+			return true;
+	}
+
+	//There is no the same listener in the list. Return false.
+	return false;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -57,7 +105,7 @@ std::unique_ptr<EventDispatcher> EventDispatcher::create()
 	return std::unique_ptr<EventDispatcher>(new EventDispatcher);
 }
 
-void EventDispatcher::registerListener(LegacyEventType event_type, void *target, std::function<void(Event*)> callback)
+void EventDispatcher::registerListener(LegacyEventType event_type, void *target, std::function<void(LegacyEvent*)> callback)
 {
 	if (pimpl->m_is_dispatching)
 		pimpl->m_listeners_to_add[event_type].emplace(std::move(target), std::move(callback));
@@ -85,7 +133,7 @@ void EventDispatcher::deleteListener(void *target)
 //		listener_set.second.erase(listener);
 //}
 
-void EventDispatcher::dispatch(std::unique_ptr<Event> &&event, void *target /*= nullptr*/)
+void EventDispatcher::dispatch(std::unique_ptr<LegacyEvent> &&event, void *target /*= nullptr*/)
 {
 	if (pimpl->m_is_dispatching)
 		throw("Recursive dispatch");
@@ -114,22 +162,49 @@ void EventDispatcher::dispatch(std::unique_ptr<Event> &&event, void *target /*= 
 	pimpl->m_is_dispatching = false;
 }
 
-void EventDispatcher::vAddListener(const EventType & eType, const std::weak_ptr<IEventListener> & eListener)
+void EventDispatcher::vAddListener(const EventType & eType, const ListenerCallback & eListenerCallback)
+{
+	if (pimpl->canAddListenerCallback(eType, eListenerCallback))
+		pimpl->m_Listeners[eType].emplace_back(eListenerCallback);
+}
+
+void EventDispatcher::vAddListener(const EventType & eType, ListenerCallback && eListenerCallback)
+{
+	if (pimpl->canAddListenerCallback(eType, eListenerCallback))
+		pimpl->m_Listeners[eType].emplace_back(std::move(eListenerCallback));
+}
+
+void EventDispatcher::vRemoveListener(const EventType & eType, const std::weak_ptr<void> & eListener)
+{
+	//If the eListener is dead or there is no eType in the listener list, simply return.
+	if (eListener.expired() || pimpl->m_Listeners.find(eType) == pimpl->m_Listeners.end())
+		return;
+
+	//Prepare for traversing the listener list.
+	const auto strongListener = eListener.lock();
+	auto & listenerListOfType = pimpl->m_Listeners[eType];
+
+	//Traverse the listener list to see if there is an listener to be removed.
+	//Don't use for(xx:yy) because there is at most one listener to remove from the list. Once we find it, we can simply remove it and return.
+	for (auto listenerIter = listenerListOfType.begin(); listenerIter != listenerListOfType.end(); ++listenerIter){
+		//If the current listener is dead, ignore it.
+		if (listenerIter->first.expired())
+			continue;
+
+		//If the current listener "equals" eListener, remove it from the list.
+		if (listenerIter->first.lock() == strongListener){
+			listenerListOfType.erase(listenerIter);
+			return;
+		}
+	}
+}
+
+void EventDispatcher::vQueueEvent(const std::shared_ptr<IEventData> & eData)
 {
 	throw std::logic_error("The method or operation is not implemented.");
 }
 
-void EventDispatcher::vAddListener(const EventType & eType, std::weak_ptr<IEventListener> && eListener)
-{
-	throw std::logic_error("The method or operation is not implemented.");
-}
-
-void EventDispatcher::vRemoveListener(const EventType & eType, const std::weak_ptr<IEventListener> & eListener)
-{
-	throw std::logic_error("The method or operation is not implemented.");
-}
-
-void EventDispatcher::vQueueEvent(std::shared_ptr<IEventData> eData)
+void EventDispatcher::vQueueEvent(std::shared_ptr<IEventData> && eData)
 {
 	throw std::logic_error("The method or operation is not implemented.");
 }
@@ -139,7 +214,12 @@ void EventDispatcher::vAbortEvent(const EventType & eType, bool allOfThisType /*
 	throw std::logic_error("The method or operation is not implemented.");
 }
 
-void EventDispatcher::vTrigger(std::shared_ptr<IEventData> eData)
+void EventDispatcher::vTrigger(const std::shared_ptr<IEventData> & eData)
+{
+	throw std::logic_error("The method or operation is not implemented.");
+}
+
+void EventDispatcher::vTrigger(std::shared_ptr<IEventData> && eData)
 {
 	throw std::logic_error("The method or operation is not implemented.");
 }

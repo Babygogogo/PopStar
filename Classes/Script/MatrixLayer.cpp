@@ -40,7 +40,7 @@ MatrixLayer::impl::~impl()
 void MatrixLayer::impl::registerAsEventListeners()
 {
 	SingletonContainer::getInstance()->get<EventDispatcher>()->registerListener(LegacyEventType::StartLevelLabelDisappeared, this,
-		[this](Event *){startLevel(); });
+		[this](LegacyEvent *){startLevel(); });
 }
 
 void MatrixLayer::impl::unregisterAsEventListeners()

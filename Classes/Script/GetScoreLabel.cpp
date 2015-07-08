@@ -43,12 +43,12 @@ std::string GetScoreLabel::impl::createGetScoreText() const
 
 void GetScoreLabel::impl::registerAsEventListeners(cocos2d::Label *label_underlying)
 {
-	SingletonContainer::getInstance()->get<EventDispatcher>()->registerListener(LegacyEventType::CurrentScoreIncreased, this, [this, label_underlying](Event *){
+	SingletonContainer::getInstance()->get<EventDispatcher>()->registerListener(LegacyEventType::CurrentScoreIncreased, this, [this, label_underlying](LegacyEvent *){
 		label_underlying->setString(createGetScoreText());
 		label_underlying->setVisible(true);
 	});
 
-	SingletonContainer::getInstance()->get<EventDispatcher>()->registerListener(LegacyEventType::LevelSummaryLabelDisappeared, this, [label_underlying](Event*){
+	SingletonContainer::getInstance()->get<EventDispatcher>()->registerListener(LegacyEventType::LevelSummaryLabelDisappeared, this, [label_underlying](LegacyEvent*){
 		label_underlying->setVisible(false);
 	});
 }

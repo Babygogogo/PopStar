@@ -4,7 +4,7 @@
 #include "../Engine/Utilities/SingletonContainer.h"
 #include "../Common/GameData.h"
 #include "../Engine/Event/EventDispatcher.h"
-#include "../Engine/Event/Event.h"
+#include "../Engine/Event/LegacyEvent.h"
 #include "../Engine/Event/EventType.h"
 
 struct StatusBar::impl
@@ -44,7 +44,7 @@ std::unique_ptr<GameObject> StatusBar::impl::createHighScoreLabel()
 	auto visible_size = cocos2d::Director::getInstance()->getVisibleSize();
 	label_underlying->setPosition(visible_size.width / 2, visible_size.height - 50);
 
-	SingletonContainer::getInstance()->get<EventDispatcher>()->registerListener(LegacyEventType::HighScoreValueUpdated, this, [label_underlying](Event*){
+	SingletonContainer::getInstance()->get<EventDispatcher>()->registerListener(LegacyEventType::HighScoreValueUpdated, this, [label_underlying](LegacyEvent*){
 		label_underlying->setString(std::string("High Score: ") + std::to_string(SingletonContainer::getInstance()->get<GameData>()->getHighScore())); });
 
 	return label_object;
@@ -59,7 +59,7 @@ std::unique_ptr<GameObject> StatusBar::impl::createCurrentScoreLabel()
 	auto visible_size = cocos2d::Director::getInstance()->getVisibleSize();
 	label_underlying->setPosition(visible_size.width / 2, visible_size.height - 150);
 
-	SingletonContainer::getInstance()->get<EventDispatcher>()->registerListener(LegacyEventType::CurrentScoreValueUpdated, this, [label_underlying](Event*){
+	SingletonContainer::getInstance()->get<EventDispatcher>()->registerListener(LegacyEventType::CurrentScoreValueUpdated, this, [label_underlying](LegacyEvent*){
 		label_underlying->setString(std::string("Current Score: ") + std::to_string(SingletonContainer::getInstance()->get<GameData>()->getCurrentScore())); });
 
 	return label_object;
@@ -74,7 +74,7 @@ std::unique_ptr<GameObject> StatusBar::impl::createTargetScoreLabel()
 	auto visible_size = cocos2d::Director::getInstance()->getVisibleSize();
 	label_underlying->setPosition(325, visible_size.height - 100);
 
-	SingletonContainer::getInstance()->get<EventDispatcher>()->registerListener(LegacyEventType::TargetScoreValueUpdated, this, [label_underlying](Event*){
+	SingletonContainer::getInstance()->get<EventDispatcher>()->registerListener(LegacyEventType::TargetScoreValueUpdated, this, [label_underlying](LegacyEvent*){
 		label_underlying->setString(std::string("Target Score: ") + std::to_string(SingletonContainer::getInstance()->get<GameData>()->getTargetScore())); });
 
 	return label_object;
@@ -89,7 +89,7 @@ std::unique_ptr<GameObject> StatusBar::impl::createLevelLabel()
 	auto visible_size = cocos2d::Director::getInstance()->getVisibleSize();
 	label_underlying->setPosition(75, visible_size.height - 100);
 
-	SingletonContainer::getInstance()->get<EventDispatcher>()->registerListener(LegacyEventType::LevelValueUpdated, this, [label_underlying](Event*){
+	SingletonContainer::getInstance()->get<EventDispatcher>()->registerListener(LegacyEventType::LevelValueUpdated, this, [label_underlying](LegacyEvent*){
 		label_underlying->setString(std::string("Level: ") + std::to_string(SingletonContainer::getInstance()->get<GameData>()->getCurrentLevel())); });
 
 	return label_object;

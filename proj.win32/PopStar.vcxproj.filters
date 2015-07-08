@@ -212,9 +212,6 @@
     <ClInclude Include="..\Classes\Engine\Utilities\SingletonContainer.h">
       <Filter>Classes\Engine\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Event\Event.h">
-      <Filter>Classes\Engine\Event</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\Engine\Event\EventArg1.h">
       <Filter>Classes\Engine\Event</Filter>
     </ClInclude>
@@ -228,6 +225,12 @@
       <Filter>Classes\Engine\Event</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Engine\Event\IEventDispatcher.h">
+      <Filter>Classes\Engine\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Event\LegacyEvent.h">
+      <Filter>Classes\Engine\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Event\IEventData.h">
       <Filter>Classes\Engine\Event</Filter>
     </ClInclude>
   </ItemGroup>

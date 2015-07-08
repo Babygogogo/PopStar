@@ -4,7 +4,7 @@
 #include "../GameObject/SequentialInvoker.h"
 #include "../Engine/Utilities/SingletonContainer.h"
 #include "../Engine/Event/EventDispatcher.h"
-#include "../Engine/Event/Event.h"
+#include "../Engine/Event/LegacyEvent.h"
 #include "../Engine/Event/EventType.h"
 #include "../Engine/Event/EventArg1.h"
 
@@ -46,7 +46,7 @@ ComboEffect::impl::~impl()
 void ComboEffect::impl::registerAsEventListeners()
 {
 	SingletonContainer::getInstance()->get<EventDispatcher>()->registerListener(LegacyEventType::UserClickedStarsExploded, this,
-		[this](Event *e){show(static_cast<EventArg1*>(e->getArg())->getInt()); });
+		[this](LegacyEvent *e){show(static_cast<EventArg1*>(e->getArg())->getInt()); });
 }
 
 void ComboEffect::impl::unregisterAsEventListeners()
