@@ -13,32 +13,29 @@
     <Filter Include="Classes\Common">
       <UniqueIdentifier>{a5a94a7e-091b-4363-af0f-202d37bee3c1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Classes\GameObjectAndComponent">
-      <UniqueIdentifier>{c457ba0e-bd2b-4166-9f4f-e768be90d2e6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Classes\Engine">
       <UniqueIdentifier>{8a734a2b-f696-4575-a6ea-5c35a5201b16}</UniqueIdentifier>
     </Filter>
     <Filter Include="Classes\Engine\Utilities">
       <UniqueIdentifier>{c7678c21-27a6-4d3c-9a44-1b575a8d9533}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Classes\Script">
-      <UniqueIdentifier>{ef8c469e-5c7a-42b8-a0b3-cad6c0f00978}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Classes\Script\TitleScene">
-      <UniqueIdentifier>{3e1fe857-fe56-491e-bd05-2bf7a94e88f0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Classes\Script\PuzzleScene">
-      <UniqueIdentifier>{36ee4515-8f98-45b8-9721-2e6f3c38a06d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Classes\Script\PuzzleScene\StatusLayer">
-      <UniqueIdentifier>{6ab8240e-ad84-459d-9588-7e912c349061}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Classes\Script\PuzzleScene\MatrixLayer">
-      <UniqueIdentifier>{2ea29d1d-797c-4a94-a7c2-d781d66ecabe}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Classes\Engine\Event">
       <UniqueIdentifier>{28d53e71-a1b4-4424-98e0-55e49df8bff1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Classes\Engine\Actor">
+      <UniqueIdentifier>{036000fc-6319-4e35-a0ee-2c9811861748}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Classes\Engine\Script">
+      <UniqueIdentifier>{ef8c469e-5c7a-42b8-a0b3-cad6c0f00978}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Classes\Engine\MainLoop">
+      <UniqueIdentifier>{f383a445-cdbc-44c5-9b77-978b1db4d78a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Classes\Engine\Graphic2D">
+      <UniqueIdentifier>{a2351463-f91b-49a2-bb5d-856f04de1f11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Classes\Engine\Audio">
+      <UniqueIdentifier>{9e3a3300-7804-45e9-a14a-e6a2c670d9d7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -51,77 +48,77 @@
     <ClCompile Include="..\Classes\HelloWorldScene.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Audio.cpp">
-      <Filter>Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\GameObject\GameObject.cpp">
-      <Filter>Classes\GameObjectAndComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\GameObject\DisplayNode.cpp">
-      <Filter>Classes\GameObjectAndComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\GameObject\Component.cpp">
-      <Filter>Classes\GameObjectAndComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Common\Timer.cpp">
-      <Filter>Classes\Common</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\Common\Object.cpp">
       <Filter>Classes\Common</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Common\SceneStack.cpp">
-      <Filter>Classes\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\GameObject\SequentialInvoker.cpp">
-      <Filter>Classes\GameObjectAndComponent</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\Common\GameData.cpp">
       <Filter>Classes\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Script\TitleScene.cpp">
-      <Filter>Classes\Script\TitleScene</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Script\PuzzleScene.cpp">
-      <Filter>Classes\Script\PuzzleScene</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Script\StatusBar.cpp">
-      <Filter>Classes\Script\PuzzleScene\StatusLayer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Script\StatusLayer.cpp">
-      <Filter>Classes\Script\PuzzleScene\StatusLayer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Script\MatrixLayer.cpp">
-      <Filter>Classes\Script\PuzzleScene\MatrixLayer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Script\Star.cpp">
-      <Filter>Classes\Script\PuzzleScene\MatrixLayer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Script\StarMatrix.cpp">
-      <Filter>Classes\Script\PuzzleScene\MatrixLayer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Script\GetScoreLabel.cpp">
-      <Filter>Classes\Script\PuzzleScene\StatusLayer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Script\StartLevelLabel.cpp">
-      <Filter>Classes\Script\PuzzleScene\StatusLayer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Script\LevelSummaryLabel.cpp">
-      <Filter>Classes\Script\PuzzleScene\StatusLayer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Script\GameOverLabel.cpp">
-      <Filter>Classes\Script\PuzzleScene\StatusLayer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Script\StarParticleEffect.cpp">
-      <Filter>Classes\Script\PuzzleScene\MatrixLayer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Script\ComboEffect.cpp">
-      <Filter>Classes\Script\PuzzleScene\MatrixLayer</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\Engine\Utilities\SingletonContainer.cpp">
       <Filter>Classes\Engine\Utilities</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\Engine\Event\EventDispatcher.cpp">
       <Filter>Classes\Engine\Event</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Actor\DisplayNode.cpp">
+      <Filter>Classes\Engine\Actor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Actor\SequentialInvoker.cpp">
+      <Filter>Classes\Engine\Actor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Script\ComboEffect.cpp">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Script\GameOverLabel.cpp">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Script\GetScoreLabel.cpp">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Script\LevelSummaryLabel.cpp">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Script\MatrixLayer.cpp">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Script\PuzzleScene.cpp">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Script\Star.cpp">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Script\StarMatrix.cpp">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Script\StarParticleEffect.cpp">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Script\StartLevelLabel.cpp">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Script\StatusBar.cpp">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Script\StatusLayer.cpp">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Script\TitleScene.cpp">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Actor\Actor.cpp">
+      <Filter>Classes\Engine\Actor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Actor\ActorComponent.cpp">
+      <Filter>Classes\Engine\Actor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\MainLoop\Timer.cpp">
+      <Filter>Classes\Engine\MainLoop</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Graphic2D\SceneStack.cpp">
+      <Filter>Classes\Engine\Graphic2D</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Audio\Audio.cpp">
+      <Filter>Classes\Engine\Audio</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -134,80 +131,14 @@
     <ClInclude Include="..\Classes\HelloWorldScene.h">
       <Filter>Classes</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\Audio.h">
-      <Filter>Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\GameObject\GameObject.h">
-      <Filter>Classes\GameObjectAndComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\GameObject\DisplayNode.h">
-      <Filter>Classes\GameObjectAndComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\GameObject\Component.h">
-      <Filter>Classes\GameObjectAndComponent</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\Common\Object.h">
-      <Filter>Classes\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Common\Timer.h">
-      <Filter>Classes\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Common\SceneStack.h">
       <Filter>Classes\Common</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Common\IUpdateable.h">
       <Filter>Classes\Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\GameObject\SoundPlayer.h">
-      <Filter>Classes\GameObjectAndComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Script\Script.h">
-      <Filter>Classes\Script</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\GameObject\SequentialInvoker.h">
-      <Filter>Classes\GameObjectAndComponent</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\Common\GameData.h">
       <Filter>Classes\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Script\TitleScene.h">
-      <Filter>Classes\Script\TitleScene</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Script\PuzzleScene.h">
-      <Filter>Classes\Script\PuzzleScene</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Script\StatusBar.h">
-      <Filter>Classes\Script\PuzzleScene\StatusLayer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Script\StatusLayer.h">
-      <Filter>Classes\Script\PuzzleScene\StatusLayer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Script\MatrixLayer.h">
-      <Filter>Classes\Script\PuzzleScene\MatrixLayer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Script\Star.h">
-      <Filter>Classes\Script\PuzzleScene\MatrixLayer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Script\StarMatrix.h">
-      <Filter>Classes\Script\PuzzleScene\MatrixLayer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Script\GetScoreLabel.h">
-      <Filter>Classes\Script\PuzzleScene\StatusLayer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Script\StartLevelLabel.h">
-      <Filter>Classes\Script\PuzzleScene\StatusLayer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Script\LevelSummaryLabel.h">
-      <Filter>Classes\Script\PuzzleScene\StatusLayer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Script\GameOverLabel.h">
-      <Filter>Classes\Script\PuzzleScene\StatusLayer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Script\StarParticleEffect.h">
-      <Filter>Classes\Script\PuzzleScene\MatrixLayer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Script\ComboEffect.h">
-      <Filter>Classes\Script\PuzzleScene\MatrixLayer</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Engine\Utilities\SingletonContainer.h">
       <Filter>Classes\Engine\Utilities</Filter>
@@ -232,6 +163,72 @@
     </ClInclude>
     <ClInclude Include="..\Classes\Engine\Event\IEventData.h">
       <Filter>Classes\Engine\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Actor\DisplayNode.h">
+      <Filter>Classes\Engine\Actor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Actor\SequentialInvoker.h">
+      <Filter>Classes\Engine\Actor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Actor\SoundPlayer.h">
+      <Filter>Classes\Engine\Actor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Script\ComboEffect.h">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Script\GameOverLabel.h">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Script\GetScoreLabel.h">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Script\LevelSummaryLabel.h">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Script\MatrixLayer.h">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Script\PuzzleScene.h">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Script\Script.h">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Script\Star.h">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Script\StarMatrix.h">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Script\StarParticleEffect.h">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Script\StartLevelLabel.h">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Script\StatusBar.h">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Script\StatusLayer.h">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Script\TitleScene.h">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Actor\Actor.h">
+      <Filter>Classes\Engine\Actor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Actor\ActorComponent.h">
+      <Filter>Classes\Engine\Actor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\MainLoop\Timer.h">
+      <Filter>Classes\Engine\MainLoop</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Graphic2D\SceneStack.h">
+      <Filter>Classes\Engine\Graphic2D</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Audio\Audio.h">
+      <Filter>Classes\Engine\Audio</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,12 +1,12 @@
 #include "AppDelegate.h"
-#include "Audio.h"
+#include "Engine/Audio/Audio.h"
 
 #include "Engine/Utilities/SingletonContainer.h"
-#include "Common/Timer.h"
-#include "Common/SceneStack.h"
+#include "Engine/MainLoop/Timer.h"
+#include "Engine/Graphic2D/SceneStack.h"
 #include "Common/GameData.h"
 #include "Engine/Event/EventDispatcher.h"
-#include "Script/TitleScene.h"
+#include "Engine/Script/TitleScene.h"
 
 USING_NS_CC;
 
@@ -39,10 +39,10 @@ bool AppDelegate::applicationDidFinishLaunching() {
 	// create a scene and run
 	Audio::getInstance()->prepare();
 
-	SingletonContainer::getInstance()->set<::Timer>()->init();
-	SingletonContainer::getInstance()->set<::EventDispatcher>();
-	SingletonContainer::getInstance()->set<GameData>();
-	SingletonContainer::getInstance()->set<SceneStack>()->pushAndRun(GameObject::create<TitleScene>("TitleScene"));
+	SingletonContainer::getInstance()->set<::Timer>(::Timer::create())->init();
+	SingletonContainer::getInstance()->set<IEventDispatcher>(::EventDispatcher::create());
+	SingletonContainer::getInstance()->set<GameData>(GameData::create());
+	SingletonContainer::getInstance()->set<SceneStack>(SceneStack::create())->pushAndRun(Actor::create<TitleScene>("TitleScene"));
 
 	return true;
 }

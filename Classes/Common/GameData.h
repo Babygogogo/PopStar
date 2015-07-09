@@ -7,18 +7,10 @@
 
 class GameData final : public Object
 {
-	friend class SingletonContainer;
-
-	//////////////////////////////////////////////////////////////////////////
-	//Disable copy/move constructor and operator=.
-	//////////////////////////////////////////////////////////////////////////
-	GameData(const GameData&) = delete;
-	GameData(GameData&&) = delete;
-	GameData& operator=(const GameData&) = delete;
-	GameData& operator=(GameData&&) = delete;
-	
 public:
 	~GameData();
+
+	static std::unique_ptr<GameData> create();
 
 	void levelEnd();
 	int getCurrentLevel() const;
@@ -38,8 +30,13 @@ public:
 
 	void reset();
 
+	//Disable copy/move constructor and operator=.
+	GameData(const GameData&) = delete;
+	GameData(GameData&&) = delete;
+	GameData& operator=(const GameData&) = delete;
+	GameData& operator=(GameData&&) = delete;
+
 private:
-	static std::unique_ptr<GameData> create();
 	GameData();
 
 	struct impl;

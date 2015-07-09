@@ -33,6 +33,16 @@ public:
 		return std::static_pointer_cast<T>(setHelper(typeid(T), T::create()));
 	}
 
+	template <typename Base, typename Derived>
+	std::shared_ptr<Base> set(std::shared_ptr<Derived> && derived){
+		return std::static_pointer_cast<Base>(setHelper(typeid(Base), std::move(derived)));
+	}
+
+	template <typename Base, typename Derived>
+	std::shared_ptr<Base> set(std::unique_ptr<Derived> && derived){
+		return std::static_pointer_cast<Base>(setHelper(typeid(Base), std::move(derived)));
+	}
+
 	//delete copy/move constructor and operator=.
 	SingletonContainer(const SingletonContainer&) = delete;
 	SingletonContainer(SingletonContainer&&) = delete;

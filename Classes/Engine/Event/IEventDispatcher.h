@@ -7,6 +7,7 @@
 #include "EventType.h"
 
 class IEventData;
+class LegacyEvent;	//should be removed soon
 
 /*!
  * \class IEventDispatcher
@@ -28,6 +29,11 @@ class IEventDispatcher
 {
 public:
 	virtual ~IEventDispatcher(){};
+
+	//These are the old interface and will be removed soon.
+	virtual void registerListener(LegacyEventType event_type, void *target, std::function<void(LegacyEvent*)> callback) = 0;
+	virtual void deleteListener(void *target) = 0;
+	virtual void dispatch(std::unique_ptr<LegacyEvent> &&event, void *target = nullptr) = 0;
 
 	//Type shortcut of the pair of listener and its callback.
 	using ListenerCallback = std::pair < std::weak_ptr<void>, std::function<void(const std::shared_ptr<IEventData> &)> > ;
@@ -56,9 +62,6 @@ public:
 	//Dispatch all events in the queue. Should be called at the beginning of each game loop.
 	//If the time for dispatching events exceeds timeOutMs, the events left will be dispatched on the next call.
 	virtual void vDispatchQueuedEvents(const std::chrono::milliseconds & timeOutMs = std::chrono::milliseconds{ 10 }) = 0;
-
-protected:
-	IEventDispatcher(){};
 };
 
 #endif // !__I_EVENT_DISPATCHER__

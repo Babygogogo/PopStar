@@ -17,12 +17,9 @@ public:
 
 	static std::unique_ptr<EventDispatcher> create();
 
-	void registerListener(LegacyEventType event_type, void *target, std::function<void(LegacyEvent*)> callback);
-//	void registerListener(EventType event_type, IEventListener *listener);
-	void deleteListener(void *target);
-//	void deleteListener(IEventListener *listener);
-
-	void dispatch(std::unique_ptr<LegacyEvent> &&event, void *target = nullptr);	
+	virtual void registerListener(LegacyEventType event_type, void *target, std::function<void(LegacyEvent*)> callback) override;
+	virtual void deleteListener(void *target) override;
+	virtual void dispatch(std::unique_ptr<LegacyEvent> &&event, void *target = nullptr) override;
 
 	//Disable copy/move constructor and operator=.
 	EventDispatcher(const EventDispatcher&) = delete;
