@@ -230,6 +230,9 @@
     <ClInclude Include="..\Classes\Engine\Audio\Audio.h">
       <Filter>Classes\Engine\Audio</Filter>
     </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Utilities\GenericFactory.h">
+      <Filter>Classes\Engine\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="game.rc">

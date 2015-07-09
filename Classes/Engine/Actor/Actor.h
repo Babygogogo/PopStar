@@ -14,11 +14,11 @@
 class ActorComponent;
 
 /*!
- * \brief	Almost everything in the game is a GameObject, such as an unit, a strategy map, an effect of an explosion, and so on.
+ * \brief	Almost everything in the game is a Actor, such as an unit, a strategy map, an effect of an explosion, and so on.
  * \
  * \details
- *	GameObjects are organized in the form of trees. Methods like addChild, removeFromParent are provided for organizing.
- *	Roots of the trees are GameObjects that created as "scene". They should be push into SceneStack to take their effects.
+ *	Actors are organized in the form of trees. Methods like addChild, removeFromParent are provided for organizing.
+ *	Roots of the trees are Actors that created as "scene". They should be push into SceneStack to take their effects.
  *	Game object is a container of various components and/or scripts which implement most of the logics of the real game object.
  *	Game objects, along with its components, are managed with std::unique_ptr.
  *	For most cases in the code base, a std::unique_ptr means an ownership, while a raw pointer stands for a (temporary) reference.
@@ -43,9 +43,9 @@ public:
 	//Factory method.
 	//////////////////////////////////////////////////////////////////////////
 	//	You can supply the additional_task with a lambda, making the caller code more compact:
-	//auto game_object = GameObject::create([](GameObject *obj){obj->addComponent<...>();...;});
+	//auto game_object = Actor::create([](Actor *obj){obj->addComponent<...>();...;});
 	//	otherwise (the code below does the same thing as above):
-	//auto game_object = GameObject::create();
+	//auto game_object = Actor::create();
 	//game_object->addComponent<...>();...;
 	//	No matter which approach you prefer, make sure that your code is readable.
 	static std::unique_ptr<Actor> create(std::string name, std::function<void(Actor*)> &&additional_task = nullptr)
@@ -58,7 +58,7 @@ public:
 	}
 
 	//	You can also supply a concrete Component type as the template argument:
-	//auto game_object = GameObject::create<...>();
+	//auto game_object = Actor::create<...>();
 	//The according component will be added to the game object.
 	template <typename Component_,
 		typename std::enable_if_t<std::is_base_of<ActorComponent, Component_>::value>* = nullptr
@@ -75,7 +75,7 @@ public:
 	~Actor();
 
 	//////////////////////////////////////////////////////////////////////////
-	//Stuff for organizing the GameObjects as trees.
+	//Stuff for organizing the Actors as trees.
 	//////////////////////////////////////////////////////////////////////////
 	Actor *addChild(std::unique_ptr<Actor>&& child);
 	Actor *getParent() const;

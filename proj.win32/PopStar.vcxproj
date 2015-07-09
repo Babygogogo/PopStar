@@ -197,6 +197,7 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClInclude Include="..\Classes\Engine\Script\StatusBar.h" />
     <ClInclude Include="..\Classes\Engine\Script\StatusLayer.h" />
     <ClInclude Include="..\Classes\Engine\Script\TitleScene.h" />
+    <ClInclude Include="..\Classes\Engine\Utilities\GenericFactory.h" />
     <ClInclude Include="..\Classes\Engine\Utilities\SingletonContainer.h" />
     <ClInclude Include="..\Classes\HelloWorldScene.h" />
     <ClInclude Include="main.h" />
