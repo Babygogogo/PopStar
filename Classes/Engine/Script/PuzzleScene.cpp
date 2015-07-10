@@ -41,7 +41,7 @@ std::unique_ptr<Actor> PuzzleScene::impl::createBackground()
 	return background_object;
 }
 
-PuzzleScene::PuzzleScene(Actor* game_object) :Script("PuzzleScene", game_object), pimpl(new impl(game_object))
+PuzzleScene::PuzzleScene(Actor* game_object) :BaseScriptComponent("PuzzleScene", game_object), pimpl(new impl(game_object))
 {
 
 }

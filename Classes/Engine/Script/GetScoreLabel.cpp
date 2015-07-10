@@ -59,7 +59,7 @@ void GetScoreLabel::impl::unregisterAsEventListeners()
 		singleton_container->get<IEventDispatcher>()->deleteListener(this);
 }
 
-GetScoreLabel::GetScoreLabel(Actor *game_object) :Script("GetScoreLabel", game_object), pimpl(new impl(game_object))
+GetScoreLabel::GetScoreLabel(Actor *game_object) :BaseScriptComponent("GetScoreLabel", game_object), pimpl(new impl(game_object))
 {
 
 }

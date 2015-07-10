@@ -95,7 +95,7 @@ std::unique_ptr<Actor> StatusBar::impl::createLevelLabel()
 	return label_object;
 }
 
-StatusBar::StatusBar(Actor *game_object) :Script("StatusBar", game_object), pimpl(new impl(game_object))
+StatusBar::StatusBar(Actor *game_object) :BaseScriptComponent("StatusBar", game_object), pimpl(new impl(game_object))
 {
 
 }

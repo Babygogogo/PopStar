@@ -1,11 +1,11 @@
 #ifndef __PUZZLE_SCENE__
 #define __PUZZLE_SCENE__
 
-#include "Script.h"
+#include "../Actor/BaseScriptComponent.h"
 
 #include <memory>
 
-class PuzzleScene final :public Script
+class PuzzleScene final :public BaseScriptComponent
 {
 	friend class Actor;
 

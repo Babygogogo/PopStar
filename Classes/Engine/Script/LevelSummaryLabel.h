@@ -1,11 +1,11 @@
 #ifndef __LEVEL_SUMMARY_LABEL__
 #define __LEVEL_SUMMARY_LABEL__
 
-#include "Script.h"
+#include "../Actor/BaseScriptComponent.h"
 
 #include <memory>
 
-class LevelSummaryLabel final :public Script
+class LevelSummaryLabel final :public BaseScriptComponent
 {
 	friend class Actor;
 

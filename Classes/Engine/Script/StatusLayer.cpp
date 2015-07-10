@@ -29,7 +29,7 @@ StatusLayer::impl::~impl()
 
 }
 
-StatusLayer::StatusLayer(Actor *game_object) :Script("StatusLayer", game_object), pimpl(new impl(game_object))
+StatusLayer::StatusLayer(Actor *game_object) :BaseScriptComponent("StatusLayer", game_object), pimpl(new impl(game_object))
 {
 
 }

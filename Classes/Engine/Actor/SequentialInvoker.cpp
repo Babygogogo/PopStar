@@ -164,3 +164,15 @@ void SequentialInvoker::clear()
 	pimpl->m_target_node->stopAllActions();
 	pimpl->eraseCurrent();
 }
+
+const std::string & SequentialInvoker::getType() const
+{
+	return Type;
+}
+
+bool SequentialInvoker::vInit(tinyxml2::XMLElement *xmlElement)
+{
+	return true;
+}
+
+const std::string SequentialInvoker::Type = "SequentialInvokerComponent";

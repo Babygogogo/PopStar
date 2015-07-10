@@ -28,14 +28,16 @@ public:
 	~GenericFactory(){};
 
 	//Create the factory itself.
-	static std::unique_ptr<GenericFactory> createFactory(){
+	static std::unique_ptr<GenericFactory> createFactory()
+	{
 		return std::unique_ptr<GenericFactory>(new GenericFactory());
 	};
 
 	//Register a type. The type must be a sub-type of Base.
 	//If you double register a type, the first registration will be overwritten.
 	template <class SubClass>
-	void registerType(const std::string & name){
+	void registerType(const std::string & name)
+	{
 		if (m_CreationFunctions.find(name) != m_CreationFunctions.end()){
 			cocos2d::log("GenericFactory::registerObject overwriting an existing creation function.");
 			m_CreationFunctions[name] = [](){return SubClass::create(); };
@@ -46,7 +48,8 @@ public:
 
 	//Create an object. This function return the pointer of the Base class which can be downcast by client code.
 	//If no type is registered with the name, nullptr is returned.
-	std::unique_ptr<Base> createObject(const std::string & name){
+	std::unique_ptr<Base> createObject(const std::string & name)
+	{
 		auto findIter = m_CreationFunctions.find(name);
 		if (findIter != m_CreationFunctions.end())
 			return findIter->second();

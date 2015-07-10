@@ -1,12 +1,12 @@
 #ifndef __STAR__
 #define __STAR__
 
-#include "Script.h"
+#include "../Actor/BaseScriptComponent.h"
 #include "cocos2d.h"
 
 #include <memory>
 
-class Star final :public Script
+class Star final :public BaseScriptComponent
 {
 	friend class Actor;
 

@@ -2,9 +2,9 @@
 #define __TITLE_SCENE__
 
 #include <memory>
-#include "Script.h"
+#include "../Actor/BaseScriptComponent.h"
 
-class TitleScene final :public Script
+class TitleScene final :public BaseScriptComponent
 {
 	friend class Actor;
 

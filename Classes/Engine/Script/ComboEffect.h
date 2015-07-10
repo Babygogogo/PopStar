@@ -1,11 +1,11 @@
 #ifndef __COMBO_EFFECT__
 #define __COMBO_EFFECT__
 
-#include "Script.h"
+#include "../Actor/BaseScriptComponent.h"
 
 #include <memory>
 
-class ComboEffect final :public Script
+class ComboEffect final :public BaseScriptComponent
 {
 	friend class Actor;
 

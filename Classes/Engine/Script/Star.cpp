@@ -95,7 +95,7 @@ void Star::impl::moveTo(float pos_x, float pos_y, float speed /*= Star::impl::MO
 	m_pos_y = pos_y;
 }
 
-Star::Star(Actor *game_object) :Script("Star", game_object), pimpl(new impl(game_object))
+Star::Star(Actor *game_object) :BaseScriptComponent("Star", game_object), pimpl(new impl(game_object))
 {
 
 }

@@ -96,7 +96,7 @@ void ComboEffect::impl::resetInvoker()
 		cocos2d::Blink::create(1.0f, 5), cocos2d::CallFunc::create([this]{m_sprite->setVisible(false); }), nullptr));
 }
 
-ComboEffect::ComboEffect(Actor *game_object) :Script("ComboEffect", game_object), pimpl(new impl(game_object))
+ComboEffect::ComboEffect(Actor *game_object) :BaseScriptComponent("ComboEffect", game_object), pimpl(new impl(game_object))
 {
 
 }

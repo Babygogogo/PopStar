@@ -1,13 +1,13 @@
 #ifndef __STAR_PARTICLE_EFFECT__
 #define __STAR_PARTICLE_EFFECT__
 
-#include "Script.h"
+#include "../Actor/BaseScriptComponent.h"
 
 #include <memory>
 
 class Star;
 
-class StarParticleEffect final :public Script
+class StarParticleEffect final :public BaseScriptComponent
 {
 	friend class Actor;
 

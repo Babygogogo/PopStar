@@ -1,11 +1,11 @@
 #ifndef __START_LEVEL_LABEL__
 #define __START_LEVEL_LABEL__
 
-#include "Script.h"
+#include "../Actor/BaseScriptComponent.h"
 
 #include <memory>
 
-class StartLevelLabel final :public Script
+class StartLevelLabel final :public BaseScriptComponent
 {
 	friend class Actor;
 

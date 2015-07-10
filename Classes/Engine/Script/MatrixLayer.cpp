@@ -55,7 +55,7 @@ void MatrixLayer::impl::startLevel()
 	Audio::getInstance()->playReadyGo();
 }
 
-MatrixLayer::MatrixLayer(Actor *game_object) :Script("MatrixLayer", game_object), pimpl(new impl(game_object))
+MatrixLayer::MatrixLayer(Actor *game_object) :BaseScriptComponent("MatrixLayer", game_object), pimpl(new impl(game_object))
 {
 
 }

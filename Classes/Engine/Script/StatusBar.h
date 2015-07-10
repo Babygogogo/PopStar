@@ -3,9 +3,9 @@
 
 #include <memory>
 
-#include "Script.h"
+#include "../Actor/BaseScriptComponent.h"
 
-class StatusBar final: public Script
+class StatusBar final: public BaseScriptComponent
 {
 	friend class Actor;
 

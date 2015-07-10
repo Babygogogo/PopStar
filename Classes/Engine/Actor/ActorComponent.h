@@ -1,9 +1,11 @@
-#ifndef __BW_COMPONENT__
-#define __BW_COMPONENT__
+#ifndef __ACTOR_COMPONENT__
+#define __ACTOR_COMPONENT__
 
-#include "../../Common/Object.h"
+#include <string>
+#include <memory>
 
-class Actor;
+#include "../../cocos2d/external/tinyxml2/tinyxml2.h"
+
 /*!
  * \brief The base class of every components and scripts.
  *
@@ -15,15 +17,28 @@ class Actor;
  * \author Babygogogo
  * \date 2015.3
  */
-class ActorComponent : public Object
+class ActorComponent
 {
+	friend class Actor;
+	friend class ActorFactory;
+
 public:
 	virtual ~ActorComponent();
+
+	virtual const std::string & getType() const = 0;
 
 protected:
 	ActorComponent(std::string &&name, Actor *game_object);
 
+	virtual bool vInit(tinyxml2::XMLElement *xmlElement) = 0;
+	virtual void vPostInit();
+	virtual void vOnChanged();
+
 	Actor *m_game_object;
+	std::weak_ptr<Actor> m_Actor;
+
+private:
+	void setOwner(std::weak_ptr<Actor> && actor);
 };
 
-#endif // !__BW_COMPONENT__
+#endif // !__ACTOR_COMPONENT__

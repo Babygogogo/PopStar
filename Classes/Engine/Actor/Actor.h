@@ -8,8 +8,8 @@
 #include <type_traits>
 #include <functional>
 
-#include "../../Common/Object.h"
 #include "../../Common/IUpdateable.h"
+#include "../../cocos2d/external/tinyxml2/tinyxml2.h"
 
 class ActorComponent;
 
@@ -26,19 +26,16 @@ class ActorComponent;
  * \author	Babygogogo
  * \date	2015.03
  */
-class Actor final : public Object
+class Actor final
 {
 	friend class Timer;
-
-	//////////////////////////////////////////////////////////////////////////
-	//Disable copy/move constructor and operator=.
-	//////////////////////////////////////////////////////////////////////////
-	Actor(const Actor&) = delete;
-	Actor(Actor&&) = delete;
-	Actor& operator=(const Actor&) = delete;
-	Actor& operator=(Actor&&) = delete;
-
+	friend class ActorFactory;
+	
 public:
+	using ActorID = unsigned int;
+
+	~Actor();
+
 	//////////////////////////////////////////////////////////////////////////
 	//Factory method.
 	//////////////////////////////////////////////////////////////////////////
@@ -72,7 +69,13 @@ public:
 		return game_object;
 	}
 
-	~Actor();
+	static std::shared_ptr<Actor> create();
+	static std::shared_ptr<Actor> create(ActorID id, std::string && type, std::string && resourceFile);
+
+	bool init(ActorID id, tinyxml2::XMLElement *xmlElement);
+	void postInit();
+	void addComponent(std::unique_ptr<ActorComponent> && component);
+	const std::unique_ptr<ActorComponent> & getComponent(const std::string & type) const;
 
 	//////////////////////////////////////////////////////////////////////////
 	//Stuff for organizing the Actors as trees.
@@ -109,9 +112,17 @@ public:
 
 	void setNeedUpdate(bool is_need);
 
+	//Disable copy/move constructor and operator=.
+	Actor(const Actor&) = delete;
+	Actor(Actor&&) = delete;
+	Actor& operator=(const Actor&) = delete;
+	Actor& operator=(Actor&&) = delete;
+
 private:
 	//Constructor is private because game objects are managed using std::unique_ptr and I provide a factory method for that.
-	Actor(std::string &&name);
+	Actor();
+	Actor(std::string && name);
+	Actor(ActorID && id, std::string && type, std::string && resourceFile);
 
 	//Only the current scene owned by the SceneStack, and the (indirect) children of that scene, will be "update" once a frame.
 	void update(const time_t &time_ms);
@@ -148,8 +159,8 @@ private:
 	std::unordered_map<std::type_index, std::unique_ptr<::ActorComponent>> m_components;
 	std::unordered_set<IUpdateable*> m_updateable_components;
 
-	class impl;
-	std::unique_ptr<impl> pimpl;
+	struct ActorImpl;
+	std::unique_ptr<ActorImpl> pimpl;
 };
 
 #endif // !__ACTOR__

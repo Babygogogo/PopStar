@@ -93,7 +93,7 @@ std::string LevelSummaryLabel::impl::createSummaryText() const
 	return stars_num_text + bonus_text;
 }
 
-LevelSummaryLabel::LevelSummaryLabel(Actor *game_object) :Script("LevelSummaryLabel", game_object), pimpl(new impl(game_object))
+LevelSummaryLabel::LevelSummaryLabel(Actor *game_object) :BaseScriptComponent("LevelSummaryLabel", game_object), pimpl(new impl(game_object))
 {
 
 }

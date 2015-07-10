@@ -100,7 +100,7 @@ std::function<void(cocos2d::Ref*)> TitleScene::impl::createStartButtonCallback()
 	};
 }
 
-TitleScene::TitleScene(Actor* game_object) :Script("TitleScene", game_object), pimpl(new impl(game_object))
+TitleScene::TitleScene(Actor* game_object) :BaseScriptComponent("TitleScene", game_object), pimpl(new impl(game_object))
 {
 
 }

@@ -84,3 +84,15 @@ void DisplayNode::removeFromParent()
 	pimpl->m_parent = nullptr;
 	m_node->removeFromParent();
 }
+
+const std::string & DisplayNode::getType() const
+{
+	return Type;
+}
+
+bool DisplayNode::vInit(tinyxml2::XMLElement *xmlElement)
+{
+	return true;
+}
+
+const std::string DisplayNode::Type = "DisplayNodeComponent";

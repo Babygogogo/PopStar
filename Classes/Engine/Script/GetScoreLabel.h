@@ -1,11 +1,11 @@
 #ifndef __GET_SCORE_LABEL__
 #define __GET_SCORE_LABEL__
 
-#include "Script.h"
+#include "../Actor/BaseScriptComponent.h"
 
 #include <memory>
 
-class GetScoreLabel final :public Script
+class GetScoreLabel final :public BaseScriptComponent
 {
 	friend class Actor;
 

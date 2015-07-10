@@ -1,16 +1,21 @@
 #include <algorithm>
+#include <cassert>
+#include <list>
+#include <map>
+#include <unordered_map>
 
 #include "Actor.h"
 #include "DisplayNode.h"
 
-#include <list>
-#include <map>
-
-class Actor::impl
+//////////////////////////////////////////////////////////////////////////
+//Definition of Actor::ActorImpl.
+//////////////////////////////////////////////////////////////////////////
+struct Actor::ActorImpl
 {
 public:
-	impl();
-	~impl();
+	ActorImpl();
+	ActorImpl(ActorID && id, std::string && type, std::string && resourceFile);
+	~ActorImpl();
 
 	template<typename Element, typename Container>
 	std::unique_ptr<Element> stealOwnership(Element *raw_ptr, Container &container)
@@ -32,24 +37,49 @@ public:
 	Actor *m_parent{ nullptr };
 	bool m_is_updating{ false };
 	bool m_is_need_update{ true };
+
+	ActorID m_ID{ 0 };
+	std::string m_Type;
+	std::string m_ResourceFile;
+	std::unordered_map<std::string, std::unique_ptr<ActorComponent>> m_Components;
 };
 
-Actor::impl::impl()
+Actor::ActorImpl::ActorImpl()
 {
+
 }
 
-Actor::impl::~impl()
+Actor::ActorImpl::ActorImpl(ActorID && id, std::string && type, std::string && resourceFile) : m_ID(std::move(id)), m_Type(std::move(type)), m_ResourceFile(std::move(resourceFile))
 {
+
 }
 
-Actor::Actor(std::string &&name) :Object(std::move(name)), pimpl(new impl())
+Actor::ActorImpl::~ActorImpl()
+{
+
+}
+
+//////////////////////////////////////////////////////////////////////////
+//Implementation of Actor.
+//////////////////////////////////////////////////////////////////////////
+Actor::Actor() : pimpl(new ActorImpl())
+{
+
+}
+
+Actor::Actor(std::string &&name) : pimpl(new ActorImpl())
+{
+
+}
+
+Actor::Actor(ActorID && id, std::string && type, std::string && resourceFile) : pimpl(new ActorImpl(std::move(id), std::move(type), std::move(resourceFile)))
 {
 
 }
 
 Actor::~Actor()
 {
-	CCLOG("GameObject %s destructing.", m_name.c_str());
+	cocos2d::log("GameObject %s destructing.", pimpl->m_Type.c_str());
 }
 
 Actor * Actor::addChild(std::unique_ptr<Actor>&& child)
@@ -133,4 +163,62 @@ void Actor::update(const time_t &time_ms)
 void Actor::setNeedUpdate(bool is_need)
 {
 	pimpl->m_is_need_update = is_need;
+}
+
+std::shared_ptr<Actor> Actor::create()
+{
+	return std::unique_ptr<Actor>(new Actor());
+}
+
+std::shared_ptr<Actor> Actor::create(ActorID id, std::string && type, std::string && resourceFile)
+{
+	return std::unique_ptr<Actor>(new Actor(std::move(id), std::move(type), std::move(resourceFile)));
+}
+
+bool Actor::init(ActorID id, tinyxml2::XMLElement *xmlElement)
+{
+	if (id == 0 || !xmlElement)
+		return false;
+
+	auto actorType = xmlElement->Attribute("type");
+	if (!actorType){
+		cocos2d::log("Actor::init failed because there's no type attribute in resource.");
+		return false;
+	}
+
+	auto resourceFile = xmlElement->Attribute("resource");
+	if (!resourceFile){
+		cocos2d::log("Actor::init failed because there's no type attribute in resource.");
+		return false;
+	}
+
+	pimpl->m_ID = std::move(id);
+	pimpl->m_Type = actorType;
+	pimpl->m_ResourceFile = resourceFile;
+
+	return true;
+}
+
+void Actor::postInit()
+{
+	for (auto & componentIter : pimpl->m_Components)
+		componentIter.second->vPostInit();
+}
+
+void Actor::addComponent(std::unique_ptr<ActorComponent> && component)
+{
+	assert(component);
+	auto emplaceResult = pimpl->m_Components.emplace(std::make_pair(component->getType(), std::move(component)));
+	assert(emplaceResult.second);
+}
+
+const std::unique_ptr<ActorComponent> & Actor::getComponent(const std::string & type) const
+{
+	auto findIter = pimpl->m_Components.find(type);
+	if (findIter == pimpl->m_Components.end()){
+		static std::unique_ptr < ActorComponent > emptyComponent;
+		return emptyComponent;
+	}
+
+	return findIter->second;
 }

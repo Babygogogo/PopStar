@@ -11,7 +11,9 @@ class DisplayNode final : public ActorComponent
 	friend class Actor;
 
 public:
-	virtual ~DisplayNode();
+	~DisplayNode();
+
+	static const std::string Type;
 
 	DisplayNode *getParent() const;
 
@@ -43,9 +45,7 @@ public:
 		return dynamic_cast<T*>(m_node);
 	}
 
-	//////////////////////////////////////////////////////////////////////////
 	//Disable copy/move constructor and operator=.
-	//////////////////////////////////////////////////////////////////////////
 	DisplayNode(const DisplayNode&) = delete;
 	DisplayNode(DisplayNode&&) = delete;
 	DisplayNode& operator=(const DisplayNode&) = delete;
@@ -57,6 +57,10 @@ private:
 	void addChild(DisplayNode *child);
 	void attachToParent();
 	void removeFromParent();
+
+	virtual const std::string & getType() const;
+
+	virtual bool vInit(tinyxml2::XMLElement *xmlElement);
 
 	cocos2d::Node* m_node{ nullptr };
 

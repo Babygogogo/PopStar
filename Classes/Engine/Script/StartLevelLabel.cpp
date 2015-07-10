@@ -91,7 +91,7 @@ std::string StartLevelLabel::impl::createStartLevelText() const
 	return std::string("Level: ") + level_text + std::string(" Start!");
 }
 
-StartLevelLabel::StartLevelLabel(Actor *game_object) :Script("StartLevelLabel", game_object), pimpl(new impl(game_object))
+StartLevelLabel::StartLevelLabel(Actor *game_object) :BaseScriptComponent("StartLevelLabel", game_object), pimpl(new impl(game_object))
 {
 
 }

@@ -52,7 +52,7 @@ void StarParticleEffect::impl::resetInvoker()
 		cocos2d::DelayTime::create(1.5f), cocos2d::CallFunc::create([this]{m_game_object->removeFromParent(); }), nullptr));
 }
 
-StarParticleEffect::StarParticleEffect(Actor *game_object) :Script("StarParticleEffect", game_object), pimpl(new impl(game_object))
+StarParticleEffect::StarParticleEffect(Actor *game_object) :BaseScriptComponent("StarParticleEffect", game_object), pimpl(new impl(game_object))
 {
 
 }

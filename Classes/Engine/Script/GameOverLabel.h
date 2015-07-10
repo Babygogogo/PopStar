@@ -1,11 +1,11 @@
 #ifndef __GAME_OVER_LABEL__
 #define __GAME_OVER_LABEL__
 
-#include "Script.h"
+#include "../Actor/BaseScriptComponent.h"
 
 #include <memory>
 
-class GameOverLabel final :public Script
+class GameOverLabel final :public BaseScriptComponent
 {
 	friend class Actor;
 

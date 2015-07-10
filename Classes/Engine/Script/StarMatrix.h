@@ -3,9 +3,9 @@
 
 #include <memory>
 
-#include "Script.h"
+#include "../Actor/BaseScriptComponent.h"
 
-class StarMatrix final: public Script
+class StarMatrix final: public BaseScriptComponent
 {
 	friend class Actor;
 

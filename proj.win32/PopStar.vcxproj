@@ -139,6 +139,8 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClCompile Include="..\Classes\Common\GameData.cpp" />
     <ClCompile Include="..\Classes\Common\Object.cpp" />
     <ClCompile Include="..\Classes\Engine\Actor\ActorComponent.cpp" />
+    <ClCompile Include="..\Classes\Engine\Actor\ActorFactory.cpp" />
+    <ClCompile Include="..\Classes\Engine\Actor\BaseScriptComponent.cpp" />
     <ClCompile Include="..\Classes\Engine\Actor\DisplayNode.cpp" />
     <ClCompile Include="..\Classes\Engine\Actor\Actor.cpp" />
     <ClCompile Include="..\Classes\Engine\Actor\SequentialInvoker.cpp" />
@@ -169,6 +171,8 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClInclude Include="..\Classes\Common\IUpdateable.h" />
     <ClInclude Include="..\Classes\Common\Object.h" />
     <ClInclude Include="..\Classes\Engine\Actor\ActorComponent.h" />
+    <ClInclude Include="..\Classes\Engine\Actor\ActorFactory.h" />
+    <ClInclude Include="..\Classes\Engine\Actor\BaseScriptComponent.h" />
     <ClInclude Include="..\Classes\Engine\Actor\DisplayNode.h" />
     <ClInclude Include="..\Classes\Engine\Actor\Actor.h" />
     <ClInclude Include="..\Classes\Engine\Actor\SequentialInvoker.h" />
@@ -189,7 +193,6 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClInclude Include="..\Classes\Engine\Script\LevelSummaryLabel.h" />
     <ClInclude Include="..\Classes\Engine\Script\MatrixLayer.h" />
     <ClInclude Include="..\Classes\Engine\Script\PuzzleScene.h" />
-    <ClInclude Include="..\Classes\Engine\Script\Script.h" />
     <ClInclude Include="..\Classes\Engine\Script\Star.h" />
     <ClInclude Include="..\Classes\Engine\Script\StarMatrix.h" />
     <ClInclude Include="..\Classes\Engine\Script\StarParticleEffect.h" />

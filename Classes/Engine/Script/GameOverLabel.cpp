@@ -87,7 +87,7 @@ std::string GameOverLabel::impl::createGameOverText() const
 	return "Game Over";
 }
 
-GameOverLabel::GameOverLabel(Actor *game_object) :Script("GameOverLabel", game_object), pimpl(new impl(game_object))
+GameOverLabel::GameOverLabel(Actor *game_object) :BaseScriptComponent("GameOverLabel", game_object), pimpl(new impl(game_object))
 {
 
 }

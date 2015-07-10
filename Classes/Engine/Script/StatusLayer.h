@@ -1,11 +1,11 @@
 #ifndef __STATUS_LAYER__
 #define __STATUS_LAYER__
 
-#include "Script.h"
+#include "../Actor/BaseScriptComponent.h"
 
 #include <memory>
 
-class StatusLayer final :public Script
+class StatusLayer final :public BaseScriptComponent
 {
 	friend class Actor;
 

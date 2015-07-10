@@ -2,9 +2,9 @@
 #define __PUZZLE_MATRIX_LAYER__
 
 #include <memory>
-#include "Script.h"
+#include "../Actor/BaseScriptComponent.h"
 
-class MatrixLayer final :public Script
+class MatrixLayer final :public BaseScriptComponent
 {
 	friend class Actor;
 

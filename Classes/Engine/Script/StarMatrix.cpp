@@ -311,7 +311,7 @@ void StarMatrix::impl::explodeAllLeftStars()
 					cocos2d::DelayTime::create(0.02f), cocos2d::CallFunc::create([this, star]{explode(star); }), nullptr));
 }
 
-StarMatrix::StarMatrix(Actor *game_object) : Script("StarMatrix", game_object), pimpl(new impl(game_object))
+StarMatrix::StarMatrix(Actor *game_object) : BaseScriptComponent("StarMatrix", game_object), pimpl(new impl(game_object))
 {
 
 }
