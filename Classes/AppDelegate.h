@@ -32,6 +32,10 @@ public:
     @param  the pointer of the application
     */
     virtual void applicationWillEnterForeground();
+
+private:
+	struct AppDelegateImpl;
+	std::unique_ptr<AppDelegateImpl> pimpl;
 };
 
 #endif // _APP_DELEGATE_H_

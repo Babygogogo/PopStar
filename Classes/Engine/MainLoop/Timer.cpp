@@ -19,11 +19,11 @@ struct UpdateWrapper
 	std::function<void(time_t)> func;
 };
 
-class Timer::impl
+struct Timer::TimerImpl
 {
 public:
-	impl();
-	~impl();
+	TimerImpl();
+	~TimerImpl();
 
 	inline void update(float dt);
 
@@ -45,15 +45,15 @@ public:
 	std::unordered_map<void*, UpdateWrapper> m_update_observers_to_add;
 };
 
-Timer::impl::impl()
+Timer::TimerImpl::TimerImpl()
 {
 }
 
-Timer::impl::~impl()
+Timer::TimerImpl::~TimerImpl()
 {
 }
 
-void Timer::impl::update(float dt)
+void Timer::TimerImpl::update(float dt)
 {
 	m_is_updating = true;
 
@@ -70,7 +70,7 @@ void Timer::impl::update(float dt)
 	m_is_updating = false;
 }
 
-inline time_t Timer::impl::getCurrentTimeMS() const
+inline time_t Timer::TimerImpl::getCurrentTimeMS() const
 {
 	struct timeval tv;
 	cocos2d::gettimeofday(&tv, nullptr);
@@ -78,7 +78,7 @@ inline time_t Timer::impl::getCurrentTimeMS() const
 	return tv.tv_sec * 1000 + tv.tv_usec / 1000;
 }
 
-inline int Timer::impl::getIndex(const std::vector<long> &sequence, long num) const
+inline int Timer::TimerImpl::getIndex(const std::vector<long> &sequence, long num) const
 {
 	num %= sequence.back();
 	for (decltype(sequence.size()) index = 0; index < sequence.size(); ++index)
@@ -88,14 +88,14 @@ inline int Timer::impl::getIndex(const std::vector<long> &sequence, long num) co
 	return sequence.size() - 1;
 }
 
-void Timer::impl::addNewUpdateObservers()
+void Timer::TimerImpl::addNewUpdateObservers()
 {
 	for (auto &observer_pair : m_update_observers_to_add)
 		m_update_observers.emplace(std::move(observer_pair));
 	m_update_observers_to_add.clear();
 }
 
-void Timer::impl::deleteUnusedUpdateObservers()
+void Timer::TimerImpl::deleteUnusedUpdateObservers()
 {
 	for (auto iter = m_update_observers.begin(); iter != m_update_observers.end(); ){
 		if (iter->second.flag_deletion)
@@ -105,7 +105,7 @@ void Timer::impl::deleteUnusedUpdateObservers()
 	}
 }
 
-void Timer::impl::notifyUpdateObservers()
+void Timer::TimerImpl::notifyUpdateObservers()
 {
 	for (auto &observer_pair : m_update_observers)
 		if (!observer_pair.second.flag_deletion)
@@ -113,7 +113,7 @@ void Timer::impl::notifyUpdateObservers()
 }
 
 //////////////////////////////////////////////////////////////////////////
-Timer::Timer() :Object("Timer"), pimpl(new impl)
+Timer::Timer() : pimpl(new TimerImpl())
 {
 	CCLOG("BWTimer constructing.");
 }

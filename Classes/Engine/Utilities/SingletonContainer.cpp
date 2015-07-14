@@ -1,11 +1,11 @@
-#include "SingletonContainer.h"
-#include "cocos2d.h"
-
 #include <mutex>
 #include <unordered_map>
 
+#include "SingletonContainer.h"
+#include "cocos2d.h"
+
 //////////////////////////////////////////////////////////////////////////
-//definition of impl
+//Definition of SingletonContainer::SingletonContainerImpl
 //////////////////////////////////////////////////////////////////////////
 
 struct SingletonContainer::SingletonContainerImpl
@@ -29,12 +29,12 @@ SingletonContainer::SingletonContainerImpl::~SingletonContainerImpl()
 
 
 //////////////////////////////////////////////////////////////////////////
-//implementation of SingletonContainer
+//Implementation of SingletonContainer
 //////////////////////////////////////////////////////////////////////////
 
 std::unique_ptr<SingletonContainer> SingletonContainer::s_Instance;
 
-SingletonContainer::SingletonContainer() :pimpl(new SingletonContainerImpl)
+SingletonContainer::SingletonContainer() :pimpl(new SingletonContainerImpl())
 {
 
 }

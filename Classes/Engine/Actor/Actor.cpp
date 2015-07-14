@@ -72,11 +72,6 @@ Actor::Actor(std::string &&name) : pimpl(new ActorImpl())
 
 }
 
-Actor::Actor(ActorID && id, std::string && type, std::string && resourceFile) : pimpl(new ActorImpl(std::move(id), std::move(type), std::move(resourceFile)))
-{
-
-}
-
 Actor::~Actor()
 {
 	cocos2d::log("GameObject %s destructing.", pimpl->m_Type.c_str());
@@ -168,11 +163,6 @@ void Actor::setNeedUpdate(bool is_need)
 std::shared_ptr<Actor> Actor::create()
 {
 	return std::unique_ptr<Actor>(new Actor());
-}
-
-std::shared_ptr<Actor> Actor::create(ActorID id, std::string && type, std::string && resourceFile)
-{
-	return std::unique_ptr<Actor>(new Actor(std::move(id), std::move(type), std::move(resourceFile)));
 }
 
 bool Actor::init(ActorID id, tinyxml2::XMLElement *xmlElement)

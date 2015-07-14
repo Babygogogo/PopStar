@@ -70,7 +70,6 @@ public:
 	}
 
 	static std::shared_ptr<Actor> create();
-	static std::shared_ptr<Actor> create(ActorID id, std::string && type, std::string && resourceFile);
 
 	bool init(ActorID id, tinyxml2::XMLElement *xmlElement);
 	void postInit();
@@ -122,7 +121,6 @@ private:
 	//Constructor is private because game objects are managed using std::unique_ptr and I provide a factory method for that.
 	Actor();
 	Actor(std::string && name);
-	Actor(ActorID && id, std::string && type, std::string && resourceFile);
 
 	//Only the current scene owned by the SceneStack, and the (indirect) children of that scene, will be "update" once a frame.
 	void update(const time_t &time_ms);

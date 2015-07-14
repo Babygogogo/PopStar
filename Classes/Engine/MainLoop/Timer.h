@@ -1,9 +1,8 @@
-#ifndef __BW_TIMER__
-#define __BW_TIMER__
+#ifndef __TIMER__
+#define __TIMER__
 
 #include <memory>
 #include <functional>
-#include "../../Common/Object.h"
 
 /*!
  * \class Timer
@@ -16,11 +15,12 @@
  * \author Babygogogo
  * \date 2015.3
  */
-class Timer : public Object
+class Timer
 {
 public:
+	~Timer();
+
 	static std::unique_ptr<Timer> create();
-	virtual ~Timer();
 
 	inline time_t getElapsedTimeMS() const;
 
@@ -36,17 +36,14 @@ public:
 	//Stuff for registering observers.
 	//////////////////////////////////////////////////////////////////////////
 	template<typename T>	//The timer doesn't check whether the observer is alive; it's the resposiblity of client code to ensure that.
-	void registerUpdateObserver(T *observer)
-	{
+	void registerUpdateObserver(T *observer){
 		registerUpdateObserverHelper(observer, [observer](const time_t& time_ms){observer->update(time_ms); });
 	}
 
 	//Observers must call this method before its destruction.
 	void removeUpdateObserver(void *observer);
 
-	//////////////////////////////////////////////////////////////////////////
 	//Disable copy/move constructor and operator=.
-	//////////////////////////////////////////////////////////////////////////
 	Timer(const Timer&) = delete;
 	Timer(Timer&&) = delete;
 	Timer& operator=(const Timer&) = delete;
@@ -54,10 +51,11 @@ public:
 
 private:
 	Timer();
+
 	void registerUpdateObserverHelper(void* observer, std::function<void(const time_t&)>&& func);
 
-	class impl;
-	std::unique_ptr<impl> pimpl;
+	struct TimerImpl;
+	std::unique_ptr<TimerImpl> pimpl;
 };
 
-#endif // !__BW_TIMER__
+#endif // !__TIMER__

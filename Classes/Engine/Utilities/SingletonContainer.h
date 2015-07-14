@@ -28,17 +28,14 @@ public:
 	}
 
 	//Set an object of a given type (will replace the old one of the same type if exists).
-	template <typename T>
-	std::shared_ptr<T> set(){
-		return std::static_pointer_cast<T>(setHelper(typeid(T), T::create()));
-	}
-
-	template <typename Base, typename Derived>
+	template <typename Base, typename Derived,
+		typename std::enable_if_t<std::is_base_of<Base, Derived>::value>* = nullptr>
 	std::shared_ptr<Base> set(std::shared_ptr<Derived> && derived){
 		return std::static_pointer_cast<Base>(setHelper(typeid(Base), std::move(derived)));
 	}
 
-	template <typename Base, typename Derived>
+	template <typename Base, typename Derived,
+		typename std::enable_if_t<std::is_base_of<Base, Derived>::value>* = nullptr>
 	std::shared_ptr<Base> set(std::unique_ptr<Derived> && derived){
 		return std::static_pointer_cast<Base>(setHelper(typeid(Base), std::move(derived)));
 	}
@@ -52,14 +49,14 @@ public:
 private:
 	SingletonContainer();
 
-	//non-template helper functions for set/get object
+	//Non-template helper functions for set/get object.
 	std::shared_ptr<void> getHelper(const std::type_index & typeIndex) const;
 	std::shared_ptr<void> setHelper(std::type_index && typeIndex, std::shared_ptr<void> && obj);
 
-	//the one and only instance
+	//The one and only instance.
 	static std::unique_ptr<SingletonContainer> s_Instance;
 
-	//the implementation stuff
+	//The implementation stuff.
 	struct SingletonContainerImpl;
 	std::unique_ptr<SingletonContainerImpl> pimpl;
 };

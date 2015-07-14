@@ -37,17 +37,19 @@ std::unique_ptr<ActorComponent> ActorFactory::ActorFactoryImpl::createComponent(
 	auto componentType = componentElement->Value();
 	auto component = m_ComponentFactory->createObject(componentType);
 
-	// initialize the component if we found one
-	if (component){
-		if (!component->vInit(componentElement)){
-			cocos2d::log("ActorFactoryImpl::createComponent failed to create a(n) %s", componentType);
-			return nullptr;
-		}
-	} else {
+	//If can't create the component, log and return nullptr.
+	if (!component){
 		cocos2d::log("ActorFactoryImpl::createComponent couldn't find an ActorComponent named %s", componentType);
 		return nullptr;
 	}
 
+	//Try to initialize the component. If it fails, log and return nullptr.
+	if (!component->vInit(componentElement)){
+		cocos2d::log("ActorFactoryImpl::createComponent failed to initialize a(n) %s", componentType);
+		return nullptr;
+	}
+
+	//The component is created and initialized successfully.
 	return component;
 }
 
@@ -111,7 +113,7 @@ std::shared_ptr<Actor> ActorFactory::createActor(const char *resourceFile, tinyx
 		if (!component)
 			return nullptr;
 
-		//If the component is created successfully, add it to the actor.
+		//The component is created successfully so add it to the actor.
 		component->setOwner(actor);
 		actor->addComponent(std::move(component));
 	}
@@ -125,19 +127,21 @@ std::shared_ptr<Actor> ActorFactory::createActor(const char *resourceFile, tinyx
 	return actor;
 }
 
-void ActorFactory::modifyActor(std::shared_ptr<Actor> & actor, tinyxml2::XMLElement *overrides)
+void ActorFactory::modifyActor(const std::shared_ptr<Actor> & actor, tinyxml2::XMLElement *overrides)
 {
-	if (!overrides)
+	if (!actor || !overrides)
 		return;
 
 	// Loop through each child element and load the component
 	for (auto componentElement = overrides->FirstChildElement(); componentElement; componentElement = componentElement->NextSiblingElement()){
 		auto & component = actor->getComponent(componentElement->Value());
 		
+		//If there is a component of the same type already, re-initialize it.
 		if (component){
 			component->vInit(componentElement);
 			component->vOnChanged();
 		} else {
+			//Else, create a new component and attach to actor.
 			auto newComponent = pimpl->createComponent(componentElement);
 			if (newComponent){
 				component->setOwner(actor);

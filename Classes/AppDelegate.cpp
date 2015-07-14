@@ -10,12 +10,49 @@
 
 USING_NS_CC;
 
-AppDelegate::AppDelegate() {
+//////////////////////////////////////////////////////////////////////////
+//Definition of AppDelegate::AppDelegateImpl
+//////////////////////////////////////////////////////////////////////////
+struct AppDelegate::AppDelegateImpl
+{
+public:
+	AppDelegateImpl();
+	~AppDelegateImpl();
+
+	void initGame();
+};
+
+AppDelegate::AppDelegateImpl::AppDelegateImpl()
+{
+
+}
+
+AppDelegate::AppDelegateImpl::~AppDelegateImpl()
+{
+
+}
+
+void AppDelegate::AppDelegateImpl::initGame()
+{
+	Audio::getInstance()->prepare();
+
+	SingletonContainer::getInstance()->set<::Timer>(::Timer::create())->init();
+	SingletonContainer::getInstance()->set<IEventDispatcher>(::EventDispatcher::create());
+	SingletonContainer::getInstance()->set<GameData>(GameData::create());
+	SingletonContainer::getInstance()->set<SceneStack>(SceneStack::create())->pushAndRun(Actor::create<TitleScene>("TitleScene"));
+}
+
+//////////////////////////////////////////////////////////////////////////
+//Implementation of AppDelegate
+//////////////////////////////////////////////////////////////////////////
+AppDelegate::AppDelegate() : pimpl(new AppDelegateImpl())
+{
 
 }
 
 AppDelegate::~AppDelegate() 
 {
+
 }
 
 bool AppDelegate::applicationDidFinishLaunching() {
@@ -36,13 +73,8 @@ bool AppDelegate::applicationDidFinishLaunching() {
 	// set FPS. the default value is 1.0/60 if you don't call this
 	director->setAnimationInterval(1.0 / 60);
 
-	// create a scene and run
-	Audio::getInstance()->prepare();
-
-	SingletonContainer::getInstance()->set<::Timer>(::Timer::create())->init();
-	SingletonContainer::getInstance()->set<IEventDispatcher>(::EventDispatcher::create());
-	SingletonContainer::getInstance()->set<GameData>(GameData::create());
-	SingletonContainer::getInstance()->set<SceneStack>(SceneStack::create())->pushAndRun(Actor::create<TitleScene>("TitleScene"));
+	//Initialize the game.
+	pimpl->initGame();
 
 	return true;
 }
