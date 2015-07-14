@@ -126,6 +126,9 @@
     <ClCompile Include="..\Classes\Engine\Actor\BaseScriptComponent.cpp">
       <Filter>Classes\Engine\Actor</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\Engine\MainLoop\BaseProcess.cpp">
+      <Filter>Classes\Engine\MainLoop</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -241,6 +244,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\Engine\Actor\BaseScriptComponent.h">
       <Filter>Classes\Engine\Actor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\MainLoop\BaseProcess.h">
+      <Filter>Classes\Engine\MainLoop</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

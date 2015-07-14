@@ -147,6 +147,7 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClCompile Include="..\Classes\Engine\Audio\Audio.cpp" />
     <ClCompile Include="..\Classes\Engine\Event\EventDispatcher.cpp" />
     <ClCompile Include="..\Classes\Engine\Graphic2D\SceneStack.cpp" />
+    <ClCompile Include="..\Classes\Engine\MainLoop\BaseProcess.cpp" />
     <ClCompile Include="..\Classes\Engine\MainLoop\Timer.cpp" />
     <ClCompile Include="..\Classes\Engine\Script\ComboEffect.cpp" />
     <ClCompile Include="..\Classes\Engine\Script\GameOverLabel.cpp" />
@@ -186,6 +187,7 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClInclude Include="..\Classes\Engine\Event\IEventDispatcher.h" />
     <ClInclude Include="..\Classes\Engine\Event\IEventListener.h" />
     <ClInclude Include="..\Classes\Engine\Graphic2D\SceneStack.h" />
+    <ClInclude Include="..\Classes\Engine\MainLoop\BaseProcess.h" />
     <ClInclude Include="..\Classes\Engine\MainLoop\Timer.h" />
     <ClInclude Include="..\Classes\Engine\Script\ComboEffect.h" />
     <ClInclude Include="..\Classes\Engine\Script\GameOverLabel.h" />
