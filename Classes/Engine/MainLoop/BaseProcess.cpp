@@ -27,13 +27,6 @@ public:
 	BaseProcessImpl();
 	~BaseProcessImpl();
 
-	//Checks if the process is ended, no matter how it ends.
-	bool isEnded() const;
-
-	//Change the state of the process. Only be called from inside BaseProcess::update().
-	void init(BaseProcess * process);	//Be called on the first call to update(). Calls vOnInit().
-	void abort(BaseProcess * process);	//Be called from inside update if some internal issue occurs. Calls vOnAbort();    
-
 	//Current state of the process.
 	ProcessState m_State{ ProcessState::UnRun };
 
@@ -51,23 +44,6 @@ BaseProcess::BaseProcessImpl::~BaseProcessImpl()
 
 }
 
-bool BaseProcess::BaseProcessImpl::isEnded() const
-{
-	return m_State == ProcessState::Succeeded || m_State == ProcessState::Failed || m_State == ProcessState::Aborted;
-}
-
-void BaseProcess::BaseProcessImpl::init(BaseProcess * process)
-{
-	assert(m_State == ProcessState::UnRun && process);
-	process->vOnInit();
-}
-
-void BaseProcess::BaseProcessImpl::abort(BaseProcess * process)
-{
-	assert(!isEnded() && process);
-	process->vOnAbort();
-}
-
 //////////////////////////////////////////////////////////////////////////
 //Implementation of BaseProcess.
 //////////////////////////////////////////////////////////////////////////
@@ -83,19 +59,55 @@ BaseProcess::~BaseProcess()
 
 void BaseProcess::update(const std::chrono::milliseconds & deltaTimeMs)
 {
+	//If the process is not run, initialize it.
+	if (pimpl->m_State == ProcessState::UnRun){
+		vOnInit();
+		pimpl->m_State = ProcessState::Running;
+	}
 
+	//Update the process if running.
+	if (pimpl->m_State == ProcessState::Running)
+		vOnUpdate(deltaTimeMs);
+}
+
+void BaseProcess::init()
+{
+	//Make sure that the process is not run.
+	assert(pimpl->m_State == ProcessState::UnRun);
+
+	//Call the virtual method and update the state of the process.
+	vOnInit();
+	pimpl->m_State = ProcessState::Running;
+}
+
+void BaseProcess::abort()
+{
+	//Make sure that the process is not ended.
+	assert(!isEnded());
+
+	//Call the virtual method and update the state of the process.
+	vOnAbort();
+	pimpl->m_State = ProcessState::Aborted;
 }
 
 void BaseProcess::succeed()
 {
-	assert(!pimpl->isEnded());
+	//Make sure that the process is not ended.
+	assert(!isEnded());
+
+	//Call the virtual method and update the state of the process.
 	vOnSucceed();
+	pimpl->m_State = ProcessState::Succeeded;
 }
 
 void BaseProcess::fail()
 {
-	assert(!pimpl->isEnded());
+	//Make sure that the process is not ended.
+	assert(!isEnded());
+
+	//Call the virtual method and update the state of the process.
 	vOnFail();
+	pimpl->m_State = ProcessState::Failed;
 }
 
 void BaseProcess::pause()
@@ -123,6 +135,11 @@ bool BaseProcess::isFailed() const
 bool BaseProcess::isAborted() const
 {
 	return pimpl->m_State == ProcessState::Aborted;
+}
+
+bool BaseProcess::isEnded() const
+{
+	return isSucceeded() || isFailed() || isAborted();
 }
 
 void BaseProcess::attachChild(std::unique_ptr<BaseProcess> && child)

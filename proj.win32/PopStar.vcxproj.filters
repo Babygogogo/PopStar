@@ -129,6 +129,9 @@
     <ClCompile Include="..\Classes\Engine\MainLoop\BaseProcess.cpp">
       <Filter>Classes\Engine\MainLoop</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\Engine\MainLoop\ProcessRunner.cpp">
+      <Filter>Classes\Engine\MainLoop</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -246,6 +249,9 @@
       <Filter>Classes\Engine\Actor</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Engine\MainLoop\BaseProcess.h">
+      <Filter>Classes\Engine\MainLoop</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\MainLoop\ProcessRunner.h">
       <Filter>Classes\Engine\MainLoop</Filter>
     </ClInclude>
   </ItemGroup>
