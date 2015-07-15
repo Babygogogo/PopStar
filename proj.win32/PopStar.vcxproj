@@ -146,6 +146,7 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClCompile Include="..\Classes\Engine\Actor\SequentialInvoker.cpp" />
     <ClCompile Include="..\Classes\Engine\Audio\Audio.cpp" />
     <ClCompile Include="..\Classes\Engine\Event\EventDispatcher.cpp" />
+    <ClCompile Include="..\Classes\Engine\GameLogic\GameLogic.cpp" />
     <ClCompile Include="..\Classes\Engine\Graphic2D\SceneStack.cpp" />
     <ClCompile Include="..\Classes\Engine\MainLoop\BaseProcess.cpp" />
     <ClCompile Include="..\Classes\Engine\MainLoop\ProcessRunner.cpp" />
@@ -174,9 +175,11 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClInclude Include="..\Classes\Common\Object.h" />
     <ClInclude Include="..\Classes\Engine\Actor\ActorComponent.h" />
     <ClInclude Include="..\Classes\Engine\Actor\ActorFactory.h" />
+    <ClInclude Include="..\Classes\Engine\Actor\ActorID.h" />
     <ClInclude Include="..\Classes\Engine\Actor\BaseScriptComponent.h" />
     <ClInclude Include="..\Classes\Engine\Actor\DisplayNode.h" />
     <ClInclude Include="..\Classes\Engine\Actor\Actor.h" />
+    <ClInclude Include="..\Classes\Engine\Actor\RenderComponent.h" />
     <ClInclude Include="..\Classes\Engine\Actor\SequentialInvoker.h" />
     <ClInclude Include="..\Classes\Engine\Actor\SoundPlayer.h" />
     <ClInclude Include="..\Classes\Engine\Audio\Audio.h" />
@@ -187,6 +190,7 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClInclude Include="..\Classes\Engine\Event\EventType.h" />
     <ClInclude Include="..\Classes\Engine\Event\IEventDispatcher.h" />
     <ClInclude Include="..\Classes\Engine\Event\IEventListener.h" />
+    <ClInclude Include="..\Classes\Engine\GameLogic\GameLogic.h" />
     <ClInclude Include="..\Classes\Engine\Graphic2D\SceneStack.h" />
     <ClInclude Include="..\Classes\Engine\MainLoop\BaseProcess.h" />
     <ClInclude Include="..\Classes\Engine\MainLoop\ProcessRunner.h" />

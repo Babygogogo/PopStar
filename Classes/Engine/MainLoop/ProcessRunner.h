@@ -14,6 +14,7 @@ class BaseProcess;
  * \details
  *	The runner doesn't run the processes automatically.
  *	You must call updateAllProcesses() (probably on every game loop) to run the processes.
+ *	If a process ends in success, its child (if any) will be attached to the runner automatically.
  *
  * \author Babygogogo
  * \date 2015.7
@@ -30,6 +31,7 @@ public:
 	void attachProcess(std::unique_ptr<BaseProcess> && process);
 
 	//Call update() on all processes attached with the eclapsed time.
+	//If a process ends in success, its child (if any) will be attached to the runner.
 	void updateAllProcess(const std::chrono::milliseconds & deltaTimeMs);
 
 	//Abort all processes attached and detach them.

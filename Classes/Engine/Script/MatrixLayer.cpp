@@ -19,7 +19,8 @@ struct MatrixLayer::impl
 
 	void startLevel();
 
-	Actor *m_matrix{ nullptr };
+//	Actor *m_matrix{ nullptr };
+	std::weak_ptr<Actor> m_matrix;
 };
 
 MatrixLayer::impl::impl(Actor *game_object)
@@ -51,7 +52,8 @@ void MatrixLayer::impl::unregisterAsEventListeners()
 
 void MatrixLayer::impl::startLevel()
 {
-	m_matrix->getComponent<StarMatrix>()->reset();
+	//m_matrix->getComponent<StarMatrix>()->reset();
+	m_matrix.lock()->getComponent<StarMatrix>()->reset();
 	Audio::getInstance()->playReadyGo();
 }
 

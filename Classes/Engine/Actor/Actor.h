@@ -7,7 +7,9 @@
 #include <typeindex>
 #include <type_traits>
 #include <functional>
+#include <chrono>
 
+#include "ActorID.h"
 #include "../../Common/IUpdateable.h"
 #include "../../cocos2d/external/tinyxml2/tinyxml2.h"
 
@@ -32,8 +34,6 @@ class Actor final
 	friend class ActorFactory;
 	
 public:
-	using ActorID = unsigned int;
-
 	~Actor();
 
 	//////////////////////////////////////////////////////////////////////////
@@ -73,19 +73,24 @@ public:
 
 	bool init(ActorID id, tinyxml2::XMLElement *xmlElement);
 	void postInit();
+	void update(const std::chrono::milliseconds & delteTimeMs);
+
 	void addComponent(std::unique_ptr<ActorComponent> && component);
+	ActorID getID() const;
 	const std::unique_ptr<ActorComponent> & getComponent(const std::string & type) const;
 
 	//////////////////////////////////////////////////////////////////////////
 	//Stuff for organizing the Actors as trees.
 	//////////////////////////////////////////////////////////////////////////
-	Actor *addChild(std::unique_ptr<Actor>&& child);
+//	Actor *addChild(std::unique_ptr<Actor>&& child);
+	std::weak_ptr<Actor> addChild(std::shared_ptr<Actor> && child);
 	Actor *getParent() const;
 	bool isAncestorOf(const Actor *child) const;
 
 	//If the game object has no parent, nothing happens, and nullptr is returned.
 	//Otherwise, the ownership is returned. Keep it, or the object along with its children will be destroyed.
-	std::unique_ptr<Actor> removeFromParent();
+//	std::unique_ptr<Actor> removeFromParent();
+	std::shared_ptr<Actor> removeFromParent();
 
 	//////////////////////////////////////////////////////////////////////////
 	//Stuff for adding/getting components or scripts.

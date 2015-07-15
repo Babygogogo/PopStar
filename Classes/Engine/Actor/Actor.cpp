@@ -18,21 +18,27 @@ public:
 	~ActorImpl();
 
 	template<typename Element, typename Container>
-	std::unique_ptr<Element> stealOwnership(Element *raw_ptr, Container &container)
+//	std::unique_ptr<Element> stealOwnership(Element *raw_ptr, Container &container)
+	std::shared_ptr<Element> stealOwnership(Element *raw_ptr, Container &container)
 	{
 		//find the ownership in container; if not found, return nullptr.
 		auto iter_found = std::find_if(container.begin(), container.end(),
-			[raw_ptr](const std::unique_ptr<Element>& p){return p.get() == raw_ptr; });
+//			[raw_ptr](const std::unique_ptr<Element>& p){return p.get() == raw_ptr; });
+			[raw_ptr](const std::shared_ptr<Element>& p){return p.get() == raw_ptr; });
 		if (iter_found == container.end())
 			return nullptr;
 
 		//steal the ownership
-		iter_found->release();
+		//iter_found->release();
+		//container.erase(iter_found);
+		//return std::unique_ptr<Element>(raw_ptr);
+		auto elementFound = *iter_found;
 		container.erase(iter_found);
-		return std::unique_ptr<Element>(raw_ptr);
+		return elementFound;
 	}
 
-	std::list<std::unique_ptr<Actor>> m_children;
+//	std::list<std::unique_ptr<Actor>> m_children;
+	std::list<std::shared_ptr<Actor>> m_children;
 	std::map<Actor*, bool> m_children_deletion_flag;
 	Actor *m_parent{ nullptr };
 	bool m_is_updating{ false };
@@ -77,10 +83,10 @@ Actor::~Actor()
 	cocos2d::log("GameObject %s destructing.", pimpl->m_Type.c_str());
 }
 
-Actor * Actor::addChild(std::unique_ptr<Actor>&& child)
+std::weak_ptr<Actor> Actor::addChild(std::shared_ptr<Actor> && child)
 {
 	if (!child || child->pimpl->m_parent)
-		return nullptr;
+		return child;
 
 	child->pimpl->m_parent = this;
 
@@ -91,7 +97,8 @@ Actor * Actor::addChild(std::unique_ptr<Actor>&& child)
 	pimpl->m_children_deletion_flag.emplace(child.get(), false);
 	pimpl->m_children.emplace_back(std::move(child));
 	
-	return pimpl->m_children.back().get();
+//	return pimpl->m_children.back().get();
+	return pimpl->m_children.back();
 }
 
 bool Actor::isAncestorOf(const Actor *child) const
@@ -115,7 +122,8 @@ Actor * Actor::getParent() const
 	return pimpl->m_parent;
 }
 
-std::unique_ptr<Actor> Actor::removeFromParent()
+//std::unique_ptr<Actor> Actor::removeFromParent()
+std::shared_ptr<Actor> Actor::removeFromParent()
 {
 	if (auto parent = getParent()){
 		this->pimpl->m_parent = nullptr;
@@ -153,6 +161,11 @@ void Actor::update(const time_t &time_ms)
 	}
 
 	pimpl->m_is_updating = false;
+}
+
+void Actor::update(const std::chrono::milliseconds & delteTimeMs)
+{
+	//TODO: call update() on all components here.
 }
 
 void Actor::setNeedUpdate(bool is_need)
@@ -211,4 +224,9 @@ const std::unique_ptr<ActorComponent> & Actor::getComponent(const std::string & 
 	}
 
 	return findIter->second;
+}
+
+ActorID Actor::getID() const
+{
+	return pimpl->m_ID;
 }

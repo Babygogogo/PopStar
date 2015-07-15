@@ -1,5 +1,6 @@
 #include "ActorFactory.h"
 #include "Actor.h"
+#include "ActorID.h"
 #include "ActorComponent.h"
 #include "../Utilities/GenericFactory.h"
 #include "cocos2d.h"
@@ -15,14 +16,14 @@ struct ActorFactory::ActorFactoryImpl
 	std::unique_ptr<ActorComponent> createComponent(tinyxml2::XMLElement * componentElement);
 	void postInitActor(std::shared_ptr<Actor> & actor);
 
-	Actor::ActorID getNextID() const;
+	ActorID getNextID() const;
 	void updateID();
 
-	Actor::ActorID m_currentID{ 0 };
+	ActorID m_currentID{ 0 };
 	std::unique_ptr<GenericFactory<ActorComponent>> m_ComponentFactory;
 };
 
-ActorFactory::ActorFactoryImpl::ActorFactoryImpl()
+ActorFactory::ActorFactoryImpl::ActorFactoryImpl() : m_ComponentFactory(GenericFactory<ActorComponent>::createFactory())
 {
 
 }
@@ -59,7 +60,7 @@ void ActorFactory::ActorFactoryImpl::postInitActor(std::shared_ptr<Actor> & acto
 	actor->postInit();
 }
 
-Actor::ActorID ActorFactory::ActorFactoryImpl::getNextID() const
+ActorID ActorFactory::ActorFactoryImpl::getNextID() const
 {
 	return m_currentID + 1;
 }
@@ -87,7 +88,7 @@ std::unique_ptr<ActorFactory> ActorFactory::createFactory()
 	return std::unique_ptr<ActorFactory>(new ActorFactory());
 }
 
-std::shared_ptr<Actor> ActorFactory::createActor(const char *resourceFile, tinyxml2::XMLElement *overrides)
+std::shared_ptr<Actor> ActorFactory::createActor(const char *resourceFile, tinyxml2::XMLElement *overrides /*= nullptr*/)
 {
 	//Load the resource file. If failed, log and return nullptr.
 	tinyxml2::XMLDocument xmlDoc;
