@@ -1,6 +1,7 @@
 #include "AppDelegate.h"
 #include "Engine/Audio/Audio.h"
 
+#include "Engine/GameLogic/GameLogic.h"
 #include "Engine/Utilities/SingletonContainer.h"
 #include "Engine/MainLoop/Timer.h"
 #include "Engine/Graphic2D/SceneStack.h"
@@ -39,6 +40,7 @@ void AppDelegate::AppDelegateImpl::initGame()
 	SingletonContainer::getInstance()->set<::Timer>(::Timer::create())->init();
 	SingletonContainer::getInstance()->set<IEventDispatcher>(::EventDispatcher::create());
 	SingletonContainer::getInstance()->set<GameData>(GameData::create());
+	SingletonContainer::getInstance()->set<GameLogic>(GameLogic::create());
 	SingletonContainer::getInstance()->set<SceneStack>(SceneStack::create())->pushAndRun(Actor::create<TitleScene>("TitleScene"));
 }
 
@@ -55,12 +57,13 @@ AppDelegate::~AppDelegate()
 
 }
 
-bool AppDelegate::applicationDidFinishLaunching() {
+bool AppDelegate::applicationDidFinishLaunching()
+{
 	// initialize director
 	auto director = Director::getInstance();
 	auto glview = director->getOpenGLView();
 	if(!glview) {
-		glview = GLView::create("POPSTAR");
+		glview = GLView::create("PopStar");
 		director->setOpenGLView(glview);
 	}
 

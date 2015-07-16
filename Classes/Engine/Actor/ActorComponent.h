@@ -28,6 +28,7 @@ public:
 	virtual const std::string & getType() const = 0;
 
 protected:
+	ActorComponent();
 	ActorComponent(std::string &&name, Actor *game_object);
 
 	virtual bool vInit(tinyxml2::XMLElement *xmlElement) = 0;

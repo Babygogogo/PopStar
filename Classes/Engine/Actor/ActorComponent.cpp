@@ -7,6 +7,11 @@ ActorComponent::ActorComponent(std::string &&name, Actor *game_object) : m_game_
 
 }
 
+ActorComponent::ActorComponent()
+{
+
+}
+
 ActorComponent::~ActorComponent()
 {
 

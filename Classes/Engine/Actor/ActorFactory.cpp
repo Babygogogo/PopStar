@@ -2,6 +2,7 @@
 #include "Actor.h"
 #include "ActorID.h"
 #include "ActorComponent.h"
+#include "../Script/ComboEffect.h"
 #include "../Utilities/GenericFactory.h"
 #include "cocos2d.h"
 
@@ -12,6 +13,10 @@ struct ActorFactory::ActorFactoryImpl
 {
 	ActorFactoryImpl();
 	~ActorFactoryImpl();
+
+	//This function is called in the constructor of impl.
+	//You must modify this function whenever the types of components are changed.
+	void registerComponents();
 
 	std::unique_ptr<ActorComponent> createComponent(tinyxml2::XMLElement * componentElement);
 	void postInitActor(std::shared_ptr<Actor> & actor);
@@ -25,12 +30,17 @@ struct ActorFactory::ActorFactoryImpl
 
 ActorFactory::ActorFactoryImpl::ActorFactoryImpl() : m_ComponentFactory(GenericFactory<ActorComponent>::createFactory())
 {
-
+	registerComponents();
 }
 
 ActorFactory::ActorFactoryImpl::~ActorFactoryImpl()
 {
 
+}
+
+void ActorFactory::ActorFactoryImpl::registerComponents()
+{
+	m_ComponentFactory->registerType<ComboEffect>(ComboEffect::Type);
 }
 
 std::unique_ptr<ActorComponent> ActorFactory::ActorFactoryImpl::createComponent(tinyxml2::XMLElement * componentElement)

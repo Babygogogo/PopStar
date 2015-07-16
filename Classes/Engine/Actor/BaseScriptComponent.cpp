@@ -1,18 +1,22 @@
 #include "BaseScriptComponent.h"
 
-const std::string & BaseScriptComponent::Type = "BaseScriptComponent";
+BaseScriptComponent::BaseScriptComponent() : ActorComponent()
+{
+
+}
 
 BaseScriptComponent::~BaseScriptComponent()
 {
 
 }
 
-const std::string & BaseScriptComponent::getType() const
-{
-	return Type;
-}
-
 bool BaseScriptComponent::vInit(tinyxml2::XMLElement *xmlElement)
 {
 	return true;
+}
+
+const std::string & BaseScriptComponent::getType() const
+{
+	static std::string nullString{};
+	return nullString;
 }
