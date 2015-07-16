@@ -2,7 +2,7 @@
 #include "Actor.h"
 #include "ActorID.h"
 #include "ActorComponent.h"
-#include "../Script/ComboEffect.h"
+#include "../Script/ComboEffectScript.h"
 #include "../Utilities/GenericFactory.h"
 #include "cocos2d.h"
 
@@ -40,7 +40,7 @@ ActorFactory::ActorFactoryImpl::~ActorFactoryImpl()
 
 void ActorFactory::ActorFactoryImpl::registerComponents()
 {
-	m_ComponentFactory->registerType<ComboEffect>(ComboEffect::Type);
+	m_ComponentFactory->registerType<ComboEffectScript>(ComboEffectScript::Type);
 }
 
 std::unique_ptr<ActorComponent> ActorFactory::ActorFactoryImpl::createComponent(tinyxml2::XMLElement * componentElement)

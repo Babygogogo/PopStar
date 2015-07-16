@@ -1,0 +1,6 @@
+<Actor type="ComboEffect" resource="Actors\ComboEffect.xml">
+
+	<ComboEffectScript>
+	</ComboEffectScript>
+
+</Actor>

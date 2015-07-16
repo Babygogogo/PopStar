@@ -69,9 +69,6 @@
     <ClCompile Include="..\Classes\Engine\Actor\SequentialInvoker.cpp">
       <Filter>Classes\Engine\Actor</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Engine\Script\ComboEffect.cpp">
-      <Filter>Classes\Engine\Script</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\Engine\Script\GameOverLabel.cpp">
       <Filter>Classes\Engine\Script</Filter>
     </ClCompile>
@@ -138,6 +135,9 @@
     <ClCompile Include="..\Classes\Engine\GameLogic\GameLogic.cpp">
       <Filter>Classes\Engine\Logic</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Script\ComboEffectScript.cpp">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -190,9 +190,6 @@
     </ClInclude>
     <ClInclude Include="..\Classes\Engine\Actor\SoundPlayer.h">
       <Filter>Classes\Engine\Actor</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Script\ComboEffect.h">
-      <Filter>Classes\Engine\Script</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Engine\Script\GameOverLabel.h">
       <Filter>Classes\Engine\Script</Filter>
@@ -268,6 +265,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\Engine\Actor\ActorID.h">
       <Filter>Classes\Engine\Actor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Script\ComboEffectScript.h">
+      <Filter>Classes\Engine\Script</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
