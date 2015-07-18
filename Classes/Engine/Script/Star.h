@@ -1,10 +1,15 @@
 #ifndef __STAR__
 #define __STAR__
 
-#include "../Actor/BaseScriptComponent.h"
-#include "cocos2d.h"
-
 #include <memory>
+
+#include "../Actor/BaseScriptComponent.h"
+
+//Forward declaration.
+namespace cocos2d
+{
+	struct Color4F;
+}
 
 class Star final :public BaseScriptComponent
 {

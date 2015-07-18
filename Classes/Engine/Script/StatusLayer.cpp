@@ -6,6 +6,7 @@
 #include "GameOverLabel.h"
 #include "../Actor/Actor.h"
 #include "../Actor/DisplayNode.h"
+#include "cocos2d.h"
 
 struct StatusLayer::impl
 {

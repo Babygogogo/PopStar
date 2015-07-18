@@ -2,7 +2,7 @@
 #include "../Actor/Actor.h"
 #include "../Actor/DisplayNode.h"
 #include "../Actor/SequentialInvoker.h"
-
+#include "cocos2d.h"
 #include <random>
 
 struct Star::impl

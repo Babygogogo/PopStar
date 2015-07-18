@@ -6,8 +6,6 @@
 #include <unordered_map>
 #include <functional>
 
-#include "cocos2d.h"
-
 /*!
  * \class GenericFactory<BasePointer>
  *

@@ -5,7 +5,12 @@
 #include <functional>
 
 #include "ActorComponent.h"
-#include "cocos2d.h"
+
+//Forward declaration.
+namespace cocos2d
+{
+	class FiniteTimeAction;
+}
 
 class SequentialInvoker final :public ActorComponent
 {

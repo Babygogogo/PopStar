@@ -6,6 +6,8 @@
 
 #include "Actor.h"
 #include "DisplayNode.h"
+#include "cocos2d.h"
+#include "../../cocos2d/external/tinyxml2/tinyxml2.h"
 
 //////////////////////////////////////////////////////////////////////////
 //Definition of Actor::ActorImpl.

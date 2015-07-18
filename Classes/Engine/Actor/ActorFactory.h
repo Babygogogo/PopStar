@@ -3,8 +3,11 @@
 
 #include <memory>
 
-#include "../../cocos2d/external/tinyxml2/tinyxml2.h"
-
+//Forward declaration.
+namespace tinyxml2
+{
+	class XMLElement;
+}
 class Actor;
 
 /*!

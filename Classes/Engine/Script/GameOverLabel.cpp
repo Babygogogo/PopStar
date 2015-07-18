@@ -7,6 +7,7 @@
 #include "../Graphic2D/SceneStack.h"
 #include "../Event/EventDispatcher.h"
 #include "../Event/EventType.h"
+#include "cocos2d.h"
 
 struct GameOverLabel::impl
 {

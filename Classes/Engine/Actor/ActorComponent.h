@@ -4,7 +4,11 @@
 #include <string>
 #include <memory>
 
-#include "../../cocos2d/external/tinyxml2/tinyxml2.h"
+//Forward declaration.
+namespace tinyxml2
+{
+	class XMLElement;
+}
 
 /*!
  * \brief The base class of every components and scripts.
@@ -29,11 +33,13 @@ protected:
 	ActorComponent();
 	ActorComponent(std::string &&name, Actor *game_object);
 
+	//Called by ActorFactory, after the creation of the component and before attaching to an actor.
 	virtual bool vInit(tinyxml2::XMLElement *xmlElement) = 0;
+	//Called by by Actor by ActorFactory, after attaching all components to an actor. No default behavior.
 	virtual void vPostInit();
 	virtual void vOnChanged();
 
-	Actor *m_game_object;
+	Actor *m_game_object;	//This should be removed when the refactor is done.
 	std::weak_ptr<Actor> m_Actor;
 
 public:

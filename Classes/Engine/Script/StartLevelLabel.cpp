@@ -7,6 +7,7 @@
 #include "../Event/EventDispatcher.h"
 #include "../Event/EventType.h"
 #include "../Event/LegacyEvent.h"
+#include "cocos2d.h"
 
 struct StartLevelLabel::impl
 {

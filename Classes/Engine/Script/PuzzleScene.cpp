@@ -4,6 +4,7 @@
 #include "../Actor/Actor.h"
 #include "../Actor/DisplayNode.h"
 #include "../Audio/Audio.h"
+#include "cocos2d.h"
 
 struct PuzzleScene::impl
 {

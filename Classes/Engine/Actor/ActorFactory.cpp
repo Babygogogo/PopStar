@@ -5,6 +5,7 @@
 #include "../Script/ComboEffectScript.h"
 #include "../Utilities/GenericFactory.h"
 #include "cocos2d.h"
+#include "../../cocos2d/external/tinyxml2/tinyxml2.h"
 
 //////////////////////////////////////////////////////////////////////////
 //Definition of ActorFactory::ActorFactoryImpl.

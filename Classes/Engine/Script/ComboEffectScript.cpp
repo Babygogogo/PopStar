@@ -7,7 +7,7 @@
 #include "../Event/LegacyEvent.h"
 #include "../Event/EventType.h"
 #include "../Event/EventArg1.h"
-
+#include "cocos2d.h"
 #include "../Audio/Audio.h"
 
 //////////////////////////////////////////////////////////////////////////

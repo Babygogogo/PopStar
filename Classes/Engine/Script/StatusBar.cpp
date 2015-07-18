@@ -6,6 +6,7 @@
 #include "../Event/EventDispatcher.h"
 #include "../Event/LegacyEvent.h"
 #include "../Event/EventType.h"
+#include "cocos2d.h"
 
 struct StatusBar::impl
 {

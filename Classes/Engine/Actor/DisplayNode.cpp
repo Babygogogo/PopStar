@@ -1,7 +1,9 @@
 #include <unordered_set>
+#include <cassert>
 
 #include "DisplayNode.h"
 #include "Actor.h"
+#include "cocos2d.h"
 
 //////////////////////////////////////////////////////////////////////////
 //Definition of DisplayNodeImpl.
@@ -11,6 +13,8 @@ struct DisplayNode::DisplayNodeImpl
 public:
 	DisplayNodeImpl();
 	~DisplayNodeImpl();
+
+	cocos2d::Node * m_Node{ nullptr };
 
 	DisplayNode* m_parent{ nullptr };
 	std::unordered_set<DisplayNode*> m_children;
@@ -45,9 +49,9 @@ DisplayNode::~DisplayNode()
 	for (auto &child : pimpl->m_children)
 		child->pimpl->m_parent = nullptr;
 
-	if (m_node){
-		m_node->removeFromParent();
-		m_node->release();
+	if (pimpl->m_Node){
+		pimpl->m_Node->removeFromParent();
+		pimpl->m_Node->release();
 	}
 
 	if (pimpl->m_parent){
@@ -66,11 +70,11 @@ void DisplayNode::addChild(DisplayNode *child)
 	if (!child || child->pimpl->m_parent)
 		return;
 
-	if (child->m_node){
-		if (this->m_node)
-			this->m_node->addChild(child->m_node);
+	if (child->pimpl->m_Node){
+		if (this->pimpl->m_Node)
+			this->pimpl->m_Node->addChild(child->pimpl->m_Node);
 		else
-			this->initAs<cocos2d::Node>()->addChild(child->m_node);
+			this->initAs<cocos2d::Node>()->addChild(child->pimpl->m_Node);
 	}
 
 	child->pimpl->m_parent = this;
@@ -85,21 +89,21 @@ DisplayNode * DisplayNode::getParent() const
 void DisplayNode::attachToParent()
 {
 	if (auto parent = getParent()){
-		if (parent->m_node)
-			parent->m_node->addChild(this->m_node);
+		if (parent->pimpl->m_Node)
+			parent->pimpl->m_Node->addChild(this->pimpl->m_Node);
 		else
-			parent->initAs<cocos2d::Node>()->addChild(this->m_node);
+			parent->initAs<cocos2d::Node>()->addChild(this->pimpl->m_Node);
 	}
 }
 
 void DisplayNode::removeFromParent()
 {
-	if (!pimpl->m_parent || !m_node)
+	if (!pimpl->m_parent || !pimpl->m_Node)
 		return;
 
 	pimpl->m_parent->pimpl->m_children.erase(this);
 	pimpl->m_parent = nullptr;
-	m_node->removeFromParent();
+	pimpl->m_Node->removeFromParent();
 }
 
 const std::string & DisplayNode::getType() const
@@ -110,6 +114,23 @@ const std::string & DisplayNode::getType() const
 bool DisplayNode::vInit(tinyxml2::XMLElement *xmlElement)
 {
 	return true;
+}
+
+void * DisplayNode::getNode() const
+{
+	return pimpl->m_Node;
+}
+
+void * DisplayNode::initAsHelper(std::function<void*()> && creatorFunction)
+{
+	//Ensure that the node hasn't been initialized.
+	assert(!pimpl->m_Node);
+
+	pimpl->m_Node = static_cast<cocos2d::Node*>(creatorFunction());
+	pimpl->m_Node->retain();
+	attachToParent();
+
+	return pimpl->m_Node;
 }
 
 const std::string DisplayNode::Type = "DisplayNodeComponent";

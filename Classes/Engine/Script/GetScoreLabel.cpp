@@ -5,6 +5,7 @@
 #include "../../Common/GameData.h"
 #include "../Event/EventDispatcher.h"
 #include "../Event/EventType.h"
+#include "cocos2d.h"
 
 struct GetScoreLabel::impl
 {

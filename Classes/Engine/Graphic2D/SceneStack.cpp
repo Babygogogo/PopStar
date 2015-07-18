@@ -3,6 +3,7 @@
 #include "../Utilities/SingletonContainer.h"
 #include "../MainLoop/Timer.h"
 #include "../Actor/DisplayNode.h"
+#include "cocos2d.h"
 
 struct SceneStack::impl
 {

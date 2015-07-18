@@ -6,6 +6,7 @@
 #include "../Graphic2D/SceneStack.h"
 #include "../../Common/GameData.h"
 #include "../Audio/Audio.h"
+#include "cocos2d.h"
 
 struct TitleScene::impl
 {

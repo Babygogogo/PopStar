@@ -11,8 +11,12 @@
 
 #include "ActorID.h"
 #include "../../Common/IUpdateable.h"
-#include "../../cocos2d/external/tinyxml2/tinyxml2.h"
 
+//Forward declaration.
+namespace tinyxml2
+{
+	class XMLElement;
+}
 class ActorComponent;
 
 /*!

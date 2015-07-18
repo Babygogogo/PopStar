@@ -7,7 +7,7 @@
 #include "../Event/EventType.h"
 #include "../Event/EventDispatcher.h"
 #include "../GameLogic/GameLogic.h"
-
+#include "cocos2d.h"
 #include "../Audio/Audio.h"
 
 struct MatrixLayer::impl

@@ -1,3 +1,5 @@
+#include <list>
+
 #include "SequentialInvoker.h"
 #include "Actor.h"
 #include "DisplayNode.h"
@@ -5,8 +7,7 @@
 #include "../Event/IEventDispatcher.h"
 #include "../Event/EventType.h"
 #include "../Event/LegacyEvent.h"
-
-#include <list>
+#include "cocos2d.h"
 
 struct SequentialInvoker::impl
 {
