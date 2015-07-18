@@ -1,5 +1,5 @@
-#ifndef __BW_DISPLAY_NODE__
-#define __BW_DISPLAY_NODE__
+#ifndef __DISPLAY_NODE__
+#define __DISPLAY_NODE__
 
 #include <memory>
 #include <functional>
@@ -13,6 +13,10 @@ class DisplayNode final : public ActorComponent
 public:
 	~DisplayNode();
 
+	//Create an instance.
+	static std::unique_ptr<DisplayNode> create();
+
+	//The type name of this component. Must be the same as the class name.
 	static const std::string Type;
 
 	DisplayNode *getParent() const;
@@ -52,20 +56,22 @@ public:
 	DisplayNode& operator=(DisplayNode&&) = delete;
 
 private:
+	DisplayNode();
 	DisplayNode(Actor *game_object);
 
 	void addChild(DisplayNode *child);
 	void attachToParent();
 	void removeFromParent();
 
-	virtual const std::string & getType() const;
-
-	virtual bool vInit(tinyxml2::XMLElement *xmlElement);
+	//Override functions.
+	virtual const std::string & getType() const override;
+	virtual bool vInit(tinyxml2::XMLElement *xmlElement) override;
 
 	cocos2d::Node* m_node{ nullptr };
 
-	class impl;
-	std::unique_ptr<impl> pimpl;
+	//Implementation stuff.
+	struct DisplayNodeImpl;
+	std::unique_ptr<DisplayNodeImpl> pimpl;
 };
 
-#endif // !__BW_DISPLAY_NODE__
+#endif // !__DISPLAY_NODE__

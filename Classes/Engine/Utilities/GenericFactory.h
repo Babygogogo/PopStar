@@ -9,19 +9,19 @@
 #include "cocos2d.h"
 
 /*!
- * \class GenericFactory<Base>
+ * \class GenericFactory<BasePointer>
  *
  * \brief A generic factory that allows to create objects of sub-type of Base by strings.
  *
  * \details
- *	The template argument (Base) is the type of pointer you get when you call createObject(). You can downcast the pointer to a concrete one.
+ *	The template argument (BasePointer) is the type of pointer you get when you call createObject(). You can downcast the pointer to a concrete one.
  *	You must call registerType() before you can create that object of that type using this factory. The type must be a sub-type of Base.
  *	This class should be used inside concrete factories. That is, avoid #include this file in other headers.
  *
  * \author Babygogogo
  * \date 2015.7
  */
-template <class Base>
+template <class BasePointer>
 class GenericFactory
 {
 public:
@@ -46,9 +46,15 @@ public:
 			m_CreationFunctions.emplace(std::make_pair(name, [](){return SubClass::create(); }));
 	}
 
+	template <class SubClass>
+	void registerType()
+	{
+		registerType<SubClass>(SubClass::Type);
+	}
+
 	//Create an object. This function return the pointer of the Base class which can be downcast by client code.
 	//If no type is registered with the name, nullptr is returned.
-	std::unique_ptr<Base> createObject(const std::string & name)
+	BasePointer createObject(const std::string & name)
 	{
 		auto findIter = m_CreationFunctions.find(name);
 		if (findIter != m_CreationFunctions.end())
@@ -60,7 +66,7 @@ public:
 private:
 	GenericFactory(){};
 
-	std::unordered_map<std::string, std::function<std::unique_ptr<Base>()>> m_CreationFunctions;
+	std::unordered_map<std::string, std::function<BasePointer()>> m_CreationFunctions;
 };
 
 #endif // !__GENERIC_FACTORY__

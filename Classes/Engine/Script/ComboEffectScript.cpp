@@ -15,8 +15,7 @@
 //////////////////////////////////////////////////////////////////////////
 struct ComboEffectScript::ComboEffectImpl
 {
-	ComboEffectImpl(ComboEffectScript *comboEffect);
-	ComboEffectImpl(Actor *game_object, ComboEffectScript *comboEffect);
+	ComboEffectImpl(ComboEffectScript *visitor);
 	~ComboEffectImpl();
 
 	void registerAsEventListeners();
@@ -31,15 +30,12 @@ struct ComboEffectScript::ComboEffectImpl
 	cocos2d::Sprite * getSprite() const;
 	SequentialInvoker * getSequentialInvoker() const;
 
+	//A back pointer of the ComboEffectScript object.
+	//It will be safer to use std::weak_ptr, but it seems to be overkill by now.
 	ComboEffectScript *m_Visitor{ nullptr };
 };
 
-ComboEffectScript::ComboEffectImpl::ComboEffectImpl(ComboEffectScript *comboEffect) : m_Visitor(comboEffect)
-{
-	registerAsEventListeners();
-}
-
-ComboEffectScript::ComboEffectImpl::ComboEffectImpl(Actor *game_object, ComboEffectScript *comboEffect) : m_Visitor(comboEffect)
+ComboEffectScript::ComboEffectImpl::ComboEffectImpl(ComboEffectScript *visitor) : m_Visitor(visitor)
 {
 	registerAsEventListeners();
 }
@@ -119,11 +115,6 @@ ComboEffectScript::ComboEffectScript() : BaseScriptComponent(), pimpl(new ComboE
 
 }
 
-ComboEffectScript::ComboEffectScript(Actor *game_object) :BaseScriptComponent("ComboEffect", game_object), pimpl(new ComboEffectImpl(game_object, this))
-{
-
-}
-
 ComboEffectScript::~ComboEffectScript()
 {
 
@@ -137,6 +128,12 @@ std::unique_ptr<ComboEffectScript> ComboEffectScript::create()
 const std::string & ComboEffectScript::getType() const
 {
 	return Type;
+}
+
+bool ComboEffectScript::vInit(tinyxml2::XMLElement *xmlElement)
+{
+	//TODO: read data from xmlElement and avoid hard-coding the logic and resources.
+	return true;
 }
 
 const std::string ComboEffectScript::Type = "ComboEffectScript";

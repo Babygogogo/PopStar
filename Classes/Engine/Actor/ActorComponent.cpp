@@ -17,11 +17,11 @@ ActorComponent::~ActorComponent()
 
 }
 
-void ActorComponent::setOwner(std::weak_ptr<Actor> && actor)
+void ActorComponent::setOwner(std::weak_ptr<Actor> && owner)
 {
-	assert(!actor.expired());
+	assert(!owner.expired());
 
-	m_Actor = std::move(actor);
+	m_Actor = std::move(owner);
 }
 
 void ActorComponent::vPostInit()

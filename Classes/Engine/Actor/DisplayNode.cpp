@@ -1,28 +1,40 @@
-#include "DisplayNode.h"
-#include "Actor.h"
 #include <unordered_set>
 
-using std::unordered_set;
+#include "DisplayNode.h"
+#include "Actor.h"
 
-class DisplayNode::impl
+//////////////////////////////////////////////////////////////////////////
+//Definition of DisplayNodeImpl.
+//////////////////////////////////////////////////////////////////////////
+struct DisplayNode::DisplayNodeImpl
 {
 public:
-	impl(Actor *game_object);
-	~impl();
+	DisplayNodeImpl();
+	~DisplayNodeImpl();
 
 	DisplayNode* m_parent{ nullptr };
-	unordered_set<DisplayNode*> m_children;
+	std::unordered_set<DisplayNode*> m_children;
 };
 
-DisplayNode::impl::impl(Actor *game_object)
+DisplayNode::DisplayNodeImpl::DisplayNodeImpl()
 {
+
 }
 
-DisplayNode::impl::~impl()
+DisplayNode::DisplayNodeImpl::~DisplayNodeImpl()
 {
+
 }
 
-DisplayNode::DisplayNode(Actor *game_object) : ActorComponent("DisplayNode", game_object), pimpl(new impl(game_object))
+//////////////////////////////////////////////////////////////////////////
+//Implementation of DisplayNode.
+//////////////////////////////////////////////////////////////////////////
+DisplayNode::DisplayNode() : pimpl(new DisplayNodeImpl())
+{
+
+}
+
+DisplayNode::DisplayNode(Actor *game_object) : ActorComponent("DisplayNode", game_object), pimpl(new DisplayNodeImpl())
 {
 	if (auto parent_object = game_object->getParent())
 		parent_object->addComponent<DisplayNode>()->addChild(this);
@@ -42,6 +54,11 @@ DisplayNode::~DisplayNode()
 		pimpl->m_parent->pimpl->m_children.erase(this);
 		pimpl->m_parent = nullptr;
 	}
+}
+
+std::unique_ptr<DisplayNode> DisplayNode::create()
+{
+	return std::unique_ptr<DisplayNode>(new DisplayNode());
 }
 
 void DisplayNode::addChild(DisplayNode *child)

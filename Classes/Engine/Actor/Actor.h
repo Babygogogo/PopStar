@@ -75,9 +75,9 @@ public:
 	void postInit();
 	void update(const std::chrono::milliseconds & delteTimeMs);
 
-	void addComponent(std::unique_ptr<ActorComponent> && component);
-	ActorID getID() const;
-	const std::unique_ptr<ActorComponent> & getComponent(const std::string & type) const;
+	void addComponent(std::shared_ptr<ActorComponent> && component);
+	const ActorID & getID() const;
+	std::shared_ptr<ActorComponent> getComponent(const std::string & type) const;
 
 	//////////////////////////////////////////////////////////////////////////
 	//Stuff for organizing the Actors as trees.

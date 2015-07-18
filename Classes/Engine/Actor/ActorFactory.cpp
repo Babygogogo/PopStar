@@ -25,10 +25,10 @@ struct ActorFactory::ActorFactoryImpl
 	void updateID();
 
 	ActorID m_currentID{ 0 };
-	std::unique_ptr<GenericFactory<ActorComponent>> m_ComponentFactory;
+	std::unique_ptr<GenericFactory<std::unique_ptr<ActorComponent>>> m_ComponentFactory;
 };
 
-ActorFactory::ActorFactoryImpl::ActorFactoryImpl() : m_ComponentFactory(GenericFactory<ActorComponent>::createFactory())
+ActorFactory::ActorFactoryImpl::ActorFactoryImpl() : m_ComponentFactory(GenericFactory<std::unique_ptr<ActorComponent>>::createFactory())
 {
 	registerComponents();
 }
@@ -40,7 +40,8 @@ ActorFactory::ActorFactoryImpl::~ActorFactoryImpl()
 
 void ActorFactory::ActorFactoryImpl::registerComponents()
 {
-	m_ComponentFactory->registerType<ComboEffectScript>(ComboEffectScript::Type);
+	//Register all of the concrete components here.
+	m_ComponentFactory->registerType<ComboEffectScript>();
 }
 
 std::unique_ptr<ActorComponent> ActorFactory::ActorFactoryImpl::createComponent(tinyxml2::XMLElement * componentElement)

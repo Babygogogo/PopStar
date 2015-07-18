@@ -10,9 +10,7 @@
  * \brief The base class of every components and scripts.
  *
  * \details
- *	Components can be created only by GameObject.addComponent<ConcreteComponent>().
- *	Concrete components must have a static canUpdate boolean that indicates whether it has a update method or not.
- *	If canUpdate is true, a update method must also be provided by the concrete component.
+ *	Refactor in progress...
  *
  * \author Babygogogo
  * \date 2015.3
@@ -38,8 +36,11 @@ protected:
 	Actor *m_game_object;
 	std::weak_ptr<Actor> m_Actor;
 
-private:
-	void setOwner(std::weak_ptr<Actor> && actor);
+public:
+	//This function should really be private and only exposed to ActorFactory.
+	//It's now public so that I can refactor the components more conveniently.
+	//When the refactor is done, this function should again be private.
+	void setOwner(std::weak_ptr<Actor> && owner);
 };
 
 #endif // !__ACTOR_COMPONENT__

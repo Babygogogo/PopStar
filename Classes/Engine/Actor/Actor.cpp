@@ -47,7 +47,7 @@ public:
 	ActorID m_ID{ 0 };
 	std::string m_Type;
 	std::string m_ResourceFile;
-	std::unordered_map<std::string, std::unique_ptr<ActorComponent>> m_Components;
+	std::unordered_map<std::string, std::shared_ptr<ActorComponent>> m_Components;
 };
 
 Actor::ActorImpl::ActorImpl()
@@ -122,7 +122,6 @@ Actor * Actor::getParent() const
 	return pimpl->m_parent;
 }
 
-//std::unique_ptr<Actor> Actor::removeFromParent()
 std::shared_ptr<Actor> Actor::removeFromParent()
 {
 	if (auto parent = getParent()){
@@ -208,25 +207,23 @@ void Actor::postInit()
 		componentIter.second->vPostInit();
 }
 
-void Actor::addComponent(std::unique_ptr<ActorComponent> && component)
+void Actor::addComponent(std::shared_ptr<ActorComponent> && component)
 {
 	assert(component);
 	auto emplaceResult = pimpl->m_Components.emplace(std::make_pair(component->getType(), std::move(component)));
 	assert(emplaceResult.second);
 }
 
-const std::unique_ptr<ActorComponent> & Actor::getComponent(const std::string & type) const
+std::shared_ptr<ActorComponent> Actor::getComponent(const std::string & type) const
 {
 	auto findIter = pimpl->m_Components.find(type);
-	if (findIter == pimpl->m_Components.end()){
-		static std::unique_ptr < ActorComponent > emptyComponent;
-		return emptyComponent;
-	}
+	if (findIter == pimpl->m_Components.end())
+		return nullptr;
 
 	return findIter->second;
 }
 
-ActorID Actor::getID() const
+const ActorID & Actor::getID() const
 {
 	return pimpl->m_ID;
 }

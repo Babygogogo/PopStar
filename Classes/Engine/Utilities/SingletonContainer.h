@@ -28,16 +28,16 @@ public:
 	}
 
 	//Set an object of a given type (will replace the old one of the same type if exists).
-	template <typename Base, typename Derived,
-		typename std::enable_if_t<std::is_base_of<Base, Derived>::value>* = nullptr>
-	std::shared_ptr<Base> set(std::shared_ptr<Derived> && derived){
-		return std::static_pointer_cast<Base>(setHelper(typeid(Base), std::move(derived)));
+	template <typename BasePointer, typename Derived,
+		typename std::enable_if_t<std::is_base_of<BasePointer, Derived>::value>* = nullptr>
+	std::shared_ptr<BasePointer> set(std::shared_ptr<Derived> && derived){
+		return std::static_pointer_cast<BasePointer>(setHelper(typeid(BasePointer), std::move(derived)));
 	}
 
-	template <typename Base, typename Derived,
-		typename std::enable_if_t<std::is_base_of<Base, Derived>::value>* = nullptr>
-	std::shared_ptr<Base> set(std::unique_ptr<Derived> && derived){
-		return std::static_pointer_cast<Base>(setHelper(typeid(Base), std::move(derived)));
+	template <typename BasePointer, typename Derived,
+		typename std::enable_if_t<std::is_base_of<BasePointer, Derived>::value>* = nullptr>
+	std::shared_ptr<BasePointer> set(std::unique_ptr<Derived> && derived){
+		return std::static_pointer_cast<BasePointer>(setHelper(typeid(BasePointer), std::move(derived)));
 	}
 
 	//delete copy/move constructor and operator=.
