@@ -111,7 +111,7 @@ SequentialInvoker * ComboEffectScript::ComboEffectImpl::getSequentialInvoker() c
 //////////////////////////////////////////////////////////////////////////
 //Implementation of ComboEffect.
 //////////////////////////////////////////////////////////////////////////
-ComboEffectScript::ComboEffectScript() : BaseScriptComponent(), pimpl(new ComboEffectImpl(this))
+ComboEffectScript::ComboEffectScript() : BaseScriptComponent(), pimpl{ std::make_unique<ComboEffectImpl>(this) }
 {
 
 }
@@ -119,11 +119,6 @@ ComboEffectScript::ComboEffectScript() : BaseScriptComponent(), pimpl(new ComboE
 ComboEffectScript::~ComboEffectScript()
 {
 
-}
-
-std::unique_ptr<ComboEffectScript> ComboEffectScript::create()
-{
-	return std::unique_ptr<ComboEffectScript>(new ComboEffectScript());
 }
 
 const std::string & ComboEffectScript::getType() const

@@ -19,10 +19,8 @@
 class ComboEffectScript final : public BaseScriptComponent
 {
 public:
+	ComboEffectScript();
 	~ComboEffectScript();
-
-	//Create an instance.
-	static std::unique_ptr<ComboEffectScript> create();
 
 	//The type name of this component. Must be the same as the class name.
 	static const std::string Type;
@@ -34,8 +32,6 @@ public:
 	ComboEffectScript& operator=(ComboEffectScript&&) = delete;
 
 private:
-	ComboEffectScript();
-
 	//Override functions.
 	virtual const std::string & getType() const override;
 	virtual bool vInit(tinyxml2::XMLElement *xmlElement) override;
