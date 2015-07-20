@@ -28,7 +28,7 @@ MatrixLayer::impl::impl(Actor *game_object)
 {
 	game_object->addComponent<DisplayNode>()->initAs<cocos2d::Layer>();
 
-	m_matrix = game_object->addChild(Actor::create<StarMatrix>("StarMatrix"));
+	m_matrix = game_object->addChild(Actor::create<StarMatrix>());
 
 	//Create the ComboEffect actor. Should be replaced by calls to factory soon...
 	auto comboEffect = SingletonContainer::getInstance()->get<GameLogic>()->createActor("Actors\\ComboEffect.xml");
@@ -46,8 +46,8 @@ MatrixLayer::impl::~impl()
 
 void MatrixLayer::impl::registerAsEventListeners()
 {
-	SingletonContainer::getInstance()->get<IEventDispatcher>()->registerListener(LegacyEventType::StartLevelLabelDisappeared, this,
-		[this](LegacyEvent *){startLevel(); });
+	SingletonContainer::getInstance()->get<IEventDispatcher>()->registerListener(EventType::StartLevelLabelDisappeared, this,
+		[this](BaseEventData *){startLevel(); });
 }
 
 void MatrixLayer::impl::unregisterAsEventListeners()

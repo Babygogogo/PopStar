@@ -22,13 +22,13 @@ public:
 	bool m_IsUpdatingActors{ false };
 
 	std::map<ActorID, std::shared_ptr<Actor>> m_Actors;
-	std::unique_ptr<ActorFactory> m_ActorFactory;
+	std::unique_ptr<ActorFactory> m_ActorFactory{ std::make_unique<ActorFactory>() };
 
 	//The operations that are blocked because of the lock. They should be executed when the lock is unlocked.
 	std::list<std::function<void()>> m_CachedOperations;
 };
 
-GameLogic::GameLogicImpl::GameLogicImpl() : m_ActorFactory(ActorFactory::createFactory())
+GameLogic::GameLogicImpl::GameLogicImpl()
 {
 
 }

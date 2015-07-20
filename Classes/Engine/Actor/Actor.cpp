@@ -70,12 +70,7 @@ Actor::ActorImpl::~ActorImpl()
 //////////////////////////////////////////////////////////////////////////
 //Implementation of Actor.
 //////////////////////////////////////////////////////////////////////////
-Actor::Actor() : pimpl(new ActorImpl())
-{
-
-}
-
-Actor::Actor(std::string &&name) : pimpl(new ActorImpl())
+Actor::Actor() : pimpl{ std::make_unique<ActorImpl>() }
 {
 
 }
@@ -172,11 +167,6 @@ void Actor::update(const std::chrono::milliseconds & delteTimeMs)
 void Actor::setNeedUpdate(bool is_need)
 {
 	pimpl->m_is_need_update = is_need;
-}
-
-std::shared_ptr<Actor> Actor::create()
-{
-	return std::unique_ptr<Actor>(new Actor());
 }
 
 bool Actor::init(ActorID id, tinyxml2::XMLElement *xmlElement)

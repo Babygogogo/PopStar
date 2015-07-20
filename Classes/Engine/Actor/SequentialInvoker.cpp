@@ -6,7 +6,8 @@
 #include "../Utilities/SingletonContainer.h"
 #include "../Event/IEventDispatcher.h"
 #include "../Event/EventType.h"
-#include "../Event/LegacyEvent.h"
+#include "../Event/BaseEventData.h"
+#include "../Event/EvtDataGeneric.h"
 #include "cocos2d.h"
 
 struct SequentialInvoker::impl
@@ -33,7 +34,7 @@ struct SequentialInvoker::impl
 SequentialInvoker::impl::impl(Actor *game_object, cocos2d::Node *target_node) :m_target(game_object), m_target_node(target_node)
 {
 	SingletonContainer::getInstance()->get<IEventDispatcher>()->registerListener(
-		LegacyEventType::SequentialInvokerFinishOneAction, this, [this](LegacyEvent *e){eraseCurrent(); invoke(true); });
+		EventType::SequentialInvokerFinishOneAction, this, [this](BaseEventData *e){eraseCurrent(); invoke(true); });
 }
 
 SequentialInvoker::impl::~impl()
@@ -95,7 +96,9 @@ bool SequentialInvoker::impl::isInvoking() const
 cocos2d::CallFunc * SequentialInvoker::impl::createDispatchCallback() const
 {
 	return cocos2d::CallFunc::create([this]{if (auto& singleton_container = SingletonContainer::getInstance())
-		singleton_container->get<IEventDispatcher>()->dispatch(LegacyEvent::create(LegacyEventType::SequentialInvokerFinishOneAction), const_cast<SequentialInvoker::impl*>(this)); });
+		singleton_container->get<IEventDispatcher>()->dispatch(
+//			LegacyEvent::create(LegacyEventType::SequentialInvokerFinishOneAction), const_cast<SequentialInvoker::impl*>(this)); });
+			std::make_unique<EvtDataGeneric>(EventType::SequentialInvokerFinishOneAction), const_cast<SequentialInvoker::impl*>(this)); });
 }
 
 SequentialInvoker::SequentialInvoker(Actor *game_object) :ActorComponent("SequentialInvoker2", game_object)

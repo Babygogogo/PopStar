@@ -7,7 +7,7 @@
 #include "EventDispatcher.h"
 #include "IEventListener.h"
 #include "IEventData.h"
-#include "LegacyEvent.h"
+#include "BaseEventData.h"
 #include "EventType.h"
 #include "cocos2d.h"
 
@@ -42,11 +42,11 @@ struct EventDispatcher::EventDispatcherImpl
 	std::array<std::list<std::shared_ptr<IEventData>>, EVENT_QUEUE_COUNT> m_EventQueues;
 	std::list<std::function<void()>> m_CachedOperations;
 
-	std::unordered_map<LegacyEventType, std::unordered_multimap<void*, std::function<void(LegacyEvent*)>>> m_listeners;
-	std::unordered_map<LegacyEventType, std::unordered_multimap<void*, std::function<void(LegacyEvent*)>>> m_listeners_to_add;
+	std::unordered_map<EventType, std::unordered_multimap<void*, std::function<void(BaseEventData*)>>> m_listeners;
+	std::unordered_map<EventType, std::unordered_multimap<void*, std::function<void(BaseEventData*)>>> m_listeners_to_add;
 	std::unordered_set<void*> m_listeners_to_delete;
 
-	std::unordered_map<LegacyEventType, std::unordered_set<IEventListener*>> m_script_listeners;
+	std::unordered_map<EventType, std::unordered_set<IEventListener*>> m_script_listeners;
 };
 
 void EventDispatcher::EventDispatcherImpl::handleNewListeners()
@@ -108,7 +108,7 @@ int EventDispatcher::EventDispatcherImpl::getNextQueueIndex(const int & index) c
 void EventDispatcher::EventDispatcherImpl::dispatchEvent(const std::shared_ptr<IEventData> & eData)
 {
 	//If there is no listener listening to the event type, simply return.
-	auto listenerCallbackListIter = m_ListenerCallbackLists.find(eData->getEventType());
+	auto listenerCallbackListIter = m_ListenerCallbackLists.find(eData->getType());
 	if (listenerCallbackListIter == m_ListenerCallbackLists.end())
 		return;
 
@@ -146,7 +146,7 @@ std::unique_ptr<EventDispatcher> EventDispatcher::create()
 	return std::unique_ptr<EventDispatcher>(new EventDispatcher);
 }
 
-void EventDispatcher::registerListener(LegacyEventType event_type, void *target, std::function<void(LegacyEvent*)> callback)
+void EventDispatcher::registerListener(EventType event_type, void *target, std::function<void(BaseEventData*)> callback)
 {
 	if (pimpl->m_IsDispatchingQueue)
 		pimpl->m_listeners_to_add[event_type].emplace(std::move(target), std::move(callback));
@@ -174,7 +174,7 @@ void EventDispatcher::deleteListener(void *target)
 //		listener_set.second.erase(listener);
 //}
 
-void EventDispatcher::dispatch(std::unique_ptr<LegacyEvent> &&event, void *target /*= nullptr*/)
+void EventDispatcher::dispatch(std::unique_ptr<BaseEventData> &&event, void *target /*= nullptr*/)
 {
 	if (pimpl->m_IsDispatchingQueue)
 		throw("Recursive dispatch");
@@ -277,7 +277,7 @@ void EventDispatcher::vAbortEvent(const EventType & eType, bool allOfThisType /*
 			++eventIter;
 
 			//If we find the event to delete, remove it from the queue.
-			if ((*currentIter)->getEventType() == eType){
+			if ((*currentIter)->getType() == eType){
 				eventQueue.erase(currentIter);
 
 				//If allOfThisType is false, we simply return because there's no need to remove the other events.

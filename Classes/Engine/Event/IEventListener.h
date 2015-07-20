@@ -3,7 +3,7 @@
 
 #include <memory>
 
-class LegacyEvent;
+class BaseEventData;
 class IEventData;
 
 /*!
@@ -20,7 +20,7 @@ public:
 	~IEventListener(){};
 
 	//Callback function for events.
-	virtual void onEvent(LegacyEvent* e) = 0;
+	virtual void onEvent(BaseEventData* e) = 0;
 	virtual void onEvent(const std::shared_ptr<IEventData> & e) = 0;
 };
 

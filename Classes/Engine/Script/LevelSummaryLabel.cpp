@@ -6,7 +6,8 @@
 #include "../../Common/GameData.h"
 #include "../Event/EventDispatcher.h"
 #include "../Event/EventType.h"
-#include "../Event/LegacyEvent.h"
+#include "../Event/BaseEventData.h"
+#include "../Event/EvtDataGeneric.h"
 #include "cocos2d.h"
 
 struct LevelSummaryLabel::impl
@@ -46,8 +47,8 @@ LevelSummaryLabel::impl::~impl()
 
 void LevelSummaryLabel::impl::registerAsEventListener()
 {
-	SingletonContainer::getInstance()->get<IEventDispatcher>()->registerListener(LegacyEventType::LevelNoMoreMove, this,
-		[this](LegacyEvent*){reset(); });
+	SingletonContainer::getInstance()->get<IEventDispatcher>()->registerListener(EventType::LevelNoMoreMove, this,
+		[this](BaseEventData*){reset(); });
 
 	auto touch_listener = cocos2d::EventListenerTouchOneByOne::create();
 	touch_listener->onTouchBegan = [this](cocos2d::Touch* touch, cocos2d::Event* event)->bool{
@@ -82,7 +83,7 @@ void LevelSummaryLabel::impl::resetInvoker()
 	m_invoker->addMoveTo(0.6f, -m_label_underlying->getContentSize().width / 2, visible_size.height / 2, [this]{
 		m_label_underlying->setVisible(false);
 		SingletonContainer::getInstance()->get<GameData>()->updateScoreWithEndLevelBonus();
-		SingletonContainer::getInstance()->get<IEventDispatcher>()->dispatch(LegacyEvent::create(LegacyEventType::LevelSummaryLabelDisappeared));
+		SingletonContainer::getInstance()->get<IEventDispatcher>()->dispatch(std::make_unique<EvtDataGeneric>(EventType::LevelSummaryLabelDisappeared));
 	});
 }
 

@@ -8,8 +8,9 @@
 #include "../../Common/GameData.h"
 #include "../Event/EventDispatcher.h"
 #include "../Event/EventType.h"
-#include "../Event/LegacyEvent.h"
-#include "../Event/EventArg1.h"
+#include "../Event/BaseEventData.h"
+#include "../Event/EvtDataGeneric.h"
+#include "../Event/EvtDataPlayerExplodedStars.h"
 #include "cocos2d.h"
 #include "../Audio/Audio.h"
 
@@ -80,7 +81,7 @@ void StarMatrix::impl::addStars()
 {
 	for (auto row_num = 0; row_num < ROWS_TOTAL; ++row_num)
 		for (auto col_num = 0; col_num < COLS_TOTAL; ++col_num){
-			auto star_object = Actor::create("Star");
+			auto star_object = std::make_shared<Actor>();
 			m_stars[row_num][col_num] = m_initial_stars[row_num][col_num] = star_object->addComponent<Star>();
 			m_game_object->addChild(std::move(star_object));
 		}
@@ -106,7 +107,7 @@ void StarMatrix::impl::registerAsEventListeners()
 	};
 	cocos2d::Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, m_node_underlying);
 
-	SingletonContainer::getInstance()->get<IEventDispatcher>()->registerListener(LegacyEventType::LevelSummaryLabelDisappeared, this, [this](::LegacyEvent*){
+	SingletonContainer::getInstance()->get<IEventDispatcher>()->registerListener(EventType::LevelSummaryLabelDisappeared, this, [this](::BaseEventData*){
 		explodeAllLeftStars();
 		m_invoker->addCallback([]{SingletonContainer::getInstance()->get<GameData>()->levelEnd(); });
 		unregisterAsEventListeners();
@@ -183,7 +184,7 @@ void StarMatrix::impl::explode(Star* star)
 	if (!star)
 		return;
 
-	auto particle_effect = Actor::create("StarParticleEffect");
+	auto particle_effect = std::make_shared<Actor>();
 	particle_effect->addComponent<StarParticleEffect>()->reset(star);
 	m_game_object->addChild(std::move(particle_effect));
 
@@ -202,11 +203,12 @@ void StarMatrix::impl::explodeGroupingStars(std::list<Star*> &&group_stars)
 
 	shrink();
 	SingletonContainer::getInstance()->get<GameData>()->updateCurrentScoreWith(group_stars.size());
-	SingletonContainer::getInstance()->get<IEventDispatcher>()->dispatch(LegacyEvent::create(LegacyEventType::UserClickedStarsExploded, EventArg1::create(group_stars.size())));
+//	SingletonContainer::getInstance()->get<IEventDispatcher>()->dispatch(LegacyEvent::create(LegacyEventType::PlayerExplodedStars, EventArg1::create(group_stars.size())));
+	SingletonContainer::getInstance()->get<IEventDispatcher>()->dispatch(std::make_unique<EvtDataPlayerExplodedStars>(group_stars.size()));
 
 	if (isNoMoreMove()){
 		SingletonContainer::getInstance()->get<GameData>()->setStarsLeftNum(countStarsLeft());
-		SingletonContainer::getInstance()->get<IEventDispatcher>()->dispatch(::LegacyEvent::create(LegacyEventType::LevelNoMoreMove));
+		SingletonContainer::getInstance()->get<IEventDispatcher>()->dispatch(std::make_unique<EvtDataGeneric>(EventType::LevelNoMoreMove));
 	}
 }
 

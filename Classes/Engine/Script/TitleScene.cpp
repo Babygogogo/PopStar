@@ -50,7 +50,7 @@ TitleScene::impl::~impl()
 
 std::unique_ptr<Actor> TitleScene::impl::createDisplayObjects() const
 {
-	auto layer_object = Actor::create("TitleLayer");
+	auto layer_object = std::make_unique<Actor>();
 	layer_object->addComponent<DisplayNode>()->initAs<cocos2d::Layer>();
 
 	layer_object->addChild(createBackground());
@@ -61,7 +61,7 @@ std::unique_ptr<Actor> TitleScene::impl::createDisplayObjects() const
 
 std::unique_ptr<Actor> TitleScene::impl::createBackground() const
 {
-	auto background_object = Actor::create("TitleBackgroundSprite");
+	auto background_object = std::make_unique<Actor>();
 	auto background_sprite = background_object->addComponent<DisplayNode>()->initAs<cocos2d::Sprite>(
 		[]{return cocos2d::Sprite::create("bg_menuscene.jpg"); });
 
@@ -73,7 +73,7 @@ std::unique_ptr<Actor> TitleScene::impl::createBackground() const
 
 std::unique_ptr<Actor> TitleScene::impl::createTitleMenu() const
 {
-	auto menu_object = Actor::create("TitleMenu");
+	auto menu_object = std::make_unique<Actor>();
 	auto menu_underlying = menu_object->addComponent<DisplayNode>()->initAs<cocos2d::Menu>();
 
 	menu_object->addChild(createStartButton());
@@ -86,7 +86,7 @@ std::unique_ptr<Actor> TitleScene::impl::createTitleMenu() const
 
 std::unique_ptr<Actor> TitleScene::impl::createStartButton() const
 {
-	auto button_object = Actor::create("StartButton");
+	auto button_object = std::make_unique<Actor>();
 	button_object->addComponent<DisplayNode>()->initAs<cocos2d::MenuItemImage>(
 		[this]{return cocos2d::MenuItemImage::create("menu_start.png", "menu_start.png", createStartButtonCallback()); });
 
@@ -97,7 +97,7 @@ std::function<void(cocos2d::Ref*)> TitleScene::impl::createStartButtonCallback()
 {
 	return [](cocos2d::Ref*){
 		SingletonContainer::getInstance()->get<GameData>()->reset();
-		SingletonContainer::getInstance()->get<SceneStack>()->replaceAndRun(Actor::create<PuzzleScene>("PuzzleScene"));
+		SingletonContainer::getInstance()->get<SceneStack>()->replaceAndRun(Actor::create<PuzzleScene>());
 	};
 }
 

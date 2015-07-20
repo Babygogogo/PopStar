@@ -28,6 +28,8 @@ class ActorComponent;
  *	Game object is a container of various components and/or scripts which implement most of the logics of the real game object.
  *	Game objects, along with its components, are managed with std::unique_ptr.
  *	For most cases in the code base, a std::unique_ptr means an ownership, while a raw pointer stands for a (temporary) reference.
+ *	Now refactoring...
+ *	All the static create() methods should be removed.
  * \
  * \author	Babygogogo
  * \date	2015.03
@@ -38,6 +40,7 @@ class Actor final
 	friend class ActorFactory;
 	
 public:
+	Actor();
 	~Actor();
 
 	//////////////////////////////////////////////////////////////////////////
@@ -49,9 +52,9 @@ public:
 	//auto game_object = Actor::create();
 	//game_object->addComponent<...>();...;
 	//	No matter which approach you prefer, make sure that your code is readable.
-	static std::unique_ptr<Actor> create(std::string name, std::function<void(Actor*)> &&additional_task = nullptr)
+	static std::unique_ptr<Actor> create(std::function<void(Actor*)> &&additional_task = nullptr)
 	{
-		auto game_object = std::unique_ptr<Actor>(new Actor(std::move(name)));
+		auto game_object = std::make_unique<Actor>();
 		if (additional_task)
 			additional_task(game_object.get());
 
@@ -64,16 +67,14 @@ public:
 	template <typename Component_,
 		typename std::enable_if_t<std::is_base_of<ActorComponent, Component_>::value>* = nullptr
 	>
-	static std::unique_ptr<Actor> create(std::string name, std::function<void(Actor*)> &&additional_task = nullptr)
+	static std::unique_ptr<Actor> create(std::function<void(Actor*)> &&additional_task = nullptr)
 	{
-		auto game_object = Actor::create(std::move(name), [](Actor *game_object){game_object->addComponent<Component_>(); });
+		auto game_object = Actor::create([](Actor *game_object){game_object->addComponent<Component_>(); });
 		if (additional_task)
 			additional_task(game_object.get());
 
 		return game_object;
 	}
-
-	static std::shared_ptr<Actor> create();
 
 	bool init(ActorID id, tinyxml2::XMLElement *xmlElement);
 	void postInit();
@@ -127,10 +128,6 @@ public:
 	Actor& operator=(Actor&&) = delete;
 
 private:
-	//Constructor is private because game objects are managed using std::unique_ptr and I provide a factory method for that.
-	Actor();
-	Actor(std::string && name);
-
 	//Only the current scene owned by the SceneStack, and the (indirect) children of that scene, will be "update" once a frame.
 	void update(const time_t &time_ms);
 

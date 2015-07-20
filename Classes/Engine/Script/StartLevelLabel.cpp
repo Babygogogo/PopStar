@@ -6,7 +6,8 @@
 #include "../../Common/GameData.h"
 #include "../Event/EventDispatcher.h"
 #include "../Event/EventType.h"
-#include "../Event/LegacyEvent.h"
+#include "../Event/BaseEventData.h"
+#include "../Event/EvtDataGeneric.h"
 #include "cocos2d.h"
 
 struct StartLevelLabel::impl
@@ -47,8 +48,8 @@ StartLevelLabel::impl::~impl()
 
 void StartLevelLabel::impl::registerAsEventListener()
 {
-	SingletonContainer::getInstance()->get<IEventDispatcher>()->registerListener(LegacyEventType::LevelStarted, this,
-		[this](LegacyEvent *){reset(); });
+	SingletonContainer::getInstance()->get<IEventDispatcher>()->registerListener(EventType::LevelStarted, this,
+		[this](BaseEventData *){reset(); });
 
 	auto touch_listener = cocos2d::EventListenerTouchOneByOne::create();
 	touch_listener->onTouchBegan = [this](cocos2d::Touch* touch, cocos2d::Event* event)->bool{
@@ -82,7 +83,7 @@ void StartLevelLabel::impl::resetInvoker()
 	m_invoker->addMoveTo(0.6f, visible_size.width / 2, visible_size.height / 2);
 	m_invoker->addMoveTo(0.6f, -m_label_underlying->getContentSize().width / 2, visible_size.height / 2, [this]{
 		m_label_underlying->setVisible(false);
-		SingletonContainer::getInstance()->get<IEventDispatcher>()->dispatch(LegacyEvent::create(LegacyEventType::StartLevelLabelDisappeared));
+		SingletonContainer::getInstance()->get<IEventDispatcher>()->dispatch(std::make_unique<EvtDataGeneric>(EventType::StartLevelLabelDisappeared));
 	});
 }
 

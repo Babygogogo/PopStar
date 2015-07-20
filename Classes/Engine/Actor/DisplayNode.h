@@ -53,7 +53,6 @@ private:
 	DisplayNode(Actor *game_object);
 
 	void addChild(DisplayNode *child);
-	void attachToParent();
 	void removeFromParent();
 
 	//Get the internal cocos2d::Node. 

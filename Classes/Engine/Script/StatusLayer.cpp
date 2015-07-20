@@ -18,11 +18,11 @@ StatusLayer::impl::impl(Actor *game_object)
 {
 	game_object->addComponent<DisplayNode>()->initAs<cocos2d::Layer>();
 
-	game_object->addChild(Actor::create<StatusBar>("StatusBar"));
-	game_object->addChild(Actor::create<StartLevelLabel>("StartLevelLabel"));
-	game_object->addChild(Actor::create<GetScoreLabel>("GetScoreLabel"));
-	game_object->addChild(Actor::create<LevelSummaryLabel>("LevelSummaryLabel"));
-	game_object->addChild(Actor::create<GameOverLabel>("GameOverLabel"));
+	game_object->addChild(Actor::create<StatusBar>());
+	game_object->addChild(Actor::create<StartLevelLabel>());
+	game_object->addChild(Actor::create<GetScoreLabel>());
+	game_object->addChild(Actor::create<LevelSummaryLabel>());
+	game_object->addChild(Actor::create<GameOverLabel>());
 }
 
 StatusLayer::impl::~impl()

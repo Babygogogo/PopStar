@@ -4,9 +4,9 @@
 #include "../Actor/SequentialInvoker.h"
 #include "../Utilities/SingletonContainer.h"
 #include "../Event/EventDispatcher.h"
-#include "../Event/LegacyEvent.h"
+#include "../Event/BaseEventData.h"
 #include "../Event/EventType.h"
-#include "../Event/EventArg1.h"
+#include "../Event/EvtDataPlayerExplodedStars.h"
 #include "cocos2d.h"
 #include "../Audio/Audio.h"
 
@@ -47,8 +47,9 @@ ComboEffectScript::ComboEffectImpl::~ComboEffectImpl()
 
 void ComboEffectScript::ComboEffectImpl::registerAsEventListeners()
 {
-	SingletonContainer::getInstance()->get<IEventDispatcher>()->registerListener(LegacyEventType::UserClickedStarsExploded, this,
-		[this](LegacyEvent *e){show(static_cast<EventArg1*>(e->getArg())->getInt()); });
+	SingletonContainer::getInstance()->get<IEventDispatcher>()->registerListener(EventType::PlayerExplodedStars, this,
+		//[this](LegacyEvent *e){show(static_cast<EventArg1*>(e->getArg())->getInt()); });
+		[this](BaseEventData *e){show(dynamic_cast<EvtDataPlayerExplodedStars*>(e)->getExplodedStarsCount()); });
 }
 
 void ComboEffectScript::ComboEffectImpl::unregisterAsEventListeners()

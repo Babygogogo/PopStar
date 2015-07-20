@@ -85,7 +85,7 @@ void ActorFactory::ActorFactoryImpl::updateID()
 //////////////////////////////////////////////////////////////////////////
 //Implementation of ActorFactory.
 //////////////////////////////////////////////////////////////////////////
-ActorFactory::ActorFactory() : pimpl(new ActorFactoryImpl())
+ActorFactory::ActorFactory() : pimpl{ std::make_unique<ActorFactoryImpl>() }
 {
 
 }
@@ -93,11 +93,6 @@ ActorFactory::ActorFactory() : pimpl(new ActorFactoryImpl())
 ActorFactory::~ActorFactory()
 {
 
-}
-
-std::unique_ptr<ActorFactory> ActorFactory::createFactory()
-{
-	return std::unique_ptr<ActorFactory>(new ActorFactory());
 }
 
 std::shared_ptr<Actor> ActorFactory::createActor(const char *resourceFile, tinyxml2::XMLElement *overrides /*= nullptr*/)
@@ -112,7 +107,7 @@ std::shared_ptr<Actor> ActorFactory::createActor(const char *resourceFile, tinyx
 	}
 
 	//Create and init the actor. If failed, log and return nullptr.
-	auto actor = Actor::create();
+	auto actor = std::make_shared<Actor>();
 	if (!actor || !actor->init(pimpl->getNextID(), rootElement)){
 		cocos2d::log("ActorFactory::createActor failed to create or init an actor.");
 		return nullptr;

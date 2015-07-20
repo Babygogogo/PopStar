@@ -21,10 +21,8 @@ class Actor;
 class ActorFactory
 {
 public:
+	ActorFactory();
 	~ActorFactory();
-
-	//Create the factory itself.
-	static std::unique_ptr<ActorFactory> createFactory();
 
 	//Create an Actor. The resourceFile is the file name of the corresponding .xml file.
 	//modifyActor() will be called after the creation of the Actor.
@@ -41,8 +39,6 @@ public:
 	ActorFactory& operator=(ActorFactory&&) = delete;
 	
 private:
-	ActorFactory();
-
 	//Implementation stuff.
 	struct ActorFactoryImpl;
 	std::unique_ptr<ActorFactoryImpl> pimpl;

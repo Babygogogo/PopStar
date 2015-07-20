@@ -86,16 +86,6 @@ DisplayNode * DisplayNode::getParent() const
 	return pimpl->m_parent;
 }
 
-void DisplayNode::attachToParent()
-{
-	if (auto parent = getParent()){
-		if (parent->pimpl->m_Node)
-			parent->pimpl->m_Node->addChild(this->pimpl->m_Node);
-		else
-			parent->initAs<cocos2d::Node>()->addChild(this->pimpl->m_Node);
-	}
-}
-
 void DisplayNode::removeFromParent()
 {
 	if (!pimpl->m_parent || !pimpl->m_Node)
@@ -128,7 +118,14 @@ void * DisplayNode::initAsHelper(std::function<void*()> && creatorFunction)
 
 	pimpl->m_Node = static_cast<cocos2d::Node*>(creatorFunction());
 	pimpl->m_Node->retain();
-	attachToParent();
+	
+	//attach to parent
+	if (auto parent = getParent()){
+		if (parent->pimpl->m_Node)
+			parent->pimpl->m_Node->addChild(this->pimpl->m_Node);
+		else
+			parent->initAs<cocos2d::Node>()->addChild(this->pimpl->m_Node);
+	}
 
 	return pimpl->m_Node;
 }

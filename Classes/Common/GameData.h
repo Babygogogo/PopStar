@@ -1,15 +1,25 @@
 #ifndef __GAME_DATA__
 #define __GAME_DATA__
 
-#include "Object.h"
-
 #include <memory>
 
-class GameData final : public Object
+/*!
+ * \class GameData
+ *
+ * \brief The global game data.
+ *
+ *	TODO: This class should be replace by a script.
+ *
+ * \author Babygogogo
+ * \date 2015.7
+ */
+class GameData final
 {
 public:
+	GameData();
 	~GameData();
 
+	//This should be removed.
 	static std::unique_ptr<GameData> create();
 
 	void levelEnd();
@@ -37,10 +47,8 @@ public:
 	GameData& operator=(GameData&&) = delete;
 
 private:
-	GameData();
-
-	struct impl;
-	std::unique_ptr<impl> pimpl;
+	struct GameDataImpl;
+	std::unique_ptr<GameDataImpl> pimpl;
 };
 
 #endif

@@ -1,8 +1,8 @@
 #ifndef __ACTOR_COMPONENT__
 #define __ACTOR_COMPONENT__
 
-#include <string>
 #include <memory>
+#include <string>
 
 //Forward declaration.
 namespace tinyxml2

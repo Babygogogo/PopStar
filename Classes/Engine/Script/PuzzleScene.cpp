@@ -19,8 +19,8 @@ PuzzleScene::impl::impl(Actor *game_object)
 	game_object->addComponent<DisplayNode>()->initAs<cocos2d::Scene>();
 
 	game_object->addChild(createBackground());
-	game_object->addChild(Actor::create<MatrixLayer>("MatrixLayer"));
-	game_object->addChild(Actor::create<StatusLayer>("PuzzleStatusLayer"));
+	game_object->addChild(Actor::create<MatrixLayer>());
+	game_object->addChild(Actor::create<StatusLayer>());
 
 	Audio::getInstance()->playBGM();
 }
@@ -32,7 +32,7 @@ PuzzleScene::impl::~impl()
 
 std::unique_ptr<Actor> PuzzleScene::impl::createBackground()
 {
-	auto background_object = Actor::create("PuzzleBackgroundSprite");
+	auto background_object = std::make_unique<Actor>();
 	auto background_sprite = background_object->addComponent<DisplayNode>()->initAs<cocos2d::Sprite>([]{return cocos2d::Sprite::create("bg_mainscene.jpg"); });
 
 	auto visible_size = cocos2d::Director::getInstance()->getVisibleSize();

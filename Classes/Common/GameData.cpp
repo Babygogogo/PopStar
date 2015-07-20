@@ -3,14 +3,18 @@
 #include "../Engine/Utilities/SingletonContainer.h"
 #include "../Engine/Event/EventDispatcher.h"
 #include "../Engine/Event/EventType.h"
-#include "../Engine/Event/LegacyEvent.h"
+#include "../Engine/Event/BaseEventData.h"
+#include "../Engine/Event/EvtDataGeneric.h"
 
 #include <array>
 
-struct GameData::impl
+//////////////////////////////////////////////////////////////////////////
+//Definition of GameDataImpl.
+//////////////////////////////////////////////////////////////////////////
+struct GameData::GameDataImpl
 {
-	impl();
-	~impl();
+	GameDataImpl();
+	~GameDataImpl();
 
 	void setCurrentScore(int score);
 	void setHighScore(int score);
@@ -28,42 +32,42 @@ struct GameData::impl
 	int m_stars_left_num{ 0 };
 };
 
-GameData::impl::impl()
+GameData::GameDataImpl::GameDataImpl()
 {
 
 }
 
-GameData::impl::~impl()
+GameData::GameDataImpl::~GameDataImpl()
 {
 
 }
 
-void GameData::impl::setCurrentScore(int score)
+void GameData::GameDataImpl::setCurrentScore(int score)
 {
 	if (score != m_current_score){
 		m_current_score = score;
-		SingletonContainer::getInstance()->get<IEventDispatcher>()->dispatch(LegacyEvent::create(LegacyEventType::CurrentScoreValueUpdated));
+		SingletonContainer::getInstance()->get<IEventDispatcher>()->dispatch(std::make_unique<EvtDataGeneric>(EventType::CurrentScoreValueUpdated));
 
 		setHighScore(m_current_score);
 	}
 }
 
-void GameData::impl::setHighScore(int score)
+void GameData::GameDataImpl::setHighScore(int score)
 {
 	if (m_high_score < score){
 		m_high_score = score;
 		saveHighScore();
 
-		SingletonContainer::getInstance()->get<IEventDispatcher>()->dispatch(LegacyEvent::create(LegacyEventType::HighScoreValueUpdated));
+		SingletonContainer::getInstance()->get<IEventDispatcher>()->dispatch(std::make_unique<EvtDataGeneric>(EventType::HighScoreValueUpdated));
 	}
 }
 
-void GameData::impl::saveHighScore()
+void GameData::GameDataImpl::saveHighScore()
 {
 	cocos2d::UserDefault::getInstance()->setIntegerForKey("highestScore", m_high_score);
 }
 
-int GameData::impl::getScoreOf(int num_of_exploded_stars)
+int GameData::GameDataImpl::getScoreOf(int num_of_exploded_stars)
 {
 	if (num_of_exploded_stars <= 1)
 		throw("getScoreOf(exploded_stars_num) with a num <= 1 in GameData.");
@@ -71,7 +75,7 @@ int GameData::impl::getScoreOf(int num_of_exploded_stars)
 	return num_of_exploded_stars * num_of_exploded_stars * 5;
 }
 
-void GameData::impl::setCurrentLevel(int level)
+void GameData::GameDataImpl::setCurrentLevel(int level)
 {
 	if (level < 0)
 		throw("setCurrentLevel with a negative num in GameData.");
@@ -79,12 +83,12 @@ void GameData::impl::setCurrentLevel(int level)
 	m_current_level = level;
 	m_previous_exploded_stars_num = 0;
 
-	SingletonContainer::getInstance()->get<IEventDispatcher>()->dispatch(LegacyEvent::create(LegacyEventType::LevelValueUpdated));
+	SingletonContainer::getInstance()->get<IEventDispatcher>()->dispatch(std::make_unique<EvtDataGeneric>(EventType::LevelValueUpdated));
 
 	updateTargetScoreByCurrentLevel();
 }
 
-void GameData::impl::updateTargetScoreByCurrentLevel()
+void GameData::GameDataImpl::updateTargetScoreByCurrentLevel()
 {
 	if (m_current_level <= 0)
 		throw("updateTargetScoreByCurrentLevel when current_level <= 0");
@@ -101,11 +105,14 @@ void GameData::impl::updateTargetScoreByCurrentLevel()
 
 	if (score != m_target_score){
 		m_target_score = score;
-		SingletonContainer::getInstance()->get<IEventDispatcher>()->dispatch(LegacyEvent::create(LegacyEventType::TargetScoreValueUpdated));
+		SingletonContainer::getInstance()->get<IEventDispatcher>()->dispatch(std::make_unique<EvtDataGeneric>(EventType::TargetScoreValueUpdated));
 	}
 }
 
-GameData::GameData() :Object("GameData"), pimpl(new impl)
+//////////////////////////////////////////////////////////////////////////
+//Implementation of GameData.
+//////////////////////////////////////////////////////////////////////////
+GameData::GameData() : pimpl{ std::make_unique<GameDataImpl>() }
 {
 	reset();
 }
@@ -128,10 +135,10 @@ int GameData::getEndLevelBonus() const
 void GameData::levelEnd()
 {
 	if (pimpl->m_current_score < pimpl->m_target_score)
-		SingletonContainer::getInstance()->get<IEventDispatcher>()->dispatch(::LegacyEvent::create(LegacyEventType::GameOver));
+		SingletonContainer::getInstance()->get<IEventDispatcher>()->dispatch(std::make_unique<EvtDataGeneric>(EventType::GameOver));
 	else{
 		pimpl->setCurrentLevel(pimpl->m_current_level + 1);
-		SingletonContainer::getInstance()->get<IEventDispatcher>()->dispatch(::LegacyEvent::create(LegacyEventType::LevelStarted));
+		SingletonContainer::getInstance()->get<IEventDispatcher>()->dispatch(std::make_unique<EvtDataGeneric>(EventType::LevelStarted));
 	}
 }
 
@@ -153,7 +160,7 @@ void GameData::updateCurrentScoreWith(int num_of_exploded_stars)
 	pimpl->m_previous_exploded_stars_num = num_of_exploded_stars;
 	pimpl->setCurrentScore(pimpl->m_current_score + pimpl->getScoreOf(num_of_exploded_stars));
 
-	SingletonContainer::getInstance()->get<IEventDispatcher>()->dispatch(LegacyEvent::create(LegacyEventType::CurrentScoreIncreased));
+	SingletonContainer::getInstance()->get<IEventDispatcher>()->dispatch(std::make_unique<EvtDataGeneric>(EventType::CurrentScoreIncreased));
 }
 
 int GameData::getStarsLeftNum() const

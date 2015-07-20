@@ -7,8 +7,8 @@
 #include "IEventDispatcher.h"
 
 class IEventListener;
-class LegacyEvent;
-enum class LegacyEventType;
+class BaseEventData;
+enum class EventType;
 
 class EventDispatcher final : public IEventDispatcher
 {
@@ -17,9 +17,9 @@ public:
 
 	static std::unique_ptr<EventDispatcher> create();
 
-	virtual void registerListener(LegacyEventType event_type, void *target, std::function<void(LegacyEvent*)> callback) override;
+	virtual void registerListener(EventType event_type, void *target, std::function<void(BaseEventData*)> callback) override;
 	virtual void deleteListener(void *target) override;
-	virtual void dispatch(std::unique_ptr<LegacyEvent> &&event, void *target = nullptr) override;
+	virtual void dispatch(std::unique_ptr<BaseEventData> &&event, void *target = nullptr) override;
 
 	//Disable copy/move constructor and operator=.
 	EventDispatcher(const EventDispatcher&) = delete;

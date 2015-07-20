@@ -1,15 +1,15 @@
 #ifndef __EVENT_TYPE__
 #define __EVENT_TYPE__
 
-using EventType = unsigned long;
-
-enum class LegacyEventType
+enum class EventType
 {
+	InvalidEventType,
+
 	SequentialInvokerFinishOneAction,
 
 	CurrentScoreIncreased,
 
-	UserClickedStarsExploded,
+	PlayerExplodedStars,
 
 	LevelNoMoreMove,
 
