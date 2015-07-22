@@ -8,6 +8,7 @@
 #include "Common/GameData.h"
 #include "Engine/Event/EventDispatcher.h"
 #include "Engine/Script/TitleScene.h"
+#include "Engine/Actor/Actor.h"
 
 USING_NS_CC;
 
@@ -41,7 +42,7 @@ void AppDelegate::AppDelegateImpl::initGame()
 	SingletonContainer::getInstance()->set<IEventDispatcher>(::EventDispatcher::create());
 	SingletonContainer::getInstance()->set<GameData>(GameData::create());
 	SingletonContainer::getInstance()->set<GameLogic>(GameLogic::create());
-	SingletonContainer::getInstance()->set<SceneStack>(SceneStack::create())->pushAndRun(Actor::create<TitleScene>());
+	SingletonContainer::getInstance()->set<SceneStack>(std::make_unique<SceneStack>())->pushAndRun(Actor::create<TitleScene>());
 }
 
 //////////////////////////////////////////////////////////////////////////

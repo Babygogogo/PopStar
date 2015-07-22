@@ -1,9 +1,9 @@
-#ifndef __BW_SCENE_STACK__
-#define __BW_SCENE_STACK__
+#ifndef __SCENE_STACK__
+#define __SCENE_STACK__
 
 #include <memory>
-#include "../../Common/Object.h"
-#include "../Actor/Actor.h"
+
+class Actor;
 
 /*!
  * \class	SceneStack
@@ -18,12 +18,12 @@
  * \author	Babygogogo
  * \date	2015.3
  */
-class SceneStack final : public Object
+class SceneStack final
 {
 public:
+	//You can't create two or more SceneStacks, otherwise an assertion will be triggered.
+	SceneStack();
 	~SceneStack();
-
-	static std::unique_ptr<SceneStack> create();
 
 	//////////////////////////////////////////////////////////////////////////
 	//Stuff to control the stack.
@@ -40,19 +40,15 @@ public:
 	//The current scene is also the top scene in the stack.
 	Actor* getCurrentScene();
 
-	//////////////////////////////////////////////////////////////////////////
 	//Disable copy/move constructor and operator=.
-	//////////////////////////////////////////////////////////////////////////
 	SceneStack(const SceneStack&) = delete;
 	SceneStack(SceneStack&&) = delete;
 	SceneStack& operator=(const SceneStack&) = delete;
 	SceneStack& operator=(SceneStack&&) = delete;
 
 private:
-	SceneStack();
-
-	struct impl;
-	std::unique_ptr<impl> pimpl;
+	struct SceneStackImpl;
+	std::unique_ptr<SceneStackImpl> pimpl;
 };
 
-#endif
+#endif // !__SCENE_STACK__

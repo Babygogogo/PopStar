@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -23,7 +23,7 @@
     <PlatformToolset Condition="'$(VisualStudioVersion)' == '10.0'">v100</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)' == '11.0'">v110</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)' == '11.0' and exists('$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v7.1A')">v110_xp</PlatformToolset>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -137,7 +137,6 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
   <ItemGroup>
     <ClCompile Include="..\Classes\AppDelegate.cpp" />
     <ClCompile Include="..\Classes\Common\GameData.cpp" />
-    <ClCompile Include="..\Classes\Common\Object.cpp" />
     <ClCompile Include="..\Classes\Engine\Actor\ActorComponent.cpp" />
     <ClCompile Include="..\Classes\Engine\Actor\ActorFactory.cpp" />
     <ClCompile Include="..\Classes\Engine\Actor\BaseScriptComponent.cpp" />
@@ -172,7 +171,6 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClInclude Include="..\Classes\AppDelegate.h" />
     <ClInclude Include="..\Classes\Common\GameData.h" />
     <ClInclude Include="..\Classes\Common\IUpdateable.h" />
-    <ClInclude Include="..\Classes\Common\Object.h" />
     <ClInclude Include="..\Classes\Engine\Actor\ActorComponent.h" />
     <ClInclude Include="..\Classes\Engine\Actor\ActorFactory.h" />
     <ClInclude Include="..\Classes\Engine\Actor\ActorID.h" />

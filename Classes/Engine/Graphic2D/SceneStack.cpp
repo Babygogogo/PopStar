@@ -1,14 +1,22 @@
 #include <vector>
+#include <cassert>
+
 #include "SceneStack.h"
 #include "../Utilities/SingletonContainer.h"
 #include "../MainLoop/Timer.h"
+#include "../Actor/Actor.h"
 #include "../Actor/DisplayNode.h"
 #include "cocos2d.h"
 
-struct SceneStack::impl
+//////////////////////////////////////////////////////////////////////////
+//Definition of SceneStackImpl.
+//////////////////////////////////////////////////////////////////////////
+struct SceneStack::SceneStackImpl
 {
-	impl();
-	~impl();
+	SceneStackImpl();
+	~SceneStackImpl();
+
+	static int InstanceCount;
 
 	void validate(Actor* scene);
 	void switchUpdate(Actor *scene, bool enable = true);
@@ -22,17 +30,19 @@ struct SceneStack::impl
 	std::vector<std::unique_ptr<Actor>> m_scenes;
 };
 
-SceneStack::impl::impl()
+int SceneStack::SceneStackImpl::InstanceCount{ 0 };
+
+SceneStack::SceneStackImpl::SceneStackImpl()
+{
+	assert(InstanceCount++ == 0);
+}
+
+SceneStack::SceneStackImpl::~SceneStackImpl()
 {
 
 }
 
-SceneStack::impl::~impl()
-{
-
-}
-
-void SceneStack::impl::switchUpdate(Actor *scene, bool enable /*= true*/)
+void SceneStack::SceneStackImpl::switchUpdate(Actor *scene, bool enable /*= true*/)
 {
 	if (enable)
 		SingletonContainer::getInstance()->get<Timer>()->registerUpdateObserver(scene);
@@ -40,7 +50,7 @@ void SceneStack::impl::switchUpdate(Actor *scene, bool enable /*= true*/)
 		SingletonContainer::getInstance()->get<Timer>()->removeUpdateObserver(scene);
 }
 
-void SceneStack::impl::pushSceneToDirector(Actor *scene)
+void SceneStack::SceneStackImpl::pushSceneToDirector(Actor *scene)
 {
 	auto director = cocos2d::Director::getInstance();
 	if (director->getRunningScene())
@@ -49,7 +59,7 @@ void SceneStack::impl::pushSceneToDirector(Actor *scene)
 		director->runWithScene(scene->getComponent<DisplayNode>()->getAs<cocos2d::Scene>());
 }
 
-Actor * SceneStack::impl::topScene()
+Actor * SceneStack::SceneStackImpl::topScene()
 {
 	if (m_scenes.empty())
 		throw ("Getting topScene while there are no scenes.");
@@ -57,7 +67,7 @@ Actor * SceneStack::impl::topScene()
 	return m_scenes.back().get();
 }
 
-void SceneStack::impl::validate(Actor* scene)
+void SceneStack::SceneStackImpl::validate(Actor* scene)
 {
 	if (!scene || !scene->getComponent<DisplayNode>() || !scene->getComponent<DisplayNode>()->getAs<cocos2d::Scene>())
 		throw("pushScene with a non-scene");
@@ -65,13 +75,13 @@ void SceneStack::impl::validate(Actor* scene)
 		throw("pushScene with a game object that has a parent");
 }
 
-void SceneStack::impl::push(std::unique_ptr<Actor> &&scene)
+void SceneStack::SceneStackImpl::push(std::unique_ptr<Actor> &&scene)
 {
 	m_scenes.emplace_back(std::move(scene));
 	switchUpdate(topScene());
 }
 
-std::unique_ptr<Actor> SceneStack::impl::pop()
+std::unique_ptr<Actor> SceneStack::SceneStackImpl::pop()
 {
 	switchUpdate(topScene(), false);
 	auto ownership = std::unique_ptr<Actor>(std::move(m_scenes.back()));
@@ -80,8 +90,10 @@ std::unique_ptr<Actor> SceneStack::impl::pop()
 	return ownership;
 }
 
-
-SceneStack::SceneStack() :Object("SceneStack"), pimpl(new impl)
+//////////////////////////////////////////////////////////////////////////
+//Implementation of SceneStack.
+//////////////////////////////////////////////////////////////////////////
+SceneStack::SceneStack() : pimpl{ std::make_unique<SceneStackImpl>() }
 {
 
 }
@@ -89,11 +101,6 @@ SceneStack::SceneStack() :Object("SceneStack"), pimpl(new impl)
 SceneStack::~SceneStack()
 {
 
-}
-
-std::unique_ptr<SceneStack> SceneStack::create()
-{
-	return std::unique_ptr<SceneStack>(new SceneStack());
 }
 
 Actor* SceneStack::pushAndRun(std::unique_ptr<Actor> &&scene)
