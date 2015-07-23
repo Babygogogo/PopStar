@@ -20,7 +20,7 @@ struct MatrixLayer::impl
 
 	void startLevel();
 
-//	Actor *m_matrix{ nullptr };
+	//	Actor *m_matrix{ nullptr };
 	std::weak_ptr<Actor> m_matrix;
 };
 
@@ -28,7 +28,9 @@ MatrixLayer::impl::impl(Actor *game_object)
 {
 	game_object->addComponent<DisplayNode>()->initAs<cocos2d::Layer>();
 
-	m_matrix = game_object->addChild(Actor::create<StarMatrix>());
+	auto starMatrixActor = std::make_unique<Actor>();
+	starMatrixActor->addComponent<StarMatrix>();
+	m_matrix = game_object->addChild(std::move(starMatrixActor));
 
 	//Create the ComboEffect actor. Should be replaced by calls to factory soon...
 	auto comboEffect = SingletonContainer::getInstance()->get<GameLogic>()->createActor("Actors\\ComboEffect.xml");
@@ -65,10 +67,8 @@ void MatrixLayer::impl::startLevel()
 
 MatrixLayer::MatrixLayer(Actor *game_object) :BaseScriptComponent("MatrixLayer", game_object), pimpl(new impl(game_object))
 {
-
 }
 
 MatrixLayer::~MatrixLayer()
 {
-
 }

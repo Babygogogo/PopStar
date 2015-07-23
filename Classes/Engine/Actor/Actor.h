@@ -38,43 +38,10 @@ class Actor final
 {
 	friend class Timer;
 	friend class ActorFactory;
-	
+
 public:
 	Actor();
 	~Actor();
-
-	//////////////////////////////////////////////////////////////////////////
-	//Factory method.
-	//////////////////////////////////////////////////////////////////////////
-	//	You can supply the additional_task with a lambda, making the caller code more compact:
-	//auto game_object = Actor::create([](Actor *obj){obj->addComponent<...>();...;});
-	//	otherwise (the code below does the same thing as above):
-	//auto game_object = Actor::create();
-	//game_object->addComponent<...>();...;
-	//	No matter which approach you prefer, make sure that your code is readable.
-	static std::unique_ptr<Actor> create(std::function<void(Actor*)> &&additional_task = nullptr)
-	{
-		auto game_object = std::make_unique<Actor>();
-		if (additional_task)
-			additional_task(game_object.get());
-
-		return game_object;
-	}
-
-	//	You can also supply a concrete Component type as the template argument:
-	//auto game_object = Actor::create<...>();
-	//The according component will be added to the game object.
-	template <typename Component_,
-		typename std::enable_if_t<std::is_base_of<ActorComponent, Component_>::value>* = nullptr
-	>
-	static std::unique_ptr<Actor> create(std::function<void(Actor*)> &&additional_task = nullptr)
-	{
-		auto game_object = Actor::create([](Actor *game_object){game_object->addComponent<Component_>(); });
-		if (additional_task)
-			additional_task(game_object.get());
-
-		return game_object;
-	}
 
 	bool init(ActorID id, tinyxml2::XMLElement *xmlElement);
 	void postInit();
@@ -87,14 +54,14 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 	//Stuff for organizing the Actors as trees.
 	//////////////////////////////////////////////////////////////////////////
-//	Actor *addChild(std::unique_ptr<Actor>&& child);
+	//	Actor *addChild(std::unique_ptr<Actor>&& child);
 	std::weak_ptr<Actor> addChild(std::shared_ptr<Actor> && child);
 	Actor *getParent() const;
 	bool isAncestorOf(const Actor *child) const;
 
 	//If the game object has no parent, nothing happens, and nullptr is returned.
 	//Otherwise, the ownership is returned. Keep it, or the object along with its children will be destroyed.
-//	std::unique_ptr<Actor> removeFromParent();
+	//	std::unique_ptr<Actor> removeFromParent();
 	std::shared_ptr<Actor> removeFromParent();
 
 	//////////////////////////////////////////////////////////////////////////
@@ -110,7 +77,7 @@ public:
 		return addComponentHelper<T>();
 	};
 
-	template<typename T>	
+	template<typename T>
 	T* getComponent() const	//T should derive from Component
 	{
 		auto component_iter = m_components.find(typeid(T));

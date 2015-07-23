@@ -4,6 +4,7 @@
 #include "DisplayNode.h"
 #include "Actor.h"
 #include "cocos2d.h"
+#include "../../cocos2d/external/tinyxml2/tinyxml2.h"
 
 //////////////////////////////////////////////////////////////////////////
 //Definition of DisplayNodeImpl.
@@ -22,12 +23,10 @@ public:
 
 DisplayNode::DisplayNodeImpl::DisplayNodeImpl()
 {
-
 }
 
 DisplayNode::DisplayNodeImpl::~DisplayNodeImpl()
 {
-
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -35,7 +34,6 @@ DisplayNode::DisplayNodeImpl::~DisplayNodeImpl()
 //////////////////////////////////////////////////////////////////////////
 DisplayNode::DisplayNode() : pimpl(new DisplayNodeImpl())
 {
-
 }
 
 DisplayNode::DisplayNode(Actor *game_object) : ActorComponent("DisplayNode", game_object), pimpl(new DisplayNodeImpl())
@@ -103,6 +101,20 @@ const std::string & DisplayNode::getType() const
 
 bool DisplayNode::vInit(tinyxml2::XMLElement *xmlElement)
 {
+	//Get the type of node from xmlElement.
+	auto nodeType = xmlElement->Attribute("type");
+	
+	//Create the node as the type.
+	//#TODO: Complete the if statements.
+	if (strcmp(nodeType, "Sprite") == 0)
+		pimpl->m_Node = cocos2d::Sprite::create();
+	else if (strcmp(nodeType, "Label") == 0)
+		pimpl->m_Node = cocos2d::Label::create();
+
+	//Ensure that the node is created, then retain it.
+	assert(pimpl->m_Node);
+	pimpl->m_Node->retain();
+
 	return true;
 }
 
@@ -118,7 +130,7 @@ void * DisplayNode::initAsHelper(std::function<void*()> && creatorFunction)
 
 	pimpl->m_Node = static_cast<cocos2d::Node*>(creatorFunction());
 	pimpl->m_Node->retain();
-	
+
 	//attach to parent
 	if (auto parent = getParent()){
 		if (parent->pimpl->m_Node)

@@ -11,6 +11,7 @@ class DisplayNode final : public ActorComponent
 	friend class Actor;
 
 public:
+	DisplayNode();
 	~DisplayNode();
 
 	//Create an instance.
@@ -49,7 +50,6 @@ public:
 	DisplayNode& operator=(DisplayNode&&) = delete;
 
 private:
-	DisplayNode();
 	DisplayNode(Actor *game_object);
 
 	void addChild(DisplayNode *child);

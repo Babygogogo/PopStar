@@ -45,7 +45,6 @@ TitleScene::impl::impl(Actor *game_object)
 
 TitleScene::impl::~impl()
 {
-
 }
 
 std::unique_ptr<Actor> TitleScene::impl::createDisplayObjects() const
@@ -97,16 +96,17 @@ std::function<void(cocos2d::Ref*)> TitleScene::impl::createStartButtonCallback()
 {
 	return [](cocos2d::Ref*){
 		SingletonContainer::getInstance()->get<GameData>()->reset();
-		SingletonContainer::getInstance()->get<SceneStack>()->replaceAndRun(Actor::create<PuzzleScene>());
+
+		auto puzzleSceneActor = std::make_unique<Actor>();
+		puzzleSceneActor->addComponent<PuzzleScene>();
+		SingletonContainer::getInstance()->get<SceneStack>()->replaceAndRun(std::move(puzzleSceneActor));
 	};
 }
 
 TitleScene::TitleScene(Actor* game_object) :BaseScriptComponent("TitleScene", game_object), pimpl(new impl(game_object))
 {
-
 }
 
 TitleScene::~TitleScene()
 {
-
 }

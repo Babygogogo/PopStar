@@ -2,6 +2,7 @@
 #include "Actor.h"
 #include "ActorID.h"
 #include "ActorComponent.h"
+#include "DisplayNode.h"
 #include "../Script/ComboEffectScript.h"
 #include "../Utilities/GenericFactory.h"
 #include "cocos2d.h"
@@ -36,12 +37,12 @@ ActorFactory::ActorFactoryImpl::ActorFactoryImpl()
 
 ActorFactory::ActorFactoryImpl::~ActorFactoryImpl()
 {
-
 }
 
 void ActorFactory::ActorFactoryImpl::registerComponents()
 {
-	//Register all of the concrete components here.
+	//#TODO: Register all of the concrete components here.
+	m_ComponentFactory.registerType<DisplayNode>();
 	m_ComponentFactory.registerType<ComboEffectScript>();
 }
 
@@ -87,12 +88,10 @@ void ActorFactory::ActorFactoryImpl::updateID()
 //////////////////////////////////////////////////////////////////////////
 ActorFactory::ActorFactory() : pimpl{ std::make_unique<ActorFactoryImpl>() }
 {
-
 }
 
 ActorFactory::~ActorFactory()
 {
-
 }
 
 std::shared_ptr<Actor> ActorFactory::createActor(const char *resourceFile, tinyxml2::XMLElement *overrides /*= nullptr*/)
@@ -116,7 +115,7 @@ std::shared_ptr<Actor> ActorFactory::createActor(const char *resourceFile, tinyx
 	//Loop through each child element and load the component
 	for (auto componentElement = rootElement->FirstChildElement(); componentElement; componentElement = componentElement->NextSiblingElement()){
 		auto component = pimpl->createComponent(componentElement);
-	
+
 		//If failed to create a component, return nullptr because the actor will be partially complete and may cause more troubles than goods.
 		if (!component)
 			return nullptr;
@@ -143,12 +142,13 @@ void ActorFactory::modifyActor(const std::shared_ptr<Actor> & actor, tinyxml2::X
 	// Loop through each child element and load the component
 	for (auto componentElement = overrides->FirstChildElement(); componentElement; componentElement = componentElement->NextSiblingElement()){
 		auto & component = actor->getComponent(componentElement->Value());
-		
+
 		//If there is a component of the same type already, re-initialize it.
 		if (component){
 			component->vInit(componentElement);
 			component->vOnChanged();
-		} else {
+		}
+		else {
 			//Else, create a new component and attach to actor.
 			auto newComponent = pimpl->createComponent(componentElement);
 			if (newComponent){

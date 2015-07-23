@@ -80,7 +80,12 @@ void GameOverLabel::impl::resetInvoker()
 {
 	auto visible_size = cocos2d::Director::getInstance()->getVisibleSize();
 	m_invoker->addMoveTo(1, visible_size.width / 2, visible_size.height / 2);
-	m_invoker->addCallback([]{SingletonContainer::getInstance()->get<SceneStack>()->replaceAndRun(Actor::create<TitleScene>()); });
+
+
+	m_invoker->addCallback([]{
+		auto titleSceneActor = std::make_unique<Actor>();
+		titleSceneActor->addComponent<TitleScene>();
+		SingletonContainer::getInstance()->get<SceneStack>()->replaceAndRun(std::move(titleSceneActor)); });
 }
 
 std::string GameOverLabel::impl::createGameOverText() const

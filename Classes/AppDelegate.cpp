@@ -42,13 +42,17 @@ void AppDelegate::AppDelegateImpl::initGame()
 	SingletonContainer::getInstance()->set<IEventDispatcher>(::EventDispatcher::create());
 	SingletonContainer::getInstance()->set<GameData>(GameData::create());
 	SingletonContainer::getInstance()->set<GameLogic>(GameLogic::create());
-	SingletonContainer::getInstance()->set<SceneStack>(std::make_unique<SceneStack>())->pushAndRun(Actor::create<TitleScene>());
+
+	auto titleSceneActor = std::make_unique<Actor>();
+	titleSceneActor->addComponent<TitleScene>();
+
+	SingletonContainer::getInstance()->set<SceneStack>(std::make_unique<SceneStack>())->pushAndRun(std::move(titleSceneActor));
 }
 
 //////////////////////////////////////////////////////////////////////////
 //Implementation of AppDelegate
 //////////////////////////////////////////////////////////////////////////
-AppDelegate::AppDelegate() : pimpl(new AppDelegateImpl())
+AppDelegate::AppDelegate() : pimpl{std::make_unique<AppDelegateImpl>()}
 {
 
 }

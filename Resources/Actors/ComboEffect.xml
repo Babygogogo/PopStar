@@ -1,6 +1,6 @@
+<!-- edited with XMLSpy v2013 (http://www.altova.com) by  () -->
 <Actor type="ComboEffect" resource="Actors\ComboEffect.xml">
-
 	<ComboEffectScript>
 	</ComboEffectScript>
-
+	
 </Actor>

@@ -19,15 +19,20 @@ PuzzleScene::impl::impl(Actor *game_object)
 	game_object->addComponent<DisplayNode>()->initAs<cocos2d::Scene>();
 
 	game_object->addChild(createBackground());
-	game_object->addChild(Actor::create<MatrixLayer>());
-	game_object->addChild(Actor::create<StatusLayer>());
+
+	auto matrixLayerActor = std::make_unique<Actor>();
+	matrixLayerActor->addComponent<MatrixLayer>();
+	game_object->addChild(std::move(matrixLayerActor));
+
+	auto statusLayerActor = std::make_unique<Actor>();
+	statusLayerActor->addComponent<StatusLayer>();
+	game_object->addChild(std::move(statusLayerActor));
 
 	Audio::getInstance()->playBGM();
 }
 
 PuzzleScene::impl::~impl()
 {
-
 }
 
 std::unique_ptr<Actor> PuzzleScene::impl::createBackground()
@@ -44,10 +49,8 @@ std::unique_ptr<Actor> PuzzleScene::impl::createBackground()
 
 PuzzleScene::PuzzleScene(Actor* game_object) :BaseScriptComponent("PuzzleScene", game_object), pimpl(new impl(game_object))
 {
-
 }
 
 PuzzleScene::~PuzzleScene()
 {
-
 }

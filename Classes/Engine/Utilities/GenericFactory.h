@@ -8,7 +8,7 @@
 #include <cassert>
 
 /*!
- * \class GenericFactory<BasePointer>
+ * \class GenericFactory<Base>
  *
  * \brief A generic factory that allows to create objects of sub-type of Base by strings.
  *
@@ -33,21 +33,19 @@ public:
 	template <class SubClass>
 	void registerType()
 	{
-		assert(m_CreationFunctions.find(SubClass::Type) == m_CreationFunctions.end());
+		assert(m_CreatorMap.find(SubClass::Type) == m_CreatorMap.end());
 
-		CreatorFunction creator;
-		creator.createUnique = std::make_unique < SubClass > ;
-		creator.createShared = std::make_shared < SubClass > ;
+		CreatorStruct creator(std::make_unique<SubClass>, std::make_shared<SubClass>);
 
-		m_CreationFunctions.emplace(std::make_pair(SubClass::Type, std::move(creator)));
+		m_CreatorMap.emplace(std::make_pair(SubClass::Type, std::move(creator)));
 	}
 
 	//Create an object. This function return the pointer of the Base class which can be downcast by client code.
 	//If no type is registered with the name, nullptr is returned.
 	std::unique_ptr<Base> createUnique(const std::string & name)
 	{
-		auto findIter = m_CreationFunctions.find(name);
-		if (findIter != m_CreationFunctions.end())
+		auto findIter = m_CreatorMap.find(name);
+		if (findIter != m_CreatorMap.end())
 			return findIter->second.createUnique();
 
 		return nullptr;
@@ -55,21 +53,27 @@ public:
 
 	std::shared_ptr<Base> createShared(const std::string & name)
 	{
-		auto findIter = m_CreationFunctions.find(name);
-		if (findIter != m_CreationFunctions.end())
+		auto findIter = m_CreatorMap.find(name);
+		if (findIter != m_CreatorMap.end())
 			return findIter->second.createShared();
 
 		return nullptr;
 	}
 
 private:
-	struct CreatorFunction
+	struct CreatorStruct
 	{
-		std::function < std::unique_ptr<Base>() > createUnique;
-		std::function < std::shared_ptr<Base>() > createShared;
+		using UniqueCreator = std::function < std::unique_ptr<Base>() >;
+		using SharedCreator = std::function < std::shared_ptr<Base>() >;
+
+		CreatorStruct(UniqueCreator uniqueCreator, SharedCreator sharedCreator) :
+			createUnique{ std::move(uniqueCreator) }, createShared{ std::move(sharedCreator) }{}
+
+		UniqueCreator createUnique;
+		SharedCreator createShared;
 	};
 
-	std::unordered_map<std::string, CreatorFunction> m_CreationFunctions;
+	std::unordered_map<std::string, CreatorStruct> m_CreatorMap;
 };
 
 #endif // !__GENERIC_FACTORY__
