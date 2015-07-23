@@ -15,12 +15,14 @@ namespace cocos2d
 class SequentialInvoker final :public ActorComponent
 {
 	friend class Actor;
-	
+
 public:
+	SequentialInvoker(Actor *game_object);
+
 	~SequentialInvoker();
 
 	static const std::string Type;
-		
+
 	void addMoveTo(float duration_s, float x, float y, std::function<void()> &&callback = nullptr);
 	void addDelay(float delay_s);
 	void addCallback(std::function<void()> &&callback);
@@ -38,7 +40,6 @@ public:
 	SequentialInvoker& operator=(SequentialInvoker&&) = delete;
 
 private:
-	SequentialInvoker(Actor *game_object);
 
 	virtual const std::string & getType() const;
 

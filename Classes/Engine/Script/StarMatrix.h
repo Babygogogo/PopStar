@@ -5,7 +5,7 @@
 
 #include "../Actor/BaseScriptComponent.h"
 
-class StarMatrix final: public BaseScriptComponent
+class StarMatrix final : public BaseScriptComponent
 {
 	friend class Actor;
 
@@ -16,14 +16,18 @@ class StarMatrix final: public BaseScriptComponent
 	StarMatrix(StarMatrix&&) = delete;
 	StarMatrix& operator=(const StarMatrix&) = delete;
 	StarMatrix& operator=(StarMatrix&&) = delete;
-	
+
 public:
+	StarMatrix(Actor *game_object);
 	~StarMatrix();
+
+	static const std::string Type;
 
 	void reset();
 
+	virtual const std::string & getType() const override;
+
 private:
-	StarMatrix(Actor *game_object);
 
 	struct impl;
 	std::unique_ptr<impl> pimpl;

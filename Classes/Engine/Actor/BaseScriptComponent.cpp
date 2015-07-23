@@ -13,12 +13,6 @@ bool BaseScriptComponent::vInit(tinyxml2::XMLElement *xmlElement)
 	return true;
 }
 
-const std::string & BaseScriptComponent::getType() const
-{
-	static std::string nullString{};
-	return nullString;
-}
-
 void BaseScriptComponent::vPostInit()
 {
 }

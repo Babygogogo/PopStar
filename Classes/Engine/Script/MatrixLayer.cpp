@@ -73,3 +73,10 @@ MatrixLayer::MatrixLayer(Actor *game_object) :BaseScriptComponent("MatrixLayer",
 MatrixLayer::~MatrixLayer()
 {
 }
+
+const std::string & MatrixLayer::getType() const
+{
+	return Type;
+}
+
+const std::string MatrixLayer::Type = "MatrixLayerScript";

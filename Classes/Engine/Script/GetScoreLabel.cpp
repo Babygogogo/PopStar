@@ -66,3 +66,10 @@ GetScoreLabel::GetScoreLabel(Actor *game_object) :BaseScriptComponent("GetScoreL
 GetScoreLabel::~GetScoreLabel()
 {
 }
+
+const std::string & GetScoreLabel::getType() const
+{
+	return Type;
+}
+
+const std::string GetScoreLabel::Type = "GetScoreLabelScript";

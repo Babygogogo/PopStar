@@ -128,7 +128,7 @@ void GameOverLabelScript::vPostInit()
 
 	pimpl->m_label_underlying->setVisible(false);
 
-	pimpl->m_invoker = strongActor->addComponent<SequentialInvoker>();
+	pimpl->m_invoker = strongActor->addComponent<SequentialInvoker>().get();
 
 	pimpl->registerAsEventListeners();
 }

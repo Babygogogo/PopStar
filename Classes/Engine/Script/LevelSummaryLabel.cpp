@@ -33,7 +33,7 @@ LevelSummaryLabel::impl::impl(Actor *game_object)
 		[]{return cocos2d::Label::createWithSystemFont("", "Verdana-Bold", 50); });
 	m_label_underlying->setVisible(false);
 
-	m_invoker = game_object->addComponent<SequentialInvoker>();
+	m_invoker = game_object->addComponent<SequentialInvoker>().get();
 
 	registerAsEventListener();
 }
@@ -100,3 +100,10 @@ LevelSummaryLabel::LevelSummaryLabel(Actor *game_object) :BaseScriptComponent("L
 LevelSummaryLabel::~LevelSummaryLabel()
 {
 }
+
+const std::string & LevelSummaryLabel::getType() const
+{
+	return Type;
+}
+
+const std::string LevelSummaryLabel::Type = "LevelSummaryLabelScript";

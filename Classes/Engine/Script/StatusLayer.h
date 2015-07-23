@@ -16,12 +16,16 @@ class StatusLayer final :public BaseScriptComponent
 	StatusLayer(StatusLayer&&) = delete;
 	StatusLayer& operator=(const StatusLayer&) = delete;
 	StatusLayer& operator=(StatusLayer&&) = delete;
-	
+
 public:
+	StatusLayer(Actor *game_object);
 	~StatusLayer();
 
+	virtual const std::string & getType() const override;
+
+	static const std::string Type;
+
 private:
-	StatusLayer(Actor *game_object);
 
 	struct impl;
 	std::unique_ptr<impl> pimpl;

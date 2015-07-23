@@ -22,7 +22,7 @@ struct StarParticleEffect::impl
 StarParticleEffect::impl::impl(Actor *game_object) :m_game_object(game_object)
 {
 	m_effect = game_object->addComponent<DisplayNode>()->initAs<cocos2d::ParticleExplosion>();
-	m_invoker = game_object->addComponent<SequentialInvoker>();
+	m_invoker = game_object->addComponent<SequentialInvoker>().get();
 }
 
 StarParticleEffect::impl::~impl()
@@ -68,3 +68,10 @@ void StarParticleEffect::reset(Star *star)
 	pimpl->resetInvoker();
 	pimpl->m_invoker->invoke();
 }
+
+const std::string & StarParticleEffect::getType() const
+{
+	return Type;
+}
+
+const std::string StarParticleEffect::Type = "StarParticleEffectScript";

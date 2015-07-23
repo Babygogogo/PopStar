@@ -105,7 +105,7 @@ cocos2d::Sprite * ComboEffectScript::ComboEffectImpl::getSprite() const
 
 SequentialInvoker * ComboEffectScript::ComboEffectImpl::getSequentialInvoker() const
 {
-	return m_Visitor->m_Actor.lock()->getComponent<SequentialInvoker>();
+	return m_Visitor->m_Actor.lock()->getComponent<SequentialInvoker>().get();
 }
 
 //////////////////////////////////////////////////////////////////////////

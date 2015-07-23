@@ -54,3 +54,10 @@ PuzzleScene::PuzzleScene(Actor* game_object) :BaseScriptComponent("PuzzleScene",
 PuzzleScene::~PuzzleScene()
 {
 }
+
+const std::string & PuzzleScene::getType() const
+{
+	return Type;
+}
+
+const std::string PuzzleScene::Type = "PuzzleSceneScript";

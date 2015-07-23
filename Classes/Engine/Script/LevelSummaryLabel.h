@@ -16,12 +16,16 @@ class LevelSummaryLabel final :public BaseScriptComponent
 	LevelSummaryLabel(LevelSummaryLabel&&) = delete;
 	LevelSummaryLabel& operator=(const LevelSummaryLabel&) = delete;
 	LevelSummaryLabel& operator=(LevelSummaryLabel&&) = delete;
-	
+
 public:
+	LevelSummaryLabel(Actor *game_object);
 	~LevelSummaryLabel();
 
+	virtual const std::string & getType() const override;
+
+	static const std::string Type;
+
 private:
-	LevelSummaryLabel(Actor *game_object);
 
 	struct impl;
 	std::unique_ptr<impl> pimpl;

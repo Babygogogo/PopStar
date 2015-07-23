@@ -15,12 +15,16 @@ class MatrixLayer final :public BaseScriptComponent
 	MatrixLayer(MatrixLayer&&) = delete;
 	MatrixLayer& operator=(const MatrixLayer&) = delete;
 	MatrixLayer& operator=(MatrixLayer&&) = delete;
-	
+
 public:
+	MatrixLayer(Actor *game_object);
 	~MatrixLayer();
 
+	virtual const std::string & getType() const override;
+
+	static const std::string Type;
+
 private:
-	MatrixLayer(Actor *game_object);
 
 	struct impl;
 	std::unique_ptr<impl> pimpl;

@@ -15,12 +15,16 @@ class TitleScene final :public BaseScriptComponent
 	TitleScene(TitleScene&&) = delete;
 	TitleScene& operator=(const TitleScene&) = delete;
 	TitleScene& operator=(TitleScene&&) = delete;
-	
+
 public:
+	TitleScene(Actor* game_object);
 	~TitleScene();
 
+	virtual const std::string & getType() const override;
+
+	static const std::string Type;
+
 private:
-	TitleScene(Actor* game_object);
 
 	struct impl;
 	std::unique_ptr<impl> pimpl;

@@ -53,3 +53,10 @@ StatusLayer::StatusLayer(Actor *game_object) :BaseScriptComponent("StatusLayer",
 StatusLayer::~StatusLayer()
 {
 }
+
+const std::string & StatusLayer::getType() const
+{
+	return Type;
+}
+
+const std::string StatusLayer::Type = "StatusLayerScript";

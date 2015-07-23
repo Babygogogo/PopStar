@@ -15,9 +15,6 @@ protected:
 	//Override functions.
 	virtual bool vInit(tinyxml2::XMLElement *xmlElement) override;
 	virtual void vPostInit() override;
-
-	//#TODO: This function should be removed in the future so that every subclass must implement it.
-	virtual const std::string & getType() const override;
 };
 
 #endif // !__BASE_SCRIPT_COMPONENT__

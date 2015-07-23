@@ -102,3 +102,10 @@ StatusBar::StatusBar(Actor *game_object) :BaseScriptComponent("StatusBar", game_
 StatusBar::~StatusBar()
 {
 }
+
+const std::string & StatusBar::getType() const
+{
+	return Type;
+}
+
+const std::string StatusBar::Type = "StatusBarScript";

@@ -65,8 +65,8 @@ const std::array<std::array<int, 2>, 4> StarMatrix::impl::NEIGHBOR_INDEXES = { {
 StarMatrix::impl::impl(Actor *game_object) :m_game_object(game_object)
 {
 	m_node_underlying = game_object->addComponent<DisplayNode>()->initAs<cocos2d::Layer>();
-	
-	m_invoker = game_object->addComponent<SequentialInvoker>();
+
+	m_invoker = game_object->addComponent<SequentialInvoker>().get();
 	m_invoker->setInvokeContinuously(true);
 
 	addStars();
@@ -82,7 +82,7 @@ void StarMatrix::impl::addStars()
 	for (auto row_num = 0; row_num < ROWS_TOTAL; ++row_num)
 		for (auto col_num = 0; col_num < COLS_TOTAL; ++col_num){
 			auto star_object = std::make_shared<Actor>();
-			m_stars[row_num][col_num] = m_initial_stars[row_num][col_num] = star_object->addComponent<Star>();
+			m_stars[row_num][col_num] = m_initial_stars[row_num][col_num] = star_object->addComponent<Star>().get();
 			m_game_object->addChild(std::move(star_object));
 		}
 }
@@ -144,24 +144,24 @@ Star* StarMatrix::impl::getStarByPoint(const cocos2d::Point& position) const
 
 	if (isRowNumValid(row_num) && isColNumValid(col_num))
 		return m_stars[row_num][col_num];
-	
+
 	return nullptr;
 }
 
 std::list<Star*> StarMatrix::impl::findGroupingStars(Star* touched_star)
 {
-	if (!touched_star) return {};
+	if (!touched_star) return{};
 
 	touched_star->setSelected(true);
 	auto group_stars = std::list < Star* > {touched_star};
 
 	for (auto current_star : group_stars)
 		iterateNeighborStars(current_star->getRowNum(), current_star->getColNum(), [&group_stars, current_star](Star* neighbor_star){
-			if (!neighbor_star->isSelected() && neighbor_star->canGroupWith(current_star)){
-				neighbor_star->setSelected(true);
-				group_stars.push_back(neighbor_star);
-			}
-		});
+		if (!neighbor_star->isSelected() && neighbor_star->canGroupWith(current_star)){
+			neighbor_star->setSelected(true);
+			group_stars.push_back(neighbor_star);
+		}
+	});
 
 	for (auto &star : group_stars)
 		star->setSelected(false);
@@ -203,7 +203,7 @@ void StarMatrix::impl::explodeGroupingStars(std::list<Star*> &&group_stars)
 
 	shrink();
 	SingletonContainer::getInstance()->get<GameData>()->updateCurrentScoreWith(group_stars.size());
-//	SingletonContainer::getInstance()->get<IEventDispatcher>()->dispatch(LegacyEvent::create(LegacyEventType::PlayerExplodedStars, EventArg1::create(group_stars.size())));
+	//	SingletonContainer::getInstance()->get<IEventDispatcher>()->dispatch(LegacyEvent::create(LegacyEventType::PlayerExplodedStars, EventArg1::create(group_stars.size())));
 	SingletonContainer::getInstance()->get<IEventDispatcher>()->dispatch(std::make_unique<EvtDataPlayerExplodedStars>(group_stars.size()));
 
 	if (isNoMoreMove()){
@@ -295,9 +295,9 @@ bool StarMatrix::impl::isNoMoreMove() const
 			if (!m_stars[row_num][col_num])
 				break;
 
-			if (	(isRowNumValid(row_num + 1) && m_stars[row_num + 1][col_num] && m_stars[row_num + 1][col_num]->canGroupWith(m_stars[row_num][col_num]))
-				||	(isColNumValid(col_num + 1) && m_stars[row_num][col_num + 1] && m_stars[row_num][col_num + 1]->canGroupWith(m_stars[row_num][col_num])))
-			return false;
+			if ((isRowNumValid(row_num + 1) && m_stars[row_num + 1][col_num] && m_stars[row_num + 1][col_num]->canGroupWith(m_stars[row_num][col_num]))
+				|| (isColNumValid(col_num + 1) && m_stars[row_num][col_num + 1] && m_stars[row_num][col_num + 1]->canGroupWith(m_stars[row_num][col_num])))
+				return false;
 		}
 	}
 
@@ -310,17 +310,15 @@ void StarMatrix::impl::explodeAllLeftStars()
 		for (auto &star : star_row)
 			if (star)
 				m_invoker->addFiniteTimeAction(cocos2d::Sequence::create(
-					cocos2d::DelayTime::create(0.02f), cocos2d::CallFunc::create([this, star]{explode(star); }), nullptr));
+				cocos2d::DelayTime::create(0.02f), cocos2d::CallFunc::create([this, star]{explode(star); }), nullptr));
 }
 
-StarMatrix::StarMatrix(Actor *game_object) : BaseScriptComponent("StarMatrix", game_object), pimpl(new impl(game_object))
+StarMatrix::StarMatrix(Actor *game_object) : BaseScriptComponent("StarMatrix", game_object), pimpl{ std::make_unique<impl>(game_object) }
 {
-
 }
 
 StarMatrix::~StarMatrix()
 {
-
 }
 
 void StarMatrix::reset()
@@ -328,3 +326,10 @@ void StarMatrix::reset()
 	pimpl->randomize();
 	pimpl->registerAsEventListeners();
 }
+
+const std::string & StarMatrix::getType() const
+{
+	return Type;
+}
+
+const std::string StarMatrix::Type = "StarMatrixScript";

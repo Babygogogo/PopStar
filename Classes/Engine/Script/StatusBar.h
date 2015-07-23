@@ -5,7 +5,7 @@
 
 #include "../Actor/BaseScriptComponent.h"
 
-class StatusBar final: public BaseScriptComponent
+class StatusBar final : public BaseScriptComponent
 {
 	friend class Actor;
 
@@ -16,12 +16,16 @@ class StatusBar final: public BaseScriptComponent
 	StatusBar(StatusBar&&) = delete;
 	StatusBar& operator=(const StatusBar&) = delete;
 	StatusBar& operator=(StatusBar&&) = delete;
-	
+
 public:
+	StatusBar(Actor *game_object);
 	~StatusBar();
 
+	virtual const std::string & getType() const override;
+
+	static const std::string Type;
+
 private:
-	StatusBar(Actor *game_object);
 
 	struct impl;
 	std::unique_ptr<impl> pimpl;

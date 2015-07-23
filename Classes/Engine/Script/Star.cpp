@@ -45,14 +45,13 @@ std::uniform_int_distribution<> Star::impl::random_pos_offset(-135, 135);
 Star::impl::impl(Actor *game_object)
 {
 	m_sprite = game_object->addComponent<DisplayNode>()->initAs<cocos2d::Sprite>();
-	
-	m_invoker = game_object->addComponent<SequentialInvoker>();
+
+	m_invoker = game_object->addComponent<SequentialInvoker>().get();
 	m_invoker->setInvokeContinuously(true);
 }
 
 Star::impl::~impl()
 {
-
 }
 
 void Star::impl::setRandomColor()
@@ -97,12 +96,10 @@ void Star::impl::moveTo(float pos_x, float pos_y, float speed /*= Star::impl::MO
 
 Star::Star(Actor *game_object) :BaseScriptComponent("Star", game_object), pimpl(new impl(game_object))
 {
-
 }
 
 Star::~Star()
 {
-
 }
 
 void Star::randomize(int row_num, int col_num, float pos_x, float pos_y)
@@ -177,3 +174,10 @@ void Star::setVisible(bool visible)
 {
 	pimpl->m_sprite->setVisible(visible);
 }
+
+const std::string & Star::getType() const
+{
+	return Type;
+}
+
+const std::string Star::Type = "StarScript";

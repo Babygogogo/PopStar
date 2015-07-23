@@ -33,7 +33,7 @@ StartLevelLabel::impl::impl(Actor *game_object)
 		[]{return cocos2d::Label::createWithSystemFont("", "Verdana-Bold", 50); });
 	m_label_underlying->setVisible(false);
 
-	m_invoker = game_object->addComponent<SequentialInvoker>();
+	m_invoker = game_object->addComponent<SequentialInvoker>().get();
 
 	registerAsEventListener();
 	reset();
@@ -98,3 +98,10 @@ StartLevelLabel::StartLevelLabel(Actor *game_object) :BaseScriptComponent("Start
 StartLevelLabel::~StartLevelLabel()
 {
 }
+
+const std::string & StartLevelLabel::getType() const
+{
+	return Type;
+}
+
+const std::string StartLevelLabel::Type = "StartLevelLabelScript";

@@ -109,3 +109,10 @@ TitleScene::TitleScene(Actor* game_object) :BaseScriptComponent("TitleScene", ga
 TitleScene::~TitleScene()
 {
 }
+
+const std::string & TitleScene::getType() const
+{
+	return Type;
+}
+
+const std::string TitleScene::Type = "TitleSceneScript";

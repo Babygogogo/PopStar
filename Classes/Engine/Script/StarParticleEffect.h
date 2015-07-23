@@ -18,14 +18,18 @@ class StarParticleEffect final :public BaseScriptComponent
 	StarParticleEffect(StarParticleEffect&&) = delete;
 	StarParticleEffect& operator=(const StarParticleEffect&) = delete;
 	StarParticleEffect& operator=(StarParticleEffect&&) = delete;
-	
+
 public:
+	StarParticleEffect(Actor *game_object);
 	~StarParticleEffect();
+
+	static const std::string Type;
 
 	void reset(Star *star);
 
+	virtual const std::string & getType() const override;
+
 private:
-	StarParticleEffect(Actor *game_object);
 
 	struct impl;
 	std::unique_ptr<impl> pimpl;

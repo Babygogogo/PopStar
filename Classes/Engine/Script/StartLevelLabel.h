@@ -16,12 +16,16 @@ class StartLevelLabel final :public BaseScriptComponent
 	StartLevelLabel(StartLevelLabel&&) = delete;
 	StartLevelLabel& operator=(const StartLevelLabel&) = delete;
 	StartLevelLabel& operator=(StartLevelLabel&&) = delete;
-	
+
 public:
+	StartLevelLabel(Actor *game_object);
 	~StartLevelLabel();
 
+	virtual const std::string & getType() const override;
+
+	static const std::string Type;
+
 private:
-	StartLevelLabel(Actor *game_object);
 
 	struct impl;
 	std::unique_ptr<impl> pimpl;

@@ -22,9 +22,12 @@ class Star final :public BaseScriptComponent
 	Star(Star&&) = delete;
 	Star& operator=(const Star&) = delete;
 	Star& operator=(Star&&) = delete;
-	
+
 public:
+	Star(Actor *game_object);
 	~Star();
+
+	static const std::string Type;
 
 	void randomize(int row_num, int col_num, float pos_x, float pos_y);
 	void moveTo(float pos_x, float pos_y);
@@ -45,11 +48,12 @@ public:
 	int getColNum() const;
 	void setColNum(int col_num);
 
+	virtual const std::string & getType() const override;
+
 	const static int WIDTH = 48;
 	const static int HEIGHT = 48;
 
 private:
-	Star(Actor *game_object);
 
 	struct impl;
 	std::unique_ptr<impl> pimpl;

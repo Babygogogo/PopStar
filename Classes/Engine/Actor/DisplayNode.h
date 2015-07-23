@@ -12,6 +12,7 @@ class DisplayNode final : public ActorComponent
 
 public:
 	DisplayNode();
+	DisplayNode(Actor *game_object);
 	~DisplayNode();
 
 	//Create an instance.
@@ -50,12 +51,11 @@ public:
 	DisplayNode& operator=(DisplayNode&&) = delete;
 
 private:
-	DisplayNode(Actor *game_object);
 
 	void addChild(DisplayNode *child);
 	void removeFromParent();
 
-	//Get the internal cocos2d::Node. 
+	//Get the internal cocos2d::Node.
 	void * getNode() const;
 
 	//Helper function for initAs().

@@ -16,12 +16,16 @@ class GetScoreLabel final :public BaseScriptComponent
 	GetScoreLabel(GetScoreLabel&&) = delete;
 	GetScoreLabel& operator=(const GetScoreLabel&) = delete;
 	GetScoreLabel& operator=(GetScoreLabel&&) = delete;
-	
+
 public:
+	GetScoreLabel(Actor *game_object);
 	~GetScoreLabel();
 
+	virtual const std::string & getType() const override;
+
+	static const std::string Type;
+
 private:
-	GetScoreLabel(Actor *game_object);
 
 	struct impl;
 	std::unique_ptr<impl> pimpl;

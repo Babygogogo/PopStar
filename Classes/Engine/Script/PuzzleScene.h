@@ -18,10 +18,14 @@ class PuzzleScene final :public BaseScriptComponent
 	PuzzleScene& operator=(PuzzleScene&&) = delete;
 
 public:
+	PuzzleScene(Actor* game_object);
 	~PuzzleScene();
 
+	virtual const std::string & getType() const override;
+
+	static const std::string Type;
+
 private:
-	PuzzleScene(Actor* game_object);
 
 	struct impl;
 	std::unique_ptr<impl> pimpl;
