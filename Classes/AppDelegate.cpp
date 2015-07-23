@@ -43,7 +43,7 @@ void AppDelegate::AppDelegateImpl::initGame()
 	SingletonContainer::getInstance()->set<GameData>(GameData::create());
 	SingletonContainer::getInstance()->set<GameLogic>(GameLogic::create());
 
-	auto titleSceneActor = std::make_unique<Actor>();
+	auto titleSceneActor = std::make_shared<Actor>();
 	titleSceneActor->addComponent<TitleScene>();
 
 	SingletonContainer::getInstance()->set<SceneStack>(std::make_unique<SceneStack>())->pushAndRun(std::move(titleSceneActor));

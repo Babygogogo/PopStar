@@ -13,15 +13,14 @@ struct StatusBar::impl
 	impl(Actor *game_object);
 	~impl();
 
-	std::unique_ptr<Actor> createHighScoreLabel();
-	std::unique_ptr<Actor> createCurrentScoreLabel();
-	std::unique_ptr<Actor> createTargetScoreLabel();
-	std::unique_ptr<Actor> createLevelLabel();
+	std::shared_ptr<Actor> createHighScoreLabel();
+	std::shared_ptr<Actor> createCurrentScoreLabel();
+	std::shared_ptr<Actor> createTargetScoreLabel();
+	std::shared_ptr<Actor> createLevelLabel();
 };
 
 StatusBar::impl::impl(Actor *game_object)
 {
-	game_object->setNeedUpdate(false);
 	game_object->addComponent<DisplayNode>()->initAs<cocos2d::Node>();
 
 	game_object->addChild(createHighScoreLabel());
@@ -36,9 +35,9 @@ StatusBar::impl::~impl()
 		singleton_container->get<IEventDispatcher>()->deleteListener(this);
 }
 
-std::unique_ptr<Actor> StatusBar::impl::createHighScoreLabel()
+std::shared_ptr<Actor> StatusBar::impl::createHighScoreLabel()
 {
-	auto label_object = std::make_unique<Actor>();
+	auto label_object = std::make_shared<Actor>();
 	auto label_underlying = label_object->addComponent<DisplayNode>()->initAs<cocos2d::Label>([]{return cocos2d::Label::createWithSystemFont(
 		std::string("High Score: ") + std::to_string(SingletonContainer::getInstance()->get<GameData>()->getHighScore()), "Verdana - Bold", 30); });
 
@@ -51,9 +50,9 @@ std::unique_ptr<Actor> StatusBar::impl::createHighScoreLabel()
 	return label_object;
 }
 
-std::unique_ptr<Actor> StatusBar::impl::createCurrentScoreLabel()
+std::shared_ptr<Actor> StatusBar::impl::createCurrentScoreLabel()
 {
-	auto label_object = std::make_unique<Actor>();
+	auto label_object = std::make_shared<Actor>();
 	auto label_underlying = label_object->addComponent<DisplayNode>()->initAs<cocos2d::Label>([]{return cocos2d::Label::createWithSystemFont(
 		std::string("Current Score: ") + std::to_string(SingletonContainer::getInstance()->get<GameData>()->getCurrentScore()), "Verdana - Bold", 40); });
 
@@ -66,9 +65,9 @@ std::unique_ptr<Actor> StatusBar::impl::createCurrentScoreLabel()
 	return label_object;
 }
 
-std::unique_ptr<Actor> StatusBar::impl::createTargetScoreLabel()
+std::shared_ptr<Actor> StatusBar::impl::createTargetScoreLabel()
 {
-	auto label_object = std::make_unique<Actor>();
+	auto label_object = std::make_shared<Actor>();
 	auto label_underlying = label_object->addComponent<DisplayNode>()->initAs<cocos2d::Label>([]{return cocos2d::Label::createWithSystemFont(
 		std::string("Target Score: ") + std::to_string(SingletonContainer::getInstance()->get<GameData>()->getTargetScore()), "Verdana - Bold", 30); });
 
@@ -81,9 +80,9 @@ std::unique_ptr<Actor> StatusBar::impl::createTargetScoreLabel()
 	return label_object;
 }
 
-std::unique_ptr<Actor> StatusBar::impl::createLevelLabel()
+std::shared_ptr<Actor> StatusBar::impl::createLevelLabel()
 {
-	auto label_object = std::make_unique<Actor>();
+	auto label_object = std::make_shared<Actor>();
 	auto label_underlying = label_object->addComponent<DisplayNode>()->initAs<cocos2d::Label>([]{return cocos2d::Label::createWithSystemFont(
 		std::string("Level: ") + std::to_string(SingletonContainer::getInstance()->get<GameData>()->getCurrentLevel()), "Verdana - Bold", 30); });
 
@@ -98,7 +97,6 @@ std::unique_ptr<Actor> StatusBar::impl::createLevelLabel()
 
 StatusBar::StatusBar(Actor *game_object) :BaseScriptComponent("StatusBar", game_object), pimpl(new impl(game_object))
 {
-
 }
 
 StatusBar::~StatusBar()

@@ -29,13 +29,13 @@ public:
 	//Stuff to control the stack.
 	//////////////////////////////////////////////////////////////////////////
 	//The param scene must be a scene and has no parent, or an exception will be thrown.
-	Actor* pushAndRun(std::unique_ptr<Actor> &&scene);
+	Actor* pushAndRun(std::shared_ptr<Actor> &&scene);
 
 	//The ownership of the pre-top scene is returned. You can do anything with it, or just leave it alone.
-	std::unique_ptr<Actor> pop();
+	std::shared_ptr<Actor> pop();
 
 	//Replace the current scene with a new one. The ownership of the pre-current scene will be returned.
-	std::unique_ptr<Actor> replaceAndRun(std::unique_ptr<Actor> &&scene);
+	std::shared_ptr<Actor> replaceAndRun(std::shared_ptr<Actor> &&scene);
 
 	//The current scene is also the top scene in the stack.
 	Actor* getCurrentScene();

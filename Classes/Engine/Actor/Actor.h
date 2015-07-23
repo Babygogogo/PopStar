@@ -10,7 +10,6 @@
 #include <chrono>
 
 #include "ActorID.h"
-#include "../../Common/IUpdateable.h"
 
 //Forward declaration.
 namespace tinyxml2
@@ -29,7 +28,6 @@ class ActorComponent;
  *	Game objects, along with its components, are managed with std::unique_ptr.
  *	For most cases in the code base, a std::unique_ptr means an ownership, while a raw pointer stands for a (temporary) reference.
  *	Now refactoring...
- *	All the static create() methods should be removed.
  * \
  * \author	Babygogogo
  * \date	2015.03
@@ -86,8 +84,6 @@ public:
 			dynamic_cast<T*>(component_iter->second.get());
 	};
 
-	void setNeedUpdate(bool is_need);
-
 	//Disable copy/move constructor and operator=.
 	Actor(const Actor&) = delete;
 	Actor(Actor&&) = delete;
@@ -98,38 +94,17 @@ private:
 	//Only the current scene owned by the SceneStack, and the (indirect) children of that scene, will be "update" once a frame.
 	void update(const time_t &time_ms);
 
-	//////////////////////////////////////////////////////////////////////////
 	//Helper methods for adding components.
-	//////////////////////////////////////////////////////////////////////////
 	template<typename T>
-	T* emplaceComponent()
+	T* addComponentHelper()
 	{
 		return dynamic_cast<T*>(m_components.emplace(typeid(T), std::unique_ptr<T>(new T(this))).first->second.get());
-	}
-
-	template<typename T,
-		typename std::enable_if_t<!std::is_base_of<IUpdateable, T>::value>* = nullptr
-	> T* addComponentHelper()
-	{
-		return emplaceComponent<T>();
 	};
 
-	template<typename T,
-		typename std::enable_if_t<std::is_base_of<IUpdateable, T>::value>* = nullptr
-	> T* addComponentHelper()
-	{
-		auto component = emplaceComponent<T>();
-		m_updateable_components.emplace(component);
-
-		return component;
-	};
-
-	//////////////////////////////////////////////////////////////////////////
 	//Data members of components and children.
-	//////////////////////////////////////////////////////////////////////////
 	std::unordered_map<std::type_index, std::unique_ptr<::ActorComponent>> m_components;
-	std::unordered_set<IUpdateable*> m_updateable_components;
 
+	//Implementation stuff.
 	struct ActorImpl;
 	std::unique_ptr<ActorImpl> pimpl;
 };

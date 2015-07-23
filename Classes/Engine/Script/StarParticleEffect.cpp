@@ -21,14 +21,12 @@ struct StarParticleEffect::impl
 
 StarParticleEffect::impl::impl(Actor *game_object) :m_game_object(game_object)
 {
-	game_object->setNeedUpdate(false);
 	m_effect = game_object->addComponent<DisplayNode>()->initAs<cocos2d::ParticleExplosion>();
 	m_invoker = game_object->addComponent<SequentialInvoker>();
 }
 
 StarParticleEffect::impl::~impl()
 {
-
 }
 
 void StarParticleEffect::impl::resetEffect(Star *star)
@@ -55,12 +53,10 @@ void StarParticleEffect::impl::resetInvoker()
 
 StarParticleEffect::StarParticleEffect(Actor *game_object) :BaseScriptComponent("StarParticleEffect", game_object), pimpl(new impl(game_object))
 {
-
 }
 
 StarParticleEffect::~StarParticleEffect()
 {
-
 }
 
 void StarParticleEffect::reset(Star *star)

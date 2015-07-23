@@ -21,13 +21,13 @@ struct SceneStack::SceneStackImpl
 	void validate(Actor* scene);
 	void switchUpdate(Actor *scene, bool enable = true);
 
-	void push(std::unique_ptr<Actor> &&scene);
-	std::unique_ptr<Actor> pop();
+	void push(std::shared_ptr<Actor> &&scene);
+	std::shared_ptr<Actor> pop();
 
 	void pushSceneToDirector(Actor *scene);
 	Actor *topScene();
 
-	std::vector<std::unique_ptr<Actor>> m_scenes;
+	std::vector<std::shared_ptr<Actor>> m_scenes;
 };
 
 int SceneStack::SceneStackImpl::InstanceCount{ 0 };
@@ -39,7 +39,6 @@ SceneStack::SceneStackImpl::SceneStackImpl()
 
 SceneStack::SceneStackImpl::~SceneStackImpl()
 {
-
 }
 
 void SceneStack::SceneStackImpl::switchUpdate(Actor *scene, bool enable /*= true*/)
@@ -75,16 +74,16 @@ void SceneStack::SceneStackImpl::validate(Actor* scene)
 		throw("pushScene with a game object that has a parent");
 }
 
-void SceneStack::SceneStackImpl::push(std::unique_ptr<Actor> &&scene)
+void SceneStack::SceneStackImpl::push(std::shared_ptr<Actor> &&scene)
 {
 	m_scenes.emplace_back(std::move(scene));
 	switchUpdate(topScene());
 }
 
-std::unique_ptr<Actor> SceneStack::SceneStackImpl::pop()
+std::shared_ptr<Actor> SceneStack::SceneStackImpl::pop()
 {
 	switchUpdate(topScene(), false);
-	auto ownership = std::unique_ptr<Actor>(std::move(m_scenes.back()));
+	auto ownership = std::move(m_scenes.back());
 	m_scenes.pop_back();
 
 	return ownership;
@@ -95,15 +94,13 @@ std::unique_ptr<Actor> SceneStack::SceneStackImpl::pop()
 //////////////////////////////////////////////////////////////////////////
 SceneStack::SceneStack() : pimpl{ std::make_unique<SceneStackImpl>() }
 {
-
 }
 
 SceneStack::~SceneStack()
 {
-
 }
 
-Actor* SceneStack::pushAndRun(std::unique_ptr<Actor> &&scene)
+Actor* SceneStack::pushAndRun(std::shared_ptr<Actor> &&scene)
 {
 	pimpl->validate(scene.get());
 
@@ -117,7 +114,7 @@ Actor* SceneStack::pushAndRun(std::unique_ptr<Actor> &&scene)
 	return pimpl->topScene();
 }
 
-std::unique_ptr<Actor> SceneStack::pop()
+std::shared_ptr<Actor> SceneStack::pop()
 {
 	if (pimpl->m_scenes.size() <= 1)
 		throw("popScene when the size of scenes <= 1");
@@ -136,7 +133,7 @@ Actor* SceneStack::getCurrentScene()
 	return pimpl->topScene();
 }
 
-std::unique_ptr<Actor> SceneStack::replaceAndRun(std::unique_ptr<Actor> &&scene)
+std::shared_ptr<Actor> SceneStack::replaceAndRun(std::shared_ptr<Actor> &&scene)
 {
 	pimpl->validate(scene.get());
 	if (pimpl->m_scenes.empty())

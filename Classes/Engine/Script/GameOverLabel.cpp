@@ -28,8 +28,6 @@ struct GameOverLabel::impl
 
 GameOverLabel::impl::impl(Actor *game_object)
 {
-	game_object->setNeedUpdate(false);
-
 	m_label_underlying = game_object->addComponent<DisplayNode>()->initAs<cocos2d::Label>(
 		[]{return cocos2d::Label::createWithSystemFont("Game Over", "Verdana-Bold", 80); });
 	m_label_underlying->setVisible(false);
@@ -81,9 +79,8 @@ void GameOverLabel::impl::resetInvoker()
 	auto visible_size = cocos2d::Director::getInstance()->getVisibleSize();
 	m_invoker->addMoveTo(1, visible_size.width / 2, visible_size.height / 2);
 
-
 	m_invoker->addCallback([]{
-		auto titleSceneActor = std::make_unique<Actor>();
+		auto titleSceneActor = std::make_shared<Actor>();
 		titleSceneActor->addComponent<TitleScene>();
 		SingletonContainer::getInstance()->get<SceneStack>()->replaceAndRun(std::move(titleSceneActor)); });
 }
@@ -95,10 +92,8 @@ std::string GameOverLabel::impl::createGameOverText() const
 
 GameOverLabel::GameOverLabel(Actor *game_object) :BaseScriptComponent("GameOverLabel", game_object), pimpl(new impl(game_object))
 {
-
 }
 
 GameOverLabel::~GameOverLabel()
 {
-
 }

@@ -19,7 +19,6 @@ struct GetScoreLabel::impl
 
 GetScoreLabel::impl::impl(Actor *game_object)
 {
-	game_object->setNeedUpdate(false);
 	auto label_underlying = game_object->addComponent<DisplayNode>()->initAs<cocos2d::Label>(
 		[]{return cocos2d::Label::createWithSystemFont("", "Arial", 30); });
 
@@ -62,10 +61,8 @@ void GetScoreLabel::impl::unregisterAsEventListeners()
 
 GetScoreLabel::GetScoreLabel(Actor *game_object) :BaseScriptComponent("GetScoreLabel", game_object), pimpl(new impl(game_object))
 {
-
 }
 
 GetScoreLabel::~GetScoreLabel()
 {
-
 }

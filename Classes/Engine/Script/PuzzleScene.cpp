@@ -11,7 +11,7 @@ struct PuzzleScene::impl
 	impl(Actor *game_object);
 	~impl();
 
-	std::unique_ptr<Actor> createBackground();
+	std::shared_ptr<Actor> createBackground();
 };
 
 PuzzleScene::impl::impl(Actor *game_object)
@@ -20,11 +20,11 @@ PuzzleScene::impl::impl(Actor *game_object)
 
 	game_object->addChild(createBackground());
 
-	auto matrixLayerActor = std::make_unique<Actor>();
+	auto matrixLayerActor = std::make_shared<Actor>();
 	matrixLayerActor->addComponent<MatrixLayer>();
 	game_object->addChild(std::move(matrixLayerActor));
 
-	auto statusLayerActor = std::make_unique<Actor>();
+	auto statusLayerActor = std::make_shared<Actor>();
 	statusLayerActor->addComponent<StatusLayer>();
 	game_object->addChild(std::move(statusLayerActor));
 
@@ -35,9 +35,9 @@ PuzzleScene::impl::~impl()
 {
 }
 
-std::unique_ptr<Actor> PuzzleScene::impl::createBackground()
+std::shared_ptr<Actor> PuzzleScene::impl::createBackground()
 {
-	auto background_object = std::make_unique<Actor>();
+	auto background_object = std::make_shared<Actor>();
 	auto background_sprite = background_object->addComponent<DisplayNode>()->initAs<cocos2d::Sprite>([]{return cocos2d::Sprite::create("bg_mainscene.jpg"); });
 
 	auto visible_size = cocos2d::Director::getInstance()->getVisibleSize();

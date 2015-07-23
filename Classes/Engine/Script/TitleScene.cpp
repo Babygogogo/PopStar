@@ -13,9 +13,9 @@ struct TitleScene::impl
 	impl(Actor *game_object);
 	~impl();
 
-	std::unique_ptr<Actor> createDisplayObjects() const;
+	std::shared_ptr<Actor> createDisplayObjects() const;
 
-	std::unique_ptr<Actor> createBackground() const;
+	std::shared_ptr<Actor> createBackground() const;
 	//HACK: It seems that the cocos2d-x engine has a mysterious bug here.
 	//	If you create Menu with its factory method (e.g. auto menu = Menu::create(some_item..., NULL),
 	//or auto menu = Menu::create(); menu->addChild(some_item);)
@@ -28,14 +28,13 @@ struct TitleScene::impl
 	//before:	if (kScriptTypeNone != _scriptType)
 	//after:	if (kScriptTypeNone != _scriptType && ScriptEngineManager::getInstance()->getScriptEngine())
 	//	This change should be reasonable, but the better solution is to understand why the CCMenuItem::_scriptType is changed.
-	std::unique_ptr<Actor> createTitleMenu() const;
-	std::unique_ptr<Actor> createStartButton() const;
+	std::shared_ptr<Actor> createTitleMenu() const;
+	std::shared_ptr<Actor> createStartButton() const;
 	std::function<void(cocos2d::Ref*)> createStartButtonCallback() const;
 };
 
 TitleScene::impl::impl(Actor *game_object)
 {
-	game_object->setNeedUpdate(false);
 	game_object->addComponent<DisplayNode>()->initAs<cocos2d::Scene>();
 
 	game_object->addChild(createDisplayObjects());
@@ -47,9 +46,9 @@ TitleScene::impl::~impl()
 {
 }
 
-std::unique_ptr<Actor> TitleScene::impl::createDisplayObjects() const
+std::shared_ptr<Actor> TitleScene::impl::createDisplayObjects() const
 {
-	auto layer_object = std::make_unique<Actor>();
+	auto layer_object = std::make_shared<Actor>();
 	layer_object->addComponent<DisplayNode>()->initAs<cocos2d::Layer>();
 
 	layer_object->addChild(createBackground());
@@ -58,9 +57,9 @@ std::unique_ptr<Actor> TitleScene::impl::createDisplayObjects() const
 	return layer_object;
 }
 
-std::unique_ptr<Actor> TitleScene::impl::createBackground() const
+std::shared_ptr<Actor> TitleScene::impl::createBackground() const
 {
-	auto background_object = std::make_unique<Actor>();
+	auto background_object = std::make_shared<Actor>();
 	auto background_sprite = background_object->addComponent<DisplayNode>()->initAs<cocos2d::Sprite>(
 		[]{return cocos2d::Sprite::create("bg_menuscene.jpg"); });
 
@@ -70,9 +69,9 @@ std::unique_ptr<Actor> TitleScene::impl::createBackground() const
 	return background_object;
 }
 
-std::unique_ptr<Actor> TitleScene::impl::createTitleMenu() const
+std::shared_ptr<Actor> TitleScene::impl::createTitleMenu() const
 {
-	auto menu_object = std::make_unique<Actor>();
+	auto menu_object = std::make_shared<Actor>();
 	auto menu_underlying = menu_object->addComponent<DisplayNode>()->initAs<cocos2d::Menu>();
 
 	menu_object->addChild(createStartButton());
@@ -83,9 +82,9 @@ std::unique_ptr<Actor> TitleScene::impl::createTitleMenu() const
 	return menu_object;
 }
 
-std::unique_ptr<Actor> TitleScene::impl::createStartButton() const
+std::shared_ptr<Actor> TitleScene::impl::createStartButton() const
 {
-	auto button_object = std::make_unique<Actor>();
+	auto button_object = std::make_shared<Actor>();
 	button_object->addComponent<DisplayNode>()->initAs<cocos2d::MenuItemImage>(
 		[this]{return cocos2d::MenuItemImage::create("menu_start.png", "menu_start.png", createStartButtonCallback()); });
 
@@ -97,7 +96,7 @@ std::function<void(cocos2d::Ref*)> TitleScene::impl::createStartButtonCallback()
 	return [](cocos2d::Ref*){
 		SingletonContainer::getInstance()->get<GameData>()->reset();
 
-		auto puzzleSceneActor = std::make_unique<Actor>();
+		auto puzzleSceneActor = std::make_shared<Actor>();
 		puzzleSceneActor->addComponent<PuzzleScene>();
 		SingletonContainer::getInstance()->get<SceneStack>()->replaceAndRun(std::move(puzzleSceneActor));
 	};

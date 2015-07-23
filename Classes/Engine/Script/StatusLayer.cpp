@@ -18,23 +18,23 @@ StatusLayer::impl::impl(Actor *game_object)
 {
 	game_object->addComponent<DisplayNode>()->initAs<cocos2d::Layer>();
 
-	auto statusBarActor = std::make_unique<Actor>();
+	auto statusBarActor = std::make_shared<Actor>();
 	statusBarActor->addComponent<StatusBar>();
 	game_object->addChild(std::move(statusBarActor));
 
-	auto startLevelLabelActor = std::make_unique<Actor>();
+	auto startLevelLabelActor = std::make_shared<Actor>();
 	startLevelLabelActor->addComponent<StartLevelLabel>();
 	game_object->addChild(std::move(startLevelLabelActor));
 
-	auto getScoreLabelActor = std::make_unique<Actor>();
+	auto getScoreLabelActor = std::make_shared<Actor>();
 	getScoreLabelActor->addComponent<GetScoreLabel>();
 	game_object->addChild(std::move(getScoreLabelActor));
 
-	auto levelSummaryLabelActor = std::make_unique<Actor>();
+	auto levelSummaryLabelActor = std::make_shared<Actor>();
 	levelSummaryLabelActor->addComponent<LevelSummaryLabel>();
 	game_object->addChild(std::move(levelSummaryLabelActor));
 
-	auto gameOverLabelActor = std::make_unique<Actor>();
+	auto gameOverLabelActor = std::make_shared<Actor>();
 	gameOverLabelActor->addComponent<GameOverLabel>();
 	game_object->addChild(std::move(gameOverLabelActor));
 }

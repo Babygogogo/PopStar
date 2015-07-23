@@ -29,8 +29,6 @@ struct StartLevelLabel::impl
 
 StartLevelLabel::impl::impl(Actor *game_object)
 {
-	game_object->setNeedUpdate(false);
-
 	m_label_underlying = game_object->addComponent<DisplayNode>()->initAs<cocos2d::Label>(
 		[]{return cocos2d::Label::createWithSystemFont("", "Verdana-Bold", 50); });
 	m_label_underlying->setVisible(false);
@@ -95,10 +93,8 @@ std::string StartLevelLabel::impl::createStartLevelText() const
 
 StartLevelLabel::StartLevelLabel(Actor *game_object) :BaseScriptComponent("StartLevelLabel", game_object), pimpl(new impl(game_object))
 {
-
 }
 
 StartLevelLabel::~StartLevelLabel()
 {
-
 }

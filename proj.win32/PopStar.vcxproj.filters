@@ -146,9 +146,6 @@
     <ClInclude Include="..\Classes\HelloWorldScene.h">
       <Filter>Classes</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\Common\IUpdateable.h">
-      <Filter>Classes\Common</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\Common\GameData.h">
       <Filter>Classes\Common</Filter>
     </ClInclude>

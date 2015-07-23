@@ -28,7 +28,7 @@ MatrixLayer::impl::impl(Actor *game_object)
 {
 	game_object->addComponent<DisplayNode>()->initAs<cocos2d::Layer>();
 
-	auto starMatrixActor = std::make_unique<Actor>();
+	auto starMatrixActor = std::make_shared<Actor>();
 	starMatrixActor->addComponent<StarMatrix>();
 	m_matrix = game_object->addChild(std::move(starMatrixActor));
 

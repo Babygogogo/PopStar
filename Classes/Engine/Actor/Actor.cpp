@@ -16,16 +16,15 @@ struct Actor::ActorImpl
 {
 public:
 	ActorImpl();
-	ActorImpl(ActorID && id, std::string && type, std::string && resourceFile);
 	~ActorImpl();
 
 	template<typename Element, typename Container>
-//	std::unique_ptr<Element> stealOwnership(Element *raw_ptr, Container &container)
+	//	std::unique_ptr<Element> stealOwnership(Element *raw_ptr, Container &container)
 	std::shared_ptr<Element> stealOwnership(Element *raw_ptr, Container &container)
 	{
 		//find the ownership in container; if not found, return nullptr.
 		auto iter_found = std::find_if(container.begin(), container.end(),
-//			[raw_ptr](const std::unique_ptr<Element>& p){return p.get() == raw_ptr; });
+			//			[raw_ptr](const std::unique_ptr<Element>& p){return p.get() == raw_ptr; });
 			[raw_ptr](const std::shared_ptr<Element>& p){return p.get() == raw_ptr; });
 		if (iter_found == container.end())
 			return nullptr;
@@ -39,12 +38,11 @@ public:
 		return elementFound;
 	}
 
-//	std::list<std::unique_ptr<Actor>> m_children;
+	//	std::list<std::unique_ptr<Actor>> m_children;
 	std::list<std::shared_ptr<Actor>> m_children;
 	std::map<Actor*, bool> m_children_deletion_flag;
 	Actor *m_parent{ nullptr };
 	bool m_is_updating{ false };
-	bool m_is_need_update{ true };
 
 	ActorID m_ID{ 0 };
 	std::string m_Type;
@@ -54,17 +52,10 @@ public:
 
 Actor::ActorImpl::ActorImpl()
 {
-
-}
-
-Actor::ActorImpl::ActorImpl(ActorID && id, std::string && type, std::string && resourceFile) : m_ID(std::move(id)), m_Type(std::move(type)), m_ResourceFile(std::move(resourceFile))
-{
-
 }
 
 Actor::ActorImpl::~ActorImpl()
 {
-
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -72,7 +63,6 @@ Actor::ActorImpl::~ActorImpl()
 //////////////////////////////////////////////////////////////////////////
 Actor::Actor() : pimpl{ std::make_unique<ActorImpl>() }
 {
-
 }
 
 Actor::~Actor()
@@ -90,11 +80,11 @@ std::weak_ptr<Actor> Actor::addChild(std::shared_ptr<Actor> && child)
 	//deal with child's DisplayNode if present
 	if (auto child_display_node = child->getComponent<DisplayNode>())
 		this->addComponent<DisplayNode>()->addChild(child_display_node);
-	
+
 	pimpl->m_children_deletion_flag.emplace(child.get(), false);
 	pimpl->m_children.emplace_back(std::move(child));
-	
-//	return pimpl->m_children.back().get();
+
+	//	return pimpl->m_children.back().get();
 	return pimpl->m_children.back();
 }
 
@@ -139,13 +129,7 @@ std::shared_ptr<Actor> Actor::removeFromParent()
 
 void Actor::update(const time_t &time_ms)
 {
-	if (!pimpl->m_is_need_update)
-		return;
-
 	pimpl->m_is_updating = true;
-
-	for (auto &updateable : m_updateable_components)
-		updateable->update(time_ms);
 
 	for (auto child_it = pimpl->m_children_deletion_flag.begin(); child_it != pimpl->m_children_deletion_flag.end();){
 		if (child_it->second){
@@ -162,11 +146,6 @@ void Actor::update(const time_t &time_ms)
 void Actor::update(const std::chrono::milliseconds & delteTimeMs)
 {
 	//TODO: call update() on all components here.
-}
-
-void Actor::setNeedUpdate(bool is_need)
-{
-	pimpl->m_is_need_update = is_need;
 }
 
 bool Actor::init(ActorID id, tinyxml2::XMLElement *xmlElement)
