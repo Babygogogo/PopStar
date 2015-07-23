@@ -67,7 +67,7 @@ std::string ComboEffectScript::ComboEffectImpl::getTextureName(int explode_stars
 	else if (explode_stars_num >= 5)
 		return "combo_1.png";
 
-	return {};
+	return{};
 }
 
 void ComboEffectScript::ComboEffectImpl::resetSpritePosition()
@@ -111,14 +111,12 @@ SequentialInvoker * ComboEffectScript::ComboEffectImpl::getSequentialInvoker() c
 //////////////////////////////////////////////////////////////////////////
 //Implementation of ComboEffect.
 //////////////////////////////////////////////////////////////////////////
-ComboEffectScript::ComboEffectScript() : BaseScriptComponent(), pimpl{ std::make_unique<ComboEffectImpl>(this) }
+ComboEffectScript::ComboEffectScript() : pimpl{ std::make_unique<ComboEffectImpl>(this) }
 {
-
 }
 
 ComboEffectScript::~ComboEffectScript()
 {
-
 }
 
 const std::string & ComboEffectScript::getType() const
@@ -128,7 +126,7 @@ const std::string & ComboEffectScript::getType() const
 
 bool ComboEffectScript::vInit(tinyxml2::XMLElement *xmlElement)
 {
-	//TODO: read data from xmlElement and avoid hard-coding the logic and resources.
+	//#TODO: read data from xmlElement and avoid hard-coding the logic and resources.
 	return true;
 }
 

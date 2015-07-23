@@ -45,14 +45,13 @@ public:
 	void postInit();
 	void update(const std::chrono::milliseconds & delteTimeMs);
 
-	void addComponent(std::shared_ptr<ActorComponent> && component);
 	const ActorID & getID() const;
+	void addComponent(std::shared_ptr<ActorComponent> && component);
 	std::shared_ptr<ActorComponent> getComponent(const std::string & type) const;
 
 	//////////////////////////////////////////////////////////////////////////
 	//Stuff for organizing the Actors as trees.
 	//////////////////////////////////////////////////////////////////////////
-	//	Actor *addChild(std::unique_ptr<Actor>&& child);
 	std::weak_ptr<Actor> addChild(std::shared_ptr<Actor> && child);
 	Actor *getParent() const;
 	bool isAncestorOf(const Actor *child) const;

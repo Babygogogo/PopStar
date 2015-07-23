@@ -1,0 +1,7 @@
+<!-- edited with XMLSpy v2013 (http://www.altova.com) by  () -->
+<Actor type="GameOverLabel" resource="Actors\GameOverLabel.xml">
+	<GameOverLabelScript>
+		<LabelData Text="Game Over"/>
+		<Font Name="Verdana-Bold" Size="80"/>
+	</GameOverLabelScript>
+</Actor>

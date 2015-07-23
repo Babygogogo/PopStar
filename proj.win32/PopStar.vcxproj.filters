@@ -66,9 +66,6 @@
     <ClCompile Include="..\Classes\Engine\Actor\SequentialInvoker.cpp">
       <Filter>Classes\Engine\Actor</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Engine\Script\GameOverLabel.cpp">
-      <Filter>Classes\Engine\Script</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\Engine\Script\GetScoreLabel.cpp">
       <Filter>Classes\Engine\Script</Filter>
     </ClCompile>
@@ -135,6 +132,9 @@
     <ClCompile Include="..\Classes\Engine\Script\ComboEffectScript.cpp">
       <Filter>Classes\Engine\Script</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Script\GameOverLabelScript.cpp">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -175,9 +175,6 @@
     </ClInclude>
     <ClInclude Include="..\Classes\Engine\Actor\SoundPlayer.h">
       <Filter>Classes\Engine\Actor</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Script\GameOverLabel.h">
-      <Filter>Classes\Engine\Script</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Engine\Script\GetScoreLabel.h">
       <Filter>Classes\Engine\Script</Filter>
@@ -262,6 +259,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\Engine\Event\BaseEventData.h">
       <Filter>Classes\Engine\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Script\GameOverLabelScript.h">
+      <Filter>Classes\Engine\Script</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

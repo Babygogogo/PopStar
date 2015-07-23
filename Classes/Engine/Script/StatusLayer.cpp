@@ -3,9 +3,11 @@
 #include "GetScoreLabel.h"
 #include "StartLevelLabel.h"
 #include "LevelSummaryLabel.h"
-#include "GameOverLabel.h"
+#include "GameOverLabelScript.h"
 #include "../Actor/Actor.h"
 #include "../Actor/DisplayNode.h"
+#include "../Utilities/SingletonContainer.h"
+#include "../GameLogic/GameLogic.h"
 #include "cocos2d.h"
 
 struct StatusLayer::impl
@@ -34,8 +36,9 @@ StatusLayer::impl::impl(Actor *game_object)
 	levelSummaryLabelActor->addComponent<LevelSummaryLabel>();
 	game_object->addChild(std::move(levelSummaryLabelActor));
 
-	auto gameOverLabelActor = std::make_shared<Actor>();
-	gameOverLabelActor->addComponent<GameOverLabel>();
+	//auto gameOverLabelActor = std::make_shared<Actor>();
+	//gameOverLabelActor->addComponent<GameOverLabelScript>();
+	auto gameOverLabelActor = SingletonContainer::getInstance()->get<GameLogic>()->createActor("Actors\\GameOverLabel.xml");
 	game_object->addChild(std::move(gameOverLabelActor));
 }
 

@@ -12,9 +12,11 @@ protected:
 	BaseScriptComponent();
 	BaseScriptComponent(std::string &&name, Actor *game_object) :ActorComponent(std::move(name), game_object){};
 
-	virtual bool vInit(tinyxml2::XMLElement *xmlElement);
+	//Override functions.
+	virtual bool vInit(tinyxml2::XMLElement *xmlElement) override;
+	virtual void vPostInit() override;
 
-	//This function should be removed in the future.
+	//#TODO: This function should be removed in the future so that every subclass must implement it.
 	virtual const std::string & getType() const override;
 };
 
