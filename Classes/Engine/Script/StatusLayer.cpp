@@ -5,7 +5,7 @@
 #include "LevelSummaryLabel.h"
 #include "GameOverLabelScript.h"
 #include "../Actor/Actor.h"
-#include "../Actor/DisplayNode.h"
+#include "../Actor/GeneralRenderComponent.h"
 #include "../Utilities/SingletonContainer.h"
 #include "../GameLogic/GameLogic.h"
 #include "cocos2d.h"
@@ -18,7 +18,7 @@ struct StatusLayer::impl
 
 StatusLayer::impl::impl(Actor *game_object)
 {
-	game_object->addComponent<DisplayNode>()->initAs<cocos2d::Layer>();
+	game_object->addComponent<GeneralRenderComponent>()->initAs<cocos2d::Layer>();
 
 	auto statusBarActor = std::make_shared<Actor>();
 	statusBarActor->addComponent<StatusBar>();

@@ -2,7 +2,7 @@
 #include "../Actor/Actor.h"
 #include "Star.h"
 #include "../Actor/Actor.h"
-#include "../Actor/DisplayNode.h"
+#include "../Actor/GeneralRenderComponent.h"
 #include "../Actor/SequentialInvoker.h"
 #include "cocos2d.h"
 
@@ -21,7 +21,7 @@ struct StarParticleEffect::impl
 
 StarParticleEffect::impl::impl(Actor *game_object) :m_game_object(game_object)
 {
-	m_effect = game_object->addComponent<DisplayNode>()->initAs<cocos2d::ParticleExplosion>();
+	m_effect = game_object->addComponent<GeneralRenderComponent>()->initAs<cocos2d::ParticleExplosion>();
 	m_invoker = game_object->addComponent<SequentialInvoker>().get();
 }
 

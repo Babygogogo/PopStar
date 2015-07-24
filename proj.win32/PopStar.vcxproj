@@ -139,8 +139,9 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClCompile Include="..\Classes\Common\GameData.cpp" />
     <ClCompile Include="..\Classes\Engine\Actor\ActorComponent.cpp" />
     <ClCompile Include="..\Classes\Engine\Actor\ActorFactory.cpp" />
+    <ClCompile Include="..\Classes\Engine\Actor\BaseRenderComponent.cpp" />
     <ClCompile Include="..\Classes\Engine\Actor\BaseScriptComponent.cpp" />
-    <ClCompile Include="..\Classes\Engine\Actor\DisplayNode.cpp" />
+    <ClCompile Include="..\Classes\Engine\Actor\GeneralRenderComponent.cpp" />
     <ClCompile Include="..\Classes\Engine\Actor\Actor.cpp" />
     <ClCompile Include="..\Classes\Engine\Actor\SequentialInvoker.cpp" />
     <ClCompile Include="..\Classes\Engine\Audio\Audio.cpp" />
@@ -174,9 +175,9 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClInclude Include="..\Classes\Engine\Actor\ActorFactory.h" />
     <ClInclude Include="..\Classes\Engine\Actor\ActorID.h" />
     <ClInclude Include="..\Classes\Engine\Actor\BaseScriptComponent.h" />
-    <ClInclude Include="..\Classes\Engine\Actor\DisplayNode.h" />
+    <ClInclude Include="..\Classes\Engine\Actor\GeneralRenderComponent.h" />
     <ClInclude Include="..\Classes\Engine\Actor\Actor.h" />
-    <ClInclude Include="..\Classes\Engine\Actor\RenderComponent.h" />
+    <ClInclude Include="..\Classes\Engine\Actor\BaseRenderComponent.h" />
     <ClInclude Include="..\Classes\Engine\Actor\SequentialInvoker.h" />
     <ClInclude Include="..\Classes\Engine\Actor\SoundPlayer.h" />
     <ClInclude Include="..\Classes\Engine\Audio\Audio.h" />

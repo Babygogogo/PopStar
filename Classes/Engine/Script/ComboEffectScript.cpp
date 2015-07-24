@@ -1,6 +1,6 @@
 #include "ComboEffectScript.h"
 #include "../Actor/Actor.h"
-#include "../Actor/DisplayNode.h"
+#include "../Actor/GeneralRenderComponent.h"
 #include "../Actor/SequentialInvoker.h"
 #include "../Utilities/SingletonContainer.h"
 #include "../Event/EventDispatcher.h"
@@ -23,12 +23,10 @@ struct ComboEffectScript::ComboEffectImpl
 
 	std::string getTextureName(int explode_stars_num);
 	void resetSpritePosition();
-	void resetInvoker();
 
 	void show(int explode_stars_num);
 
 	cocos2d::Sprite * getSprite() const;
-	SequentialInvoker * getSequentialInvoker() const;
 
 	//A back pointer of the ComboEffectScript object.
 	//It will be safer to use std::weak_ptr, but it seems to be overkill by now.
@@ -48,7 +46,6 @@ ComboEffectScript::ComboEffectImpl::~ComboEffectImpl()
 void ComboEffectScript::ComboEffectImpl::registerAsEventListeners()
 {
 	SingletonContainer::getInstance()->get<IEventDispatcher>()->registerListener(EventType::PlayerExplodedStars, this,
-		//[this](LegacyEvent *e){show(static_cast<EventArg1*>(e->getArg())->getInt()); });
 		[this](BaseEventData *e){show(dynamic_cast<EvtDataPlayerExplodedStars*>(e)->getExplodedStarsCount()); });
 }
 
@@ -86,26 +83,17 @@ void ComboEffectScript::ComboEffectImpl::show(int explode_stars_num)
 	resetSpritePosition();
 	getSprite()->setVisible(true);
 
-	resetInvoker();
-	getSequentialInvoker()->invoke();
+	auto sequentialInvoker = m_Visitor->m_Actor.lock()->getComponent<SequentialInvoker>();
+	sequentialInvoker->addFiniteTimeAction(cocos2d::Sequence::create(
+		cocos2d::Blink::create(1.0f, 5), cocos2d::CallFunc::create([this]{getSprite()->setVisible(false); }), nullptr));
+	sequentialInvoker->invoke();
 
 	Audio::getInstance()->playCombo(explode_stars_num);
 }
 
-void ComboEffectScript::ComboEffectImpl::resetInvoker()
-{
-	getSequentialInvoker()->addFiniteTimeAction(cocos2d::Sequence::create(
-		cocos2d::Blink::create(1.0f, 5), cocos2d::CallFunc::create([this]{getSprite()->setVisible(false); }), nullptr));
-}
-
 cocos2d::Sprite * ComboEffectScript::ComboEffectImpl::getSprite() const
 {
-	return m_Visitor->m_Actor.lock()->getComponent<DisplayNode>()->getAs<cocos2d::Sprite>();
-}
-
-SequentialInvoker * ComboEffectScript::ComboEffectImpl::getSequentialInvoker() const
-{
-	return m_Visitor->m_Actor.lock()->getComponent<SequentialInvoker>().get();
+	return m_Visitor->m_Actor.lock()->getComponent<GeneralRenderComponent>()->getAs<cocos2d::Sprite>();
 }
 
 //////////////////////////////////////////////////////////////////////////

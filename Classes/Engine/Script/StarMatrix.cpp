@@ -1,7 +1,7 @@
 #include "StarMatrix.h"
 #include "Star.h"
 #include "StarParticleEffect.h"
-#include "../Actor/DisplayNode.h"
+#include "../Actor/GeneralRenderComponent.h"
 #include "../Actor/SequentialInvoker.h"
 #include "../Actor/Actor.h"
 #include "../Utilities/SingletonContainer.h"
@@ -64,7 +64,7 @@ const std::array<std::array<int, 2>, 4> StarMatrix::impl::NEIGHBOR_INDEXES = { {
 
 StarMatrix::impl::impl(Actor *game_object) :m_game_object(game_object)
 {
-	m_node_underlying = game_object->addComponent<DisplayNode>()->initAs<cocos2d::Layer>();
+	m_node_underlying = game_object->addComponent<GeneralRenderComponent>()->initAs<cocos2d::Layer>();
 
 	m_invoker = game_object->addComponent<SequentialInvoker>().get();
 	m_invoker->setInvokeContinuously(true);

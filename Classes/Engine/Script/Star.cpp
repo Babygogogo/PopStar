@@ -1,6 +1,6 @@
 #include "Star.h"
 #include "../Actor/Actor.h"
-#include "../Actor/DisplayNode.h"
+#include "../Actor/GeneralRenderComponent.h"
 #include "../Actor/SequentialInvoker.h"
 #include "cocos2d.h"
 #include <random>
@@ -44,7 +44,7 @@ std::uniform_int_distribution<> Star::impl::random_pos_offset(-135, 135);
 
 Star::impl::impl(Actor *game_object)
 {
-	m_sprite = game_object->addComponent<DisplayNode>()->initAs<cocos2d::Sprite>();
+	m_sprite = game_object->addComponent<GeneralRenderComponent>()->initAs<cocos2d::Sprite>();
 
 	m_invoker = game_object->addComponent<SequentialInvoker>().get();
 	m_invoker->setInvokeContinuously(true);

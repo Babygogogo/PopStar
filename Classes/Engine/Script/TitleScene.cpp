@@ -1,7 +1,7 @@
 #include "TitleScene.h"
 #include "PuzzleScene.h"
 #include "../Actor/Actor.h"
-#include "../Actor/DisplayNode.h"
+#include "../Actor/GeneralRenderComponent.h"
 #include "../Utilities/SingletonContainer.h"
 #include "../Graphic2D/SceneStack.h"
 #include "../../Common/GameData.h"
@@ -35,7 +35,7 @@ struct TitleScene::impl
 
 TitleScene::impl::impl(Actor *game_object)
 {
-	game_object->addComponent<DisplayNode>()->initAs<cocos2d::Scene>();
+	game_object->addComponent<GeneralRenderComponent>()->initAs<cocos2d::Scene>();
 
 	game_object->addChild(createDisplayObjects());
 
@@ -49,7 +49,7 @@ TitleScene::impl::~impl()
 std::shared_ptr<Actor> TitleScene::impl::createDisplayObjects() const
 {
 	auto layer_object = std::make_shared<Actor>();
-	layer_object->addComponent<DisplayNode>()->initAs<cocos2d::Layer>();
+	layer_object->addComponent<GeneralRenderComponent>()->initAs<cocos2d::Layer>();
 
 	layer_object->addChild(createBackground());
 	layer_object->addChild(createTitleMenu());
@@ -60,7 +60,7 @@ std::shared_ptr<Actor> TitleScene::impl::createDisplayObjects() const
 std::shared_ptr<Actor> TitleScene::impl::createBackground() const
 {
 	auto background_object = std::make_shared<Actor>();
-	auto background_sprite = background_object->addComponent<DisplayNode>()->initAs<cocos2d::Sprite>(
+	auto background_sprite = background_object->addComponent<GeneralRenderComponent>()->initAs<cocos2d::Sprite>(
 		[]{return cocos2d::Sprite::create("bg_menuscene.jpg"); });
 
 	auto visible_size = cocos2d::Director::getInstance()->getVisibleSize();
@@ -72,7 +72,7 @@ std::shared_ptr<Actor> TitleScene::impl::createBackground() const
 std::shared_ptr<Actor> TitleScene::impl::createTitleMenu() const
 {
 	auto menu_object = std::make_shared<Actor>();
-	auto menu_underlying = menu_object->addComponent<DisplayNode>()->initAs<cocos2d::Menu>();
+	auto menu_underlying = menu_object->addComponent<GeneralRenderComponent>()->initAs<cocos2d::Menu>();
 
 	menu_object->addChild(createStartButton());
 
@@ -85,7 +85,7 @@ std::shared_ptr<Actor> TitleScene::impl::createTitleMenu() const
 std::shared_ptr<Actor> TitleScene::impl::createStartButton() const
 {
 	auto button_object = std::make_shared<Actor>();
-	button_object->addComponent<DisplayNode>()->initAs<cocos2d::MenuItemImage>(
+	button_object->addComponent<GeneralRenderComponent>()->initAs<cocos2d::MenuItemImage>(
 		[this]{return cocos2d::MenuItemImage::create("menu_start.png", "menu_start.png", createStartButtonCallback()); });
 
 	return button_object;

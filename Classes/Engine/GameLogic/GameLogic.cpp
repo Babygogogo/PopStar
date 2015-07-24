@@ -7,6 +7,7 @@
 #include "GameLogic.h"
 #include "../Actor/Actor.h"
 #include "../Actor/ActorFactory.h"
+#include "../MainLoop/ProcessRunner.h"
 #include "cocos2d.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -19,6 +20,8 @@ public:
 	~GameLogicImpl();
 
 	static int InstanceCount;
+
+	ProcessRunner m_ProcessRunner;
 
 	//Lock of the process of updating actor.
 	bool m_IsUpdatingActors{ false };
@@ -54,6 +57,9 @@ GameLogic::~GameLogic()
 
 void GameLogic::vUpdate(const std::chrono::milliseconds & deltaTimeMs)
 {
+	//Update the process runner.
+	pimpl->m_ProcessRunner.updateAllProcess(deltaTimeMs);
+
 	//Lock the lock of updating actors.
 	pimpl->m_IsUpdatingActors = true;
 

@@ -2,7 +2,7 @@
 #include "Actor.h"
 #include "ActorID.h"
 #include "ActorComponent.h"
-#include "DisplayNode.h"
+#include "GeneralRenderComponent.h"
 #include "../Script/ComboEffectScript.h"
 #include "../Script/GameOverLabelScript.h"
 #include "../Utilities/GenericFactory.h"
@@ -21,7 +21,7 @@ struct ActorFactory::ActorFactoryImpl
 	//You must modify this function whenever the types of components are changed.
 	void registerComponents();
 
-	std::unique_ptr<ActorComponent> createComponent(tinyxml2::XMLElement * componentElement);
+	std::shared_ptr<ActorComponent> createComponent(tinyxml2::XMLElement * componentElement);
 	void postInitActor(std::shared_ptr<Actor> & actor);
 
 	ActorID getNextID() const;
@@ -43,15 +43,15 @@ ActorFactory::ActorFactoryImpl::~ActorFactoryImpl()
 void ActorFactory::ActorFactoryImpl::registerComponents()
 {
 	//#TODO: Register all of the concrete components here.
-	m_ComponentFactory.registerType<DisplayNode>();
+	m_ComponentFactory.registerType<GeneralRenderComponent>();
 	m_ComponentFactory.registerType<ComboEffectScript>();
 	m_ComponentFactory.registerType<GameOverLabelScript>();
 }
 
-std::unique_ptr<ActorComponent> ActorFactory::ActorFactoryImpl::createComponent(tinyxml2::XMLElement * componentElement)
+std::shared_ptr<ActorComponent> ActorFactory::ActorFactoryImpl::createComponent(tinyxml2::XMLElement * componentElement)
 {
 	auto componentType = componentElement->Value();
-	auto component = m_ComponentFactory.createUnique(componentType);
+	auto component = m_ComponentFactory.createShared(componentType);
 
 	//If can't create the component, log and return nullptr.
 	if (!component){

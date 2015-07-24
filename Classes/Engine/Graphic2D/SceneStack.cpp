@@ -5,7 +5,7 @@
 #include "../Utilities/SingletonContainer.h"
 #include "../MainLoop/Timer.h"
 #include "../Actor/Actor.h"
-#include "../Actor/DisplayNode.h"
+#include "../Actor/GeneralRenderComponent.h"
 #include "cocos2d.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -53,9 +53,9 @@ void SceneStack::SceneStackImpl::pushSceneToDirector(Actor *scene)
 {
 	auto director = cocos2d::Director::getInstance();
 	if (director->getRunningScene())
-		director->pushScene(scene->getComponent<DisplayNode>()->getAs<cocos2d::Scene>());
+		director->pushScene(scene->getComponent<GeneralRenderComponent>()->getAs<cocos2d::Scene>());
 	else
-		director->runWithScene(scene->getComponent<DisplayNode>()->getAs<cocos2d::Scene>());
+		director->runWithScene(scene->getComponent<GeneralRenderComponent>()->getAs<cocos2d::Scene>());
 }
 
 Actor * SceneStack::SceneStackImpl::topScene()
@@ -68,7 +68,7 @@ Actor * SceneStack::SceneStackImpl::topScene()
 
 void SceneStack::SceneStackImpl::validate(Actor* scene)
 {
-	if (!scene || !scene->getComponent<DisplayNode>() || !scene->getComponent<DisplayNode>()->getAs<cocos2d::Scene>())
+	if (!scene || !scene->getComponent<GeneralRenderComponent>() || !scene->getComponent<GeneralRenderComponent>()->getAs<cocos2d::Scene>())
 		throw("pushScene with a non-scene");
 	if (scene->getParent())
 		throw("pushScene with a game object that has a parent");
@@ -142,7 +142,7 @@ std::shared_ptr<Actor> SceneStack::replaceAndRun(std::shared_ptr<Actor> &&scene)
 	auto ownership = pimpl->pop();
 	pimpl->push(std::move(scene));
 
-	cocos2d::Director::getInstance()->replaceScene(pimpl->topScene()->getComponent<DisplayNode>()->getAs<cocos2d::Scene>());
+	cocos2d::Director::getInstance()->replaceScene(pimpl->topScene()->getComponent<GeneralRenderComponent>()->getAs<cocos2d::Scene>());
 
 	return ownership;
 }

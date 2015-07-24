@@ -1,6 +1,6 @@
 #include "StatusBar.h"
 #include "../Actor/Actor.h"
-#include "../Actor/DisplayNode.h"
+#include "../Actor/GeneralRenderComponent.h"
 #include "../Utilities/SingletonContainer.h"
 #include "../../Common/GameData.h"
 #include "../Event/EventDispatcher.h"
@@ -21,7 +21,7 @@ struct StatusBar::impl
 
 StatusBar::impl::impl(Actor *game_object)
 {
-	game_object->addComponent<DisplayNode>()->initAs<cocos2d::Node>();
+	game_object->addComponent<GeneralRenderComponent>()->initAs<cocos2d::Node>();
 
 	game_object->addChild(createHighScoreLabel());
 	game_object->addChild(createCurrentScoreLabel());
@@ -38,7 +38,7 @@ StatusBar::impl::~impl()
 std::shared_ptr<Actor> StatusBar::impl::createHighScoreLabel()
 {
 	auto label_object = std::make_shared<Actor>();
-	auto label_underlying = label_object->addComponent<DisplayNode>()->initAs<cocos2d::Label>([]{return cocos2d::Label::createWithSystemFont(
+	auto label_underlying = label_object->addComponent<GeneralRenderComponent>()->initAs<cocos2d::Label>([]{return cocos2d::Label::createWithSystemFont(
 		std::string("High Score: ") + std::to_string(SingletonContainer::getInstance()->get<GameData>()->getHighScore()), "Verdana - Bold", 30); });
 
 	auto visible_size = cocos2d::Director::getInstance()->getVisibleSize();
@@ -53,7 +53,7 @@ std::shared_ptr<Actor> StatusBar::impl::createHighScoreLabel()
 std::shared_ptr<Actor> StatusBar::impl::createCurrentScoreLabel()
 {
 	auto label_object = std::make_shared<Actor>();
-	auto label_underlying = label_object->addComponent<DisplayNode>()->initAs<cocos2d::Label>([]{return cocos2d::Label::createWithSystemFont(
+	auto label_underlying = label_object->addComponent<GeneralRenderComponent>()->initAs<cocos2d::Label>([]{return cocos2d::Label::createWithSystemFont(
 		std::string("Current Score: ") + std::to_string(SingletonContainer::getInstance()->get<GameData>()->getCurrentScore()), "Verdana - Bold", 40); });
 
 	auto visible_size = cocos2d::Director::getInstance()->getVisibleSize();
@@ -68,7 +68,7 @@ std::shared_ptr<Actor> StatusBar::impl::createCurrentScoreLabel()
 std::shared_ptr<Actor> StatusBar::impl::createTargetScoreLabel()
 {
 	auto label_object = std::make_shared<Actor>();
-	auto label_underlying = label_object->addComponent<DisplayNode>()->initAs<cocos2d::Label>([]{return cocos2d::Label::createWithSystemFont(
+	auto label_underlying = label_object->addComponent<GeneralRenderComponent>()->initAs<cocos2d::Label>([]{return cocos2d::Label::createWithSystemFont(
 		std::string("Target Score: ") + std::to_string(SingletonContainer::getInstance()->get<GameData>()->getTargetScore()), "Verdana - Bold", 30); });
 
 	auto visible_size = cocos2d::Director::getInstance()->getVisibleSize();
@@ -83,7 +83,7 @@ std::shared_ptr<Actor> StatusBar::impl::createTargetScoreLabel()
 std::shared_ptr<Actor> StatusBar::impl::createLevelLabel()
 {
 	auto label_object = std::make_shared<Actor>();
-	auto label_underlying = label_object->addComponent<DisplayNode>()->initAs<cocos2d::Label>([]{return cocos2d::Label::createWithSystemFont(
+	auto label_underlying = label_object->addComponent<GeneralRenderComponent>()->initAs<cocos2d::Label>([]{return cocos2d::Label::createWithSystemFont(
 		std::string("Level: ") + std::to_string(SingletonContainer::getInstance()->get<GameData>()->getCurrentLevel()), "Verdana - Bold", 30); });
 
 	auto visible_size = cocos2d::Director::getInstance()->getVisibleSize();

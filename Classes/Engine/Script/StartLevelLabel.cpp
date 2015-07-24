@@ -1,6 +1,6 @@
 #include "StartLevelLabel.h"
 #include "../Actor/Actor.h"
-#include "../Actor/DisplayNode.h"
+#include "../Actor/GeneralRenderComponent.h"
 #include "../Actor/SequentialInvoker.h"
 #include "../Utilities/SingletonContainer.h"
 #include "../../Common/GameData.h"
@@ -29,7 +29,7 @@ struct StartLevelLabel::impl
 
 StartLevelLabel::impl::impl(Actor *game_object)
 {
-	m_label_underlying = game_object->addComponent<DisplayNode>()->initAs<cocos2d::Label>(
+	m_label_underlying = game_object->addComponent<GeneralRenderComponent>()->initAs<cocos2d::Label>(
 		[]{return cocos2d::Label::createWithSystemFont("", "Verdana-Bold", 50); });
 	m_label_underlying->setVisible(false);
 

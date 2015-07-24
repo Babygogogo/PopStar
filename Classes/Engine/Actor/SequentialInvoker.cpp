@@ -2,7 +2,7 @@
 
 #include "SequentialInvoker.h"
 #include "Actor.h"
-#include "DisplayNode.h"
+#include "GeneralRenderComponent.h"
 #include "../Utilities/SingletonContainer.h"
 #include "../Event/IEventDispatcher.h"
 #include "../Event/EventType.h"
@@ -109,7 +109,7 @@ cocos2d::CallFunc * SequentialInvoker::SequentialInvokerImpl::createDispatchCall
 //////////////////////////////////////////////////////////////////////////
 SequentialInvoker::SequentialInvoker(Actor *game_object) :ActorComponent("SequentialInvoker2", game_object)
 {
-	auto target_node = game_object->addComponent<DisplayNode>()->getAs<cocos2d::Node>();
+	auto target_node = game_object->addComponent<GeneralRenderComponent>()->getAs<cocos2d::Node>();
 	if (!target_node)
 		throw("Add SequentialInvoker to a GameObject without an initialized DisplayNode.");
 

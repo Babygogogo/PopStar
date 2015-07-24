@@ -5,7 +5,7 @@
 #include <unordered_map>
 
 #include "Actor.h"
-#include "DisplayNode.h"
+#include "GeneralRenderComponent.h"
 #include "cocos2d.h"
 #include "../../cocos2d/external/tinyxml2/tinyxml2.h"
 
@@ -78,8 +78,8 @@ std::weak_ptr<Actor> Actor::addChild(std::shared_ptr<Actor> && child)
 	child->pimpl->m_parent = this;
 
 	//deal with child's DisplayNode if present
-	if (auto child_display_node = child->getComponent<DisplayNode>())
-		this->addComponent<DisplayNode>()->addChild(child_display_node.get());
+	if (auto child_display_node = child->getComponent<GeneralRenderComponent>())
+		this->addComponent<GeneralRenderComponent>()->addChild(child_display_node.get());
 
 	pimpl->m_children_deletion_flag.emplace(child.get(), false);
 	pimpl->m_children.emplace_back(std::move(child));
@@ -113,7 +113,7 @@ std::shared_ptr<Actor> Actor::removeFromParent()
 {
 	if (auto parent = getParent()){
 		this->pimpl->m_parent = nullptr;
-		if (auto display_node = getComponent<DisplayNode>())
+		if (auto display_node = getComponent<GeneralRenderComponent>())
 			display_node->removeFromParent();
 
 		if (pimpl->m_is_updating)
@@ -180,7 +180,11 @@ void Actor::postInit()
 
 void Actor::addComponent(std::shared_ptr<ActorComponent> && component)
 {
+	//Ensure that the component is alive.
 	assert(component);
+
+	//#TODO: Check if the component is an render component, and make sure that the actor can have no more than one render component.
+
 	auto emplaceResult = pimpl->m_Components.emplace(std::make_pair(component->getType(), std::move(component)));
 	assert(emplaceResult.second);
 }

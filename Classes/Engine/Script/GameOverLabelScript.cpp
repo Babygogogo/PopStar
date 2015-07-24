@@ -1,7 +1,7 @@
 #include "GameOverLabelScript.h"
 #include "TitleScene.h"
 #include "../Actor/Actor.h"
-#include "../Actor/DisplayNode.h"
+#include "../Actor/GeneralRenderComponent.h"
 #include "../Actor/SequentialInvoker.h"
 #include "../Utilities/SingletonContainer.h"
 #include "../Graphic2D/SceneStack.h"
@@ -123,7 +123,7 @@ void GameOverLabelScript::vPostInit()
 	assert(!m_Actor.expired());
 	auto strongActor = m_Actor.lock();
 
-	pimpl->m_label_underlying = strongActor->addComponent<DisplayNode>()->initAs<cocos2d::Label>(
+	pimpl->m_label_underlying = strongActor->addComponent<GeneralRenderComponent>()->initAs<cocos2d::Label>(
 		[this]{return cocos2d::Label::createWithSystemFont(pimpl->m_GameOverText, pimpl->m_GameOverFontName, pimpl->m_GameOverFontSize); });
 
 	pimpl->m_label_underlying->setVisible(false);

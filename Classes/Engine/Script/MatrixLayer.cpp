@@ -2,7 +2,7 @@
 #include "StarMatrix.h"
 #include "../Utilities/SingletonContainer.h"
 #include "../Actor/Actor.h"
-#include "../Actor/DisplayNode.h"
+#include "../Actor/GeneralRenderComponent.h"
 #include "../Actor/SequentialInvoker.h"
 #include "../Event/EventType.h"
 #include "../Event/EventDispatcher.h"
@@ -26,7 +26,7 @@ struct MatrixLayer::impl
 
 MatrixLayer::impl::impl(Actor *game_object)
 {
-	game_object->addComponent<DisplayNode>()->initAs<cocos2d::Layer>();
+	game_object->addComponent<GeneralRenderComponent>()->initAs<cocos2d::Layer>();
 
 	auto starMatrixActor = std::make_shared<Actor>();
 	starMatrixActor->addComponent<StarMatrix>();
@@ -35,7 +35,7 @@ MatrixLayer::impl::impl(Actor *game_object)
 	//Create the ComboEffect actor.
 	//#TODO: Should be replaced by calls to factory soon...
 	auto comboEffect = SingletonContainer::getInstance()->get<GameLogic>()->createActor("Actors\\ComboEffect.xml");
-	comboEffect->addComponent<DisplayNode>()->initAs<cocos2d::Sprite>();
+	comboEffect->addComponent<GeneralRenderComponent>()->initAs<cocos2d::Sprite>();
 	comboEffect->addComponent<SequentialInvoker>();
 	game_object->addChild(std::move(comboEffect));
 

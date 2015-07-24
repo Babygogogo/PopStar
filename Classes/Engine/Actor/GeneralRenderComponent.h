@@ -1,33 +1,24 @@
-#ifndef __DISPLAY_NODE__
-#define __DISPLAY_NODE__
+#ifndef __GENERAL_RENDER_COMPONENT__
+#define __GENERAL_RENDER_COMPONENT__
 
 #include <memory>
 #include <functional>
 
-#include "ActorComponent.h"
+#include "BaseRenderComponent.h"
 
-//Forward declaration.
-namespace cocos2d
-{
-	class Node;
-}
-
-class DisplayNode final : public ActorComponent
+class GeneralRenderComponent final : public BaseRenderComponent
 {
 	friend class Actor;
 
 public:
-	DisplayNode();
-	DisplayNode(Actor *game_object);
-	~DisplayNode();
-
-	//Create an instance.
-	static std::unique_ptr<DisplayNode> create();
+	GeneralRenderComponent();
+	GeneralRenderComponent(Actor *game_object);
+	~GeneralRenderComponent();
 
 	//The type name of this component. Must be the same as the class name.
 	static const std::string Type;
 
-	DisplayNode *getParent() const;
+	GeneralRenderComponent *getParent() const;
 
 	//////////////////////////////////////////////////////////////////////////
 	//Initializer and getter for underlying object
@@ -47,22 +38,18 @@ public:
 	template<typename T>
 	T* getAs() const
 	{
-		return static_cast<T*>(getNode());
+		return static_cast<T*>(getSceneNode());
 	}
 
 	//Disable copy/move constructor and operator=.
-	DisplayNode(const DisplayNode&) = delete;
-	DisplayNode(DisplayNode&&) = delete;
-	DisplayNode& operator=(const DisplayNode&) = delete;
-	DisplayNode& operator=(DisplayNode&&) = delete;
+	GeneralRenderComponent(const GeneralRenderComponent&) = delete;
+	GeneralRenderComponent(GeneralRenderComponent&&) = delete;
+	GeneralRenderComponent& operator=(const GeneralRenderComponent&) = delete;
+	GeneralRenderComponent& operator=(GeneralRenderComponent&&) = delete;
 
 private:
-
-	void addChild(DisplayNode *child);
+	void addChild(GeneralRenderComponent *child);
 	void removeFromParent();
-
-	//Get the internal cocos2d::Node.
-	cocos2d::Node * getNode() const;
 
 	//Helper function for initAs().
 	cocos2d::Node * initAsHelper(std::function<void*()> && creatorFunction);
@@ -70,10 +57,11 @@ private:
 	//Override functions.
 	virtual const std::string & getType() const override;
 	virtual bool vInit(tinyxml2::XMLElement *xmlElement) override;
+	virtual cocos2d::Node * getSceneNode() const override;
 
 	//Implementation stuff.
 	struct DisplayNodeImpl;
 	std::unique_ptr<DisplayNodeImpl> pimpl;
 };
 
-#endif // !__DISPLAY_NODE__
+#endif // !__GENERAL_RENDER_COMPONENT__

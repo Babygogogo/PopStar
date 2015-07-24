@@ -31,6 +31,7 @@ public:
 
 protected:
 	ActorComponent();
+	//#TODO: This constructor should be removed.
 	ActorComponent(std::string &&name, Actor *game_object);
 
 	//Called by ActorFactory, after the creation of the component and before attaching to an actor.

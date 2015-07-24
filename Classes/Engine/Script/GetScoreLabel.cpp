@@ -1,6 +1,6 @@
 #include "GetScoreLabel.h"
 #include "../Actor/Actor.h"
-#include "../Actor/DisplayNode.h"
+#include "../Actor/GeneralRenderComponent.h"
 #include "../Utilities/SingletonContainer.h"
 #include "../../Common/GameData.h"
 #include "../Event/EventDispatcher.h"
@@ -19,7 +19,7 @@ struct GetScoreLabel::impl
 
 GetScoreLabel::impl::impl(Actor *game_object)
 {
-	auto label_underlying = game_object->addComponent<DisplayNode>()->initAs<cocos2d::Label>(
+	auto label_underlying = game_object->addComponent<GeneralRenderComponent>()->initAs<cocos2d::Label>(
 		[]{return cocos2d::Label::createWithSystemFont("", "Arial", 30); });
 
 	auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
