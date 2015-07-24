@@ -15,8 +15,11 @@
 //////////////////////////////////////////////////////////////////////////
 struct SequentialInvoker::SequentialInvokerImpl
 {
-	SequentialInvokerImpl(Actor *game_object, cocos2d::Node *target_node);
+	SequentialInvokerImpl(SequentialInvoker *visitor);
+	SequentialInvokerImpl(cocos2d::Node *target_node);
 	~SequentialInvokerImpl();
+
+	void init();
 
 	void pushBack(cocos2d::Action *action);
 	void popFront();
@@ -27,14 +30,18 @@ struct SequentialInvoker::SequentialInvokerImpl
 
 	cocos2d::CallFunc *createDispatchCallback() const;
 
-	Actor *m_target{ nullptr };
-	cocos2d::Node *m_target_node{ nullptr };
+	SequentialInvoker *m_Visitor{ nullptr };
+	cocos2d::Node *m_TargetNode{ nullptr };
 	cocos2d::Action *m_current_action{ nullptr };
 	bool m_invoke_continuously{ false };
 	std::list<cocos2d::Action*> m_action_list;
 };
 
-SequentialInvoker::SequentialInvokerImpl::SequentialInvokerImpl(Actor *game_object, cocos2d::Node *target_node) :m_target(game_object), m_target_node(target_node)
+SequentialInvoker::SequentialInvokerImpl::SequentialInvokerImpl(SequentialInvoker *visitor) : m_Visitor{ visitor }
+{
+}
+
+SequentialInvoker::SequentialInvokerImpl::SequentialInvokerImpl(cocos2d::Node *target_node) : m_TargetNode(target_node)
 {
 	SingletonContainer::getInstance()->get<IEventDispatcher>()->registerListener(
 		EventType::SequentialInvokerFinishOneAction, this, [this](BaseEventData *e){eraseCurrent(); invoke(true); });
@@ -44,10 +51,18 @@ SequentialInvoker::SequentialInvokerImpl::~SequentialInvokerImpl()
 {
 	while (!m_action_list.empty())
 		popFront();
+
 	eraseCurrent();
 
 	if (auto& singleton_container = SingletonContainer::getInstance())
 		singleton_container->get<IEventDispatcher>()->deleteListener(this);
+}
+
+void SequentialInvoker::SequentialInvokerImpl::init()
+{
+	m_TargetNode = m_Visitor->m_Actor.lock()->getComponent<GeneralRenderComponent>()->getAs<cocos2d::Node>();
+	SingletonContainer::getInstance()->get<IEventDispatcher>()->registerListener(
+		EventType::SequentialInvokerFinishOneAction, this, [this](BaseEventData *e){eraseCurrent(); invoke(true); });
 }
 
 void SequentialInvoker::SequentialInvokerImpl::popFront()
@@ -83,7 +98,7 @@ bool SequentialInvoker::SequentialInvokerImpl::invoke(bool is_called_by_event_di
 
 	m_current_action = m_action_list.front();
 	m_action_list.pop_front();
-	m_target_node->runAction(m_current_action);
+	m_TargetNode->runAction(m_current_action);
 
 	return true;
 }
@@ -100,20 +115,23 @@ cocos2d::CallFunc * SequentialInvoker::SequentialInvokerImpl::createDispatchCall
 {
 	return cocos2d::CallFunc::create([this]{if (auto& singleton_container = SingletonContainer::getInstance())
 		singleton_container->get<IEventDispatcher>()->dispatch(
-		//			LegacyEvent::create(LegacyEventType::SequentialInvokerFinishOneAction), const_cast<SequentialInvoker::impl*>(this)); });
 		std::make_unique<EvtDataGeneric>(EventType::SequentialInvokerFinishOneAction), const_cast<SequentialInvoker::SequentialInvokerImpl*>(this)); });
 }
 
 //////////////////////////////////////////////////////////////////////////
 //Implementation of SequentialInvoker.
 //////////////////////////////////////////////////////////////////////////
-SequentialInvoker::SequentialInvoker(Actor *game_object) :ActorComponent("SequentialInvoker2", game_object)
+SequentialInvoker::SequentialInvoker() : pimpl{ std::make_unique<SequentialInvokerImpl>(this) }
+{
+}
+
+SequentialInvoker::SequentialInvoker(Actor *game_object) : ActorComponent("SequentialInvoker2", game_object)
 {
 	auto target_node = game_object->addComponent<GeneralRenderComponent>()->getAs<cocos2d::Node>();
 	if (!target_node)
 		throw("Add SequentialInvoker to a GameObject without an initialized DisplayNode.");
 
-	pimpl.reset(new SequentialInvokerImpl(game_object, target_node));
+	pimpl.reset(new SequentialInvokerImpl(target_node));
 }
 
 SequentialInvoker::~SequentialInvoker()
@@ -170,7 +188,7 @@ void SequentialInvoker::clear()
 	while (!pimpl->m_action_list.empty())
 		pimpl->popFront();
 
-	pimpl->m_target_node->stopAllActions();
+	pimpl->m_TargetNode->stopAllActions();
 	pimpl->eraseCurrent();
 }
 
@@ -182,6 +200,11 @@ const std::string & SequentialInvoker::getType() const
 bool SequentialInvoker::vInit(tinyxml2::XMLElement *xmlElement)
 {
 	return true;
+}
+
+void SequentialInvoker::vPostInit()
+{
+	pimpl->init();
 }
 
 const std::string SequentialInvoker::Type = "SequentialInvokerComponent";

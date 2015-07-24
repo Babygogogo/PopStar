@@ -40,7 +40,6 @@ protected:
 	virtual void vPostInit();
 	virtual void vOnChanged();
 
-	Actor *m_game_object;	//This should be removed when the refactor is done.
 	std::weak_ptr<Actor> m_Actor;
 
 public:

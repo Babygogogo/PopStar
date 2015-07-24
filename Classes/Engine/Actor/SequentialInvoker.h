@@ -18,8 +18,8 @@ class SequentialInvoker final :public ActorComponent
 	friend class Actor;
 
 public:
+	SequentialInvoker();
 	SequentialInvoker(Actor *game_object);
-
 	~SequentialInvoker();
 
 	static const std::string Type;
@@ -41,11 +41,12 @@ public:
 	SequentialInvoker& operator=(SequentialInvoker&&) = delete;
 
 private:
-
+	//Override functions.
 	virtual const std::string & getType() const;
-
 	virtual bool vInit(tinyxml2::XMLElement *xmlElement);
+	virtual void vPostInit() override;
 
+	//Implementation stuff.
 	struct SequentialInvokerImpl;
 	std::unique_ptr<SequentialInvokerImpl> pimpl;
 };

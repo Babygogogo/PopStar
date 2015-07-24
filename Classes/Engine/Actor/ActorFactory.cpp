@@ -3,6 +3,7 @@
 #include "ActorID.h"
 #include "ActorComponent.h"
 #include "GeneralRenderComponent.h"
+#include "SequentialInvoker.h"
 #include "../Script/ComboEffectScript.h"
 #include "../Script/GameOverLabelScript.h"
 #include "../Utilities/GenericFactory.h"
@@ -44,6 +45,7 @@ void ActorFactory::ActorFactoryImpl::registerComponents()
 {
 	//#TODO: Register all of the concrete components here.
 	m_ComponentFactory.registerType<GeneralRenderComponent>();
+	m_ComponentFactory.registerType<SequentialInvoker>();
 	m_ComponentFactory.registerType<ComboEffectScript>();
 	m_ComponentFactory.registerType<GameOverLabelScript>();
 }

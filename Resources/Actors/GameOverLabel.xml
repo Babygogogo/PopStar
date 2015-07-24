@@ -4,4 +4,6 @@
 		<LabelData Text="Game Over"/>
 		<Font Name="Verdana-Bold" Size="80"/>
 	</GameOverLabelScript>
+	<GeneralRenderComponent Type="Label"/>
+	<SequentialInvokerComponent/>
 </Actor>

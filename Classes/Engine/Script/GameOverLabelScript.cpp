@@ -123,12 +123,16 @@ void GameOverLabelScript::vPostInit()
 	assert(!m_Actor.expired());
 	auto strongActor = m_Actor.lock();
 
-	pimpl->m_label_underlying = strongActor->addComponent<GeneralRenderComponent>()->initAs<cocos2d::Label>(
-		[this]{return cocos2d::Label::createWithSystemFont(pimpl->m_GameOverText, pimpl->m_GameOverFontName, pimpl->m_GameOverFontSize); });
+	//pimpl->m_label_underlying = strongActor->addComponent<GeneralRenderComponent>()->initAs<cocos2d::Label>(
+	//	[this]{return cocos2d::Label::createWithSystemFont(pimpl->m_GameOverText, pimpl->m_GameOverFontName, pimpl->m_GameOverFontSize); });
 
+	pimpl->m_label_underlying = strongActor->getComponent<GeneralRenderComponent>()->getAs<cocos2d::Label>();
+	pimpl->m_label_underlying->setString(pimpl->m_GameOverText);
+	pimpl->m_label_underlying->setSystemFontName(pimpl->m_GameOverFontName);
+	pimpl->m_label_underlying->setSystemFontSize(pimpl->m_GameOverFontSize);
 	pimpl->m_label_underlying->setVisible(false);
 
-	pimpl->m_invoker = strongActor->addComponent<SequentialInvoker>().get();
+	pimpl->m_invoker = strongActor->getComponent<SequentialInvoker>().get();
 
 	pimpl->registerAsEventListeners();
 }

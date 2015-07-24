@@ -34,10 +34,14 @@ GeneralRenderComponent::GeneralRenderComponent() : pimpl{ std::make_unique<Displ
 {
 }
 
-GeneralRenderComponent::GeneralRenderComponent(Actor *game_object) : BaseRenderComponent("DisplayNode", game_object), pimpl{ std::make_unique<DisplayNodeImpl>() }
+//GeneralRenderComponent::GeneralRenderComponent(Actor *game_object) : BaseRenderComponent("DisplayNode", game_object), pimpl{ std::make_unique<DisplayNodeImpl>() }
+//{
+//	if (auto parent_object = game_object->getParent())
+//		parent_object->addComponent<GeneralRenderComponent>()->addChild(this);
+//}
+
+GeneralRenderComponent::GeneralRenderComponent(Actor *game_object) : pimpl{ std::make_unique<DisplayNodeImpl>() }
 {
-	if (auto parent_object = game_object->getParent())
-		parent_object->addComponent<GeneralRenderComponent>()->addChild(this);
 }
 
 GeneralRenderComponent::~GeneralRenderComponent()
@@ -95,14 +99,14 @@ const std::string & GeneralRenderComponent::getType() const
 bool GeneralRenderComponent::vInit(tinyxml2::XMLElement *xmlElement)
 {
 	//Get the type of node from xmlElement.
-	auto nodeType = xmlElement->Attribute("type");
+	auto nodeType = xmlElement->Attribute("Type");
 
 	//Create the node as the type.
 	//#TODO: Complete the if statements.
 	if (strcmp(nodeType, "Sprite") == 0)
 		m_Node = cocos2d::Sprite::create();
 	else if (strcmp(nodeType, "Label") == 0)
-		m_Node = cocos2d::Label::create();
+		m_Node = cocos2d::Label::createWithSystemFont("", "", 0);
 
 	//Ensure that the node is created, then retain it.
 	assert(m_Node);
@@ -135,4 +139,4 @@ cocos2d::Node * GeneralRenderComponent::getSceneNode() const
 	return m_Node;
 }
 
-const std::string GeneralRenderComponent::Type = "DisplayNodeComponent";
+const std::string GeneralRenderComponent::Type = "GeneralRenderComponent";
