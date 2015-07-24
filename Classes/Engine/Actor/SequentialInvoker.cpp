@@ -10,10 +10,13 @@
 #include "../Event/EvtDataGeneric.h"
 #include "cocos2d.h"
 
-struct SequentialInvoker::impl
+//////////////////////////////////////////////////////////////////////////
+//Definition of SequentialInvokerImpl.
+//////////////////////////////////////////////////////////////////////////
+struct SequentialInvoker::SequentialInvokerImpl
 {
-	impl(Actor *game_object, cocos2d::Node *target_node);
-	~impl();
+	SequentialInvokerImpl(Actor *game_object, cocos2d::Node *target_node);
+	~SequentialInvokerImpl();
 
 	void pushBack(cocos2d::Action *action);
 	void popFront();
@@ -31,13 +34,13 @@ struct SequentialInvoker::impl
 	std::list<cocos2d::Action*> m_action_list;
 };
 
-SequentialInvoker::impl::impl(Actor *game_object, cocos2d::Node *target_node) :m_target(game_object), m_target_node(target_node)
+SequentialInvoker::SequentialInvokerImpl::SequentialInvokerImpl(Actor *game_object, cocos2d::Node *target_node) :m_target(game_object), m_target_node(target_node)
 {
 	SingletonContainer::getInstance()->get<IEventDispatcher>()->registerListener(
 		EventType::SequentialInvokerFinishOneAction, this, [this](BaseEventData *e){eraseCurrent(); invoke(true); });
 }
 
-SequentialInvoker::impl::~impl()
+SequentialInvoker::SequentialInvokerImpl::~SequentialInvokerImpl()
 {
 	while (!m_action_list.empty())
 		popFront();
@@ -47,7 +50,7 @@ SequentialInvoker::impl::~impl()
 		singleton_container->get<IEventDispatcher>()->deleteListener(this);
 }
 
-void SequentialInvoker::impl::popFront()
+void SequentialInvoker::SequentialInvokerImpl::popFront()
 {
 	if (m_action_list.empty())
 		return;
@@ -56,13 +59,13 @@ void SequentialInvoker::impl::popFront()
 	m_action_list.pop_front();
 }
 
-void SequentialInvoker::impl::pushBack(cocos2d::Action *action)
+void SequentialInvoker::SequentialInvokerImpl::pushBack(cocos2d::Action *action)
 {
 	action->retain();
 	m_action_list.push_back(action);
 }
 
-void SequentialInvoker::impl::eraseCurrent()
+void SequentialInvoker::SequentialInvokerImpl::eraseCurrent()
 {
 	if (!m_current_action)
 		return;
@@ -71,7 +74,7 @@ void SequentialInvoker::impl::eraseCurrent()
 	m_current_action = nullptr;
 }
 
-bool SequentialInvoker::impl::invoke(bool is_called_by_event_dispatcher)
+bool SequentialInvoker::SequentialInvokerImpl::invoke(bool is_called_by_event_dispatcher)
 {
 	if (is_called_by_event_dispatcher && !m_invoke_continuously)
 		return false;
@@ -85,7 +88,7 @@ bool SequentialInvoker::impl::invoke(bool is_called_by_event_dispatcher)
 	return true;
 }
 
-bool SequentialInvoker::impl::isInvoking() const
+bool SequentialInvoker::SequentialInvokerImpl::isInvoking() const
 {
 	if (!m_current_action)
 		return false;
@@ -93,26 +96,28 @@ bool SequentialInvoker::impl::isInvoking() const
 	return !m_current_action->isDone();
 }
 
-cocos2d::CallFunc * SequentialInvoker::impl::createDispatchCallback() const
+cocos2d::CallFunc * SequentialInvoker::SequentialInvokerImpl::createDispatchCallback() const
 {
 	return cocos2d::CallFunc::create([this]{if (auto& singleton_container = SingletonContainer::getInstance())
 		singleton_container->get<IEventDispatcher>()->dispatch(
-//			LegacyEvent::create(LegacyEventType::SequentialInvokerFinishOneAction), const_cast<SequentialInvoker::impl*>(this)); });
-			std::make_unique<EvtDataGeneric>(EventType::SequentialInvokerFinishOneAction), const_cast<SequentialInvoker::impl*>(this)); });
+		//			LegacyEvent::create(LegacyEventType::SequentialInvokerFinishOneAction), const_cast<SequentialInvoker::impl*>(this)); });
+		std::make_unique<EvtDataGeneric>(EventType::SequentialInvokerFinishOneAction), const_cast<SequentialInvoker::SequentialInvokerImpl*>(this)); });
 }
 
+//////////////////////////////////////////////////////////////////////////
+//Implementation of SequentialInvoker.
+//////////////////////////////////////////////////////////////////////////
 SequentialInvoker::SequentialInvoker(Actor *game_object) :ActorComponent("SequentialInvoker2", game_object)
 {
 	auto target_node = game_object->addComponent<DisplayNode>()->getAs<cocos2d::Node>();
 	if (!target_node)
 		throw("Add SequentialInvoker to a GameObject without an initialized DisplayNode.");
 
-	pimpl.reset(new impl(game_object, target_node));
+	pimpl.reset(new SequentialInvokerImpl(game_object, target_node));
 }
 
 SequentialInvoker::~SequentialInvoker()
 {
-
 }
 
 bool SequentialInvoker::isInvoking() const

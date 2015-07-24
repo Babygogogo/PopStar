@@ -6,6 +6,12 @@
 
 #include "ActorComponent.h"
 
+//Forward declaration.
+namespace cocos2d
+{
+	class Node;
+}
+
 class DisplayNode final : public ActorComponent
 {
 	friend class Actor;
@@ -56,10 +62,10 @@ private:
 	void removeFromParent();
 
 	//Get the internal cocos2d::Node.
-	void * getNode() const;
+	cocos2d::Node * getNode() const;
 
 	//Helper function for initAs().
-	void * initAsHelper(std::function<void*()> && creatorFunction);
+	cocos2d::Node * initAsHelper(std::function<void*()> && creatorFunction);
 
 	//Override functions.
 	virtual const std::string & getType() const override;

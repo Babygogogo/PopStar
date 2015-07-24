@@ -103,7 +103,7 @@ bool DisplayNode::vInit(tinyxml2::XMLElement *xmlElement)
 {
 	//Get the type of node from xmlElement.
 	auto nodeType = xmlElement->Attribute("type");
-	
+
 	//Create the node as the type.
 	//#TODO: Complete the if statements.
 	if (strcmp(nodeType, "Sprite") == 0)
@@ -118,12 +118,12 @@ bool DisplayNode::vInit(tinyxml2::XMLElement *xmlElement)
 	return true;
 }
 
-void * DisplayNode::getNode() const
+cocos2d::Node * DisplayNode::getNode() const
 {
 	return pimpl->m_Node;
 }
 
-void * DisplayNode::initAsHelper(std::function<void*()> && creatorFunction)
+cocos2d::Node * DisplayNode::initAsHelper(std::function<void*()> && creatorFunction)
 {
 	//Ensure that the node hasn't been initialized.
 	assert(!pimpl->m_Node);

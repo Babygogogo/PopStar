@@ -145,7 +145,7 @@ void Actor::update(const time_t &time_ms)
 
 void Actor::update(const std::chrono::milliseconds & delteTimeMs)
 {
-	//TODO: call update() on all components here.
+	//#TODO: call update() on all components here.
 }
 
 bool Actor::init(ActorID id, tinyxml2::XMLElement *xmlElement)

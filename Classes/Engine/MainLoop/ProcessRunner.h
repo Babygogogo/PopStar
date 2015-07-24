@@ -22,10 +22,8 @@ class BaseProcess;
 class ProcessRunner
 {
 public:
+	ProcessRunner();
 	~ProcessRunner();
-
-	//Create an instance.
-	static std::unique_ptr<ProcessRunner> create();
 
 	//Attach a new process.
 	void attachProcess(std::unique_ptr<BaseProcess> && process);
@@ -38,8 +36,6 @@ public:
 	void abortAllProcess();
 
 private:
-	ProcessRunner();
-
 	//Implementation stuff.
 	struct ProcessRunnerImpl;
 	std::unique_ptr<ProcessRunnerImpl> pimpl;

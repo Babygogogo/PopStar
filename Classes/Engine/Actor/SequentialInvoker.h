@@ -12,6 +12,7 @@ namespace cocos2d
 	class FiniteTimeAction;
 }
 
+//#TODO: This class should be replaced by the Process when the refactoring is done.
 class SequentialInvoker final :public ActorComponent
 {
 	friend class Actor;
@@ -45,8 +46,8 @@ private:
 
 	virtual bool vInit(tinyxml2::XMLElement *xmlElement);
 
-	struct impl;
-	std::unique_ptr<impl> pimpl;
+	struct SequentialInvokerImpl;
+	std::unique_ptr<SequentialInvokerImpl> pimpl;
 };
 
 #endif // !__SEQUENTIAL_INVOKER__

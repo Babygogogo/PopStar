@@ -18,6 +18,8 @@ public:
 	GameLogicImpl();
 	~GameLogicImpl();
 
+	static int InstanceCount;
+
 	//Lock of the process of updating actor.
 	bool m_IsUpdatingActors{ false };
 
@@ -30,39 +32,27 @@ public:
 
 GameLogic::GameLogicImpl::GameLogicImpl()
 {
-
+	assert((InstanceCount++ == 0) && "GameLogic is created more than once!");
 }
 
 GameLogic::GameLogicImpl::~GameLogicImpl()
 {
-
 }
+
+int GameLogic::GameLogicImpl::InstanceCount{ 0 };
 
 //////////////////////////////////////////////////////////////////////////
 //Implementation of GameLogic.
 //////////////////////////////////////////////////////////////////////////
-GameLogic::GameLogic() : pimpl(new GameLogicImpl())
+GameLogic::GameLogic() : pimpl{ std::make_unique<GameLogicImpl>() }
 {
-
 }
 
 GameLogic::~GameLogic()
 {
-
 }
 
-std::unique_ptr<GameLogic> GameLogic::create()
-{
-	auto newGameLogic = std::unique_ptr<GameLogic>(nullptr);
-
-	//Ensures that this function only creates the instance once.
-	static std::once_flag creationFlag;
-	std::call_once(creationFlag, [&newGameLogic](){newGameLogic.reset(new GameLogic()); });
-
-	return newGameLogic;
-}
-
-void GameLogic::update(const std::chrono::milliseconds & deltaTimeMs)
+void GameLogic::vUpdate(const std::chrono::milliseconds & deltaTimeMs)
 {
 	//Lock the lock of updating actors.
 	pimpl->m_IsUpdatingActors = true;

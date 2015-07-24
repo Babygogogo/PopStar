@@ -38,15 +38,26 @@ public:
 	Actor();
 	~Actor();
 
+	//Called by ActorFactory right after the actor is created.
+	//Loads the basic data of the actor from the xmlElement. Doesn't create or attach any component.
 	bool init(ActorID id, tinyxml2::XMLElement *xmlElement);
+
+	//Called by ActorFactory after the actor is initialized and all its components are attached.
+	//Calls vPostInit() on every attached component.
 	void postInit();
+
+	//Called by GameLogic on every game loop.
+	//Calles vUpdate() on every attached component.
 	void update(const std::chrono::milliseconds & delteTimeMs);
 
 	const ActorID & getID() const;
 
 	//Stuff for adding/getting components or scripts.
+	//Called by ActorFactory during the creation of the actor.
 	void addComponent(std::shared_ptr<ActorComponent> && component);
 
+	//The convenient function for adding component manually.
+	//#TODO: This should be removed when the refactoring is done.
 	template<typename T,
 		typename std::enable_if_t<std::is_base_of<ActorComponent, T>::value>* = nullptr
 	> std::shared_ptr<T> addComponent()	//T must derive from Component
@@ -58,8 +69,13 @@ public:
 		return getComponent<T>();
 	}
 
+	//Get an attached component by its type name. Returns nullptr if no such component attached.
+	//Warning: You should not own the shared_ptr returned by this method. Instead, own weak_ptr.
 	std::shared_ptr<ActorComponent> getComponent(const std::string & type) const;
 
+	//The convenient function for getting component, which automatically downcast the pointer.
+	//Returns nullptr if no such component attached.
+	//Warning: You should not own the shared_ptr returned by this method. Instead, own weak_ptr.
 	template<typename T>
 	std::shared_ptr<T> getComponent() const	//T should derive from Component
 	{
@@ -67,12 +83,12 @@ public:
 	}
 
 	//Stuff for organizing the Actors as trees.
+	//#TODO: Remove these functions after the refactoring is done because actors need not to be in the form of trees.
 	std::weak_ptr<Actor> addChild(std::shared_ptr<Actor> && child);
 	Actor *getParent() const;
 	bool isAncestorOf(const Actor *child) const;
-
 	//If the game object has no parent, nothing happens, and nullptr is returned.
-	//Otherwise, the ownership is returned. Keep it, or the object along with its children will be destroyed.
+	//Otherwise, the ownership is returned. Keep it, or the actor along with its children will be destroyed.
 	//	std::unique_ptr<Actor> removeFromParent();
 	std::shared_ptr<Actor> removeFromParent();
 

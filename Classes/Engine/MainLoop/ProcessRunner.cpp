@@ -17,30 +17,21 @@ struct ProcessRunner::ProcessRunnerImpl
 
 ProcessRunner::ProcessRunnerImpl::ProcessRunnerImpl()
 {
-
 }
 
 ProcessRunner::ProcessRunnerImpl::~ProcessRunnerImpl()
 {
-
 }
 
 //////////////////////////////////////////////////////////////////////////
 //Implementation of ProcessRunner.
 //////////////////////////////////////////////////////////////////////////
-ProcessRunner::ProcessRunner() : pimpl(new ProcessRunnerImpl())
+ProcessRunner::ProcessRunner() : pimpl{ std::make_unique<ProcessRunnerImpl>() }
 {
-
 }
 
 ProcessRunner::~ProcessRunner()
 {
-
-}
-
-std::unique_ptr<ProcessRunner> ProcessRunner::create()
-{
-	return std::unique_ptr<ProcessRunner>(new ProcessRunner());
 }
 
 void ProcessRunner::attachProcess(std::unique_ptr<BaseProcess> && process)

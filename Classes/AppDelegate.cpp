@@ -22,44 +22,58 @@ public:
 	~AppDelegateImpl();
 
 	void initGame();
+
+	void update(float deltaTimeF);
+
+	std::chrono::steady_clock::time_point lastUpdateTimePoint{ std::chrono::steady_clock::now() };
 };
 
 AppDelegate::AppDelegateImpl::AppDelegateImpl()
 {
-
 }
 
 AppDelegate::AppDelegateImpl::~AppDelegateImpl()
 {
-
+	Director::getInstance()->getScheduler()->unscheduleUpdate(this);
 }
 
 void AppDelegate::AppDelegateImpl::initGame()
 {
 	Audio::getInstance()->prepare();
 
-	SingletonContainer::getInstance()->set<::Timer>(::Timer::create())->init();
-	SingletonContainer::getInstance()->set<IEventDispatcher>(::EventDispatcher::create());
-	SingletonContainer::getInstance()->set<GameData>(GameData::create());
-	SingletonContainer::getInstance()->set<GameLogic>(GameLogic::create());
+	auto & singletonContainer = SingletonContainer::getInstance();
+	singletonContainer->set<::Timer>(::Timer::create())->init();
+	singletonContainer->set<IEventDispatcher>(::EventDispatcher::create());
+	singletonContainer->set<GameData>(GameData::create());
+	singletonContainer->set<GameLogic>(std::make_unique<GameLogic>());
 
 	auto titleSceneActor = std::make_shared<Actor>();
 	titleSceneActor->addComponent<TitleScene>();
+	singletonContainer->set<SceneStack>(std::make_unique<SceneStack>())->pushAndRun(std::move(titleSceneActor));
 
-	SingletonContainer::getInstance()->set<SceneStack>(std::make_unique<SceneStack>())->pushAndRun(std::move(titleSceneActor));
+	Director::getInstance()->getScheduler()->scheduleUpdate(this, 0, false);
+}
+
+void AppDelegate::AppDelegateImpl::update(float deltaTimeF)
+{
+	auto currentTimePoint = std::chrono::steady_clock::now();
+	auto deltaTimeMs = std::chrono::duration_cast<std::chrono::milliseconds>(currentTimePoint - lastUpdateTimePoint);
+	lastUpdateTimePoint = std::move(currentTimePoint);
+
+	auto & singletonContainer = SingletonContainer::getInstance();
+	singletonContainer->get<IEventDispatcher>()->vDispatchQueuedEvents();
+	singletonContainer->get<GameLogic>()->vUpdate(deltaTimeMs);
 }
 
 //////////////////////////////////////////////////////////////////////////
 //Implementation of AppDelegate
 //////////////////////////////////////////////////////////////////////////
-AppDelegate::AppDelegate() : pimpl{std::make_unique<AppDelegateImpl>()}
+AppDelegate::AppDelegate() : pimpl{ std::make_unique<AppDelegateImpl>() }
 {
-
 }
 
-AppDelegate::~AppDelegate() 
+AppDelegate::~AppDelegate()
 {
-
 }
 
 bool AppDelegate::applicationDidFinishLaunching()
@@ -67,7 +81,7 @@ bool AppDelegate::applicationDidFinishLaunching()
 	// initialize director
 	auto director = Director::getInstance();
 	auto glview = director->getOpenGLView();
-	if(!glview) {
+	if (!glview) {
 		glview = GLView::create("PopStar");
 		director->setOpenGLView(glview);
 	}

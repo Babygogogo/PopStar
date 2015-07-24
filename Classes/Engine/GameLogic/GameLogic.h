@@ -29,14 +29,13 @@ class Actor;
  */
 class GameLogic
 {
+	//#TODO: Divide this class into a BaseGameLogic and a game specific logic class.
 public:
+	GameLogic();
 	~GameLogic();
 
-	//Create an instance of this class. Only the first call is valid.
-	static std::unique_ptr<GameLogic> create();
-
-	//Update all actors (and views and other things later...)
-	void update(const std::chrono::milliseconds & deltaTimeMs);
+	//Update the game world (ProcessRunner, views, actors and so on)
+	void vUpdate(const std::chrono::milliseconds & deltaTimeMs);
 
 	//Get actor with an id. You will get nullptr if the id is not in use.
 	const std::shared_ptr<Actor> & getActor(const ActorID & id) const;
@@ -54,10 +53,8 @@ public:
 	GameLogic(GameLogic&&) = delete;
 	GameLogic& operator=(const GameLogic&) = delete;
 	GameLogic& operator=(GameLogic&&) = delete;
-	
-private:
-	GameLogic();
 
+private:
 	//Implementation stuff.
 	struct GameLogicImpl;
 	std::unique_ptr<GameLogicImpl> pimpl;

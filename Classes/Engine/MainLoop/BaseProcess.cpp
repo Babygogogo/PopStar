@@ -36,34 +36,28 @@ public:
 
 BaseProcess::BaseProcessImpl::BaseProcessImpl()
 {
-
 }
 
 BaseProcess::BaseProcessImpl::~BaseProcessImpl()
 {
-
 }
 
 //////////////////////////////////////////////////////////////////////////
 //Implementation of BaseProcess.
 //////////////////////////////////////////////////////////////////////////
-BaseProcess::BaseProcess() : pimpl(new BaseProcessImpl())
+BaseProcess::BaseProcess() : pimpl{ std::make_unique<BaseProcessImpl>() }
 {
-
 }
 
 BaseProcess::~BaseProcess()
 {
-
 }
 
 void BaseProcess::update(const std::chrono::milliseconds & deltaTimeMs)
 {
 	//If the process is not run, initialize it.
-	if (pimpl->m_State == ProcessState::UnRun){
-		vOnInit();
-		pimpl->m_State = ProcessState::Running;
-	}
+	if (pimpl->m_State == ProcessState::UnRun)
+		init();
 
 	//Update the process if running.
 	if (pimpl->m_State == ProcessState::Running)
@@ -162,20 +156,16 @@ const std::unique_ptr<BaseProcess> & BaseProcess::getChild() const
 
 void BaseProcess::vOnInit()
 {
-
 }
 
 void BaseProcess::vOnSucceed()
 {
-
 }
 
 void BaseProcess::vOnFail()
 {
-
 }
 
 void BaseProcess::vOnAbort()
 {
-
 }
