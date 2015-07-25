@@ -20,7 +20,6 @@ struct MatrixLayer::impl
 
 	void startLevel();
 
-	//	Actor *m_matrix{ nullptr };
 	std::weak_ptr<Actor> m_matrix;
 };
 
@@ -33,10 +32,7 @@ MatrixLayer::impl::impl(Actor *game_object)
 	m_matrix = game_object->addChild(std::move(starMatrixActor));
 
 	//Create the ComboEffect actor.
-	//#TODO: Should be replaced by calls to factory soon...
 	auto comboEffect = SingletonContainer::getInstance()->get<GameLogic>()->createActor("Actors\\ComboEffect.xml");
-	comboEffect->addComponent<GeneralRenderComponent>()->initAs<cocos2d::Sprite>();
-	comboEffect->addComponent<SequentialInvoker>();
 	game_object->addChild(std::move(comboEffect));
 
 	registerAsEventListeners();

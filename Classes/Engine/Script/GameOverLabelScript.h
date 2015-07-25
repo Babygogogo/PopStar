@@ -11,6 +11,7 @@ public:
 	GameOverLabelScript();
 	~GameOverLabelScript();
 
+	//The type name of this component. Same as the class name.
 	static const std::string Type;
 
 	//Disable copy/move constructor and operator=.

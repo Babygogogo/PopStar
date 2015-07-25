@@ -24,17 +24,12 @@ struct GameOverLabelScript::GameOverLabelScriptImpl
 	void reset();
 	void resetInvoker();
 
-	cocos2d::Label *m_label_underlying{ nullptr };
-	SequentialInvoker *m_invoker{ nullptr };
-
-	std::string m_GameOverText;
-	std::string m_GameOverFontName;
-	float m_GameOverFontSize{ 0 };
+	cocos2d::Label *m_LabelUnderlying{ nullptr };
+	std::weak_ptr<SequentialInvoker> m_Invoker;
 };
 
 GameOverLabelScript::GameOverLabelScriptImpl::GameOverLabelScriptImpl()
 {
-	//registerAsEventListeners();
 }
 
 GameOverLabelScript::GameOverLabelScriptImpl::~GameOverLabelScriptImpl()
@@ -49,10 +44,10 @@ void GameOverLabelScript::GameOverLabelScriptImpl::registerAsEventListeners()
 
 	auto touch_listener = cocos2d::EventListenerTouchOneByOne::create();
 	touch_listener->onTouchBegan = [this](cocos2d::Touch* touch, cocos2d::Event* event)->bool{
-		m_invoker->invoke();
+		m_Invoker.lock()->invoke();
 		return true;
 	};
-	cocos2d::Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(touch_listener, m_label_underlying);
+	cocos2d::Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(touch_listener, m_LabelUnderlying);
 }
 
 void GameOverLabelScript::GameOverLabelScriptImpl::unregisterAsEventListeners()
@@ -63,22 +58,23 @@ void GameOverLabelScript::GameOverLabelScriptImpl::unregisterAsEventListeners()
 
 void GameOverLabelScript::GameOverLabelScriptImpl::reset()
 {
-	m_label_underlying->setVisible(true);
+	m_LabelUnderlying->setVisible(true);
 
 	auto visible_size = cocos2d::Director::getInstance()->getVisibleSize();
-	auto label_size = m_label_underlying->getContentSize();
-	m_label_underlying->setPosition(visible_size.width / 2, visible_size.height + label_size.height / 2);
+	auto label_size = m_LabelUnderlying->getContentSize();
+	m_LabelUnderlying->setPosition(visible_size.width / 2, visible_size.height + label_size.height / 2);
 
 	resetInvoker();
-	m_invoker->invoke();
+	m_Invoker.lock()->invoke();
 }
 
 void GameOverLabelScript::GameOverLabelScriptImpl::resetInvoker()
 {
+	auto strongInvoker = m_Invoker.lock();
 	auto visible_size = cocos2d::Director::getInstance()->getVisibleSize();
-	m_invoker->addMoveTo(1, visible_size.width / 2, visible_size.height / 2);
+	strongInvoker->addMoveTo(1, visible_size.width / 2, visible_size.height / 2);
 
-	m_invoker->addCallback([]{
+	strongInvoker->addCallback([]{
 		auto titleSceneActor = std::make_shared<Actor>();
 		titleSceneActor->addComponent<TitleScene>();
 		SingletonContainer::getInstance()->get<SceneStack>()->replaceAndRun(std::move(titleSceneActor)); });
@@ -102,37 +98,18 @@ const std::string & GameOverLabelScript::getType() const
 
 bool GameOverLabelScript::vInit(tinyxml2::XMLElement *xmlElement)
 {
-	//Load the text in the xmlElement.
-	auto labelDataElement = xmlElement->FirstChildElement("LabelData");
-	if (labelDataElement)
-		pimpl->m_GameOverText = labelDataElement->Attribute("Text");
-
-	//Load the font data in the xmlElement.
-	auto fontElement = xmlElement->FirstChildElement("Font");
-	if (fontElement){
-		pimpl->m_GameOverFontName = fontElement->Attribute("Name");
-		pimpl->m_GameOverFontSize = fontElement->FloatAttribute("Size");
-	}
-
 	return true;
 }
 
 void GameOverLabelScript::vPostInit()
 {
-	//#TODO: Move the code for creating other components into xml.
 	assert(!m_Actor.expired());
 	auto strongActor = m_Actor.lock();
 
-	//pimpl->m_label_underlying = strongActor->addComponent<GeneralRenderComponent>()->initAs<cocos2d::Label>(
-	//	[this]{return cocos2d::Label::createWithSystemFont(pimpl->m_GameOverText, pimpl->m_GameOverFontName, pimpl->m_GameOverFontSize); });
+	pimpl->m_LabelUnderlying = strongActor->getComponent<GeneralRenderComponent>()->getAs<cocos2d::Label>();
+	pimpl->m_LabelUnderlying->setVisible(false);
 
-	pimpl->m_label_underlying = strongActor->getComponent<GeneralRenderComponent>()->getAs<cocos2d::Label>();
-	pimpl->m_label_underlying->setString(pimpl->m_GameOverText);
-	pimpl->m_label_underlying->setSystemFontName(pimpl->m_GameOverFontName);
-	pimpl->m_label_underlying->setSystemFontSize(pimpl->m_GameOverFontSize);
-	pimpl->m_label_underlying->setVisible(false);
-
-	pimpl->m_invoker = strongActor->getComponent<SequentialInvoker>().get();
+	pimpl->m_Invoker = strongActor->getComponent<SequentialInvoker>();
 
 	pimpl->registerAsEventListeners();
 }

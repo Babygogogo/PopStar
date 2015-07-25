@@ -105,12 +105,33 @@ bool GeneralRenderComponent::vInit(tinyxml2::XMLElement *xmlElement)
 	//#TODO: Complete the if statements.
 	if (strcmp(nodeType, "Sprite") == 0)
 		m_Node = cocos2d::Sprite::create();
-	else if (strcmp(nodeType, "Label") == 0)
-		m_Node = cocos2d::Label::createWithSystemFont("", "", 0);
+	else if (strcmp(nodeType, "Label") == 0){
+		auto createWith = xmlElement->FirstChildElement("CreateWith");
+		if (createWith){
+			if (createWith->Attribute("FunctionName", "createWithSystemFont")){
+				auto text = createWith->Attribute("Text");
+				auto fontName = createWith->Attribute("FontName");
+				auto fontSize = createWith->FloatAttribute("FontSize");
+				m_Node = cocos2d::Label::createWithSystemFont(text, fontName, fontSize);
+			}
+		}
+	}
 
 	//Ensure that the node is created, then retain it.
-	assert(m_Node);
+	assert(m_Node && "GeneralRenderComponent::vInit can't create a cocos2d::Node!");
 	m_Node->retain();
+
+	//Set some extra data if presents in the xmlElement.
+	if (auto positionElement = xmlElement->FirstChildElement("Position")){
+		auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
+
+		auto normalizedX = positionElement->FloatAttribute("NormalizedX");
+		auto pixelOffsetX = positionElement->FloatAttribute("PixelOffsetX");
+		auto normalizedY = positionElement->FloatAttribute("NormalizedY");
+		auto pixelOffsetY = positionElement->FloatAttribute("PixelOffsetY");
+
+		m_Node->setPosition(visibleSize.width * normalizedX + pixelOffsetX, visibleSize.height * normalizedY + pixelOffsetY);
+	}
 
 	return true;
 }

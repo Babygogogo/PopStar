@@ -153,7 +153,7 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClCompile Include="..\Classes\Engine\MainLoop\Timer.cpp" />
     <ClCompile Include="..\Classes\Engine\Script\ComboEffectScript.cpp" />
     <ClCompile Include="..\Classes\Engine\Script\GameOverLabelScript.cpp" />
-    <ClCompile Include="..\Classes\Engine\Script\GetScoreLabel.cpp" />
+    <ClCompile Include="..\Classes\Engine\Script\GetScoreLabelScript.cpp" />
     <ClCompile Include="..\Classes\Engine\Script\LevelSummaryLabel.cpp" />
     <ClCompile Include="..\Classes\Engine\Script\MatrixLayer.cpp" />
     <ClCompile Include="..\Classes\Engine\Script\PuzzleScene.cpp" />
@@ -196,7 +196,7 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClInclude Include="..\Classes\Engine\MainLoop\Timer.h" />
     <ClInclude Include="..\Classes\Engine\Script\ComboEffectScript.h" />
     <ClInclude Include="..\Classes\Engine\Script\GameOverLabelScript.h" />
-    <ClInclude Include="..\Classes\Engine\Script\GetScoreLabel.h" />
+    <ClInclude Include="..\Classes\Engine\Script\GetScoreLabelScript.h" />
     <ClInclude Include="..\Classes\Engine\Script\LevelSummaryLabel.h" />
     <ClInclude Include="..\Classes\Engine\Script\MatrixLayer.h" />
     <ClInclude Include="..\Classes\Engine\Script\PuzzleScene.h" />

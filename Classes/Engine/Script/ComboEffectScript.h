@@ -22,7 +22,7 @@ public:
 	ComboEffectScript();
 	~ComboEffectScript();
 
-	//The type name of this component. Must be the same as the class name.
+	//The type name of this component. Same as the class name.
 	static const std::string Type;
 
 	//Disable copy/move constructor and operator=.

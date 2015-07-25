@@ -125,7 +125,7 @@ SequentialInvoker::SequentialInvoker() : pimpl{ std::make_unique<SequentialInvok
 {
 }
 
-SequentialInvoker::SequentialInvoker(Actor *game_object) : ActorComponent("SequentialInvoker2", game_object)
+SequentialInvoker::SequentialInvoker(Actor *game_object)
 {
 	auto target_node = game_object->addComponent<GeneralRenderComponent>()->getAs<cocos2d::Node>();
 	if (!target_node)

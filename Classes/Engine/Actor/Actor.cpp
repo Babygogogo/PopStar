@@ -153,13 +153,13 @@ bool Actor::init(ActorID id, tinyxml2::XMLElement *xmlElement)
 	if (id == 0 || !xmlElement)
 		return false;
 
-	auto actorType = xmlElement->Attribute("type");
+	auto actorType = xmlElement->Attribute("Type");
 	if (!actorType){
 		cocos2d::log("Actor::init failed because there's no type attribute in resource.");
 		return false;
 	}
 
-	auto resourceFile = xmlElement->Attribute("resource");
+	auto resourceFile = xmlElement->Attribute("Resource");
 	if (!resourceFile){
 		cocos2d::log("Actor::init failed because there's no type attribute in resource.");
 		return false;

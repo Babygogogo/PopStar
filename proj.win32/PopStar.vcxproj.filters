@@ -63,9 +63,6 @@
     <ClCompile Include="..\Classes\Engine\Actor\SequentialInvoker.cpp">
       <Filter>Classes\Engine\Actor</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Engine\Script\GetScoreLabel.cpp">
-      <Filter>Classes\Engine\Script</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\Engine\Script\LevelSummaryLabel.cpp">
       <Filter>Classes\Engine\Script</Filter>
     </ClCompile>
@@ -138,6 +135,9 @@
     <ClCompile Include="..\Classes\Engine\Actor\GeneralRenderComponent.cpp">
       <Filter>Classes\Engine\Actor</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Script\GetScoreLabelScript.cpp">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -175,9 +175,6 @@
     </ClInclude>
     <ClInclude Include="..\Classes\Engine\Actor\SoundPlayer.h">
       <Filter>Classes\Engine\Actor</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Script\GetScoreLabel.h">
-      <Filter>Classes\Engine\Script</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Engine\Script\LevelSummaryLabel.h">
       <Filter>Classes\Engine\Script</Filter>
@@ -265,6 +262,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\Engine\Actor\GeneralRenderComponent.h">
       <Filter>Classes\Engine\Actor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Script\GetScoreLabelScript.h">
+      <Filter>Classes\Engine\Script</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -6,6 +6,7 @@
 #include "SequentialInvoker.h"
 #include "../Script/ComboEffectScript.h"
 #include "../Script/GameOverLabelScript.h"
+#include "../Script/GetScoreLabelScript.h"
 #include "../Utilities/GenericFactory.h"
 #include "cocos2d.h"
 #include "../../cocos2d/external/tinyxml2/tinyxml2.h"
@@ -46,8 +47,10 @@ void ActorFactory::ActorFactoryImpl::registerComponents()
 	//#TODO: Register all of the concrete components here.
 	m_ComponentFactory.registerType<GeneralRenderComponent>();
 	m_ComponentFactory.registerType<SequentialInvoker>();
+
 	m_ComponentFactory.registerType<ComboEffectScript>();
 	m_ComponentFactory.registerType<GameOverLabelScript>();
+	m_ComponentFactory.registerType<GetScoreLabelScript>();
 }
 
 std::shared_ptr<ActorComponent> ActorFactory::ActorFactoryImpl::createComponent(tinyxml2::XMLElement * componentElement)
