@@ -41,7 +41,7 @@ public:
 	const std::shared_ptr<Actor> & getActor(const ActorID & id) const;
 
 	//Create an actor with a .xml file. The actor will be add into the internal actor list.
-	const std::shared_ptr<Actor> & createActor(const char *resourceFile, tinyxml2::XMLElement *overrides = nullptr);
+	std::shared_ptr<Actor> createActor(const char *resourceFile, tinyxml2::XMLElement *overrides = nullptr);
 
 	//Remove an actor with an id from the internal actor list. The actor will be destroyed if you don't own it elsewhere.
 	//Nothing happens if the id is not in use.

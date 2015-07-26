@@ -2,7 +2,6 @@
 #define __ACTOR__
 
 #include <memory>
-#include <type_traits>
 #include <chrono>
 #include <string>
 

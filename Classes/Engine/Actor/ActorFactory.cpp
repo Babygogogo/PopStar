@@ -7,6 +7,7 @@
 #include "../Script/ComboEffectScript.h"
 #include "../Script/GameOverLabelScript.h"
 #include "../Script/GetScoreLabelScript.h"
+#include "../Script/LevelSummaryLabelScript.h"
 #include "../Utilities/GenericFactory.h"
 #include "cocos2d.h"
 #include "../../cocos2d/external/tinyxml2/tinyxml2.h"
@@ -51,6 +52,7 @@ void ActorFactory::ActorFactoryImpl::registerComponents()
 	m_ComponentFactory.registerType<ComboEffectScript>();
 	m_ComponentFactory.registerType<GameOverLabelScript>();
 	m_ComponentFactory.registerType<GetScoreLabelScript>();
+	m_ComponentFactory.registerType<LevelSummaryLabelScript>();
 }
 
 std::shared_ptr<ActorComponent> ActorFactory::ActorFactoryImpl::createComponent(tinyxml2::XMLElement * componentElement)

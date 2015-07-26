@@ -92,7 +92,7 @@ const std::shared_ptr<Actor> & GameLogic::getActor(const ActorID & id) const
 	return actorIter->second;
 }
 
-const std::shared_ptr<Actor> & GameLogic::createActor(const char *resourceFile, tinyxml2::XMLElement *overrides /*= nullptr*/)
+std::shared_ptr<Actor> GameLogic::createActor(const char *resourceFile, tinyxml2::XMLElement *overrides /*= nullptr*/)
 {
 	//Try to create the actor.
 	auto newActor = pimpl->m_ActorFactory->createActor(resourceFile, overrides);
