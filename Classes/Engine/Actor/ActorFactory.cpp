@@ -8,6 +8,8 @@
 #include "../Script/GameOverLabelScript.h"
 #include "../Script/GetScoreLabelScript.h"
 #include "../Script/LevelSummaryLabelScript.h"
+#include "../Script/MainSceneScript.h"
+#include "../Script/MatrixLayerScript.h"
 #include "../Utilities/GenericFactory.h"
 #include "cocos2d.h"
 #include "../../cocos2d/external/tinyxml2/tinyxml2.h"
@@ -53,6 +55,8 @@ void ActorFactory::ActorFactoryImpl::registerComponents()
 	m_ComponentFactory.registerType<GameOverLabelScript>();
 	m_ComponentFactory.registerType<GetScoreLabelScript>();
 	m_ComponentFactory.registerType<LevelSummaryLabelScript>();
+	m_ComponentFactory.registerType<MainSceneScript>();
+	m_ComponentFactory.registerType<MatrixLayerScript>();
 }
 
 std::shared_ptr<ActorComponent> ActorFactory::ActorFactoryImpl::createComponent(tinyxml2::XMLElement * componentElement)
@@ -121,6 +125,9 @@ std::shared_ptr<Actor> ActorFactory::createActor(const char *resourceFile, tinyx
 		return nullptr;
 	}
 
+	//Update the m_NextID in case that the components tries to create an actor, invalidating the id.
+	pimpl->updateID();
+
 	//Loop through each child element and load the component
 	for (auto componentElement = rootElement->FirstChildElement(); componentElement; componentElement = componentElement->NextSiblingElement()){
 		auto component = pimpl->createComponent(componentElement);
@@ -138,8 +145,6 @@ std::shared_ptr<Actor> ActorFactory::createActor(const char *resourceFile, tinyx
 	modifyActor(actor, overrides);
 	pimpl->postInitActor(actor);
 
-	//Finally, the creation succeed. Update the m_NextID and return the created actor.
-	pimpl->updateID();
 	return actor;
 }
 

@@ -103,11 +103,20 @@ bool GeneralRenderComponent::vInit(tinyxml2::XMLElement *xmlElement)
 
 	//Create the node as the type.
 	//#TODO: Complete the if statements.
-	if (strcmp(nodeType, "Sprite") == 0)
-		m_Node = cocos2d::Sprite::create();
+	if (strcmp(nodeType, "Sprite") == 0){
+		if (auto createWith = xmlElement->FirstChildElement("CreateWith")){
+			if (auto fileName = createWith->Attribute("FileName"))
+				m_Node = cocos2d::Sprite::create(fileName);
+		}
+		else
+			m_Node = cocos2d::Sprite::create();
+	}
+	else if (strcmp(nodeType, "Layer") == 0)
+		m_Node = cocos2d::Layer::create();
+	else if (strcmp(nodeType, "Scene") == 0)
+		m_Node = cocos2d::Scene::create();
 	else if (strcmp(nodeType, "Label") == 0){
-		auto createWith = xmlElement->FirstChildElement("CreateWith");
-		if (createWith){
+		if (auto createWith = xmlElement->FirstChildElement("CreateWith")){
 			if (createWith->Attribute("FunctionName", "createWithSystemFont")){
 				auto text = createWith->Attribute("Text");
 				auto fontName = createWith->Attribute("FontName");
@@ -129,8 +138,10 @@ bool GeneralRenderComponent::vInit(tinyxml2::XMLElement *xmlElement)
 		auto pixelOffsetX = positionElement->FloatAttribute("PixelOffsetX");
 		auto normalizedY = positionElement->FloatAttribute("NormalizedY");
 		auto pixelOffsetY = positionElement->FloatAttribute("PixelOffsetY");
-
 		m_Node->setPosition(visibleSize.width * normalizedX + pixelOffsetX, visibleSize.height * normalizedY + pixelOffsetY);
+
+		auto localZOrder = positionElement->IntAttribute("LocalZOrder");
+		m_Node->setLocalZOrder(localZOrder);
 	}
 
 	return true;

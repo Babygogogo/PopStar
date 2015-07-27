@@ -1,0 +1,5 @@
+<!-- edited with XMLSpy v2013 (http://www.altova.com) by  () -->
+<Actor Type="MatrixLayer" Resource="Actors\MatrixLayer.xml">
+	<MatrixLayerScript/>
+	<GeneralRenderComponent Type="Layer"/>
+</Actor>

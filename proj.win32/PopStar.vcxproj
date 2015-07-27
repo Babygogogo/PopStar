@@ -155,8 +155,8 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClCompile Include="..\Classes\Engine\Script\GameOverLabelScript.cpp" />
     <ClCompile Include="..\Classes\Engine\Script\GetScoreLabelScript.cpp" />
     <ClCompile Include="..\Classes\Engine\Script\LevelSummaryLabelScript.cpp" />
-    <ClCompile Include="..\Classes\Engine\Script\MatrixLayer.cpp" />
-    <ClCompile Include="..\Classes\Engine\Script\PuzzleScene.cpp" />
+    <ClCompile Include="..\Classes\Engine\Script\MatrixLayerScript.cpp" />
+    <ClCompile Include="..\Classes\Engine\Script\MainSceneScript.cpp" />
     <ClCompile Include="..\Classes\Engine\Script\Star.cpp" />
     <ClCompile Include="..\Classes\Engine\Script\StarMatrix.cpp" />
     <ClCompile Include="..\Classes\Engine\Script\StarParticleEffect.cpp" />
@@ -198,8 +198,8 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClInclude Include="..\Classes\Engine\Script\GameOverLabelScript.h" />
     <ClInclude Include="..\Classes\Engine\Script\GetScoreLabelScript.h" />
     <ClInclude Include="..\Classes\Engine\Script\LevelSummaryLabelScript.h" />
-    <ClInclude Include="..\Classes\Engine\Script\MatrixLayer.h" />
-    <ClInclude Include="..\Classes\Engine\Script\PuzzleScene.h" />
+    <ClInclude Include="..\Classes\Engine\Script\MatrixLayerScript.h" />
+    <ClInclude Include="..\Classes\Engine\Script\MainSceneScript.h" />
     <ClInclude Include="..\Classes\Engine\Script\Star.h" />
     <ClInclude Include="..\Classes\Engine\Script\StarMatrix.h" />
     <ClInclude Include="..\Classes\Engine\Script\StarParticleEffect.h" />

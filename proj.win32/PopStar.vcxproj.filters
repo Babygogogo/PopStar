@@ -63,12 +63,6 @@
     <ClCompile Include="..\Classes\Engine\Actor\SequentialInvoker.cpp">
       <Filter>Classes\Engine\Actor</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Engine\Script\MatrixLayer.cpp">
-      <Filter>Classes\Engine\Script</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Engine\Script\PuzzleScene.cpp">
-      <Filter>Classes\Engine\Script</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\Engine\Script\Star.cpp">
       <Filter>Classes\Engine\Script</Filter>
     </ClCompile>
@@ -138,6 +132,12 @@
     <ClCompile Include="..\Classes\Engine\Script\LevelSummaryLabelScript.cpp">
       <Filter>Classes\Engine\Script</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Script\MatrixLayerScript.cpp">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Script\MainSceneScript.cpp">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -175,12 +175,6 @@
     </ClInclude>
     <ClInclude Include="..\Classes\Engine\Actor\SoundPlayer.h">
       <Filter>Classes\Engine\Actor</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Script\MatrixLayer.h">
-      <Filter>Classes\Engine\Script</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Script\PuzzleScene.h">
-      <Filter>Classes\Engine\Script</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Engine\Script\Star.h">
       <Filter>Classes\Engine\Script</Filter>
@@ -264,6 +258,12 @@
       <Filter>Classes\Engine\Script</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Engine\Script\LevelSummaryLabelScript.h">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Script\MatrixLayerScript.h">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Script\MainSceneScript.h">
       <Filter>Classes\Engine\Script</Filter>
     </ClInclude>
   </ItemGroup>

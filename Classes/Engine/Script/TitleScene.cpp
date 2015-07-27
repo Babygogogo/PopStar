@@ -1,7 +1,8 @@
 #include "TitleScene.h"
-#include "PuzzleScene.h"
+#include "MainSceneScript.h"
 #include "../Actor/Actor.h"
 #include "../Actor/GeneralRenderComponent.h"
+#include "../GameLogic/GameLogic.h"
 #include "../Utilities/SingletonContainer.h"
 #include "../Graphic2D/SceneStack.h"
 #include "../../Common/GameData.h"
@@ -96,9 +97,8 @@ std::function<void(cocos2d::Ref*)> TitleScene::impl::createStartButtonCallback()
 	return [](cocos2d::Ref*){
 		SingletonContainer::getInstance()->get<GameData>()->reset();
 
-		auto puzzleSceneActor = std::make_shared<Actor>();
-		puzzleSceneActor->addComponent<PuzzleScene>();
-		SingletonContainer::getInstance()->get<SceneStack>()->replaceAndRun(std::move(puzzleSceneActor));
+		auto mainSceneActor = SingletonContainer::getInstance()->get<GameLogic>()->createActor("Actors\\MainScene.xml");
+		SingletonContainer::getInstance()->get<SceneStack>()->replaceAndRun(std::move(mainSceneActor));
 	};
 }
 
