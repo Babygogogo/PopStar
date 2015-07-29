@@ -1,6 +1,6 @@
 #include "StarParticleEffect.h"
 #include "../Actor/Actor.h"
-#include "Star.h"
+#include "StarScript.h"
 #include "../Actor/Actor.h"
 #include "../Actor/GeneralRenderComponent.h"
 #include "../Actor/SequentialInvoker.h"
@@ -11,7 +11,7 @@ struct StarParticleEffect::impl
 	impl(Actor *game_object);
 	~impl();
 
-	void resetEffect(Star *star);
+	void resetEffect(StarScript *star);
 	void resetInvoker();
 
 	Actor *m_game_object{ nullptr };
@@ -29,7 +29,7 @@ StarParticleEffect::impl::~impl()
 {
 }
 
-void StarParticleEffect::impl::resetEffect(Star *star)
+void StarParticleEffect::impl::resetEffect(StarScript *star)
 {
 	m_effect->setTexture(cocos2d::Director::getInstance()->getTextureCache()->addImage("star.png"));
 	m_effect->setTotalParticles(15);
@@ -59,7 +59,7 @@ StarParticleEffect::~StarParticleEffect()
 {
 }
 
-void StarParticleEffect::reset(Star *star)
+void StarParticleEffect::reset(StarScript *star)
 {
 	if (!star)
 		return;

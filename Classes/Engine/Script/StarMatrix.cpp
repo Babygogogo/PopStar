@@ -1,5 +1,5 @@
 #include "StarMatrix.h"
-#include "Star.h"
+#include "StarScript.h"
 #include "StarParticleEffect.h"
 #include "../Actor/GeneralRenderComponent.h"
 #include "../Actor/SequentialInvoker.h"
@@ -11,6 +11,7 @@
 #include "../Event/BaseEventData.h"
 #include "../Event/EvtDataGeneric.h"
 #include "../Event/EvtDataPlayerExplodedStars.h"
+#include "../GameLogic/GameLogic.h"
 #include "cocos2d.h"
 #include "../Audio/Audio.h"
 
@@ -35,13 +36,13 @@ struct StarMatrix::impl
 
 	bool isNoMoreMove() const;
 	int countStarsLeft() const;
-	Star* getStarByPoint(const cocos2d::Point& position) const;
+	StarScript* getStarByPoint(const cocos2d::Point& position) const;
 	cocos2d::Point getStarDefaultPosition(int row_num, int col_num) const;
 
-	std::list<Star*> findGroupingStars(Star* touched_star);
-	void iterateNeighborStars(int row_num, int col_num, std::function<void(Star*)> &&callback);
-	void explode(Star* star);
-	void explodeGroupingStars(std::list<Star*> &&group_stars);
+	std::list<StarScript*> findGroupingStars(StarScript* touched_star);
+	void iterateNeighborStars(int row_num, int col_num, std::function<void(StarScript*)> &&callback);
+	void explode(StarScript* star);
+	void explodeGroupingStars(std::list<StarScript*> &&group_stars);
 	void shrink();
 	void moveColumnsDownward();
 	void moveColumnsLeftward();
@@ -56,8 +57,8 @@ struct StarMatrix::impl
 	Actor *m_game_object{ nullptr };
 	cocos2d::Node *m_node_underlying{ nullptr };
 	SequentialInvoker *m_invoker{ nullptr };
-	std::array<std::array<Star*, COLS_TOTAL>, ROWS_TOTAL> m_stars = {};
-	std::array<std::array<Star*, COLS_TOTAL>, ROWS_TOTAL> m_initial_stars = {};
+	std::array<std::array<StarScript*, COLS_TOTAL>, ROWS_TOTAL> m_stars = {};
+	std::array<std::array<StarScript*, COLS_TOTAL>, ROWS_TOTAL> m_initial_stars = {};
 };
 
 const std::array<std::array<int, 2>, 4> StarMatrix::impl::NEIGHBOR_INDEXES = { { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } } };
@@ -81,9 +82,9 @@ void StarMatrix::impl::addStars()
 {
 	for (auto row_num = 0; row_num < ROWS_TOTAL; ++row_num)
 		for (auto col_num = 0; col_num < COLS_TOTAL; ++col_num){
-			auto star_object = std::make_shared<Actor>();
-			m_stars[row_num][col_num] = m_initial_stars[row_num][col_num] = star_object->addComponent<Star>().get();
-			m_game_object->addChild(std::move(star_object));
+			auto starActor = SingletonContainer::getInstance()->get<GameLogic>()->createActor("Actors\\Star.xml");
+			m_stars[row_num][col_num] = m_initial_stars[row_num][col_num] = starActor->getComponent<StarScript>().get();
+			m_game_object->addChild(std::move(starActor));
 		}
 }
 
@@ -137,10 +138,10 @@ bool StarMatrix::impl::isColNumValid(int col_num) const
 	return col_num >= 0 && col_num < COLS_TOTAL;
 }
 
-Star* StarMatrix::impl::getStarByPoint(const cocos2d::Point& position) const
+StarScript* StarMatrix::impl::getStarByPoint(const cocos2d::Point& position) const
 {
-	auto row_num = static_cast<int>(position.y / Star::HEIGHT);
-	auto col_num = static_cast<int>(position.x / Star::WIDTH);
+	auto row_num = static_cast<int>(position.y / StarScript::HEIGHT);
+	auto col_num = static_cast<int>(position.x / StarScript::WIDTH);
 
 	if (isRowNumValid(row_num) && isColNumValid(col_num))
 		return m_stars[row_num][col_num];
@@ -148,15 +149,15 @@ Star* StarMatrix::impl::getStarByPoint(const cocos2d::Point& position) const
 	return nullptr;
 }
 
-std::list<Star*> StarMatrix::impl::findGroupingStars(Star* touched_star)
+std::list<StarScript*> StarMatrix::impl::findGroupingStars(StarScript* touched_star)
 {
 	if (!touched_star) return{};
 
 	touched_star->setSelected(true);
-	auto group_stars = std::list < Star* > {touched_star};
+	auto group_stars = std::list < StarScript* > {touched_star};
 
 	for (auto current_star : group_stars)
-		iterateNeighborStars(current_star->getRowNum(), current_star->getColNum(), [&group_stars, current_star](Star* neighbor_star){
+		iterateNeighborStars(current_star->getRowNum(), current_star->getColNum(), [&group_stars, current_star](StarScript* neighbor_star){
 		if (!neighbor_star->isSelected() && neighbor_star->canGroupWith(current_star)){
 			neighbor_star->setSelected(true);
 			group_stars.push_back(neighbor_star);
@@ -169,7 +170,7 @@ std::list<Star*> StarMatrix::impl::findGroupingStars(Star* touched_star)
 	return group_stars;
 }
 
-void StarMatrix::impl::iterateNeighborStars(int row_num, int col_num, std::function<void(Star*)> &&callback)
+void StarMatrix::impl::iterateNeighborStars(int row_num, int col_num, std::function<void(StarScript*)> &&callback)
 {
 	for (auto neighbor_index : NEIGHBOR_INDEXES){
 		auto n_row_num = row_num + neighbor_index[0];
@@ -179,7 +180,7 @@ void StarMatrix::impl::iterateNeighborStars(int row_num, int col_num, std::funct
 	}
 }
 
-void StarMatrix::impl::explode(Star* star)
+void StarMatrix::impl::explode(StarScript* star)
 {
 	if (!star)
 		return;
@@ -192,7 +193,7 @@ void StarMatrix::impl::explode(Star* star)
 	star->setVisible(false);
 }
 
-void StarMatrix::impl::explodeGroupingStars(std::list<Star*> &&group_stars)
+void StarMatrix::impl::explodeGroupingStars(std::list<StarScript*> &&group_stars)
 {
 	if (group_stars.size() <= 1)
 		return;
@@ -285,7 +286,7 @@ void StarMatrix::impl::moveColumnsLeftward()
 
 cocos2d::Point StarMatrix::impl::getStarDefaultPosition(int row_num, int col_num) const
 {
-	return cocos2d::Point(col_num * Star::WIDTH + Star::WIDTH / 2, row_num * Star::HEIGHT + Star::HEIGHT / 2);
+	return cocos2d::Point(col_num * StarScript::WIDTH + StarScript::WIDTH / 2, row_num * StarScript::HEIGHT + StarScript::HEIGHT / 2);
 }
 
 bool StarMatrix::impl::isNoMoreMove() const

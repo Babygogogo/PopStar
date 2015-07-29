@@ -5,7 +5,7 @@
 
 #include <memory>
 
-class Star;
+class StarScript;
 
 class StarParticleEffect final :public BaseScriptComponent
 {
@@ -25,7 +25,7 @@ public:
 
 	static const std::string Type;
 
-	void reset(Star *star);
+	void reset(StarScript *star);
 
 	virtual const std::string & getType() const override;
 

@@ -1,5 +1,5 @@
-#ifndef __STAR__
-#define __STAR__
+#ifndef __STAR_SCRIPT__
+#define __STAR_SCRIPT__
 
 #include <memory>
 
@@ -11,27 +11,17 @@ namespace cocos2d
 	struct Color4F;
 }
 
-class Star final :public BaseScriptComponent
+class StarScript final :public BaseScriptComponent
 {
-	friend class Actor;
-
-	//////////////////////////////////////////////////////////////////////////
-	//Disable copy/move constructor and operator=.
-	//////////////////////////////////////////////////////////////////////////
-	Star(const Star&) = delete;
-	Star(Star&&) = delete;
-	Star& operator=(const Star&) = delete;
-	Star& operator=(Star&&) = delete;
-
 public:
-	Star(Actor *game_object);
-	~Star();
+	StarScript();
+	~StarScript();
 
 	static const std::string Type;
 
 	void randomize(int row_num, int col_num, float pos_x, float pos_y);
 	void moveTo(float pos_x, float pos_y);
-	bool canGroupWith(Star *star) const;
+	bool canGroupWith(StarScript *star) const;
 
 	cocos2d::Color4F getColor4F() const;
 
@@ -53,10 +43,20 @@ public:
 	const static int WIDTH = 48;
 	const static int HEIGHT = 48;
 
-private:
+	//Disable copy/move constructor and operator=.
+	StarScript(const StarScript&) = delete;
+	StarScript(StarScript&&) = delete;
+	StarScript& operator=(const StarScript&) = delete;
+	StarScript& operator=(StarScript&&) = delete;
 
-	struct impl;
-	std::unique_ptr<impl> pimpl;
+private:
+	//Override functions.
+	virtual bool vInit(tinyxml2::XMLElement *xmlElement) override;
+	virtual void vPostInit() override;
+
+	//Implementation stuff.
+	struct StarScriptImpl;
+	std::unique_ptr<StarScriptImpl> pimpl;
 };
 
-#endif // !__STAR__
+#endif // !__STAR_SCRIPT__
