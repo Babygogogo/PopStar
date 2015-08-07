@@ -158,7 +158,7 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClCompile Include="..\Classes\Engine\Script\MatrixLayerScript.cpp" />
     <ClCompile Include="..\Classes\Engine\Script\MainSceneScript.cpp" />
     <ClCompile Include="..\Classes\Engine\Script\StarScript.cpp" />
-    <ClCompile Include="..\Classes\Engine\Script\StarMatrix.cpp" />
+    <ClCompile Include="..\Classes\Engine\Script\StarMatrixScript.cpp" />
     <ClCompile Include="..\Classes\Engine\Script\StarParticleEffect.cpp" />
     <ClCompile Include="..\Classes\Engine\Script\StartLevelLabel.cpp" />
     <ClCompile Include="..\Classes\Engine\Script\StatusBar.cpp" />
@@ -201,7 +201,7 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClInclude Include="..\Classes\Engine\Script\MatrixLayerScript.h" />
     <ClInclude Include="..\Classes\Engine\Script\MainSceneScript.h" />
     <ClInclude Include="..\Classes\Engine\Script\StarScript.h" />
-    <ClInclude Include="..\Classes\Engine\Script\StarMatrix.h" />
+    <ClInclude Include="..\Classes\Engine\Script\StarMatrixScript.h" />
     <ClInclude Include="..\Classes\Engine\Script\StarParticleEffect.h" />
     <ClInclude Include="..\Classes\Engine\Script\StartLevelLabel.h" />
     <ClInclude Include="..\Classes\Engine\Script\StatusBar.h" />

@@ -217,7 +217,7 @@ bool StarScript::vInit(tinyxml2::XMLElement *xmlElement)
 			colorStruct.typeName = colorType;
 			colorStruct.textureName = textureName;
 			colorStruct.color4F = { colorR / 255.0f, colorG / 255.0f, colorB / 255.0f, 1.0f };
-			pimpl->s_Colors.push_back(std::move(colorStruct));
+			pimpl->s_Colors.emplace_back(std::move(colorStruct));
 		}
 		pimpl->s_RandomColorNum.param({ 0, static_cast<int>(pimpl->s_Colors.size() - 1) });
 	}

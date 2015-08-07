@@ -1,5 +1,5 @@
 #include "MatrixLayerScript.h"
-#include "StarMatrix.h"
+#include "StarMatrixScript.h"
 #include "../Utilities/SingletonContainer.h"
 #include "../Actor/Actor.h"
 #include "../Actor/GeneralRenderComponent.h"
@@ -33,7 +33,7 @@ MatrixLayerScript::MatrixLayerScriptImpl::~MatrixLayerScriptImpl()
 
 void MatrixLayerScript::MatrixLayerScriptImpl::onStartLevelLabelDisappeared()
 {
-	m_matrix.lock()->getComponent<StarMatrix>()->reset();
+	m_matrix.lock()->getComponent<StarMatrixScript>()->reset();
 	Audio::getInstance()->playReadyGo();
 }
 
@@ -59,9 +59,10 @@ void MatrixLayerScript::vPostInit()
 {
 	auto actor = m_Actor.lock();
 
-	auto starMatrixActor = std::make_shared<Actor>();
-	starMatrixActor->addComponent<StarMatrix>();
-	pimpl->m_matrix = actor->addChild(std::move(starMatrixActor));
+	//auto starMatrixActor = std::make_shared<Actor>();
+	//starMatrixActor->addComponent<StarMatrixScript>();
+	//pimpl->m_matrix = actor->addChild(std::move(starMatrixActor));
+	pimpl->m_matrix = actor->addChild(SingletonContainer::getInstance()->get<GameLogic>()->createActor("Actors\\StarMatrix.xml"));
 
 	//Create the ComboEffect actor.
 	actor->addChild(SingletonContainer::getInstance()->get<GameLogic>()->createActor("Actors\\ComboEffect.xml"));

@@ -11,6 +11,7 @@
 #include "../Script/MainSceneScript.h"
 #include "../Script/MatrixLayerScript.h"
 #include "../Script/StarScript.h"
+#include "../Script/StarMatrixScript.h"
 #include "../Utilities/GenericFactory.h"
 #include "cocos2d.h"
 #include "../../cocos2d/external/tinyxml2/tinyxml2.h"
@@ -59,6 +60,7 @@ void ActorFactory::ActorFactoryImpl::registerComponents()
 	m_ComponentFactory.registerType<MainSceneScript>();
 	m_ComponentFactory.registerType<MatrixLayerScript>();
 	m_ComponentFactory.registerType<StarScript>();
+	m_ComponentFactory.registerType<StarMatrixScript>();
 }
 
 std::shared_ptr<ActorComponent> ActorFactory::ActorFactoryImpl::createComponent(tinyxml2::XMLElement * componentElement)
