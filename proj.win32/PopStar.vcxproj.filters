@@ -19,9 +19,6 @@
     <Filter Include="Classes\Engine\Utilities">
       <UniqueIdentifier>{c7678c21-27a6-4d3c-9a44-1b575a8d9533}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Classes\Engine\Event">
-      <UniqueIdentifier>{28d53e71-a1b4-4424-98e0-55e49df8bff1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Classes\Engine\Actor">
       <UniqueIdentifier>{036000fc-6319-4e35-a0ee-2c9811861748}</UniqueIdentifier>
     </Filter>
@@ -39,6 +36,9 @@
     </Filter>
     <Filter Include="Classes\Engine\Logic">
       <UniqueIdentifier>{a10c367e-79e4-4851-aa19-22c604b5b269}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Classes\Engine\Event">
+      <UniqueIdentifier>{28d53e71-a1b4-4424-98e0-55e49df8bff1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -62,9 +62,6 @@
     </ClCompile>
     <ClCompile Include="..\Classes\Engine\Actor\SequentialInvoker.cpp">
       <Filter>Classes\Engine\Actor</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Engine\Script\StarParticleEffect.cpp">
-      <Filter>Classes\Engine\Script</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\Engine\Script\StartLevelLabel.cpp">
       <Filter>Classes\Engine\Script</Filter>
@@ -138,6 +135,9 @@
     <ClCompile Include="..\Classes\Engine\Script\StarMatrixScript.cpp">
       <Filter>Classes\Engine\Script</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Script\StarParticleScript.cpp">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -175,9 +175,6 @@
     </ClInclude>
     <ClInclude Include="..\Classes\Engine\Actor\SoundPlayer.h">
       <Filter>Classes\Engine\Actor</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Script\StarParticleEffect.h">
-      <Filter>Classes\Engine\Script</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Engine\Script\StartLevelLabel.h">
       <Filter>Classes\Engine\Script</Filter>
@@ -264,6 +261,9 @@
       <Filter>Classes\Engine\Script</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Engine\Script\StarMatrixScript.h">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Script\StarParticleScript.h">
       <Filter>Classes\Engine\Script</Filter>
     </ClInclude>
   </ItemGroup>

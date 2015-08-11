@@ -57,7 +57,6 @@ private:
 	//Override functions.
 	virtual const std::string & getType() const override;
 	virtual bool vInit(tinyxml2::XMLElement *xmlElement) override;
-	virtual cocos2d::Node * getSceneNode() const override;
 
 	//Implementation stuff.
 	struct DisplayNodeImpl;

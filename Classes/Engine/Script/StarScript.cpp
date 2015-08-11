@@ -50,8 +50,8 @@ struct StarScript::StarScriptImpl
 };
 
 bool StarScript::StarScriptImpl::s_IsStaticInitialized{ false };
-float StarScript::StarScriptImpl::s_InitialSpeedPPS;
-float StarScript::StarScriptImpl::s_NormalSpeedPPS;
+float StarScript::StarScriptImpl::s_InitialSpeedPPS{};
+float StarScript::StarScriptImpl::s_NormalSpeedPPS{};
 std::vector<StarScript::StarScriptImpl::ColorStruct> StarScript::StarScriptImpl::s_Colors;
 
 std::random_device StarScript::StarScriptImpl::rd;

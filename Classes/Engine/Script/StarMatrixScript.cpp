@@ -5,7 +5,7 @@
 
 #include "StarMatrixScript.h"
 #include "StarScript.h"
-#include "StarParticleEffect.h"
+#include "StarParticleScript.h"
 #include "../Actor/GeneralRenderComponent.h"
 #include "../Actor/SequentialInvoker.h"
 #include "../Actor/Actor.h"
@@ -165,9 +165,9 @@ void StarMatrixScript::StarMatrixScriptImpl::explode(StarScript* star)
 	if (!star)
 		return;
 
-	auto particle_effect = std::make_shared<Actor>();
-	particle_effect->addComponent<StarParticleEffect>()->reset(star);
-	m_Visitor->m_Actor.lock()->addChild(std::move(particle_effect));
+	auto particleActor = SingletonContainer::getInstance()->get<GameLogic>()->createActor("Actors\\StarParticle.xml");
+	particleActor->getComponent<StarParticleScript>()->reset(star);
+	m_Visitor->m_Actor.lock()->addChild(std::move(particleActor));
 
 	m_StarScripts[star->getRowNum()][star->getColNum()] = nullptr;
 	star->setVisible(false);
@@ -184,7 +184,6 @@ void StarMatrixScript::StarMatrixScriptImpl::explodeGroupingStars(std::list<Star
 
 	shrink();
 	SingletonContainer::getInstance()->get<GameData>()->updateCurrentScoreWith(group_stars.size());
-	//	SingletonContainer::getInstance()->get<IEventDispatcher>()->dispatch(LegacyEvent::create(LegacyEventType::PlayerExplodedStars, EventArg1::create(group_stars.size())));
 	SingletonContainer::getInstance()->get<IEventDispatcher>()->dispatch(std::make_unique<EvtDataPlayerExplodedStars>(group_stars.size()));
 
 	if (isNoMoreMove()){

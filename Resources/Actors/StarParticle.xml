@@ -1,0 +1,20 @@
+<!-- edited with XMLSpy v2013 (http://www.altova.com) by  () -->
+<Actor Type="StarParticle" Resource="Actors\StarParticle.xml">
+	<StarParticleScript>
+		<Color>
+			<Blue TextureName="blue.png" R="84" G="203" B="254"/>
+			<Green TextureName="green.png" R="132" G="226" B="111"/>
+			<Orange TextureName="orange.png" R="253" G="234" B="84"/>
+			<Purple TextureName="purple.png" R="189" G="78" B="253"/>
+			<Red TextureName="red.png" R="253" G="80" B="126"/>
+		</Color>
+	</StarParticleScript>
+	<GeneralRenderComponent Type="ParticleExplosion">
+		<Properties Texture="star.png" TotalParticles="15" StartSize="25" Life="1" Speed="200" SpeedVariance="10">
+			<StartColorVariance R="0" G="0" B="0" A="1"/>
+			<EndColorVariance R="0" G="0" B="0" A="255"/>
+			<Gravity X="0" Y="-300"/>
+		</Properties>
+	</GeneralRenderComponent>
+	<SequentialInvokerComponent/>
+</Actor>
