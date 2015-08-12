@@ -1,0 +1,8 @@
+<!-- edited with XMLSpy v2013 (http://www.altova.com) by  () -->
+<Actor Type="StartLevelLabel" Resource="Actors\StartLevelLabel.xml">
+	<StartLevelLabelScript/>
+	<GeneralRenderComponent Type="Label">
+		<CreateWith FunctionName="createWithSystemFont" Text="" FontName="Verdana-Bold" FontSize="50"/>
+	</GeneralRenderComponent>
+	<SequentialInvokerComponent/>
+</Actor>

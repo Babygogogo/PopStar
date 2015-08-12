@@ -63,9 +63,6 @@
     <ClCompile Include="..\Classes\Engine\Actor\SequentialInvoker.cpp">
       <Filter>Classes\Engine\Actor</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Engine\Script\StartLevelLabel.cpp">
-      <Filter>Classes\Engine\Script</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\Engine\Script\StatusBar.cpp">
       <Filter>Classes\Engine\Script</Filter>
     </ClCompile>
@@ -138,6 +135,9 @@
     <ClCompile Include="..\Classes\Engine\Script\StarParticleScript.cpp">
       <Filter>Classes\Engine\Script</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Script\StartLevelLabelScript.cpp">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -175,9 +175,6 @@
     </ClInclude>
     <ClInclude Include="..\Classes\Engine\Actor\SoundPlayer.h">
       <Filter>Classes\Engine\Actor</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Script\StartLevelLabel.h">
-      <Filter>Classes\Engine\Script</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Engine\Script\StatusBar.h">
       <Filter>Classes\Engine\Script</Filter>
@@ -264,6 +261,9 @@
       <Filter>Classes\Engine\Script</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Engine\Script\StarParticleScript.h">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Script\StartLevelLabelScript.h">
       <Filter>Classes\Engine\Script</Filter>
     </ClInclude>
   </ItemGroup>

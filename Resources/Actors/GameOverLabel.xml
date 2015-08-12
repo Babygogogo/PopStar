@@ -1,9 +1,6 @@
 <!-- edited with XMLSpy v2013 (http://www.altova.com) by  () -->
 <Actor Type="GameOverLabel" Resource="Actors\GameOverLabel.xml">
-	<GameOverLabelScript>
-		<LabelData Text="Game Over"/>
-		<Font Name="Verdana-Bold" Size="80"/>
-	</GameOverLabelScript>
+	<GameOverLabelScript/>
 	<GeneralRenderComponent Type="Label">
 		<CreateWith FunctionName="createWithSystemFont" Text="Game Over" FontName="Verdana-Bold" FontSize="80"/>
 	</GeneralRenderComponent>

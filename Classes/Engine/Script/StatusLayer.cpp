@@ -1,8 +1,5 @@
 #include "StatusLayer.h"
 #include "StatusBar.h"
-#include "StartLevelLabel.h"
-#include "LevelSummaryLabelScript.h"
-#include "GameOverLabelScript.h"
 #include "../Actor/Actor.h"
 #include "../Actor/GeneralRenderComponent.h"
 #include "../Utilities/SingletonContainer.h"
@@ -25,10 +22,7 @@ StatusLayer::impl::impl(Actor *game_object)
 	statusBarActor->addComponent<StatusBar>();
 	game_object->addChild(std::move(statusBarActor));
 
-	auto startLevelLabelActor = std::make_shared<Actor>();
-	startLevelLabelActor->addComponent<StartLevelLabel>();
-	game_object->addChild(std::move(startLevelLabelActor));
-
+	game_object->addChild(gameLogic->createActor("Actors\\StartLevelLabel.xml"));
 	game_object->addChild(gameLogic->createActor("Actors\\GetScoreLabel.xml"));
 	game_object->addChild(gameLogic->createActor("Actors\\LevelSummaryLabel.xml"));
 	game_object->addChild(gameLogic->createActor("Actors\\GameOverLabel.xml"));

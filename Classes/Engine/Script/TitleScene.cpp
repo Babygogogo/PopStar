@@ -2,6 +2,9 @@
 #include "MainSceneScript.h"
 #include "../Actor/Actor.h"
 #include "../Actor/GeneralRenderComponent.h"
+#include "../Event/IEventDispatcher.h"
+#include "../Event/EventType.h"
+#include "../Event/EvtDataGeneric.h"
 #include "../GameLogic/GameLogic.h"
 #include "../Utilities/SingletonContainer.h"
 #include "../Graphic2D/SceneStack.h"
@@ -95,10 +98,13 @@ std::shared_ptr<Actor> TitleScene::impl::createStartButton() const
 std::function<void(cocos2d::Ref*)> TitleScene::impl::createStartButtonCallback() const
 {
 	return [](cocos2d::Ref*){
-		SingletonContainer::getInstance()->get<GameData>()->reset();
+		auto & singletonContainer = SingletonContainer::getInstance();
+		singletonContainer->get<GameData>()->reset();
 
-		auto mainSceneActor = SingletonContainer::getInstance()->get<GameLogic>()->createActor("Actors\\MainScene.xml");
-		SingletonContainer::getInstance()->get<SceneStack>()->replaceAndRun(std::move(mainSceneActor));
+		auto mainSceneActor = singletonContainer->get<GameLogic>()->createActor("Actors\\MainScene.xml");
+		singletonContainer->get<SceneStack>()->replaceAndRun(std::move(mainSceneActor));
+
+		singletonContainer->get<IEventDispatcher>()->dispatch(std::make_unique<EvtDataGeneric>(EventType::LevelStarted));
 	};
 }
 
