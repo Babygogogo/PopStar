@@ -152,8 +152,11 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClCompile Include="..\Classes\Engine\MainLoop\ProcessRunner.cpp" />
     <ClCompile Include="..\Classes\Engine\MainLoop\Timer.cpp" />
     <ClCompile Include="..\Classes\Engine\Script\ComboEffectScript.cpp" />
+    <ClCompile Include="..\Classes\Engine\Script\CurrentScoreLabelScript.cpp" />
     <ClCompile Include="..\Classes\Engine\Script\GameOverLabelScript.cpp" />
     <ClCompile Include="..\Classes\Engine\Script\GetScoreLabelScript.cpp" />
+    <ClCompile Include="..\Classes\Engine\Script\HighScoreLabelScript.cpp" />
+    <ClCompile Include="..\Classes\Engine\Script\LevelLabelScript.cpp" />
     <ClCompile Include="..\Classes\Engine\Script\LevelSummaryLabelScript.cpp" />
     <ClCompile Include="..\Classes\Engine\Script\MatrixLayerScript.cpp" />
     <ClCompile Include="..\Classes\Engine\Script\MainSceneScript.cpp" />
@@ -161,8 +164,7 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClCompile Include="..\Classes\Engine\Script\StarMatrixScript.cpp" />
     <ClCompile Include="..\Classes\Engine\Script\StarParticleScript.cpp" />
     <ClCompile Include="..\Classes\Engine\Script\StartLevelLabelScript.cpp" />
-    <ClCompile Include="..\Classes\Engine\Script\StatusBar.cpp" />
-    <ClCompile Include="..\Classes\Engine\Script\StatusLayer.cpp" />
+    <ClCompile Include="..\Classes\Engine\Script\TargetScoreLabelScript.cpp" />
     <ClCompile Include="..\Classes\Engine\Script\TitleScene.cpp" />
     <ClCompile Include="..\Classes\Engine\Utilities\SingletonContainer.cpp" />
     <ClCompile Include="..\Classes\HelloWorldScene.cpp" />
@@ -195,8 +197,11 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClInclude Include="..\Classes\Engine\MainLoop\ProcessRunner.h" />
     <ClInclude Include="..\Classes\Engine\MainLoop\Timer.h" />
     <ClInclude Include="..\Classes\Engine\Script\ComboEffectScript.h" />
+    <ClInclude Include="..\Classes\Engine\Script\CurrentScoreLabelScript.h" />
     <ClInclude Include="..\Classes\Engine\Script\GameOverLabelScript.h" />
     <ClInclude Include="..\Classes\Engine\Script\GetScoreLabelScript.h" />
+    <ClInclude Include="..\Classes\Engine\Script\HighScoreLabelScript.h" />
+    <ClInclude Include="..\Classes\Engine\Script\LevelLabelScript.h" />
     <ClInclude Include="..\Classes\Engine\Script\LevelSummaryLabelScript.h" />
     <ClInclude Include="..\Classes\Engine\Script\MatrixLayerScript.h" />
     <ClInclude Include="..\Classes\Engine\Script\MainSceneScript.h" />
@@ -204,8 +209,7 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClInclude Include="..\Classes\Engine\Script\StarMatrixScript.h" />
     <ClInclude Include="..\Classes\Engine\Script\StarParticleScript.h" />
     <ClInclude Include="..\Classes\Engine\Script\StartLevelLabelScript.h" />
-    <ClInclude Include="..\Classes\Engine\Script\StatusBar.h" />
-    <ClInclude Include="..\Classes\Engine\Script\StatusLayer.h" />
+    <ClInclude Include="..\Classes\Engine\Script\TargetScoreLabelScript.h" />
     <ClInclude Include="..\Classes\Engine\Script\TitleScene.h" />
     <ClInclude Include="..\Classes\Engine\Utilities\GenericFactory.h" />
     <ClInclude Include="..\Classes\Engine\Utilities\SingletonContainer.h" />

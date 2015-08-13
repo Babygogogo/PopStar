@@ -1,5 +1,4 @@
 #include "MainSceneScript.h"
-#include "StatusLayer.h"
 #include "../Actor/Actor.h"
 #include "../Actor/GeneralRenderComponent.h"
 #include "../Audio/Audio.h"
@@ -48,9 +47,15 @@ void MainSceneScript::vPostInit()
 	actor->addChild(gameLogic->createActor("Actors\\MainSceneBackground.xml"));
 	actor->addChild(gameLogic->createActor("Actors\\MatrixLayer.xml"));
 
-	auto statusLayerActor = std::make_shared<Actor>();
-	statusLayerActor->addComponent<StatusLayer>();
-	actor->addChild(std::move(statusLayerActor));
+	actor->addChild(gameLogic->createActor("Actors\\HighScoreLabel.xml"));
+	actor->addChild(gameLogic->createActor("Actors\\CurrentScoreLabel.xml"));
+	actor->addChild(gameLogic->createActor("Actors\\TargetScoreLabel.xml"));
+	actor->addChild(gameLogic->createActor("Actors\\LevelLabel.xml"));
+
+	actor->addChild(gameLogic->createActor("Actors\\StartLevelLabel.xml"));
+	actor->addChild(gameLogic->createActor("Actors\\GetScoreLabel.xml"));
+	actor->addChild(gameLogic->createActor("Actors\\LevelSummaryLabel.xml"));
+	actor->addChild(gameLogic->createActor("Actors\\GameOverLabel.xml"));
 
 	Audio::getInstance()->playBGM();
 }

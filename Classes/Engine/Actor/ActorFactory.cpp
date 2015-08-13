@@ -5,8 +5,11 @@
 #include "GeneralRenderComponent.h"
 #include "SequentialInvoker.h"
 #include "../Script/ComboEffectScript.h"
+#include "../Script/CurrentScoreLabelScript.h"
 #include "../Script/GameOverLabelScript.h"
 #include "../Script/GetScoreLabelScript.h"
+#include "../Script/HighScoreLabelScript.h"
+#include "../Script/LevelLabelScript.h"
 #include "../Script/LevelSummaryLabelScript.h"
 #include "../Script/MainSceneScript.h"
 #include "../Script/MatrixLayerScript.h"
@@ -14,6 +17,7 @@
 #include "../Script/StarMatrixScript.h"
 #include "../Script/StarParticleScript.h"
 #include "../Script/StartLevelLabelScript.h"
+#include "../Script/TargetScoreLabelScript.h"
 #include "../Utilities/GenericFactory.h"
 #include "cocos2d.h"
 #include "../../cocos2d/external/tinyxml2/tinyxml2.h"
@@ -56,8 +60,11 @@ void ActorFactory::ActorFactoryImpl::registerComponents()
 	m_ComponentFactory.registerType<SequentialInvoker>();
 
 	m_ComponentFactory.registerType<ComboEffectScript>();
+	m_ComponentFactory.registerType<CurrentScoreLabelScript>();
 	m_ComponentFactory.registerType<GameOverLabelScript>();
 	m_ComponentFactory.registerType<GetScoreLabelScript>();
+	m_ComponentFactory.registerType<HighScoreLabelScript>();
+	m_ComponentFactory.registerType<LevelLabelScript>();
 	m_ComponentFactory.registerType<LevelSummaryLabelScript>();
 	m_ComponentFactory.registerType<MainSceneScript>();
 	m_ComponentFactory.registerType<MatrixLayerScript>();
@@ -65,6 +72,7 @@ void ActorFactory::ActorFactoryImpl::registerComponents()
 	m_ComponentFactory.registerType<StarMatrixScript>();
 	m_ComponentFactory.registerType<StarParticleScript>();
 	m_ComponentFactory.registerType<StartLevelLabelScript>();
+	m_ComponentFactory.registerType<TargetScoreLabelScript>();
 }
 
 std::shared_ptr<ActorComponent> ActorFactory::ActorFactoryImpl::createComponent(tinyxml2::XMLElement * componentElement)

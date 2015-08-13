@@ -28,7 +28,6 @@ StarParticleScript::StarParticleScriptImpl::~StarParticleScriptImpl()
 //////////////////////////////////////////////////////////////////////////
 StarParticleScript::StarParticleScript() : pimpl{ std::make_unique<StarParticleScriptImpl>() }
 {
-
 }
 
 StarParticleScript::~StarParticleScript()

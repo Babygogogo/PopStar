@@ -63,12 +63,6 @@
     <ClCompile Include="..\Classes\Engine\Actor\SequentialInvoker.cpp">
       <Filter>Classes\Engine\Actor</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Engine\Script\StatusBar.cpp">
-      <Filter>Classes\Engine\Script</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Engine\Script\StatusLayer.cpp">
-      <Filter>Classes\Engine\Script</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\Engine\Script\TitleScene.cpp">
       <Filter>Classes\Engine\Script</Filter>
     </ClCompile>
@@ -138,6 +132,18 @@
     <ClCompile Include="..\Classes\Engine\Script\StartLevelLabelScript.cpp">
       <Filter>Classes\Engine\Script</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Script\HighScoreLabelScript.cpp">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Script\CurrentScoreLabelScript.cpp">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Script\TargetScoreLabelScript.cpp">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Script\LevelLabelScript.cpp">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -175,12 +181,6 @@
     </ClInclude>
     <ClInclude Include="..\Classes\Engine\Actor\SoundPlayer.h">
       <Filter>Classes\Engine\Actor</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Script\StatusBar.h">
-      <Filter>Classes\Engine\Script</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Script\StatusLayer.h">
-      <Filter>Classes\Engine\Script</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Engine\Script\TitleScene.h">
       <Filter>Classes\Engine\Script</Filter>
@@ -264,6 +264,18 @@
       <Filter>Classes\Engine\Script</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Engine\Script\StartLevelLabelScript.h">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Script\HighScoreLabelScript.h">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Script\CurrentScoreLabelScript.h">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Script\TargetScoreLabelScript.h">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Script\LevelLabelScript.h">
       <Filter>Classes\Engine\Script</Filter>
     </ClInclude>
   </ItemGroup>

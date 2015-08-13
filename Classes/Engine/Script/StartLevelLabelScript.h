@@ -1,5 +1,5 @@
-#ifndef __START_LEVEL_LABEL__
-#define __START_LEVEL_LABEL__
+#ifndef __START_LEVEL_LABEL_SCRIPT__
+#define __START_LEVEL_LABEL_SCRIPT__
 
 #include <memory>
 
@@ -30,4 +30,4 @@ private:
 	std::unique_ptr<StartLevelLabelScriptImpl> pimpl;
 };
 
-#endif // !__START_LEVEL_LABEL__
+#endif // !__START_LEVEL_LABEL_SCRIPT__
