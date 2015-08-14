@@ -42,10 +42,7 @@ protected:
 
 	std::weak_ptr<Actor> m_Actor;
 
-public:
-	//This function should really be private and only exposed to ActorFactory.
-	//It's now public so that I can refactor the components more conveniently.
-	//When the refactor is done, this function should again be private.
+private:
 	void setOwner(std::weak_ptr<Actor> && owner);
 };
 

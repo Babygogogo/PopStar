@@ -42,8 +42,8 @@ const std::string & MainSceneScript::getType() const
 void MainSceneScript::vPostInit()
 {
 	auto actor = m_Actor.lock();
-
 	auto gameLogic = SingletonContainer::getInstance()->get<GameLogic>();
+
 	actor->addChild(gameLogic->createActor("Actors\\MainSceneBackground.xml"));
 	actor->addChild(gameLogic->createActor("Actors\\MatrixLayer.xml"));
 

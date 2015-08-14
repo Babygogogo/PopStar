@@ -1,0 +1,5 @@
+<!-- edited with XMLSpy v2013 (http://www.altova.com) by  () -->
+<Actor Type="TitleScene" Resource="Actors\TitleScene.xml">
+	<TitleSceneScript/>
+	<GeneralRenderComponent Type="Scene"/>
+</Actor>

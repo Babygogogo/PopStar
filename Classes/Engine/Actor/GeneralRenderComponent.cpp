@@ -19,6 +19,8 @@ public:
 	cocos2d::Layer * createLayer(tinyxml2::XMLElement * xmlElement);
 	cocos2d::Scene * createScene(tinyxml2::XMLElement * xmlElement);
 	cocos2d::Label * createLabel(tinyxml2::XMLElement * xmlElement);
+	cocos2d::Menu * createMenu(tinyxml2::XMLElement * xmlElement);
+	cocos2d::MenuItemImage * createMenuItemImage(tinyxml2::XMLElement *xmlElement);
 	cocos2d::ParticleExplosion * createParticleExplosion(tinyxml2::XMLElement * xmlElement);
 
 	GeneralRenderComponent* m_parent{ nullptr };
@@ -60,11 +62,29 @@ cocos2d::Label * GeneralRenderComponent::DisplayNodeImpl::createLabel(tinyxml2::
 			auto text = createWith->Attribute("Text");
 			auto fontName = createWith->Attribute("FontName");
 			auto fontSize = createWith->FloatAttribute("FontSize");
+
 			return cocos2d::Label::createWithSystemFont(text, fontName, fontSize);
 		}
 	}
-	
+
 	return cocos2d::Label::create();
+}
+
+cocos2d::Menu * GeneralRenderComponent::DisplayNodeImpl::createMenu(tinyxml2::XMLElement * xmlElement)
+{
+	return cocos2d::Menu::create();
+}
+
+cocos2d::MenuItemImage * GeneralRenderComponent::DisplayNodeImpl::createMenuItemImage(tinyxml2::XMLElement *xmlElement)
+{
+	if (auto createWith = xmlElement->FirstChildElement("CreateWith")){
+		auto normalImage = createWith->Attribute("NormalImage");
+		auto selectedImage = createWith->Attribute("SelectedImage");
+
+		return cocos2d::MenuItemImage::create(normalImage, selectedImage);
+	}
+
+	return cocos2d::MenuItemImage::create();
 }
 
 cocos2d::ParticleExplosion * GeneralRenderComponent::DisplayNodeImpl::createParticleExplosion(tinyxml2::XMLElement * xmlElement)
@@ -193,6 +213,10 @@ bool GeneralRenderComponent::vInit(tinyxml2::XMLElement *xmlElement)
 		m_Node = pimpl->createScene(xmlElement);
 	else if (strcmp(nodeType, "Label") == 0)
 		m_Node = pimpl->createLabel(xmlElement);
+	else if (strcmp(nodeType, "Menu") == 0)
+		m_Node = pimpl->createMenu(xmlElement);
+	else if (strcmp(nodeType, "MenuItemImage") == 0)
+		m_Node = pimpl->createMenuItemImage(xmlElement);
 	else if (strcmp(nodeType, "ParticleExplosion") == 0)
 		m_Node = pimpl->createParticleExplosion(xmlElement);
 

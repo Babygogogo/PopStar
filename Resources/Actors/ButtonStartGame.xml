@@ -1,0 +1,7 @@
+<!-- edited with XMLSpy v2013 (http://www.altova.com) by  () -->
+<Actor Type="ButtonStartGame" Resource="Actors\ButtonStartGame.xml">
+	<ButtonStartGameScript/>
+	<GeneralRenderComponent Type="MenuItemImage">
+		<CreateWith NormalImage="menu_start.png" SelectedImage="menu_start.png"/>
+	</GeneralRenderComponent>
+</Actor>

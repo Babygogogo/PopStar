@@ -63,9 +63,6 @@
     <ClCompile Include="..\Classes\Engine\Actor\SequentialInvoker.cpp">
       <Filter>Classes\Engine\Actor</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Engine\Script\TitleScene.cpp">
-      <Filter>Classes\Engine\Script</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\Engine\Actor\Actor.cpp">
       <Filter>Classes\Engine\Actor</Filter>
     </ClCompile>
@@ -144,6 +141,15 @@
     <ClCompile Include="..\Classes\Engine\Script\LevelLabelScript.cpp">
       <Filter>Classes\Engine\Script</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Script\TitleSceneScript.cpp">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Script\TitleMenuScript.cpp">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Script\ButtonStartGameScript.cpp">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -181,9 +187,6 @@
     </ClInclude>
     <ClInclude Include="..\Classes\Engine\Actor\SoundPlayer.h">
       <Filter>Classes\Engine\Actor</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Script\TitleScene.h">
-      <Filter>Classes\Engine\Script</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Engine\Actor\Actor.h">
       <Filter>Classes\Engine\Actor</Filter>
@@ -276,6 +279,15 @@
       <Filter>Classes\Engine\Script</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Engine\Script\LevelLabelScript.h">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Script\TitleSceneScript.h">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Script\TitleMenuScript.h">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Script\ButtonStartGameScript.h">
       <Filter>Classes\Engine\Script</Filter>
     </ClInclude>
   </ItemGroup>

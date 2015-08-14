@@ -1,9 +1,10 @@
 #include "GameOverLabelScript.h"
-#include "TitleScene.h"
+#include "TitleSceneScript.h"
 #include "../Actor/Actor.h"
 #include "../Actor/GeneralRenderComponent.h"
 #include "../Actor/SequentialInvoker.h"
 #include "../Utilities/SingletonContainer.h"
+#include "../GameLogic/GameLogic.h"
 #include "../Graphic2D/SceneStack.h"
 #include "../Event/EventDispatcher.h"
 #include "../Event/EventType.h"
@@ -75,9 +76,13 @@ void GameOverLabelScript::GameOverLabelScriptImpl::resetInvoker()
 	strongInvoker->addMoveTo(1, visible_size.width / 2, visible_size.height / 2);
 
 	strongInvoker->addCallback([]{
-		auto titleSceneActor = std::make_shared<Actor>();
-		titleSceneActor->addComponent<TitleScene>();
-		SingletonContainer::getInstance()->get<SceneStack>()->replaceAndRun(std::move(titleSceneActor)); });
+		//auto titleSceneActor = std::make_shared<Actor>();
+		//titleSceneActor->addComponent<TitleSceneScript>();
+		//SingletonContainer::getInstance()->get<SceneStack>()->replaceAndRun(std::move(titleSceneActor)); });
+		auto & singletonContainer = SingletonContainer::getInstance();
+		auto titleScene = singletonContainer->get<GameLogic>()->createActor("Actors\\TitleScene.xml");
+		singletonContainer->get<SceneStack>()->replaceAndRun(std::move(titleScene));
+	});
 }
 
 //////////////////////////////////////////////////////////////////////////

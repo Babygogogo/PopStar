@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <chrono>
+#include <functional>
 
 #include "EventType.h"
 
@@ -16,7 +17,7 @@ class BaseEventData;	//should be removed soon
  *
  * \details
  *	There are two ways to dispatch an event: vQueueEvent() and vTrigger().
- *	vQueueEvent() is the preferred way because it avoids the problem of circular dispatch.  
+ *	vQueueEvent() is the preferred way because it avoids the problem of circular dispatch.
  *
  *	You must call vAddListener() before a listener can listen to any events.
  *	If a listener dies, it will be removed from the listener list automatically.
@@ -36,13 +37,13 @@ public:
 	virtual void dispatch(std::unique_ptr<BaseEventData> &&event, void *target = nullptr) = 0;
 
 	//Type shortcut of the pair of listener and its callback.
-	using ListenerCallback = std::pair < std::weak_ptr<void>, std::function<void(const std::shared_ptr<IEventData> &)> > ;
+	using ListenerCallback = std::pair < std::weak_ptr<void>, std::function<void(const std::shared_ptr<IEventData> &)> >;
 
 	//Add an event listener to an given event type.
 	//If it's added twice, the second one will be ignored.
 	virtual void vAddListener(const EventType & eType, const ListenerCallback & eListenerCallback) = 0;
 	virtual void vAddListener(const EventType & eType, ListenerCallback && eListenerCallback) = 0;
-	
+
 	//Remove an event listener to an given event type.
 	//Call this only if you want to remove a listener before it dies.
 	virtual void vRemoveListener(const EventType & eType, const std::weak_ptr<void> & eListener) = 0;

@@ -1,0 +1,9 @@
+<!-- edited with XMLSpy v2013 (http://www.altova.com) by  () -->
+<Actor Type="TitleMenu" Resource="Actors\TitleMenu.xml">
+	<TitleMenuScript>
+		<Composites Button="Actors\ButtonStartGame.xml"/>
+	</TitleMenuScript>
+	<GeneralRenderComponent Type="Menu">
+		<Position NormalizedX="0.5" PixelOffsetX="0" NormalizedY="0.5" PixelOffsetY="0"/>
+	</GeneralRenderComponent>
+</Actor>

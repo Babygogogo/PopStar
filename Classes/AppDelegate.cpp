@@ -7,7 +7,7 @@
 #include "Engine/Graphic2D/SceneStack.h"
 #include "Common/GameData.h"
 #include "Engine/Event/EventDispatcher.h"
-#include "Engine/Script/TitleScene.h"
+#include "Engine/Script/TitleSceneScript.h"
 #include "Engine/Actor/Actor.h"
 
 USING_NS_CC;
@@ -46,10 +46,13 @@ void AppDelegate::AppDelegateImpl::initGame()
 	singletonContainer->set<IEventDispatcher>(::EventDispatcher::create());
 	singletonContainer->set<GameData>(GameData::create());
 	singletonContainer->set<GameLogic>(std::make_unique<GameLogic>());
+	singletonContainer->set<SceneStack>(std::make_unique<SceneStack>());
 
-	auto titleSceneActor = std::make_shared<Actor>();
-	titleSceneActor->addComponent<TitleScene>();
-	singletonContainer->set<SceneStack>(std::make_unique<SceneStack>())->pushAndRun(std::move(titleSceneActor));
+	//auto titleSceneActor = std::make_shared<Actor>();
+	//titleSceneActor->addComponent<TitleSceneScript>();
+	//singletonContainer->get<SceneStack>(std::make_unique<SceneStack>())->pushAndRun(std::move(titleSceneActor));
+	auto titleScene = singletonContainer->get<GameLogic>()->createActor("Actors\\TitleScene.xml");
+	singletonContainer->get<SceneStack>()->pushAndRun(std::move(titleScene));
 
 	Director::getInstance()->getScheduler()->scheduleUpdate(this, 0, false);
 }

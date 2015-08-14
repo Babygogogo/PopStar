@@ -151,6 +151,7 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClCompile Include="..\Classes\Engine\MainLoop\BaseProcess.cpp" />
     <ClCompile Include="..\Classes\Engine\MainLoop\ProcessRunner.cpp" />
     <ClCompile Include="..\Classes\Engine\MainLoop\Timer.cpp" />
+    <ClCompile Include="..\Classes\Engine\Script\ButtonStartGameScript.cpp" />
     <ClCompile Include="..\Classes\Engine\Script\ComboEffectScript.cpp" />
     <ClCompile Include="..\Classes\Engine\Script\CurrentScoreLabelScript.cpp" />
     <ClCompile Include="..\Classes\Engine\Script\GameOverLabelScript.cpp" />
@@ -165,7 +166,8 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClCompile Include="..\Classes\Engine\Script\StarParticleScript.cpp" />
     <ClCompile Include="..\Classes\Engine\Script\StartLevelLabelScript.cpp" />
     <ClCompile Include="..\Classes\Engine\Script\TargetScoreLabelScript.cpp" />
-    <ClCompile Include="..\Classes\Engine\Script\TitleScene.cpp" />
+    <ClCompile Include="..\Classes\Engine\Script\TitleMenuScript.cpp" />
+    <ClCompile Include="..\Classes\Engine\Script\TitleSceneScript.cpp" />
     <ClCompile Include="..\Classes\Engine\Utilities\SingletonContainer.cpp" />
     <ClCompile Include="..\Classes\HelloWorldScene.cpp" />
     <ClCompile Include="main.cpp" />
@@ -196,6 +198,7 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClInclude Include="..\Classes\Engine\MainLoop\BaseProcess.h" />
     <ClInclude Include="..\Classes\Engine\MainLoop\ProcessRunner.h" />
     <ClInclude Include="..\Classes\Engine\MainLoop\Timer.h" />
+    <ClInclude Include="..\Classes\Engine\Script\ButtonStartGameScript.h" />
     <ClInclude Include="..\Classes\Engine\Script\ComboEffectScript.h" />
     <ClInclude Include="..\Classes\Engine\Script\CurrentScoreLabelScript.h" />
     <ClInclude Include="..\Classes\Engine\Script\GameOverLabelScript.h" />
@@ -210,7 +213,8 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClInclude Include="..\Classes\Engine\Script\StarParticleScript.h" />
     <ClInclude Include="..\Classes\Engine\Script\StartLevelLabelScript.h" />
     <ClInclude Include="..\Classes\Engine\Script\TargetScoreLabelScript.h" />
-    <ClInclude Include="..\Classes\Engine\Script\TitleScene.h" />
+    <ClInclude Include="..\Classes\Engine\Script\TitleMenuScript.h" />
+    <ClInclude Include="..\Classes\Engine\Script\TitleSceneScript.h" />
     <ClInclude Include="..\Classes\Engine\Utilities\GenericFactory.h" />
     <ClInclude Include="..\Classes\Engine\Utilities\SingletonContainer.h" />
     <ClInclude Include="..\Classes\HelloWorldScene.h" />

@@ -9,8 +9,6 @@ public:
 	virtual ~BaseScriptComponent();
 
 protected:
-	BaseScriptComponent();
-	BaseScriptComponent(std::string &&name, Actor *game_object) :ActorComponent(std::move(name), game_object){};
 
 	//Override functions.
 	virtual bool vInit(tinyxml2::XMLElement *xmlElement) override;

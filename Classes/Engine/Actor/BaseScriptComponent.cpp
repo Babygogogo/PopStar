@@ -1,9 +1,5 @@
 #include "BaseScriptComponent.h"
 
-BaseScriptComponent::BaseScriptComponent() : ActorComponent()
-{
-}
-
 BaseScriptComponent::~BaseScriptComponent()
 {
 }
