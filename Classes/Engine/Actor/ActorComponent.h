@@ -30,12 +30,8 @@ public:
 	virtual const std::string & getType() const = 0;
 
 protected:
-	ActorComponent();
-	//#TODO: This constructor should be removed.
-	ActorComponent(std::string &&name, Actor *game_object);
-
 	//Called by ActorFactory, after the creation of the component and before attaching to an actor.
-	virtual bool vInit(tinyxml2::XMLElement *xmlElement) = 0;
+	virtual bool vInit(tinyxml2::XMLElement *xmlElement);
 	//Called by by Actor by ActorFactory, after attaching all components to an actor. No default behavior.
 	virtual void vPostInit();
 	virtual void vOnChanged();

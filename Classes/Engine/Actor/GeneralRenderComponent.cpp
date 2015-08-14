@@ -9,11 +9,11 @@
 //////////////////////////////////////////////////////////////////////////
 //Definition of DisplayNodeImpl.
 //////////////////////////////////////////////////////////////////////////
-struct GeneralRenderComponent::DisplayNodeImpl
+struct GeneralRenderComponent::GeneralRenderComponentImpl
 {
 public:
-	DisplayNodeImpl();
-	~DisplayNodeImpl();
+	GeneralRenderComponentImpl();
+	~GeneralRenderComponentImpl();
 
 	cocos2d::Sprite * createSprite(tinyxml2::XMLElement * xmlElement);
 	cocos2d::Layer * createLayer(tinyxml2::XMLElement * xmlElement);
@@ -27,15 +27,15 @@ public:
 	std::unordered_set<GeneralRenderComponent*> m_children;
 };
 
-GeneralRenderComponent::DisplayNodeImpl::DisplayNodeImpl()
+GeneralRenderComponent::GeneralRenderComponentImpl::GeneralRenderComponentImpl()
 {
 }
 
-GeneralRenderComponent::DisplayNodeImpl::~DisplayNodeImpl()
+GeneralRenderComponent::GeneralRenderComponentImpl::~GeneralRenderComponentImpl()
 {
 }
 
-cocos2d::Sprite * GeneralRenderComponent::DisplayNodeImpl::createSprite(tinyxml2::XMLElement * xmlElement)
+cocos2d::Sprite * GeneralRenderComponent::GeneralRenderComponentImpl::createSprite(tinyxml2::XMLElement * xmlElement)
 {
 	if (auto createWith = xmlElement->FirstChildElement("CreateWith")){
 		if (auto fileName = createWith->Attribute("FileName"))
@@ -45,17 +45,17 @@ cocos2d::Sprite * GeneralRenderComponent::DisplayNodeImpl::createSprite(tinyxml2
 	return cocos2d::Sprite::create();
 }
 
-cocos2d::Layer * GeneralRenderComponent::DisplayNodeImpl::createLayer(tinyxml2::XMLElement * xmlElement)
+cocos2d::Layer * GeneralRenderComponent::GeneralRenderComponentImpl::createLayer(tinyxml2::XMLElement * xmlElement)
 {
 	return cocos2d::Layer::create();
 }
 
-cocos2d::Scene * GeneralRenderComponent::DisplayNodeImpl::createScene(tinyxml2::XMLElement * xmlElement)
+cocos2d::Scene * GeneralRenderComponent::GeneralRenderComponentImpl::createScene(tinyxml2::XMLElement * xmlElement)
 {
 	return cocos2d::Scene::create();
 }
 
-cocos2d::Label * GeneralRenderComponent::DisplayNodeImpl::createLabel(tinyxml2::XMLElement * xmlElement)
+cocos2d::Label * GeneralRenderComponent::GeneralRenderComponentImpl::createLabel(tinyxml2::XMLElement * xmlElement)
 {
 	if (auto createWith = xmlElement->FirstChildElement("CreateWith")){
 		if (createWith->Attribute("FunctionName", "createWithSystemFont")){
@@ -70,12 +70,12 @@ cocos2d::Label * GeneralRenderComponent::DisplayNodeImpl::createLabel(tinyxml2::
 	return cocos2d::Label::create();
 }
 
-cocos2d::Menu * GeneralRenderComponent::DisplayNodeImpl::createMenu(tinyxml2::XMLElement * xmlElement)
+cocos2d::Menu * GeneralRenderComponent::GeneralRenderComponentImpl::createMenu(tinyxml2::XMLElement * xmlElement)
 {
 	return cocos2d::Menu::create();
 }
 
-cocos2d::MenuItemImage * GeneralRenderComponent::DisplayNodeImpl::createMenuItemImage(tinyxml2::XMLElement *xmlElement)
+cocos2d::MenuItemImage * GeneralRenderComponent::GeneralRenderComponentImpl::createMenuItemImage(tinyxml2::XMLElement *xmlElement)
 {
 	if (auto createWith = xmlElement->FirstChildElement("CreateWith")){
 		auto normalImage = createWith->Attribute("NormalImage");
@@ -87,7 +87,7 @@ cocos2d::MenuItemImage * GeneralRenderComponent::DisplayNodeImpl::createMenuItem
 	return cocos2d::MenuItemImage::create();
 }
 
-cocos2d::ParticleExplosion * GeneralRenderComponent::DisplayNodeImpl::createParticleExplosion(tinyxml2::XMLElement * xmlElement)
+cocos2d::ParticleExplosion * GeneralRenderComponent::GeneralRenderComponentImpl::createParticleExplosion(tinyxml2::XMLElement * xmlElement)
 {
 	auto particle = cocos2d::ParticleExplosion::create();
 	if (auto properties = xmlElement->FirstChildElement("Properties")){
@@ -131,17 +131,7 @@ cocos2d::ParticleExplosion * GeneralRenderComponent::DisplayNodeImpl::createPart
 //////////////////////////////////////////////////////////////////////////
 //Implementation of DisplayNode.
 //////////////////////////////////////////////////////////////////////////
-GeneralRenderComponent::GeneralRenderComponent() : pimpl{ std::make_unique<DisplayNodeImpl>() }
-{
-}
-
-//GeneralRenderComponent::GeneralRenderComponent(Actor *game_object) : BaseRenderComponent("DisplayNode", game_object), pimpl{ std::make_unique<DisplayNodeImpl>() }
-//{
-//	if (auto parent_object = game_object->getParent())
-//		parent_object->addComponent<GeneralRenderComponent>()->addChild(this);
-//}
-
-GeneralRenderComponent::GeneralRenderComponent(Actor *game_object) : pimpl{ std::make_unique<DisplayNodeImpl>() }
+GeneralRenderComponent::GeneralRenderComponent() : pimpl{ std::make_unique<GeneralRenderComponentImpl>() }
 {
 }
 
@@ -166,13 +156,9 @@ void GeneralRenderComponent::addChild(GeneralRenderComponent *child)
 	if (!child || child->pimpl->m_parent)
 		return;
 
-	if (child->m_Node){
-		if (this->m_Node)
-			this->m_Node->addChild(child->m_Node);
-		else
-			this->initAs<cocos2d::Node>()->addChild(child->m_Node);
-	}
+	assert(this->m_Node && child->m_Node && "GeneralRenderComponent::addChild() parent or child is not initialized!");
 
+	this->m_Node->addChild(child->m_Node);
 	child->pimpl->m_parent = this;
 	pimpl->m_children.emplace(child);
 }
@@ -190,11 +176,6 @@ void GeneralRenderComponent::removeFromParent()
 	pimpl->m_parent->pimpl->m_children.erase(this);
 	pimpl->m_parent = nullptr;
 	m_Node->removeFromParent();
-}
-
-const std::string & GeneralRenderComponent::getType() const
-{
-	return Type;
 }
 
 bool GeneralRenderComponent::vInit(tinyxml2::XMLElement *xmlElement)
@@ -241,23 +222,9 @@ bool GeneralRenderComponent::vInit(tinyxml2::XMLElement *xmlElement)
 	return true;
 }
 
-cocos2d::Node * GeneralRenderComponent::initAsHelper(std::function<void*()> && creatorFunction)
+const std::string & GeneralRenderComponent::getType() const
 {
-	//Ensure that the node hasn't been initialized.
-	assert(!m_Node);
-
-	m_Node = static_cast<cocos2d::Node*>(creatorFunction());
-	m_Node->retain();
-
-	//attach to parent
-	if (auto parent = getParent()){
-		if (parent->m_Node)
-			parent->m_Node->addChild(this->m_Node);
-		else
-			parent->initAs<cocos2d::Node>()->addChild(this->m_Node);
-	}
-
-	return m_Node;
+	return Type;
 }
 
 const std::string GeneralRenderComponent::Type = "GeneralRenderComponent";

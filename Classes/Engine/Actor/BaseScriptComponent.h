@@ -9,10 +9,7 @@ public:
 	virtual ~BaseScriptComponent();
 
 protected:
-
-	//Override functions.
-	virtual bool vInit(tinyxml2::XMLElement *xmlElement) override;
-	virtual void vPostInit() override;
+	//#TODO: Add something meaningful here...
 };
 
 #endif // !__BASE_SCRIPT_COMPONENT__

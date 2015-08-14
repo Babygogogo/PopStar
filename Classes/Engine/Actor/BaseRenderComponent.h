@@ -30,11 +30,9 @@ public:
 	BaseRenderComponent(BaseRenderComponent &&) = delete;
 	BaseRenderComponent & operator=(const BaseRenderComponent &) = delete;
 	BaseRenderComponent & operator=(BaseRenderComponent &&) = delete;
-	
+
 protected:
-	//#TODO: This should be removed.
 	BaseRenderComponent();
-	BaseRenderComponent(std::string && name, Actor *game_object);
 
 	cocos2d::Node *m_Node{ nullptr };
 };

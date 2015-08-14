@@ -1,5 +1,4 @@
 #include "TitleSceneScript.h"
-#include "MainSceneScript.h"
 #include "../Actor/Actor.h"
 #include "../Actor/GeneralRenderComponent.h"
 #include "../Event/IEventDispatcher.h"

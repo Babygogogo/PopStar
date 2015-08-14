@@ -55,19 +55,6 @@ public:
 	//Called by ActorFactory during the creation of the actor.
 	void addComponent(std::shared_ptr<ActorComponent> && component);
 
-	//The convenient function for adding component manually.
-	//#TODO: This should be removed when the refactoring is done.
-	template<typename T,
-		typename std::enable_if_t<std::is_base_of<ActorComponent, T>::value>* = nullptr
-	> std::shared_ptr<T> addComponent()	//T must derive from Component
-	{
-		if (auto existingComponent = getComponent<T>())
-			return existingComponent;
-
-		addComponent(std::make_shared<T>(this));
-		return getComponent<T>();
-	}
-
 	//Get an attached component by its type name. Returns nullptr if no such component attached.
 	//Warning: You should not own the shared_ptr returned by this method. Instead, own weak_ptr.
 	std::shared_ptr<ActorComponent> getComponent(const std::string & type) const;

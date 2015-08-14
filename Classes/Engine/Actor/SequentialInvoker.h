@@ -19,7 +19,6 @@ class SequentialInvoker final :public ActorComponent
 
 public:
 	SequentialInvoker();
-	SequentialInvoker(Actor *game_object);
 	~SequentialInvoker();
 
 	static const std::string Type;
@@ -34,6 +33,8 @@ public:
 	bool invoke();
 	bool isInvoking() const;
 
+	virtual const std::string & getType() const;
+
 	//Disable copy/move constructor and operator=.
 	SequentialInvoker(const SequentialInvoker&) = delete;
 	SequentialInvoker(SequentialInvoker&&) = delete;
@@ -42,7 +43,6 @@ public:
 
 private:
 	//Override functions.
-	virtual const std::string & getType() const;
 	virtual bool vInit(tinyxml2::XMLElement *xmlElement);
 	virtual void vPostInit() override;
 

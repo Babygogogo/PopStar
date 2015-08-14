@@ -79,7 +79,7 @@ std::weak_ptr<Actor> Actor::addChild(std::shared_ptr<Actor> && child)
 
 	//deal with child's DisplayNode if present
 	if (auto child_display_node = child->getComponent<GeneralRenderComponent>())
-		this->addComponent<GeneralRenderComponent>()->addChild(child_display_node.get());
+		this->getComponent<GeneralRenderComponent>()->addChild(child_display_node.get());
 
 	pimpl->m_children_deletion_flag.emplace(child.get(), false);
 	pimpl->m_children.emplace_back(std::move(child));

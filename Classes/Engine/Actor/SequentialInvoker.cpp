@@ -16,7 +16,6 @@
 struct SequentialInvoker::SequentialInvokerImpl
 {
 	SequentialInvokerImpl(SequentialInvoker *visitor);
-	SequentialInvokerImpl(cocos2d::Node *target_node);
 	~SequentialInvokerImpl();
 
 	void init();
@@ -39,12 +38,6 @@ struct SequentialInvoker::SequentialInvokerImpl
 
 SequentialInvoker::SequentialInvokerImpl::SequentialInvokerImpl(SequentialInvoker *visitor) : m_Visitor{ visitor }
 {
-}
-
-SequentialInvoker::SequentialInvokerImpl::SequentialInvokerImpl(cocos2d::Node *target_node) : m_TargetNode(target_node)
-{
-	SingletonContainer::getInstance()->get<IEventDispatcher>()->registerListener(
-		EventType::SequentialInvokerFinishOneAction, this, [this](BaseEventData *e){eraseCurrent(); invoke(true); });
 }
 
 SequentialInvoker::SequentialInvokerImpl::~SequentialInvokerImpl()
@@ -123,15 +116,6 @@ cocos2d::CallFunc * SequentialInvoker::SequentialInvokerImpl::createDispatchCall
 //////////////////////////////////////////////////////////////////////////
 SequentialInvoker::SequentialInvoker() : pimpl{ std::make_unique<SequentialInvokerImpl>(this) }
 {
-}
-
-SequentialInvoker::SequentialInvoker(Actor *game_object)
-{
-	auto target_node = game_object->addComponent<GeneralRenderComponent>()->getAs<cocos2d::Node>();
-	if (!target_node)
-		throw("Add SequentialInvoker to a GameObject without an initialized DisplayNode.");
-
-	pimpl.reset(new SequentialInvokerImpl(target_node));
 }
 
 SequentialInvoker::~SequentialInvoker()
