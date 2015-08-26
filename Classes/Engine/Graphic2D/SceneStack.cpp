@@ -1,12 +1,12 @@
 #include <vector>
 #include <cassert>
 
+#include "cocos2d.h"
+
 #include "SceneStack.h"
-#include "../Utilities/SingletonContainer.h"
-#include "../MainLoop/Timer.h"
 #include "../Actor/Actor.h"
 #include "../Actor/GeneralRenderComponent.h"
-#include "cocos2d.h"
+#include "../Utilities/SingletonContainer.h"
 
 //////////////////////////////////////////////////////////////////////////
 //Definition of SceneStackImpl.
@@ -15,8 +15,6 @@ struct SceneStack::SceneStackImpl
 {
 	SceneStackImpl();
 	~SceneStackImpl();
-
-	static int InstanceCount;
 
 	void validate(Actor* scene);
 
@@ -29,11 +27,8 @@ struct SceneStack::SceneStackImpl
 	std::vector<std::shared_ptr<Actor>> m_scenes;
 };
 
-int SceneStack::SceneStackImpl::InstanceCount{ 0 };
-
 SceneStack::SceneStackImpl::SceneStackImpl()
 {
-	assert(InstanceCount++ == 0);
 }
 
 SceneStack::SceneStackImpl::~SceneStackImpl()
@@ -83,13 +78,15 @@ std::shared_ptr<Actor> SceneStack::SceneStackImpl::pop()
 //////////////////////////////////////////////////////////////////////////
 SceneStack::SceneStack() : pimpl{ std::make_unique<SceneStackImpl>() }
 {
+	static int InstanceCount{ 0 };
+	assert((InstanceCount++ == 0) && "SceneStack is created more than once!");
 }
 
 SceneStack::~SceneStack()
 {
 }
 
-Actor* SceneStack::pushAndRun(std::shared_ptr<Actor> &&scene)
+void SceneStack::pushAndRun(std::shared_ptr<Actor> && scene)
 {
 	pimpl->validate(scene.get());
 
@@ -97,8 +94,6 @@ Actor* SceneStack::pushAndRun(std::shared_ptr<Actor> &&scene)
 	pimpl->push(std::move(scene));
 
 	pimpl->pushSceneToDirector(pimpl->topScene());
-
-	return pimpl->topScene();
 }
 
 std::shared_ptr<Actor> SceneStack::pop()

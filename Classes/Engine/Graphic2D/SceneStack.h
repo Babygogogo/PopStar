@@ -29,7 +29,7 @@ public:
 	//Stuff to control the stack.
 	//////////////////////////////////////////////////////////////////////////
 	//The param scene must be a scene and has no parent, or an exception will be thrown.
-	Actor* pushAndRun(std::shared_ptr<Actor> &&scene);
+	void pushAndRun(std::shared_ptr<Actor> && scene);
 
 	//The ownership of the pre-top scene is returned. You can do anything with it, or just leave it alone.
 	std::shared_ptr<Actor> pop();

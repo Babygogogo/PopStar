@@ -18,8 +18,6 @@ public:
 
 	virtual const std::string & getType() const override;
 
-	GeneralRenderComponent *getParent() const;
-
 	//Getter for underlying object which automatically downcasts the pointer to the type you specified.
 	template<typename T>
 	T* getAs() const
@@ -34,10 +32,6 @@ public:
 	GeneralRenderComponent& operator=(GeneralRenderComponent&&) = delete;
 
 private:
-	//#TODO: These functions should be in BaseRenderComponent or be removed.
-	void addChild(GeneralRenderComponent *child);
-	void removeFromParent();
-
 	//Override functions.
 	virtual bool vInit(tinyxml2::XMLElement *xmlElement) override;
 

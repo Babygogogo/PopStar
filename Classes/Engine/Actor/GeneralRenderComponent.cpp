@@ -1,10 +1,11 @@
 #include <unordered_set>
 #include <cassert>
 
-#include "GeneralRenderComponent.h"
-#include "Actor.h"
 #include "cocos2d.h"
 #include "../../cocos2d/external/tinyxml2/tinyxml2.h"
+
+#include "GeneralRenderComponent.h"
+#include "Actor.h"
 
 //////////////////////////////////////////////////////////////////////////
 //Definition of DisplayNodeImpl.
@@ -22,9 +23,6 @@ public:
 	cocos2d::Menu * createMenu(tinyxml2::XMLElement * xmlElement);
 	cocos2d::MenuItemImage * createMenuItemImage(tinyxml2::XMLElement *xmlElement);
 	cocos2d::ParticleExplosion * createParticleExplosion(tinyxml2::XMLElement * xmlElement);
-
-	GeneralRenderComponent* m_parent{ nullptr };
-	std::unordered_set<GeneralRenderComponent*> m_children;
 };
 
 GeneralRenderComponent::GeneralRenderComponentImpl::GeneralRenderComponentImpl()
@@ -137,45 +135,6 @@ GeneralRenderComponent::GeneralRenderComponent() : pimpl{ std::make_unique<Gener
 
 GeneralRenderComponent::~GeneralRenderComponent()
 {
-	for (auto &child : pimpl->m_children)
-		child->pimpl->m_parent = nullptr;
-
-	if (m_Node){
-		m_Node->removeFromParent();
-		m_Node->release();
-	}
-
-	if (pimpl->m_parent){
-		pimpl->m_parent->pimpl->m_children.erase(this);
-		pimpl->m_parent = nullptr;
-	}
-}
-
-void GeneralRenderComponent::addChild(GeneralRenderComponent *child)
-{
-	if (!child || child->pimpl->m_parent)
-		return;
-
-	assert(this->m_Node && child->m_Node && "GeneralRenderComponent::addChild() parent or child is not initialized!");
-
-	this->m_Node->addChild(child->m_Node);
-	child->pimpl->m_parent = this;
-	pimpl->m_children.emplace(child);
-}
-
-GeneralRenderComponent * GeneralRenderComponent::getParent() const
-{
-	return pimpl->m_parent;
-}
-
-void GeneralRenderComponent::removeFromParent()
-{
-	if (!pimpl->m_parent || !m_Node)
-		return;
-
-	pimpl->m_parent->pimpl->m_children.erase(this);
-	pimpl->m_parent = nullptr;
-	m_Node->removeFromParent();
 }
 
 bool GeneralRenderComponent::vInit(tinyxml2::XMLElement *xmlElement)
@@ -202,7 +161,7 @@ bool GeneralRenderComponent::vInit(tinyxml2::XMLElement *xmlElement)
 		m_Node = pimpl->createParticleExplosion(xmlElement);
 
 	//Ensure that the node is created, then retain it.
-	assert(m_Node && "GeneralRenderComponent::vInit can't create a cocos2d::Node!");
+	assert(m_Node && "GeneralRenderComponent::vInit() can't create a cocos2d::Node!");
 	m_Node->retain();
 
 	//Set some extra data if presents in the xmlElement.

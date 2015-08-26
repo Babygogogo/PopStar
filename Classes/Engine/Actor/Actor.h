@@ -13,6 +13,7 @@ namespace tinyxml2
 	class XMLElement;
 }
 class ActorComponent;
+class BaseRenderComponent;
 
 /*!
  * \brief	Almost everything in the game is a Actor, such as an unit, a strategy map, an effect of an explosion, and so on.
@@ -42,6 +43,10 @@ public:
 	//Get an attached component by its type name. Returns nullptr if no such component attached.
 	//Warning: You should not own the shared_ptr returned by this method. Instead, own weak_ptr.
 	std::shared_ptr<ActorComponent> getComponent(const std::string & type) const;
+
+	//Get the base of render component. An actor can have no more than one concrete render component.
+	//If there is no render component attached, nullptr is returned.
+	std::shared_ptr<BaseRenderComponent> getRenderComponent() const;
 
 	//The convenient function for getting component, which automatically downcast the pointer.
 	//Returns nullptr if no such component attached.
