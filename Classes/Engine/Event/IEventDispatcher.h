@@ -29,7 +29,7 @@ class BaseEventData;	//should be removed soon
 class IEventDispatcher
 {
 public:
-	virtual ~IEventDispatcher(){};
+	virtual ~IEventDispatcher() = default;
 
 	//These are the old interface and will be removed soon.
 	virtual void registerListener(EventType event_type, void *target, std::function<void(BaseEventData*)> callback) = 0;
@@ -37,12 +37,13 @@ public:
 	virtual void dispatch(std::unique_ptr<BaseEventData> &&event, void *target = nullptr) = 0;
 
 	//Type shortcut of the pair of listener and its callback.
-	using ListenerCallback = std::pair < std::weak_ptr<void>, std::function<void(const std::shared_ptr<IEventData> &)> >;
+	using ListenerCallback = std::pair < std::weak_ptr<void>, std::function<void(const IEventData &)> >;
 
 	//Add an event listener to an given event type.
 	//If it's added twice, the second one will be ignored.
 	virtual void vAddListener(const EventType & eType, const ListenerCallback & eListenerCallback) = 0;
 	virtual void vAddListener(const EventType & eType, ListenerCallback && eListenerCallback) = 0;
+	virtual void vAddListener(const EventType & eType, std::weak_ptr<void> && listener, std::function<void(const IEventData &)> && callback) = 0;
 
 	//Remove an event listener to an given event type.
 	//Call this only if you want to remove a listener before it dies.
@@ -50,8 +51,9 @@ public:
 
 	//Queue an event. The event will be dispatched in vDispatchQueuedEvents().
 	//This is the preferred way to dispatch an event.
-	virtual void vQueueEvent(const std::shared_ptr<IEventData> & eData) = 0;
-	virtual void vQueueEvent(std::shared_ptr<IEventData> && eData) = 0;
+	//virtual void vQueueEvent(const std::shared_ptr<IEventData> & eData) = 0;
+	//virtual void vQueueEvent(std::shared_ptr<IEventData> && eData) = 0;
+	virtual void vQueueEvent(std::unique_ptr<IEventData> && eData) = 0;
 
 	//Abort the first event of the given type in the queue.
 	//If allOfThisType is true, all of the events of the given type will be aborted.

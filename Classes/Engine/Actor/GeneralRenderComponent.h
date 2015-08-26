@@ -24,7 +24,7 @@ public:
 	template<typename T>
 	T* getAs() const
 	{
-		return static_cast<T*>(getSceneNode());
+		return static_cast<T*>(m_Node);
 	}
 
 	//Disable copy/move constructor and operator=.

@@ -17,8 +17,9 @@
 #include "../Event/EvtDataGeneric.h"
 #include "../Event/EvtDataPlayerExplodedStars.h"
 #include "../GameLogic/GameLogic.h"
-#include "cocos2d.h"
 #include "../Audio/Audio.h"
+
+#include "cocos2d.h"
 #include "../../cocos2d/external/tinyxml2/tinyxml2.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -166,7 +167,7 @@ void StarMatrixScript::StarMatrixScriptImpl::explode(StarScript* star)
 		return;
 
 	auto particleActor = SingletonContainer::getInstance()->get<GameLogic>()->createActor("Actors\\StarParticle.xml");
-	particleActor->getComponent<StarParticleScript>()->reset(star);
+	particleActor->getComponent<StarParticleScript>()->show(star);
 	m_Visitor->m_Actor.lock()->addChild(std::move(particleActor));
 
 	m_StarScripts[star->getRowNum()][star->getColNum()] = nullptr;

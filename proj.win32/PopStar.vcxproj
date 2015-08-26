@@ -187,6 +187,7 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClInclude Include="..\Classes\Engine\Audio\Audio.h" />
     <ClInclude Include="..\Classes\Engine\Event\EvtDataPlayerExplodedStars.h" />
     <ClInclude Include="..\Classes\Engine\Event\EvtDataGeneric.h" />
+    <ClInclude Include="..\Classes\Engine\Event\EvtDataRequestDestroyActor.h" />
     <ClInclude Include="..\Classes\Engine\Event\IEventData.h" />
     <ClInclude Include="..\Classes\Engine\Event\BaseEventData.h" />
     <ClInclude Include="..\Classes\Engine\Event\EventDispatcher.h" />

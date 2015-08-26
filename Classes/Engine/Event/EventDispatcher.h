@@ -13,9 +13,8 @@ enum class EventType;
 class EventDispatcher final : public IEventDispatcher
 {
 public:
+	EventDispatcher();
 	~EventDispatcher();
-
-	static std::unique_ptr<EventDispatcher> create();
 
 	virtual void registerListener(EventType event_type, void *target, std::function<void(BaseEventData*)> callback) override;
 	virtual void deleteListener(void *target) override;
@@ -28,14 +27,17 @@ public:
 	EventDispatcher& operator=(EventDispatcher&&) = delete;
 
 private:
-	EventDispatcher();
-
 	//override functions of the interface
 	virtual void vAddListener(const EventType & eType, const ListenerCallback & eListenerCallback) override;
 	virtual void vAddListener(const EventType & eType, ListenerCallback && eListenerCallback) override;
+	virtual void vAddListener(const EventType & eType, std::weak_ptr<void> && listener, std::function<void(const IEventData &)> && callback) override;
+
 	virtual void vRemoveListener(const EventType & eType, const std::weak_ptr<void> & eListener) override;
-	virtual void vQueueEvent(const std::shared_ptr<IEventData> & eData) override;
-	virtual void vQueueEvent(std::shared_ptr<IEventData> && eData) override;
+
+	//virtual void vQueueEvent(const std::shared_ptr<IEventData> & eData) override;
+	//virtual void vQueueEvent(std::shared_ptr<IEventData> && eData) override;
+	virtual void vQueueEvent(std::unique_ptr<IEventData> && eData) override;
+
 	virtual void vAbortEvent(const EventType & eType, bool allOfThisType = false) override;
 	virtual void vTrigger(const std::shared_ptr<IEventData> & eData) override;
 	virtual void vDispatchQueuedEvents(const std::chrono::milliseconds & timeOutMs = std::chrono::milliseconds{ 10 }) override;

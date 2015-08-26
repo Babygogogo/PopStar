@@ -19,10 +19,9 @@ class ActorComponent;
  * \
  * \details
  *	Actors are organized in the form of trees. Methods like addChild, removeFromParent are provided for organizing.
+ *	If a parent actor is destroyed, all of its children will be destroyed too.
  *	Roots of the trees are Actors that created as "scene". They should be push into SceneStack to take their effects.
- *	Game object is a container of various components and/or scripts which implement most of the logics of the real game object.
- *	Game objects, along with its components, are managed with std::unique_ptr.
- *	For most cases in the code base, a std::unique_ptr means an ownership, while a raw pointer stands for a (temporary) reference.
+ *	Actor is a container of various components and/or scripts which implement most of the logics of the real game object.
  *	Now refactoring...
  * \
  * \author	Babygogogo
@@ -30,30 +29,15 @@ class ActorComponent;
  */
 class Actor final
 {
-	friend class Timer;
 	friend class ActorFactory;
+	friend class GameLogic;
 
 public:
 	Actor();
 	~Actor();
 
-	//Called by ActorFactory right after the actor is created.
-	//Loads the basic data of the actor from the xmlElement. Doesn't create or attach any component.
-	bool init(ActorID id, tinyxml2::XMLElement *xmlElement);
-
-	//Called by ActorFactory after the actor is initialized and all its components are attached.
-	//Calls vPostInit() on every attached component.
-	void postInit();
-
-	//Called by GameLogic on every game loop.
-	//Calles vUpdate() on every attached component.
-	void update(const std::chrono::milliseconds & delteTimeMs);
-
 	const ActorID & getID() const;
-
-	//Stuff for adding/getting components or scripts.
-	//Called by ActorFactory during the creation of the actor.
-	void addComponent(std::shared_ptr<ActorComponent> && component);
+	const ActorID & getParentID() const;
 
 	//Get an attached component by its type name. Returns nullptr if no such component attached.
 	//Warning: You should not own the shared_ptr returned by this method. Instead, own weak_ptr.
@@ -69,14 +53,14 @@ public:
 	}
 
 	//Stuff for organizing the Actors as trees.
-	//#TODO: Remove these functions after the refactoring is done because actors need not to be in the form of trees.
-	std::weak_ptr<Actor> addChild(std::shared_ptr<Actor> && child);
-	Actor *getParent() const;
-	bool isAncestorOf(const Actor *child) const;
-	//If the game object has no parent, nothing happens, and nullptr is returned.
-	//Otherwise, the ownership is returned. Keep it, or the actor along with its children will be destroyed.
-	//	std::unique_ptr<Actor> removeFromParent();
-	std::shared_ptr<Actor> removeFromParent();
+	bool hasParent() const;
+	bool isAncestorOf(const Actor & child) const;
+	//If the child has a render component, it will also be added to the parent's render component.
+	//If the child has a parent already, nothing happens.
+	void addChild(std::shared_ptr<Actor> child);
+	//If the actor has a render component, it will also be removed from its parent's render component.
+	//If the actor has no parent, nothing happens.
+	void removeFromParent();
 
 	//Disable copy/move constructor and operator=.
 	Actor(const Actor&) = delete;
@@ -85,8 +69,20 @@ public:
 	Actor& operator=(Actor&&) = delete;
 
 private:
-	//Only the current scene owned by the SceneStack, and the (indirect) children of that scene, will be "update" once a frame.
-	void update(const time_t &time_ms);
+	//Called by ActorFactory right after the actor is created.
+	//Loads the basic data of the actor from the xmlElement. Doesn't create or attach any component.
+	bool init(ActorID id, tinyxml2::XMLElement *xmlElement);
+
+	//Called by ActorFactory after the actor is initialized and all its components are attached.
+	//Calls vPostInit() on every attached component.
+	void postInit();
+
+	//Called by GameLogic on every game loop.
+	//Calles vUpdate() on every attached component.
+	void update(const std::chrono::milliseconds & delteTimeMs);
+
+	//Called by ActorFactory during the creation of the actor.
+	void addComponent(std::shared_ptr<ActorComponent> && component);
 
 	//Implementation stuff.
 	struct ActorImpl;

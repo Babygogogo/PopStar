@@ -19,7 +19,6 @@ struct SceneStack::SceneStackImpl
 	static int InstanceCount;
 
 	void validate(Actor* scene);
-	void switchUpdate(Actor *scene, bool enable = true);
 
 	void push(std::shared_ptr<Actor> &&scene);
 	std::shared_ptr<Actor> pop();
@@ -39,14 +38,6 @@ SceneStack::SceneStackImpl::SceneStackImpl()
 
 SceneStack::SceneStackImpl::~SceneStackImpl()
 {
-}
-
-void SceneStack::SceneStackImpl::switchUpdate(Actor *scene, bool enable /*= true*/)
-{
-	if (enable)
-		SingletonContainer::getInstance()->get<Timer>()->registerUpdateObserver(scene);
-	else
-		SingletonContainer::getInstance()->get<Timer>()->removeUpdateObserver(scene);
 }
 
 void SceneStack::SceneStackImpl::pushSceneToDirector(Actor *scene)
@@ -70,19 +61,17 @@ void SceneStack::SceneStackImpl::validate(Actor* scene)
 {
 	if (!scene || !scene->getComponent<GeneralRenderComponent>() || !scene->getComponent<GeneralRenderComponent>()->getAs<cocos2d::Scene>())
 		throw("pushScene with a non-scene");
-	if (scene->getParent())
+	if (scene->hasParent())
 		throw("pushScene with a game object that has a parent");
 }
 
 void SceneStack::SceneStackImpl::push(std::shared_ptr<Actor> &&scene)
 {
 	m_scenes.emplace_back(std::move(scene));
-	switchUpdate(topScene());
 }
 
 std::shared_ptr<Actor> SceneStack::SceneStackImpl::pop()
 {
-	switchUpdate(topScene(), false);
 	auto ownership = std::move(m_scenes.back());
 	m_scenes.pop_back();
 
@@ -105,8 +94,6 @@ Actor* SceneStack::pushAndRun(std::shared_ptr<Actor> &&scene)
 	pimpl->validate(scene.get());
 
 	//Disable update for old top scene, then push the param scene into stack and enable it.
-	if (!pimpl->m_scenes.empty())
-		pimpl->switchUpdate(pimpl->topScene(), false);
 	pimpl->push(std::move(scene));
 
 	pimpl->pushSceneToDirector(pimpl->topScene());
@@ -121,7 +108,6 @@ std::shared_ptr<Actor> SceneStack::pop()
 
 	//Pop the current scene and enable the new top scene.
 	auto ownership = pimpl->pop();
-	pimpl->switchUpdate(pimpl->topScene());
 
 	cocos2d::Director::getInstance()->popScene();
 

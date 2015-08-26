@@ -42,7 +42,7 @@ void AppDelegate::AppDelegateImpl::initGame()
 
 	auto & singletonContainer = SingletonContainer::getInstance();
 	singletonContainer->set<::Timer>(::Timer::create())->init();
-	singletonContainer->set<IEventDispatcher>(::EventDispatcher::create());
+	singletonContainer->set<IEventDispatcher>(std::make_unique<::EventDispatcher>());
 	singletonContainer->set<GameData>(GameData::create());
 	singletonContainer->set<GameLogic>(std::make_unique<GameLogic>());
 	singletonContainer->set<SceneStack>(std::make_unique<SceneStack>());

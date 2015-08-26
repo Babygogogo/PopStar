@@ -59,10 +59,9 @@ void MatrixLayerScript::vPostInit()
 {
 	auto actor = m_Actor.lock();
 
-	//auto starMatrixActor = std::make_shared<Actor>();
-	//starMatrixActor->addComponent<StarMatrixScript>();
-	//pimpl->m_matrix = actor->addChild(std::move(starMatrixActor));
-	pimpl->m_matrix = actor->addChild(SingletonContainer::getInstance()->get<GameLogic>()->createActor("Actors\\StarMatrix.xml"));
+	auto starMatrixActor = SingletonContainer::getInstance()->get<GameLogic>()->createActor("Actors\\StarMatrix.xml");
+	actor->addChild(starMatrixActor);
+	pimpl->m_matrix = starMatrixActor;
 
 	//Create the ComboEffect actor.
 	actor->addChild(SingletonContainer::getInstance()->get<GameLogic>()->createActor("Actors\\ComboEffect.xml"));

@@ -1,9 +1,12 @@
 #include "StarParticleScript.h"
-#include "../Actor/Actor.h"
 #include "StarScript.h"
 #include "../Actor/Actor.h"
 #include "../Actor/GeneralRenderComponent.h"
 #include "../Actor/SequentialInvoker.h"
+#include "../Event/EvtDataRequestDestroyActor.h"
+#include "../Event/IEventDispatcher.h"
+#include "../Utilities/SingletonContainer.h"
+
 #include "cocos2d.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -34,7 +37,7 @@ StarParticleScript::~StarParticleScript()
 {
 }
 
-void StarParticleScript::reset(StarScript *star)
+void StarParticleScript::show(StarScript *star)
 {
 	if (!star)
 		return;
@@ -62,8 +65,9 @@ bool StarParticleScript::vInit(tinyxml2::XMLElement *xmlElement)
 void StarParticleScript::vPostInit()
 {
 	auto invoker = m_Actor.lock()->getComponent<SequentialInvoker>();
-	invoker->addFiniteTimeAction(cocos2d::Sequence::create(
-		cocos2d::DelayTime::create(1.5f), cocos2d::CallFunc::create([this]{m_Actor.lock()->removeFromParent(); }), nullptr));
+	invoker->addFiniteTimeAction(cocos2d::Sequence::create(cocos2d::DelayTime::create(1.5f), cocos2d::CallFunc::create([this]{
+		SingletonContainer::getInstance()->get<IEventDispatcher>()->vQueueEvent(std::make_unique<EvtDataRequestDestoryActor>(m_Actor.lock()->getID()));
+	}), nullptr));
 }
 
 const std::string StarParticleScript::Type = "StarParticleScript";

@@ -290,6 +290,9 @@
     <ClInclude Include="..\Classes\Engine\Script\ButtonStartGameScript.h">
       <Filter>Classes\Engine\Script</Filter>
     </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Event\EvtDataRequestDestroyActor.h">
+      <Filter>Classes\Engine\Event</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="game.rc">

@@ -13,7 +13,7 @@ public:
 	StarParticleScript();
 	~StarParticleScript();
 
-	void reset(StarScript *star);
+	void show(StarScript *star);
 
 	static const std::string Type;
 

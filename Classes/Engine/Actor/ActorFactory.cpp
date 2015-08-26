@@ -45,7 +45,7 @@ struct ActorFactory::ActorFactoryImpl
 	ActorID getNextID() const;
 	void updateID();
 
-	ActorID m_currentID{ 0 };
+	ActorID m_currentID{ INVALID_ACTOR_ID };
 	GenericFactory<ActorComponent> m_ComponentFactory;
 };
 

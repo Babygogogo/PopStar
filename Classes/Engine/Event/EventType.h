@@ -5,6 +5,8 @@ enum class EventType
 {
 	InvalidEventType,
 
+	RequestDestoryActor,
+
 	SequentialInvokerFinishOneAction,
 
 	CurrentScoreIncreased,

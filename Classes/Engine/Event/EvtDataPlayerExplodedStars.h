@@ -8,8 +8,8 @@ class EvtDataPlayerExplodedStars : public BaseEventData
 public:
 	EvtDataPlayerExplodedStars(int explodedStarsCount) : m_ExplodedStarsCount{ explodedStarsCount }
 	{
-
 	}
+
 	virtual ~EvtDataPlayerExplodedStars() = default;
 
 	static const EventType EvtType = EventType::PlayerExplodedStars;

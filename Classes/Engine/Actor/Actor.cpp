@@ -2,10 +2,16 @@
 #include <cassert>
 #include <list>
 #include <map>
+#include <set>
 #include <unordered_map>
 
 #include "Actor.h"
 #include "GeneralRenderComponent.h"
+#include "../Event/EvtDataRequestDestroyActor.h"
+#include "../Event/IEventDispatcher.h"
+#include "../GameLogic/GameLogic.h"
+#include "../Utilities/SingletonContainer.h"
+
 #include "cocos2d.h"
 #include "../../cocos2d/external/tinyxml2/tinyxml2.h"
 
@@ -18,33 +24,12 @@ public:
 	ActorImpl();
 	~ActorImpl();
 
-	template<typename Element, typename Container>
-	//	std::unique_ptr<Element> stealOwnership(Element *raw_ptr, Container &container)
-	std::shared_ptr<Element> stealOwnership(Element *raw_ptr, Container &container)
-	{
-		//find the ownership in container; if not found, return nullptr.
-		auto iter_found = std::find_if(container.begin(), container.end(),
-			//			[raw_ptr](const std::unique_ptr<Element>& p){return p.get() == raw_ptr; });
-			[raw_ptr](const std::shared_ptr<Element>& p){return p.get() == raw_ptr; });
-		if (iter_found == container.end())
-			return nullptr;
+	bool m_IsUpdating{ false };
 
-		//steal the ownership
-		//iter_found->release();
-		//container.erase(iter_found);
-		//return std::unique_ptr<Element>(raw_ptr);
-		auto elementFound = *iter_found;
-		container.erase(iter_found);
-		return elementFound;
-	}
+	ActorID m_ID{ INVALID_ACTOR_ID };
+	ActorID m_ParentID{ INVALID_ACTOR_ID };
+	std::set<ActorID> m_ChildrenID;
 
-	//	std::list<std::unique_ptr<Actor>> m_children;
-	std::list<std::shared_ptr<Actor>> m_children;
-	std::map<Actor*, bool> m_children_deletion_flag;
-	Actor *m_parent{ nullptr };
-	bool m_is_updating{ false };
-
-	ActorID m_ID{ 0 };
 	std::string m_Type;
 	std::string m_ResourceFile;
 	std::unordered_map<std::string, std::shared_ptr<ActorComponent>> m_Components;
@@ -67,80 +52,71 @@ Actor::Actor() : pimpl{ std::make_unique<ActorImpl>() }
 
 Actor::~Actor()
 {
-	cocos2d::log("GameObject %s destructing.", pimpl->m_Type.c_str());
+	cocos2d::log("Actor %s destructing.", pimpl->m_Type.c_str());
+
+	removeFromParent();
+
+	auto & singletonContainer = SingletonContainer::getInstance();
+	if (!singletonContainer)
+		return;
+	auto eventDispatcher = singletonContainer->get<IEventDispatcher>();
+	if (!eventDispatcher)
+		return;
+
+	for (auto childID : pimpl->m_ChildrenID)
+		eventDispatcher->vQueueEvent(std::make_unique<EvtDataRequestDestoryActor>(childID));
 }
 
-std::weak_ptr<Actor> Actor::addChild(std::shared_ptr<Actor> && child)
+void Actor::addChild(std::shared_ptr<Actor> child)
 {
-	if (!child || child->pimpl->m_parent)
-		return child;
+	//If the child is not valid or has parent already, simply return.
+	if (!child || child->hasParent())
+		return;
 
-	child->pimpl->m_parent = this;
+	child->pimpl->m_ParentID = pimpl->m_ID;
+	pimpl->m_ChildrenID.emplace(child->getID());
 
-	//deal with child's DisplayNode if present
-	if (auto child_display_node = child->getComponent<GeneralRenderComponent>())
-		this->getComponent<GeneralRenderComponent>()->addChild(child_display_node.get());
-
-	pimpl->m_children_deletion_flag.emplace(child.get(), false);
-	pimpl->m_children.emplace_back(std::move(child));
-
-	//	return pimpl->m_children.back().get();
-	return pimpl->m_children.back();
+	//deal with child's render component if present
+	if (auto childRenderComponent = child->getComponent<GeneralRenderComponent>())
+		getComponent<GeneralRenderComponent>()->addChild(childRenderComponent.get());
 }
 
-bool Actor::isAncestorOf(const Actor *child) const
+bool Actor::isAncestorOf(const Actor & child) const
 {
-	if (!child)
-		return false;
-
-	auto parent = child->pimpl->m_parent;
-	while (parent){
-		if (this == parent)
+	const auto & gameLogic = SingletonContainer::getInstance()->get<GameLogic>();
+	auto ancestor = gameLogic->getActor(child.pimpl->m_ParentID);
+	while (ancestor){
+		if (pimpl->m_ID == ancestor->pimpl->m_ID)
 			return true;
 
-		parent = parent->pimpl->m_parent;
+		ancestor = gameLogic->getActor(ancestor->pimpl->m_ParentID);
 	}
 
 	return false;
 }
 
-Actor * Actor::getParent() const
+bool Actor::hasParent() const
 {
-	return pimpl->m_parent;
+	return pimpl->m_ParentID != INVALID_ACTOR_ID;
 }
 
-std::shared_ptr<Actor> Actor::removeFromParent()
+const ActorID & Actor::getParentID() const
 {
-	if (auto parent = getParent()){
-		this->pimpl->m_parent = nullptr;
-		if (auto display_node = getComponent<GeneralRenderComponent>())
-			display_node->removeFromParent();
-
-		if (pimpl->m_is_updating)
-			parent->pimpl->m_children_deletion_flag[this] = true;
-		else
-			parent->pimpl->m_children_deletion_flag.erase(this);
-
-		return pimpl->stealOwnership(this, parent->pimpl->m_children);
-	}
-
-	return nullptr;
+	return pimpl->m_ParentID;
 }
 
-void Actor::update(const time_t &time_ms)
+void Actor::removeFromParent()
 {
-	pimpl->m_is_updating = true;
+	if (!hasParent())
+		return;
 
-	for (auto child_it = pimpl->m_children_deletion_flag.begin(); child_it != pimpl->m_children_deletion_flag.end();){
-		if (child_it->second){
-			child_it = pimpl->m_children_deletion_flag.erase(child_it);
-			continue;
-		}
+	auto parent = SingletonContainer::getInstance()->get<GameLogic>()->getActor(pimpl->m_ParentID);
+	parent->pimpl->m_ChildrenID.erase(pimpl->m_ID);
 
-		(child_it++)->first->update(time_ms);
-	}
+	pimpl->m_ParentID = INVALID_ACTOR_ID;
 
-	pimpl->m_is_updating = false;
+	if (auto renderComponent = getComponent<GeneralRenderComponent>())
+		renderComponent->removeFromParent();
 }
 
 void Actor::update(const std::chrono::milliseconds & delteTimeMs)

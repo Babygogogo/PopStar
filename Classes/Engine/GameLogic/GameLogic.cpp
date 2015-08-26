@@ -4,11 +4,16 @@
 #include <mutex>
 #include <functional>
 
+#include "cocos2d.h"
+
 #include "GameLogic.h"
 #include "../Actor/Actor.h"
 #include "../Actor/ActorFactory.h"
+#include "../Event/EventType.h"
+#include "../Event/EvtDataRequestDestroyActor.h"
+#include "../Event/IEventDispatcher.h"
 #include "../MainLoop/ProcessRunner.h"
-#include "cocos2d.h"
+#include "../Utilities/SingletonContainer.h"
 
 //////////////////////////////////////////////////////////////////////////
 //Definition of GameLogicImpl.
@@ -19,7 +24,7 @@ public:
 	GameLogicImpl();
 	~GameLogicImpl();
 
-	static int InstanceCount;
+	void onRequestDestroyActor(const IEventData & e);
 
 	ProcessRunner m_ProcessRunner;
 
@@ -35,20 +40,31 @@ public:
 
 GameLogic::GameLogicImpl::GameLogicImpl()
 {
-	assert((InstanceCount++ == 0) && "GameLogic is created more than once!");
 }
 
 GameLogic::GameLogicImpl::~GameLogicImpl()
 {
 }
 
-int GameLogic::GameLogicImpl::InstanceCount{ 0 };
+void GameLogic::GameLogicImpl::onRequestDestroyActor(const IEventData & e)
+{
+	auto actorID = (static_cast<const EvtDataRequestDestoryActor &>(e)).getActorID();
+
+	if (m_IsUpdatingActors)
+		m_CachedOperations.emplace_back([actorID, this](){m_Actors.erase(actorID); });
+	else
+		m_Actors.erase(actorID);
+}
 
 //////////////////////////////////////////////////////////////////////////
 //Implementation of GameLogic.
 //////////////////////////////////////////////////////////////////////////
-GameLogic::GameLogic() : pimpl{ std::make_unique<GameLogicImpl>() }
+GameLogic::GameLogic() : pimpl{ std::make_shared<GameLogicImpl>() }
 {
+	static int InstanceCount{ 0 };
+	assert((InstanceCount++ == 0) && "GameLogic is created more than once!");
+
+	SingletonContainer::getInstance()->get<IEventDispatcher>()->vAddListener(EventType::RequestDestoryActor, pimpl, [this](const IEventData & e){pimpl->onRequestDestroyActor(e); });
 }
 
 GameLogic::~GameLogic()

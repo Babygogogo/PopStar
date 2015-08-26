@@ -57,7 +57,7 @@ public:
 private:
 	//Implementation stuff.
 	struct GameLogicImpl;
-	std::unique_ptr<GameLogicImpl> pimpl;
+	std::shared_ptr<GameLogicImpl> pimpl;
 };
 
 #endif // !__GAME_LOGIC__
