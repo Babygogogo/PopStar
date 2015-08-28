@@ -41,22 +41,6 @@ const std::string & MainSceneScript::getType() const
 
 void MainSceneScript::vPostInit()
 {
-	auto actor = m_Actor.lock();
-	auto gameLogic = SingletonContainer::getInstance()->get<GameLogic>();
-
-	actor->addChild(gameLogic->createActor("Actors\\MainSceneBackground.xml"));
-	actor->addChild(gameLogic->createActor("Actors\\MatrixLayer.xml"));
-
-	actor->addChild(gameLogic->createActor("Actors\\HighScoreLabel.xml"));
-	actor->addChild(gameLogic->createActor("Actors\\CurrentScoreLabel.xml"));
-	actor->addChild(gameLogic->createActor("Actors\\TargetScoreLabel.xml"));
-	actor->addChild(gameLogic->createActor("Actors\\LevelLabel.xml"));
-
-	actor->addChild(gameLogic->createActor("Actors\\StartLevelLabel.xml"));
-	actor->addChild(gameLogic->createActor("Actors\\GetScoreLabel.xml"));
-	actor->addChild(gameLogic->createActor("Actors\\LevelSummaryLabel.xml"));
-	actor->addChild(gameLogic->createActor("Actors\\GameOverLabel.xml"));
-
 	Audio::getInstance()->playBGM();
 }
 

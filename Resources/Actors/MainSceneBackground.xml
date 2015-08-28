@@ -1,7 +1,9 @@
 <!-- edited with XMLSpy v2013 (http://www.altova.com) by  () -->
 <Actor Type="MainSceneBackground" Resource="Actors\MainSceneBackground.xml">
-	<GeneralRenderComponent Type="Sprite">
-		<CreateWith FileName="bg_mainscene.jpg"/>
-		<Position NormalizedX="0.5" PixelOffsetX="0" NormalizedY="0.5" PixelOffsetY="0" LocalZOrder="-1"/>
-	</GeneralRenderComponent>
+	<Components>
+		<GeneralRenderComponent Type="Sprite">
+			<CreateWith FileName="bg_mainscene.jpg"/>
+			<Position NormalizedX="0.5" PixelOffsetX="0" NormalizedY="0.5" PixelOffsetY="0" LocalZOrder="-1"/>
+		</GeneralRenderComponent>
+	</Components>
 </Actor>

@@ -1,14 +1,16 @@
 <!-- edited with XMLSpy v2013 (http://www.altova.com) by  () -->
 <Actor Type="StarMatrix" Resource="Actors\StarMatrix.xml">
-	<StarMatrixScript>
-		<Size Row="10" Column="10"/>
-		<NeighborIndexOffset>
-			<Up Row="-1" Column="0"/>
-			<Down Row="1" Column="0"/>
-			<Left Row="0" Column="-1"/>
-			<Right Row="0" Column="1"/>
-		</NeighborIndexOffset>
-	</StarMatrixScript>
-	<GeneralRenderComponent Type="Layer"/>
-	<SequentialInvokerComponent/>
+	<Components>
+		<StarMatrixScript>
+			<Size Row="10" Column="10"/>
+			<NeighborIndexOffset>
+				<Up Row="-1" Column="0"/>
+				<Down Row="1" Column="0"/>
+				<Left Row="0" Column="-1"/>
+				<Right Row="0" Column="1"/>
+			</NeighborIndexOffset>
+		</StarMatrixScript>
+		<GeneralRenderComponent Type="Layer"/>
+		<SequentialInvokerComponent/>
+	</Components>
 </Actor>

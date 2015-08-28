@@ -120,17 +120,21 @@ const std::shared_ptr<Actor> & GameLogic::getActor(const ActorID & id) const
 std::shared_ptr<Actor> GameLogic::createActor(const char *resourceFile, tinyxml2::XMLElement *overrides /*= nullptr*/)
 {
 	//Try to create the actor.
-	auto newActor = pimpl->m_ActorFactory->createActor(resourceFile, overrides);
+	auto newActors = pimpl->m_ActorFactory->createActorAndChildren(resourceFile, overrides);
 
 	//Failed to create the actor; return nullptr.
-	if (!newActor){
+	if (newActors.empty()){
 		static const auto nullActor = std::shared_ptr<Actor>(nullptr);
 		return nullActor;
 	}
 
 	//Succeed to create the actor. Add it to actor map and return it.
 	//std::map::emplace doesn't invalidate any iterators so it's safe to ignore the lock.
-	auto emplaceResult = pimpl->m_Actors.emplace(std::make_pair(newActor->getID(), std::move(newActor)));
-	assert(emplaceResult.second);
-	return emplaceResult.first->second;
+	auto parentActor = newActors[0];
+	for (auto && newActor : newActors){
+		auto emplaceResult = pimpl->m_Actors.emplace(std::make_pair(newActor->getID(), std::move(newActor)));
+		assert(emplaceResult.second && "GameLogic::createActor() fail to emplace a new actor into the actor list.");
+	}
+
+	return parentActor;
 }

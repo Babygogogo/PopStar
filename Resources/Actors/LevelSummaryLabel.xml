@@ -1,9 +1,11 @@
 <!-- edited with XMLSpy v2013 (http://www.altova.com) by  () -->
 <Actor Type="LevelSummaryLabel" Resource="Actors\LevelSummaryLabel.xml">
-	<LevelSummaryLabelScript/>
-	<GeneralRenderComponent Type="Label">
-		<CreateWith FunctionName="createWithSystemFont" Text="" FontName="Verdana-Bold" FontSize="50"/>
-		<Position NormalizedX="0.5" PixelOffsetX="0" NormalizedY="1" PixelOffsetY="-250"/>
-	</GeneralRenderComponent>
-	<SequentialInvokerComponent/>
+	<Components>
+		<LevelSummaryLabelScript/>
+		<GeneralRenderComponent Type="Label">
+			<CreateWith FunctionName="createWithSystemFont" Text="" FontName="Verdana-Bold" FontSize="50"/>
+			<Position NormalizedX="0.5" PixelOffsetX="0" NormalizedY="1" PixelOffsetY="-250"/>
+		</GeneralRenderComponent>
+		<SequentialInvokerComponent/>
+	</Components>
 </Actor>

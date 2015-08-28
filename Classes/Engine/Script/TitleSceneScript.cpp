@@ -1,15 +1,5 @@
 #include "TitleSceneScript.h"
-#include "../Actor/Actor.h"
-#include "../Actor/GeneralRenderComponent.h"
-#include "../Event/IEventDispatcher.h"
-#include "../Event/EventType.h"
-#include "../Event/EvtDataGeneric.h"
-#include "../GameLogic/GameLogic.h"
-#include "../Utilities/SingletonContainer.h"
-#include "../Graphic2D/SceneStack.h"
-#include "../../Common/GameData.h"
 #include "../Audio/Audio.h"
-#include "cocos2d.h"
 
 //////////////////////////////////////////////////////////////////////////
 //Definition of TitleSceneScriptImpl.
@@ -54,13 +44,6 @@ TitleSceneScript::~TitleSceneScript()
 
 void TitleSceneScript::vPostInit()
 {
-	auto actor = m_Actor.lock();
-	auto gameLogic = SingletonContainer::getInstance()->get<GameLogic>();
-
-	//Add background and title menu.
-	actor->addChild(gameLogic->createActor("Actors\\TitleSceneBackground.xml"));
-	actor->addChild(gameLogic->createActor("Actors\\TitleMenu.xml"));
-
 	Audio::getInstance()->playBGM();
 }
 

@@ -1,7 +1,10 @@
 <!-- edited with XMLSpy v2013 (http://www.altova.com) by  () -->
 <Actor Type="ComboEffect" Resource="Actors\ComboEffect.xml">
-	<ComboEffectScript>
-	</ComboEffectScript>
-	<GeneralRenderComponent Type="Sprite"/>
-	<SequentialInvokerComponent/>
+	<Components>
+		<ComboEffectScript/>
+		<GeneralRenderComponent Type="Sprite">
+			<Position LocalZOrder="1"/>
+		</GeneralRenderComponent>
+		<SequentialInvokerComponent/>
+	</Components>
 </Actor>

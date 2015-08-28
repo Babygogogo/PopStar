@@ -1,3 +1,5 @@
+#include "cocos2d.h"
+
 #include "MatrixLayerScript.h"
 #include "StarMatrixScript.h"
 #include "../Utilities/SingletonContainer.h"
@@ -7,7 +9,6 @@
 #include "../Event/EventType.h"
 #include "../Event/EventDispatcher.h"
 #include "../GameLogic/GameLogic.h"
-#include "cocos2d.h"
 #include "../Audio/Audio.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -62,9 +63,6 @@ void MatrixLayerScript::vPostInit()
 	auto starMatrixActor = SingletonContainer::getInstance()->get<GameLogic>()->createActor("Actors\\StarMatrix.xml");
 	actor->addChild(starMatrixActor);
 	pimpl->m_matrix = starMatrixActor;
-
-	//Create the ComboEffect actor.
-	actor->addChild(SingletonContainer::getInstance()->get<GameLogic>()->createActor("Actors\\ComboEffect.xml"));
 
 	//Register as EventListener.
 	SingletonContainer::getInstance()->get<IEventDispatcher>()->registerListener(EventType::StartLevelLabelDisappeared, this,

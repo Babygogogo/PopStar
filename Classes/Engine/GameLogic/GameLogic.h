@@ -43,7 +43,9 @@ public:
 	//Get actor with an id. You will get nullptr if the id is not in use.
 	const std::shared_ptr<Actor> & getActor(const ActorID & id) const;
 
-	//Create an actor with a .xml file. The actor will be add into the internal actor list.
+	//Create an actor with a .xml file. The actors will be add into the internal actor list.
+	//Children actors will also be created and added into the internal actor list if the xml file specified.
+	//In this case, the most parent actor will be returned.
 	std::shared_ptr<Actor> createActor(const char *resourceFile, tinyxml2::XMLElement *overrides = nullptr);
 
 	//There's no destroyActor() here. To destroy an actor, you must dispatch an EvtDataRequestDestroyActor with the id of that actor.

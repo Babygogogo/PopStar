@@ -23,10 +23,6 @@ public:
 	TitleMenuScript & operator=(TitleMenuScript &&) = delete;
 
 private:
-	//Override functions.
-	virtual bool vInit(tinyxml2::XMLElement *xmlElement) override;
-	virtual void vPostInit() override;
-
 	//Implementation stuff.
 	struct TitleMenuScriptImpl;
 	std::unique_ptr<TitleMenuScriptImpl> pimpl;

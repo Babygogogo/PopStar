@@ -1,8 +1,10 @@
 <!-- edited with XMLSpy v2013 (http://www.altova.com) by  () -->
 <Actor Type="GetScoreLabel" Resource="Actors\GetScoreLabel.xml">
-	<GetScoreLabelScript/>
-	<GeneralRenderComponent Type="Label">
-		<CreateWith FunctionName="createWithSystemFont" Text="" FontName="Arial" FontSize="30"/>
-		<Position NormalizedX="0.5" PixelOffsetX="0" NormalizedY="1" PixelOffsetY="-250"/>
-	</GeneralRenderComponent>
+	<Components>
+		<GetScoreLabelScript/>
+		<GeneralRenderComponent Type="Label">
+			<CreateWith FunctionName="createWithSystemFont" Text="" FontName="Arial" FontSize="30"/>
+			<Position NormalizedX="0.5" PixelOffsetX="0" NormalizedY="1" PixelOffsetY="-250"/>
+		</GeneralRenderComponent>
+	</Components>
 </Actor>

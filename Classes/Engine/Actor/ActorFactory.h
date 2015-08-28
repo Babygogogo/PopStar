@@ -2,6 +2,7 @@
 #define __ACTOR_FACTORY__
 
 #include <memory>
+#include <vector>
 
 //Forward declaration.
 namespace tinyxml2
@@ -24,9 +25,11 @@ public:
 	ActorFactory();
 	~ActorFactory();
 
-	//Create an Actor. The resourceFile is the file name of the corresponding .xml file.
-	//modifyActor() will be called after the creation of the Actor.
-	std::shared_ptr<Actor> createActor(const char *resourceFile, tinyxml2::XMLElement *overrides = nullptr);
+	//Create an Actor and its children actors. The resourceFile is the file name of the corresponding .xml file.
+	//modifyActor() will be called after the creation of the actors.
+	//If fail to create any actor, an empty vector is returned.
+	//Otherwise, an vector of created actors is returned. The front actor in the vector is the most parent one.
+	std::vector<std::shared_ptr<Actor>> createActorAndChildren(const char *resourceFile, tinyxml2::XMLElement *overrides = nullptr);
 
 	//Modify an Actor with some xml data.
 	//It will re-initialize its components and/or attach new ones to it.
@@ -37,7 +40,7 @@ public:
 	ActorFactory(ActorFactory&&) = delete;
 	ActorFactory& operator=(const ActorFactory&) = delete;
 	ActorFactory& operator=(ActorFactory&&) = delete;
-	
+
 private:
 	//Implementation stuff.
 	struct ActorFactoryImpl;
