@@ -48,7 +48,7 @@ void AppDelegate::AppDelegateImpl::initGame()
 	singletonContainer->set<SceneStack>(std::make_unique<SceneStack>());
 
 	auto titleScene = singletonContainer->get<GameLogic>()->createActor("Actors\\TitleScene.xml");
-	singletonContainer->get<SceneStack>()->pushAndRun(std::move(titleScene));
+	singletonContainer->get<SceneStack>()->pushAndRun(*titleScene);
 
 	Director::getInstance()->getScheduler()->scheduleUpdate(this, 0, false);
 }

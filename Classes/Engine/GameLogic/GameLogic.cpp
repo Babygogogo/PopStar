@@ -12,6 +12,7 @@
 #include "../Event/EventType.h"
 #include "../Event/EvtDataRequestDestroyActor.h"
 #include "../Event/IEventDispatcher.h"
+#include "../Graphic2D/SceneStack.h"
 #include "../MainLoop/ProcessRunner.h"
 #include "../Utilities/SingletonContainer.h"
 
@@ -49,6 +50,9 @@ GameLogic::GameLogicImpl::~GameLogicImpl()
 void GameLogic::GameLogicImpl::onRequestDestroyActor(const IEventData & e)
 {
 	auto actorID = (static_cast<const EvtDataRequestDestoryActor &>(e)).getActorID();
+
+	//Make sure that the actor to destroy is not the running scene.
+	assert(actorID != SingletonContainer::getInstance()->get<SceneStack>()->getCurrentSceneID() && "GameLogicImpl::onRequestDestroyActor() trying to destroy the running scene!");
 
 	if (m_IsUpdatingActors)
 		m_CachedOperations.emplace_back([actorID, this](){m_Actors.erase(actorID); });
@@ -93,6 +97,11 @@ void GameLogic::vUpdate(const std::chrono::milliseconds & deltaTimeMs)
 	}
 }
 
+bool GameLogic::isActorAlive(const ActorID & id) const
+{
+	return pimpl->m_Actors.find(id) != pimpl->m_Actors.end();
+}
+
 const std::shared_ptr<Actor> & GameLogic::getActor(const ActorID & id) const
 {
 	//Try to find the actor corresponding to the id.
@@ -124,24 +133,4 @@ std::shared_ptr<Actor> GameLogic::createActor(const char *resourceFile, tinyxml2
 	auto emplaceResult = pimpl->m_Actors.emplace(std::make_pair(newActor->getID(), std::move(newActor)));
 	assert(emplaceResult.second);
 	return emplaceResult.first->second;
-}
-
-void GameLogic::destroyActor(const ActorID & id)
-{
-	//Try to find the actor corresponding to the id.
-	auto actorIter = pimpl->m_Actors.find(id);
-
-	//If the id is not in use, simply return.
-	if (actorIter == pimpl->m_Actors.end())
-		return;
-
-	//It's not safe to remove actor from the map when updating actors.
-	//If it's the case, cache the operation and execute it after updating.
-	if (pimpl->m_IsUpdatingActors){
-		pimpl->m_CachedOperations.emplace_back([this, id](){destroyActor(id); });
-		return;
-	}
-
-	//It's not updating actors; just remove the actor.
-	pimpl->m_Actors.erase(actorIter);
 }

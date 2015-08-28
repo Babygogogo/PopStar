@@ -5,7 +5,10 @@
 
 #include "SceneStack.h"
 #include "../Actor/Actor.h"
-#include "../Actor/GeneralRenderComponent.h"
+#include "../Actor/BaseRenderComponent.h"
+#include "../Event/EvtDataRequestDestroyActor.h"
+#include "../Event/IEventDispatcher.h"
+#include "../GameLogic/GameLogic.h"
 #include "../Utilities/SingletonContainer.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -16,15 +19,17 @@ struct SceneStack::SceneStackImpl
 	SceneStackImpl();
 	~SceneStackImpl();
 
-	void validate(Actor* scene);
+	void validateScene(const Actor & scene) const;
 
-	void push(std::shared_ptr<Actor> &&scene);
-	std::shared_ptr<Actor> pop();
+	cocos2d::Scene * getInternalScene(const Actor & actor) const;
 
-	void pushSceneToDirector(Actor *scene);
-	Actor *topScene();
+	void requestDestroyActor(const ActorID & id) const;
 
-	std::vector<std::shared_ptr<Actor>> m_scenes;
+	//Search for 'id' in the stack. If find, pop 'id' and all ids above it.
+	//All the popped scenes will be destroyed.
+	void findAndPopStack(const ActorID & id);
+
+	std::vector<ActorID> m_SceneIDs;
 };
 
 SceneStack::SceneStackImpl::SceneStackImpl()
@@ -35,42 +40,39 @@ SceneStack::SceneStackImpl::~SceneStackImpl()
 {
 }
 
-void SceneStack::SceneStackImpl::pushSceneToDirector(Actor *scene)
+void SceneStack::SceneStackImpl::validateScene(const Actor & scene) const
 {
-	auto director = cocos2d::Director::getInstance();
-	if (director->getRunningScene())
-		director->pushScene(scene->getComponent<GeneralRenderComponent>()->getAs<cocos2d::Scene>());
-	else
-		director->runWithScene(scene->getComponent<GeneralRenderComponent>()->getAs<cocos2d::Scene>());
+	assert(getInternalScene(scene) && "SceneStackImpl::validateScene() the scene actor has no internal scene.");
+	assert(!scene.hasParent() && "SceneStackImpl::validateScene() the scene actor has a parent.");
 }
 
-Actor * SceneStack::SceneStackImpl::topScene()
+cocos2d::Scene * SceneStack::SceneStackImpl::getInternalScene(const Actor & actor) const
 {
-	if (m_scenes.empty())
-		throw ("Getting topScene while there are no scenes.");
+	if (auto renderComponent = actor.getRenderComponent())
+		return static_cast<cocos2d::Scene*>(renderComponent->getSceneNode());
 
-	return m_scenes.back().get();
+	return nullptr;
 }
 
-void SceneStack::SceneStackImpl::validate(Actor* scene)
+void SceneStack::SceneStackImpl::requestDestroyActor(const ActorID & id) const
 {
-	if (!scene || !scene->getComponent<GeneralRenderComponent>() || !scene->getComponent<GeneralRenderComponent>()->getAs<cocos2d::Scene>())
-		throw("pushScene with a non-scene");
-	if (scene->hasParent())
-		throw("pushScene with a game object that has a parent");
+	if (const auto & singletonContainer = SingletonContainer::getInstance()){
+		auto request = std::make_unique<EvtDataRequestDestoryActor>(id);
+		singletonContainer->get<IEventDispatcher>()->vQueueEvent(std::move(request));
+	}
 }
 
-void SceneStack::SceneStackImpl::push(std::shared_ptr<Actor> &&scene)
+void SceneStack::SceneStackImpl::findAndPopStack(const ActorID & id)
 {
-	m_scenes.emplace_back(std::move(scene));
-}
+	for (auto sceneIndex = 0U; sceneIndex < m_SceneIDs.size(); ++sceneIndex)
+		if (m_SceneIDs[sceneIndex] == id){
+			//Request destroy the scenes that are going to be popped (excluding the scene of 'id').
+			for (auto indexToDestroy = sceneIndex + 1; indexToDestroy < m_SceneIDs.size(); ++indexToDestroy)
+				requestDestroyActor(m_SceneIDs[indexToDestroy]);
 
-std::shared_ptr<Actor> SceneStack::SceneStackImpl::pop()
-{
-	auto ownership = std::move(m_scenes.back());
-	m_scenes.pop_back();
-
-	return ownership;
+			//Pop the scenes.
+			m_SceneIDs.resize(sceneIndex);
+		}
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -86,44 +88,62 @@ SceneStack::~SceneStack()
 {
 }
 
-void SceneStack::pushAndRun(std::shared_ptr<Actor> && scene)
+void SceneStack::pushAndRun(const Actor & scene)
 {
-	pimpl->validate(scene.get());
+	pimpl->validateScene(scene);
+	pimpl->findAndPopStack(scene.getID());
 
-	//Disable update for old top scene, then push the param scene into stack and enable it.
-	pimpl->push(std::move(scene));
+	pimpl->m_SceneIDs.emplace_back(scene.getID());
 
-	pimpl->pushSceneToDirector(pimpl->topScene());
+	//Run the scene.
+	auto director = cocos2d::Director::getInstance();
+	if (director->getRunningScene())
+		director->replaceScene(pimpl->getInternalScene(scene));
+	else
+		director->runWithScene(pimpl->getInternalScene(scene));
 }
 
-std::shared_ptr<Actor> SceneStack::pop()
+void SceneStack::popCurrentScene()
 {
-	if (pimpl->m_scenes.size() <= 1)
-		throw("popScene when the size of scenes <= 1");
+	assert(pimpl->m_SceneIDs.size() > 1 && "SceneStack::popCurrentScene() when the size of scenes <= 1");
 
-	//Pop the current scene and enable the new top scene.
-	auto ownership = pimpl->pop();
+	pimpl->requestDestroyActor(getCurrentSceneID());
+	pimpl->m_SceneIDs.pop_back();
 
-	cocos2d::Director::getInstance()->popScene();
+	//Search for a living scene from the top of the stack to the bottom.
+	auto gameLogic = SingletonContainer::getInstance()->get<GameLogic>();
+	while (!pimpl->m_SceneIDs.empty()){
+		//If the current scene is living, run it and end this function.
+		if (auto nextScene = gameLogic->getActor(getCurrentSceneID())){
+			cocos2d::Director::getInstance()->replaceScene(pimpl->getInternalScene(*nextScene));
+			return;
+		}
 
-	return ownership;
+		//If the current scene is not living, pop it from the stack.
+		pimpl->m_SceneIDs.pop_back();
+	}
+
+	assert(false && "SceneStack::popCurrentScene() when there are no more alive scenes in the scene list.");
 }
 
-Actor* SceneStack::getCurrentScene()
+void SceneStack::replaceAndRun(const Actor & scene)
 {
-	return pimpl->topScene();
+	assert(!pimpl->m_SceneIDs.empty() && "SceneStack::replaceAndRun() when there are no scenes at all.");
+
+	pimpl->validateScene(scene);
+	pimpl->findAndPopStack(scene.getID());
+
+	pimpl->requestDestroyActor(getCurrentSceneID());
+	pimpl->m_SceneIDs.pop_back();
+
+	pimpl->m_SceneIDs.emplace_back(scene.getID());
+
+	cocos2d::Director::getInstance()->replaceScene(pimpl->getInternalScene(scene));
 }
 
-std::shared_ptr<Actor> SceneStack::replaceAndRun(std::shared_ptr<Actor> &&scene)
+const ActorID & SceneStack::getCurrentSceneID() const
 {
-	pimpl->validate(scene.get());
-	if (pimpl->m_scenes.empty())
-		throw("replaceAndRun scene when there are no scenes at all");
+	assert(!pimpl->m_SceneIDs.empty() && "SceneStack::getCurrentSceneID() called when there's no scene in the stack.");
 
-	auto ownership = pimpl->pop();
-	pimpl->push(std::move(scene));
-
-	cocos2d::Director::getInstance()->replaceScene(pimpl->topScene()->getComponent<GeneralRenderComponent>()->getAs<cocos2d::Scene>());
-
-	return ownership;
+	return pimpl->m_SceneIDs.back();
 }

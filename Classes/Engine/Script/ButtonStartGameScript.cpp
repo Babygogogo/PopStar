@@ -34,7 +34,7 @@ void ButtonStartGameScript::ButtonStartGameScriptImpl::onClicked()
 	singletonContainer->get<GameData>()->reset();
 
 	auto mainSceneActor = singletonContainer->get<GameLogic>()->createActor("Actors\\MainScene.xml");
-	singletonContainer->get<SceneStack>()->replaceAndRun(std::move(mainSceneActor));
+	singletonContainer->get<SceneStack>()->replaceAndRun(*mainSceneActor);
 
 	singletonContainer->get<IEventDispatcher>()->dispatch(std::make_unique<EvtDataGeneric>(EventType::LevelStarted));
 }

@@ -75,12 +75,9 @@ void GameOverLabelScript::GameOverLabelScriptImpl::resetInvoker()
 	strongInvoker->addMoveTo(1, visible_size.width / 2, visible_size.height / 2);
 
 	strongInvoker->addCallback([]{
-		//auto titleSceneActor = std::make_shared<Actor>();
-		//titleSceneActor->addComponent<TitleSceneScript>();
-		//SingletonContainer::getInstance()->get<SceneStack>()->replaceAndRun(std::move(titleSceneActor)); });
 		auto & singletonContainer = SingletonContainer::getInstance();
 		auto titleScene = singletonContainer->get<GameLogic>()->createActor("Actors\\TitleScene.xml");
-		singletonContainer->get<SceneStack>()->replaceAndRun(std::move(titleScene));
+		singletonContainer->get<SceneStack>()->replaceAndRun(*titleScene);
 	});
 }
 

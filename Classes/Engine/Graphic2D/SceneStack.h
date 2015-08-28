@@ -3,17 +3,20 @@
 
 #include <memory>
 
+#include "../Actor/ActorID.h"
+
 class Actor;
 
 /*!
  * \class	SceneStack
  *
- * \brief	A singleton class that manages the roots of the GameObjects (e.g. the scenes).
+ * \brief	Manages the scenes of the game.
+ *
  * \details
- *	The top scene is also the running one. There's no way to run a scene that is not at the top of the stack.
- *	The top scene (and only) will be update once a frame.
- *	If the last scene is popped, an exception will be thrown and the application will be terminated.
- *	To save memory, don't make the length of the stack too long.
+ *	A scene is an Actor that has no parent and owns an render component which holds a cocos2d::Scene.
+ *	After a scene is created, you must explicitly attach it to this class to run it.
+ *	The top scene of the stack is the one and only running scene.
+ *	To save memory, don't make the size of the stack too large.
  *
  * \author	Babygogogo
  * \date	2015.3
@@ -25,20 +28,21 @@ public:
 	SceneStack();
 	~SceneStack();
 
-	//////////////////////////////////////////////////////////////////////////
-	//Stuff to control the stack.
-	//////////////////////////////////////////////////////////////////////////
-	//The param scene must be a scene and has no parent, or an exception will be thrown.
-	void pushAndRun(std::shared_ptr<Actor> && scene);
+	//Stuff for controlling the stack.
+	//The param scene must be a scene and has no parent, or an assertion will be triggered.
+	//If the scene already exists in the stack, all scenes above it in the stack will be destroyed.
+	void pushAndRun(const Actor & scene);
 
-	//The ownership of the pre-top scene is returned. You can do anything with it, or just leave it alone.
-	std::shared_ptr<Actor> pop();
+	//Pop the current scene and run the next-top scene. The popped scene will be destroyed.
+	//Don't call this if there is only one scene in the stack, or an assertion will be triggered.
+	void popCurrentScene();
 
-	//Replace the current scene with a new one. The ownership of the pre-current scene will be returned.
-	std::shared_ptr<Actor> replaceAndRun(std::shared_ptr<Actor> &&scene);
+	//Replace the current scene with a new one. The scene being replaced will be destroyed.
+	//If the new scene already exists in the stack, all scenes above it in the stack will be destroyed.
+	void replaceAndRun(const Actor & scene);
 
-	//The current scene is also the top scene in the stack.
-	Actor* getCurrentScene();
+	//Return the id of the current scene. The current scene is also the top scene in the stack.
+	const ActorID & getCurrentSceneID() const;
 
 	//Disable copy/move constructor and operator=.
 	SceneStack(const SceneStack&) = delete;
@@ -47,6 +51,7 @@ public:
 	SceneStack& operator=(SceneStack&&) = delete;
 
 private:
+	//Implementation stuff.
 	struct SceneStackImpl;
 	std::unique_ptr<SceneStackImpl> pimpl;
 };

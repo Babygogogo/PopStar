@@ -21,6 +21,7 @@ class Actor;
  * \details
  *	This class should be singleton.
  *	By now, its main job is to maintain a list of all the actors in the game world.
+ *	You can create actors by calling createActor(). But to destroy actors, you must dispatch events.
  *	Avoid owning any std::shared_ptr<Actor> outside this class, otherwise it will be hard to destory that actor.
  *	Much more work to do on this class...
  *
@@ -37,16 +38,17 @@ public:
 	//Update the game world (ProcessRunner, views, actors and so on)
 	void vUpdate(const std::chrono::milliseconds & deltaTimeMs);
 
+	bool isActorAlive(const ActorID & id) const;
+
 	//Get actor with an id. You will get nullptr if the id is not in use.
 	const std::shared_ptr<Actor> & getActor(const ActorID & id) const;
 
 	//Create an actor with a .xml file. The actor will be add into the internal actor list.
 	std::shared_ptr<Actor> createActor(const char *resourceFile, tinyxml2::XMLElement *overrides = nullptr);
 
-	//Remove an actor with an id from the internal actor list. The actor will be destroyed if you don't own it elsewhere.
-	//Nothing happens if the id is not in use.
+	//There's no destroyActor() here. To destroy an actor, you must dispatch an EvtDataRequestDestroyActor with the id of that actor.
 	//Warning: If you own a std::shared_ptr<Actor> corresponding to the id outside this class, the destruction is not guaranteed to happen.
-	void destroyActor(const ActorID & id);
+	//Warning: You can't destroy an actor that is also the current scene, or an assertion will be triggered. Instead, you should destroy the scene through SceneStack.
 
 	//Disable copy/move constructor and operator=.
 	GameLogic(const GameLogic&) = delete;
