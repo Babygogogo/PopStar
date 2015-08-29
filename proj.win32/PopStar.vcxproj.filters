@@ -293,6 +293,9 @@
     <ClInclude Include="..\Classes\Engine\Event\EvtDataRequestDestroyActor.h">
       <Filter>Classes\Engine\Event</Filter>
     </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Event\EvtDataCurrentScoreValueUpdated.h">
+      <Filter>Classes\Engine\Event</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="game.rc">

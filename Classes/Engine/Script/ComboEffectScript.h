@@ -25,6 +25,8 @@ public:
 	//The type name of this component. Same as the class name.
 	static const std::string Type;
 
+	virtual const std::string & getType() const override;
+
 	//Disable copy/move constructor and operator=.
 	ComboEffectScript(const ComboEffectScript&) = delete;
 	ComboEffectScript(ComboEffectScript&&) = delete;
@@ -33,12 +35,11 @@ public:
 
 private:
 	//Override functions.
-	virtual const std::string & getType() const override;
 	virtual bool vInit(tinyxml2::XMLElement *xmlElement) override;
 
 	//Implementation stuff.
 	struct ComboEffectImpl;
-	std::unique_ptr<ComboEffectImpl> pimpl;
+	std::shared_ptr<ComboEffectImpl> pimpl;
 };
 
 #endif // !__COMBO_EFFECT_SCRIPT__

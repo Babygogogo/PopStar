@@ -3,7 +3,7 @@
 	<Components>
 		<ComboEffectScript/>
 		<GeneralRenderComponent Type="Sprite">
-			<Position LocalZOrder="1"/>
+			<Position NormalizedX="0.5" NormalizedY="0.5" LocalZOrder="1"/>
 		</GeneralRenderComponent>
 		<SequentialInvokerComponent/>
 	</Components>

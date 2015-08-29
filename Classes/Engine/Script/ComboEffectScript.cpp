@@ -1,13 +1,14 @@
+#include "cocos2d.h"
+
 #include "ComboEffectScript.h"
 #include "../Actor/Actor.h"
 #include "../Actor/GeneralRenderComponent.h"
 #include "../Actor/SequentialInvoker.h"
 #include "../Utilities/SingletonContainer.h"
-#include "../Event/EventDispatcher.h"
+#include "../Event/IEventDispatcher.h"
 #include "../Event/BaseEventData.h"
 #include "../Event/EventType.h"
 #include "../Event/EvtDataPlayerExplodedStars.h"
-#include "cocos2d.h"
 #include "../Audio/Audio.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -18,15 +19,11 @@ struct ComboEffectScript::ComboEffectImpl
 	ComboEffectImpl(ComboEffectScript *visitor);
 	~ComboEffectImpl();
 
-	void registerAsEventListeners();
-	void unregisterAsEventListeners();
+	void onPlayerExplodedStars(const IEventData & e);
 
 	std::string getTextureName(int explode_stars_num);
-	void resetSpritePosition();
 
 	void show(int explode_stars_num);
-
-	cocos2d::Sprite * getSprite() const;
 
 	//A back pointer of the ComboEffectScript object.
 	//It will be safer to use std::weak_ptr, but it seems to be overkill by now.
@@ -35,24 +32,17 @@ struct ComboEffectScript::ComboEffectImpl
 
 ComboEffectScript::ComboEffectImpl::ComboEffectImpl(ComboEffectScript *visitor) : m_Visitor(visitor)
 {
-	registerAsEventListeners();
 }
 
 ComboEffectScript::ComboEffectImpl::~ComboEffectImpl()
 {
-	unregisterAsEventListeners();
 }
 
-void ComboEffectScript::ComboEffectImpl::registerAsEventListeners()
+void ComboEffectScript::ComboEffectImpl::onPlayerExplodedStars(const IEventData & e)
 {
-	SingletonContainer::getInstance()->get<IEventDispatcher>()->registerListener(EventType::PlayerExplodedStars, this,
-		[this](BaseEventData *e){show(dynamic_cast<EvtDataPlayerExplodedStars*>(e)->getExplodedStarsCount()); });
-}
+	auto explodedStarsCount = (static_cast<const EvtDataPlayerExplodedStars &>(e)).getExplodedStarsCount();
 
-void ComboEffectScript::ComboEffectImpl::unregisterAsEventListeners()
-{
-	if (auto& singleton_container = SingletonContainer::getInstance())
-		singleton_container->get<IEventDispatcher>()->deleteListener(this);
+	show(explodedStarsCount);
 }
 
 std::string ComboEffectScript::ComboEffectImpl::getTextureName(int explode_stars_num)
@@ -67,55 +57,48 @@ std::string ComboEffectScript::ComboEffectImpl::getTextureName(int explode_stars
 	return{};
 }
 
-void ComboEffectScript::ComboEffectImpl::resetSpritePosition()
-{
-	auto visible_size = cocos2d::Director::getInstance()->getVisibleSize();
-	getSprite()->setPosition(visible_size.width / 2, visible_size.height / 2);
-}
-
 void ComboEffectScript::ComboEffectImpl::show(int explode_stars_num)
 {
 	auto texture_name = getTextureName(explode_stars_num);
 	if (texture_name.empty())
 		return;
 
-	getSprite()->setTexture(texture_name);
-	resetSpritePosition();
-	getSprite()->setVisible(true);
+	auto underlyingSprite = static_cast<cocos2d::Sprite*>(m_Visitor->m_Actor.lock()->getRenderComponent()->getSceneNode());
+
+	underlyingSprite->setTexture(texture_name);
+	underlyingSprite->setVisible(true);
 
 	auto sequentialInvoker = m_Visitor->m_Actor.lock()->getComponent<SequentialInvoker>();
 	sequentialInvoker->addFiniteTimeAction(cocos2d::Sequence::create(
-		cocos2d::Blink::create(1.0f, 5), cocos2d::CallFunc::create([this]{getSprite()->setVisible(false); }), nullptr));
+		cocos2d::Blink::create(1.0f, 5), cocos2d::CallFunc::create([underlyingSprite]{underlyingSprite->setVisible(false); }), nullptr));
 	sequentialInvoker->invoke();
 
 	Audio::getInstance()->playCombo(explode_stars_num);
 }
 
-cocos2d::Sprite * ComboEffectScript::ComboEffectImpl::getSprite() const
-{
-	return m_Visitor->m_Actor.lock()->getComponent<GeneralRenderComponent>()->getAs<cocos2d::Sprite>();
-}
-
 //////////////////////////////////////////////////////////////////////////
 //Implementation of ComboEffect.
 //////////////////////////////////////////////////////////////////////////
-ComboEffectScript::ComboEffectScript() : pimpl{ std::make_unique<ComboEffectImpl>(this) }
+ComboEffectScript::ComboEffectScript() : pimpl{ std::make_shared<ComboEffectImpl>(this) }
 {
+	SingletonContainer::getInstance()->get<IEventDispatcher>()->vAddListener(EventType::PlayerExplodedStars, pimpl, [this](const IEventData & e){
+		pimpl->onPlayerExplodedStars(e);
+	});
 }
 
 ComboEffectScript::~ComboEffectScript()
 {
 }
 
-const std::string & ComboEffectScript::getType() const
-{
-	return Type;
-}
-
 bool ComboEffectScript::vInit(tinyxml2::XMLElement *xmlElement)
 {
 	//#TODO: read data from xmlElement and avoid hard-coding the logic and resources.
 	return true;
+}
+
+const std::string & ComboEffectScript::getType() const
+{
+	return Type;
 }
 
 const std::string ComboEffectScript::Type = "ComboEffectScript";

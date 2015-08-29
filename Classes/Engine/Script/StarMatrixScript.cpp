@@ -184,8 +184,10 @@ void StarMatrixScript::StarMatrixScriptImpl::explodeGroupingStars(std::list<Star
 	Audio::getInstance()->playPop();
 
 	shrink();
-	SingletonContainer::getInstance()->get<GameData>()->updateCurrentScoreWith(group_stars.size());
-	SingletonContainer::getInstance()->get<IEventDispatcher>()->dispatch(std::make_unique<EvtDataPlayerExplodedStars>(group_stars.size()));
+
+	auto & singletonContainer = SingletonContainer::getInstance();
+	singletonContainer->get<GameData>()->updateCurrentScoreWith(group_stars.size());
+	singletonContainer->get<IEventDispatcher>()->vQueueEvent(std::make_unique<EvtDataPlayerExplodedStars>(group_stars.size()));
 
 	if (isNoMoreMove()){
 		SingletonContainer::getInstance()->get<GameData>()->setStarsLeftNum(countStarsLeft());

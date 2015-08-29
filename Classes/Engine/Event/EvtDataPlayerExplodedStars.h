@@ -2,6 +2,7 @@
 #define __EVENT_DATA_PLAYER_EXPLODED_STARS__
 
 #include "BaseEventData.h"
+#include "EventType.h"
 
 class EvtDataPlayerExplodedStars : public BaseEventData
 {
@@ -19,7 +20,7 @@ public:
 		return EvtType;
 	}
 
-	int getExplodedStarsCount()
+	int getExplodedStarsCount() const
 	{
 		return m_ExplodedStarsCount;
 	}

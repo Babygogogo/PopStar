@@ -5,6 +5,7 @@
 #include "../Engine/Event/EventType.h"
 #include "../Engine/Event/BaseEventData.h"
 #include "../Engine/Event/EvtDataGeneric.h"
+#include "../Engine/Event/EvtDataCurrentScoreValueUpdated.h"
 
 #include <array>
 
@@ -20,7 +21,7 @@ struct GameData::GameDataImpl
 	void setHighScore(int score);
 	void saveHighScore();
 	int getScoreOf(int num_of_exploded_stars);
-	
+
 	void setCurrentLevel(int level);
 	void updateTargetScoreByCurrentLevel();
 
@@ -34,19 +35,17 @@ struct GameData::GameDataImpl
 
 GameData::GameDataImpl::GameDataImpl()
 {
-
 }
 
 GameData::GameDataImpl::~GameDataImpl()
 {
-
 }
 
 void GameData::GameDataImpl::setCurrentScore(int score)
 {
 	if (score != m_current_score){
 		m_current_score = score;
-		SingletonContainer::getInstance()->get<IEventDispatcher>()->dispatch(std::make_unique<EvtDataGeneric>(EventType::CurrentScoreValueUpdated));
+		SingletonContainer::getInstance()->get<IEventDispatcher>()->vQueueEvent(std::make_unique<EvtDataCurrentScoreValueUpdated>(m_current_score));
 
 		setHighScore(m_current_score);
 	}
@@ -124,11 +123,11 @@ GameData::~GameData()
 
 int GameData::getEndLevelBonus() const
 {
-	static const std::array<int, 10> bonus_array = { 2000, 1660, 1360, 1100, 880, 700, 560, 460, 400, 380};
+	static const std::array<int, 10> bonus_array = { 2000, 1660, 1360, 1100, 880, 700, 560, 460, 400, 380 };
 
 	if (pimpl->m_stars_left_num > 9 || pimpl->m_stars_left_num < 0)
 		return 0;
-	
+
 	return bonus_array[pimpl->m_stars_left_num];
 }
 

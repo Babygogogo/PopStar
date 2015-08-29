@@ -28,7 +28,7 @@ private:
 
 	//Implementation stuff.
 	struct CurrentScoreLabelScriptImpl;
-	std::unique_ptr<CurrentScoreLabelScriptImpl> pimpl;
+	std::shared_ptr<CurrentScoreLabelScriptImpl> pimpl;
 };
 
 #endif // !__CURRENT_SCORE_LABEL_SCRIPT__
