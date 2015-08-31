@@ -30,7 +30,7 @@ private:
 
 	//Implementation stuff.
 	struct StarMatrixScriptImpl;
-	std::unique_ptr<StarMatrixScriptImpl> pimpl;
+	std::shared_ptr<StarMatrixScriptImpl> pimpl;
 };
 
 #endif // !__STAR_MATRIX_SCRIPT__

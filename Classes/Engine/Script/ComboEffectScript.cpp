@@ -23,8 +23,6 @@ struct ComboEffectScript::ComboEffectImpl
 
 	std::string getTextureName(int explode_stars_num);
 
-	void show(int explode_stars_num);
-
 	//A back pointer of the ComboEffectScript object.
 	//It will be safer to use std::weak_ptr, but it seems to be overkill by now.
 	ComboEffectScript *m_Visitor{ nullptr };
@@ -42,7 +40,24 @@ void ComboEffectScript::ComboEffectImpl::onPlayerExplodedStars(const IEventData 
 {
 	auto explodedStarsCount = (static_cast<const EvtDataPlayerExplodedStars &>(e)).getExplodedStarsCount();
 
-	show(explodedStarsCount);
+	//Display the combo effect. Firstly, get the texture name corresponding to explodedStarsCount.
+	auto texture_name = getTextureName(explodedStarsCount);
+	if (texture_name.empty())
+		return;
+
+	//Get the underlying sprite and update it.
+	auto underlyingSprite = static_cast<cocos2d::Sprite*>(m_Visitor->m_Actor.lock()->getRenderComponent()->getSceneNode());
+	underlyingSprite->setTexture(texture_name);
+	underlyingSprite->setVisible(true);
+
+	//Reset the sequential invoker so that the sprite will disappear as we wish
+	auto sequentialInvoker = m_Visitor->m_Actor.lock()->getComponent<SequentialInvoker>();
+	sequentialInvoker->addFiniteTimeAction(cocos2d::Sequence::create(
+		cocos2d::Blink::create(1.0f, 5), cocos2d::CallFunc::create([underlyingSprite]{underlyingSprite->setVisible(false); }), nullptr));
+	sequentialInvoker->invoke();
+
+	//Play sound effect.
+	Audio::getInstance()->playCombo(explodedStarsCount);
 }
 
 std::string ComboEffectScript::ComboEffectImpl::getTextureName(int explode_stars_num)
@@ -55,25 +70,6 @@ std::string ComboEffectScript::ComboEffectImpl::getTextureName(int explode_stars
 		return "combo_1.png";
 
 	return{};
-}
-
-void ComboEffectScript::ComboEffectImpl::show(int explode_stars_num)
-{
-	auto texture_name = getTextureName(explode_stars_num);
-	if (texture_name.empty())
-		return;
-
-	auto underlyingSprite = static_cast<cocos2d::Sprite*>(m_Visitor->m_Actor.lock()->getRenderComponent()->getSceneNode());
-
-	underlyingSprite->setTexture(texture_name);
-	underlyingSprite->setVisible(true);
-
-	auto sequentialInvoker = m_Visitor->m_Actor.lock()->getComponent<SequentialInvoker>();
-	sequentialInvoker->addFiniteTimeAction(cocos2d::Sequence::create(
-		cocos2d::Blink::create(1.0f, 5), cocos2d::CallFunc::create([underlyingSprite]{underlyingSprite->setVisible(false); }), nullptr));
-	sequentialInvoker->invoke();
-
-	Audio::getInstance()->playCombo(explode_stars_num);
 }
 
 //////////////////////////////////////////////////////////////////////////

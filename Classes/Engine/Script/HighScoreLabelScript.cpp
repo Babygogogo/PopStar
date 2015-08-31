@@ -12,13 +12,17 @@
 //////////////////////////////////////////////////////////////////////////
 struct HighScoreLabelScript::HighScoreLabelScriptImpl
 {
-	HighScoreLabelScriptImpl();
+	HighScoreLabelScriptImpl(HighScoreLabelScript *visitor);
 	~HighScoreLabelScriptImpl();
 
-	std::string createHighScoreText() const;
+	void setStringWithScore(int highScore = 0);
+
+	void onHighScoreValueUpdated(const IEventData & e);
+
+	HighScoreLabelScript *m_Visitor{ nullptr };
 };
 
-HighScoreLabelScript::HighScoreLabelScriptImpl::HighScoreLabelScriptImpl()
+HighScoreLabelScript::HighScoreLabelScriptImpl::HighScoreLabelScriptImpl(HighScoreLabelScript *visitor) : m_Visitor{ visitor }
 {
 }
 
@@ -26,32 +30,34 @@ HighScoreLabelScript::HighScoreLabelScriptImpl::~HighScoreLabelScriptImpl()
 {
 }
 
-std::string HighScoreLabelScript::HighScoreLabelScriptImpl::createHighScoreText() const
+void HighScoreLabelScript::HighScoreLabelScriptImpl::onHighScoreValueUpdated(const IEventData & e)
 {
-	return std::string("High Score: ") + std::to_string(SingletonContainer::getInstance()->get<GameData>()->getHighScore());
+	setStringWithScore();
+}
+
+void HighScoreLabelScript::HighScoreLabelScriptImpl::setStringWithScore(int highScore /*= 0*/)
+{
+	auto underlyingLabel = static_cast<cocos2d::Label*>(m_Visitor->m_Actor.lock()->getRenderComponent()->getSceneNode());
+	underlyingLabel->setString(std::string("High Score: ") + std::to_string(SingletonContainer::getInstance()->get<GameData>()->getHighScore()));
 }
 
 //////////////////////////////////////////////////////////////////////////
 //Implementation of HighScoreLabelScript.
 //////////////////////////////////////////////////////////////////////////
-HighScoreLabelScript::HighScoreLabelScript() : pimpl{ std::make_unique<HighScoreLabelScriptImpl>() }
+HighScoreLabelScript::HighScoreLabelScript() : pimpl{ std::make_unique<HighScoreLabelScriptImpl>(this) }
 {
 }
 
 HighScoreLabelScript::~HighScoreLabelScript()
 {
-	if (auto & singletonContainer = SingletonContainer::getInstance())
-		singletonContainer->get<IEventDispatcher>()->deleteListener(this);
 }
 
 void HighScoreLabelScript::vPostInit()
 {
-	auto labelUnderlying = this->m_Actor.lock()->getComponent<GeneralRenderComponent>()->getAs<cocos2d::Label>();
-	labelUnderlying->setString(pimpl->createHighScoreText());
+	pimpl->setStringWithScore();
 
-	SingletonContainer::getInstance()->get<IEventDispatcher>()->registerListener(EventType::HighScoreValueUpdated, this, [this](BaseEventData*){
-		auto labelUnderlying = this->m_Actor.lock()->getComponent<GeneralRenderComponent>()->getAs<cocos2d::Label>();
-		labelUnderlying->setString(pimpl->createHighScoreText());
+	SingletonContainer::getInstance()->get<IEventDispatcher>()->vAddListener(EventType::HighScoreValueUpdated, pimpl, [this](const IEventData & e){
+		pimpl->onHighScoreValueUpdated(e);
 	});
 }
 

@@ -1,3 +1,5 @@
+#include "cocos2d.h"
+
 #include "GameOverLabelScript.h"
 #include "../Actor/Actor.h"
 #include "../Actor/GeneralRenderComponent.h"
@@ -7,7 +9,6 @@
 #include "../Graphic2D/SceneStack.h"
 #include "../Event/EventDispatcher.h"
 #include "../Event/EventType.h"
-#include "cocos2d.h"
 #include "../../cocos2d/external/tinyxml2/tinyxml2.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -19,9 +20,8 @@ struct GameOverLabelScript::GameOverLabelScriptImpl
 	~GameOverLabelScriptImpl();
 
 	void registerAsEventListeners();
-	void unregisterAsEventListeners();
 
-	void reset();
+	void onGameOver();
 	void resetInvoker();
 
 	cocos2d::Label *m_LabelUnderlying{ nullptr };
@@ -34,14 +34,10 @@ GameOverLabelScript::GameOverLabelScriptImpl::GameOverLabelScriptImpl()
 
 GameOverLabelScript::GameOverLabelScriptImpl::~GameOverLabelScriptImpl()
 {
-	unregisterAsEventListeners();
 }
 
 void GameOverLabelScript::GameOverLabelScriptImpl::registerAsEventListeners()
 {
-	SingletonContainer::getInstance()->get<IEventDispatcher>()->registerListener(EventType::GameOver, this,
-		[this](BaseEventData *){reset(); });
-
 	auto touch_listener = cocos2d::EventListenerTouchOneByOne::create();
 	touch_listener->onTouchBegan = [this](cocos2d::Touch* touch, cocos2d::Event* event)->bool{
 		m_Invoker.lock()->invoke();
@@ -50,13 +46,7 @@ void GameOverLabelScript::GameOverLabelScriptImpl::registerAsEventListeners()
 	cocos2d::Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(touch_listener, m_LabelUnderlying);
 }
 
-void GameOverLabelScript::GameOverLabelScriptImpl::unregisterAsEventListeners()
-{
-	if (auto& singleton_container = SingletonContainer::getInstance())
-		singleton_container->get<IEventDispatcher>()->deleteListener(this);
-}
-
-void GameOverLabelScript::GameOverLabelScriptImpl::reset()
+void GameOverLabelScript::GameOverLabelScriptImpl::onGameOver()
 {
 	m_LabelUnderlying->setVisible(true);
 
@@ -84,17 +74,15 @@ void GameOverLabelScript::GameOverLabelScriptImpl::resetInvoker()
 //////////////////////////////////////////////////////////////////////////
 //Implementation of GameOverLabelScript.
 //////////////////////////////////////////////////////////////////////////
-GameOverLabelScript::GameOverLabelScript() : pimpl{ std::make_unique<GameOverLabelScriptImpl>() }
+GameOverLabelScript::GameOverLabelScript() : pimpl{ std::make_shared<GameOverLabelScriptImpl>() }
 {
+	SingletonContainer::getInstance()->get<IEventDispatcher>()->vAddListener(EventType::GameOver, pimpl, [this](const IEventData &){
+		pimpl->onGameOver();
+	});
 }
 
 GameOverLabelScript::~GameOverLabelScript()
 {
-}
-
-const std::string & GameOverLabelScript::getType() const
-{
-	return Type;
 }
 
 bool GameOverLabelScript::vInit(tinyxml2::XMLElement *xmlElement)
@@ -113,6 +101,11 @@ void GameOverLabelScript::vPostInit()
 	pimpl->m_Invoker = strongActor->getComponent<SequentialInvoker>();
 
 	pimpl->registerAsEventListeners();
+}
+
+const std::string & GameOverLabelScript::getType() const
+{
+	return Type;
 }
 
 const std::string GameOverLabelScript::Type = "GameOverLabelScript";

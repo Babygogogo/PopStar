@@ -31,11 +31,6 @@ class IEventDispatcher
 public:
 	virtual ~IEventDispatcher() = default;
 
-	//These are the old interface and will be removed soon.
-	virtual void registerListener(EventType event_type, void *target, std::function<void(BaseEventData*)> callback) = 0;
-	virtual void deleteListener(void *target) = 0;
-	virtual void dispatch(std::unique_ptr<BaseEventData> &&event, void *target = nullptr) = 0;
-
 	//Type shortcut of the pair of listener and its callback.
 	using ListenerCallback = std::pair < std::weak_ptr<void>, std::function<void(const IEventData &)> >;
 

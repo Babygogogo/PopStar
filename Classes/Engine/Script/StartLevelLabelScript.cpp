@@ -18,7 +18,7 @@ struct StartLevelLabelScript::StartLevelLabelScriptImpl
 	StartLevelLabelScriptImpl();
 	~StartLevelLabelScriptImpl();
 
-	void reset();
+	void onLevelStarted();
 
 	cocos2d::Label *m_label_underlying{ nullptr };
 	SequentialInvoker *m_invoker{ nullptr };
@@ -32,7 +32,7 @@ StartLevelLabelScript::StartLevelLabelScriptImpl::~StartLevelLabelScriptImpl()
 {
 }
 
-void StartLevelLabelScript::StartLevelLabelScriptImpl::reset()
+void StartLevelLabelScript::StartLevelLabelScriptImpl::onLevelStarted()
 {
 	//Set the text of the label.
 	auto level_text = std::to_string(SingletonContainer::getInstance()->get<GameData>()->getCurrentLevel()) + '\n';
@@ -46,7 +46,7 @@ void StartLevelLabelScript::StartLevelLabelScriptImpl::reset()
 	m_invoker->addMoveTo(0.6f, visible_size.width / 2, visible_size.height / 2);
 	m_invoker->addMoveTo(0.6f, -m_label_underlying->getContentSize().width / 2, visible_size.height / 2, [this]{
 		m_label_underlying->setVisible(false);
-		SingletonContainer::getInstance()->get<IEventDispatcher>()->dispatch(std::make_unique<EvtDataGeneric>(EventType::StartLevelLabelDisappeared));
+		SingletonContainer::getInstance()->get<IEventDispatcher>()->vQueueEvent(std::make_unique<EvtDataGeneric>(EventType::StartLevelLabelDisappeared));
 	});
 	m_invoker->invoke();
 }
@@ -54,15 +54,12 @@ void StartLevelLabelScript::StartLevelLabelScriptImpl::reset()
 //////////////////////////////////////////////////////////////////////////
 //Implementation of StartLevelLabelScript.
 //////////////////////////////////////////////////////////////////////////
-StartLevelLabelScript::StartLevelLabelScript() : pimpl{ std::make_unique<StartLevelLabelScriptImpl>() }
+StartLevelLabelScript::StartLevelLabelScript() : pimpl{ std::make_shared<StartLevelLabelScriptImpl>() }
 {
 }
 
 StartLevelLabelScript::~StartLevelLabelScript()
 {
-	//Unregister as EventListener.
-	if (auto& singleton_container = SingletonContainer::getInstance())
-		singleton_container->get<IEventDispatcher>()->deleteListener(this);
 }
 
 const std::string & StartLevelLabelScript::getType() const
@@ -80,8 +77,10 @@ void StartLevelLabelScript::vPostInit()
 	pimpl->m_invoker = actor->getComponent<SequentialInvoker>().get();
 
 	//Register as EventListener.
-	SingletonContainer::getInstance()->get<IEventDispatcher>()->registerListener(EventType::LevelStarted, this,
-		[this](BaseEventData *){pimpl->reset(); });
+	SingletonContainer::getInstance()->get<IEventDispatcher>()->vAddListener(EventType::LevelStarted, pimpl, [this](const IEventData & e){
+		pimpl->onLevelStarted();
+	});
+
 	auto touch_listener = cocos2d::EventListenerTouchOneByOne::create();
 	touch_listener->onTouchBegan = [this](cocos2d::Touch* touch, cocos2d::Event* event)->bool{
 		pimpl->m_invoker->invoke();

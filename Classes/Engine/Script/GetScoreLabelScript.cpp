@@ -1,6 +1,6 @@
 #include "GetScoreLabelScript.h"
 #include "../Actor/Actor.h"
-#include "../Actor/GeneralRenderComponent.h"
+#include "../Actor/BaseRenderComponent.h"
 #include "../Utilities/SingletonContainer.h"
 #include "../../Common/GameData.h"
 #include "../Event/EventDispatcher.h"
@@ -12,11 +12,18 @@
 //////////////////////////////////////////////////////////////////////////
 struct GetScoreLabelScript::GetScoreLabelScriptImpl
 {
-	GetScoreLabelScriptImpl();
+	GetScoreLabelScriptImpl(GetScoreLabelScript *visitor);
 	~GetScoreLabelScriptImpl();
+
+	void onPlayerGetScore(const IEventData & e);
+	void onLevelSummaryDisppeared(const IEventData & e);
+
+	cocos2d::Label * getUnderlyingLabel() const;
+
+	GetScoreLabelScript *m_Visitor{ nullptr };
 };
 
-GetScoreLabelScript::GetScoreLabelScriptImpl::GetScoreLabelScriptImpl()
+GetScoreLabelScript::GetScoreLabelScriptImpl::GetScoreLabelScriptImpl(GetScoreLabelScript *visitor) : m_Visitor{ visitor }
 {
 }
 
@@ -24,17 +31,35 @@ GetScoreLabelScript::GetScoreLabelScriptImpl::~GetScoreLabelScriptImpl()
 {
 }
 
+void GetScoreLabelScript::GetScoreLabelScriptImpl::onPlayerGetScore(const IEventData & e)
+{
+	auto exploded_stars_num = std::to_string(SingletonContainer::getInstance()->get<GameData>()->getExplodedStarsNum());
+	auto attained_score = std::to_string(SingletonContainer::getInstance()->get<GameData>()->getScoreOfPreviousExplosion());
+
+	auto underlyingLabel = getUnderlyingLabel();
+	underlyingLabel->setString(std::string("Exploded: ") + exploded_stars_num + std::string(" Score: ") + attained_score);
+	underlyingLabel->setVisible(true);
+}
+
+void GetScoreLabelScript::GetScoreLabelScriptImpl::onLevelSummaryDisppeared(const IEventData & e)
+{
+	getUnderlyingLabel()->setVisible(false);
+}
+
+cocos2d::Label * GetScoreLabelScript::GetScoreLabelScriptImpl::getUnderlyingLabel() const
+{
+	return static_cast<cocos2d::Label*>(m_Visitor->m_Actor.lock()->getRenderComponent()->getSceneNode());
+}
+
 //////////////////////////////////////////////////////////////////////////
 //Implementation of GetScoreLabelScript.
 //////////////////////////////////////////////////////////////////////////
-GetScoreLabelScript::GetScoreLabelScript() : pimpl{ std::make_unique<GetScoreLabelScriptImpl>() }
+GetScoreLabelScript::GetScoreLabelScript() : pimpl{ std::make_shared<GetScoreLabelScriptImpl>(this) }
 {
 }
 
 GetScoreLabelScript::~GetScoreLabelScript()
 {
-	if (auto& singleton_container = SingletonContainer::getInstance())
-		singleton_container->get<IEventDispatcher>()->deleteListener(this);
 }
 
 const std::string & GetScoreLabelScript::getType() const
@@ -44,18 +69,13 @@ const std::string & GetScoreLabelScript::getType() const
 
 void GetScoreLabelScript::vPostInit()
 {
-	auto label_underlying = m_Actor.lock()->getComponent<GeneralRenderComponent>()->getAs<cocos2d::Label>();
+	auto eventDispatcher = SingletonContainer::getInstance()->get<IEventDispatcher>();
 
-	SingletonContainer::getInstance()->get<IEventDispatcher>()->registerListener(EventType::CurrentScoreIncreased, this, [this, label_underlying](BaseEventData *){
-		auto exploded_stars_num = std::to_string(SingletonContainer::getInstance()->get<GameData>()->getExplodedStarsNum());
-		auto attained_score = std::to_string(SingletonContainer::getInstance()->get<GameData>()->getScoreOfPreviousExplosion());
-
-		label_underlying->setString(std::string("Exploded: ") + exploded_stars_num + std::string(" Score: ") + attained_score);
-		label_underlying->setVisible(true);
+	eventDispatcher->vAddListener(EventType::PlayerGetScore, pimpl, [this](const IEventData & e){
+		pimpl->onPlayerGetScore(e);
 	});
-
-	SingletonContainer::getInstance()->get<IEventDispatcher>()->registerListener(EventType::LevelSummaryLabelDisappeared, this, [label_underlying](BaseEventData*){
-		label_underlying->setVisible(false);
+	eventDispatcher->vAddListener(EventType::LevelSummaryDisappeared, pimpl, [this](const IEventData & e){
+		pimpl->onLevelSummaryDisppeared(e);
 	});
 }
 

@@ -13,16 +13,16 @@
 //////////////////////////////////////////////////////////////////////////
 struct CurrentScoreLabelScript::CurrentScoreLabelScriptImpl
 {
-	CurrentScoreLabelScriptImpl();
+	CurrentScoreLabelScriptImpl(CurrentScoreLabelScript *visitor);
 	~CurrentScoreLabelScriptImpl();
 
-	cocos2d::Label *getUnderlyingLabel(const std::weak_ptr<Actor> & actor) const;
-	std::string createCurrentScoreText(int newScore = 0) const;
+	void setStringWithScore(int currentScore = 0);
+	void onCurrentScoreValueUpdated(const IEventData & e);
 
-	void onCurrentScoreValueUpdated(const IEventData & e, cocos2d::Label *underlyingLabel);
+	CurrentScoreLabelScript *m_Visitor{ nullptr };
 };
 
-CurrentScoreLabelScript::CurrentScoreLabelScriptImpl::CurrentScoreLabelScriptImpl()
+CurrentScoreLabelScript::CurrentScoreLabelScriptImpl::CurrentScoreLabelScriptImpl(CurrentScoreLabelScript *visitor) : m_Visitor{ visitor }
 {
 }
 
@@ -30,29 +30,25 @@ CurrentScoreLabelScript::CurrentScoreLabelScriptImpl::~CurrentScoreLabelScriptIm
 {
 }
 
-cocos2d::Label * CurrentScoreLabelScript::CurrentScoreLabelScriptImpl::getUnderlyingLabel(const std::weak_ptr<Actor> & actor) const
+void CurrentScoreLabelScript::CurrentScoreLabelScriptImpl::setStringWithScore(int currentScore /*= 0*/)
 {
-	return static_cast<cocos2d::Label*>(actor.lock()->getRenderComponent()->getSceneNode());
+	auto scoreText = std::string("Current Score: ") + std::to_string(currentScore);
+	static_cast<cocos2d::Label*>(m_Visitor->m_Actor.lock()->getRenderComponent()->getSceneNode())->setString(scoreText);
 }
 
-std::string CurrentScoreLabelScript::CurrentScoreLabelScriptImpl::createCurrentScoreText(int currentScore /*= 0*/) const
-{
-	return std::string("Current Score: ") + std::to_string(currentScore);
-}
-
-void CurrentScoreLabelScript::CurrentScoreLabelScriptImpl::onCurrentScoreValueUpdated(const IEventData & e, cocos2d::Label *underlyingLabel)
+void CurrentScoreLabelScript::CurrentScoreLabelScriptImpl::onCurrentScoreValueUpdated(const IEventData & e)
 {
 	auto newCurrentScore = (static_cast<const EvtDataCurrentScoreValueUpdated &>(e)).getNewCurrentScore();
-	underlyingLabel->setString(createCurrentScoreText(newCurrentScore));
+	setStringWithScore(newCurrentScore);
 }
 
 //////////////////////////////////////////////////////////////////////////
 //Implementation of CurrentScoreLabelScript.
 //////////////////////////////////////////////////////////////////////////
-CurrentScoreLabelScript::CurrentScoreLabelScript() : pimpl{ std::make_shared<CurrentScoreLabelScriptImpl>() }
+CurrentScoreLabelScript::CurrentScoreLabelScript() : pimpl{ std::make_shared<CurrentScoreLabelScriptImpl>(this) }
 {
 	SingletonContainer::getInstance()->get<IEventDispatcher>()->vAddListener(EventType::CurrentScoreValueUpdated, pimpl, [this](const IEventData & e){
-		pimpl->onCurrentScoreValueUpdated(e, pimpl->getUnderlyingLabel(m_Actor));
+		pimpl->onCurrentScoreValueUpdated(e);
 	});
 }
 
@@ -62,7 +58,7 @@ CurrentScoreLabelScript::~CurrentScoreLabelScript()
 
 void CurrentScoreLabelScript::vPostInit()
 {
-	pimpl->getUnderlyingLabel(m_Actor)->setString(pimpl->createCurrentScoreText());
+	pimpl->setStringWithScore();
 }
 
 const std::string & CurrentScoreLabelScript::getType() const

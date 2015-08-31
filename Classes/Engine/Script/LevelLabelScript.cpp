@@ -2,7 +2,7 @@
 #include "cocos2d.h"
 #include "../../Common/GameData.h"
 #include "../Actor/Actor.h"
-#include "../Actor/GeneralRenderComponent.h"
+#include "../Actor/BaseRenderComponent.h"
 #include "../Event/IEventDispatcher.h"
 #include "../Event/EventType.h"
 #include "../Utilities/SingletonContainer.h"
@@ -12,13 +12,17 @@
 //////////////////////////////////////////////////////////////////////////
 struct LevelLabelScript::LevelLabelScriptImpl
 {
-	LevelLabelScriptImpl();
+	LevelLabelScriptImpl(LevelLabelScript *visitor);
 	~LevelLabelScriptImpl();
 
-	std::string createLevelText() const;
+	void onLevelValueUpdated(const IEventData & e);
+
+	void setStringWithLevel(int levelValue = 0);
+
+	LevelLabelScript *m_Visitor{ nullptr };
 };
 
-LevelLabelScript::LevelLabelScriptImpl::LevelLabelScriptImpl()
+LevelLabelScript::LevelLabelScriptImpl::LevelLabelScriptImpl(LevelLabelScript *visitor) : m_Visitor{ visitor }
 {
 }
 
@@ -26,32 +30,34 @@ LevelLabelScript::LevelLabelScriptImpl::~LevelLabelScriptImpl()
 {
 }
 
-std::string LevelLabelScript::LevelLabelScriptImpl::createLevelText() const
+void LevelLabelScript::LevelLabelScriptImpl::onLevelValueUpdated(const IEventData & e)
 {
-	return std::string("Level: ") + std::to_string(SingletonContainer::getInstance()->get<GameData>()->getCurrentLevel());
+	setStringWithLevel();
+}
+
+void LevelLabelScript::LevelLabelScriptImpl::setStringWithLevel(int levelValue /*= 0*/)
+{
+	auto underlyingLabel = static_cast<cocos2d::Label*>(m_Visitor->m_Actor.lock()->getRenderComponent()->getSceneNode());
+	underlyingLabel->setString(std::string("Level: ") + std::to_string(SingletonContainer::getInstance()->get<GameData>()->getCurrentLevel()));
 }
 
 //////////////////////////////////////////////////////////////////////////
 //Implementation of LevelLabelScript.
 //////////////////////////////////////////////////////////////////////////
-LevelLabelScript::LevelLabelScript() : pimpl{ std::make_unique<LevelLabelScriptImpl>() }
+LevelLabelScript::LevelLabelScript() : pimpl{ std::make_unique<LevelLabelScriptImpl>(this) }
 {
 }
 
 LevelLabelScript::~LevelLabelScript()
 {
-	if (auto & singletonContainer = SingletonContainer::getInstance())
-		singletonContainer->get<IEventDispatcher>()->deleteListener(this);
 }
 
 void LevelLabelScript::vPostInit()
 {
-	auto labelUnderlying = this->m_Actor.lock()->getComponent<GeneralRenderComponent>()->getAs<cocos2d::Label>();
-	labelUnderlying->setString(pimpl->createLevelText());
+	pimpl->setStringWithLevel();
 
-	SingletonContainer::getInstance()->get<IEventDispatcher>()->registerListener(EventType::LevelValueUpdated, this, [this](BaseEventData*){
-		auto labelUnderlying = this->m_Actor.lock()->getComponent<GeneralRenderComponent>()->getAs<cocos2d::Label>();
-		labelUnderlying->setString(pimpl->createLevelText());
+	SingletonContainer::getInstance()->get<IEventDispatcher>()->vAddListener(EventType::LevelValueUpdated, pimpl, [this](const IEventData & e){
+		pimpl->onLevelValueUpdated(e);
 	});
 }
 

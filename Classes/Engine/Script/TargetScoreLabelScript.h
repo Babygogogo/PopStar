@@ -28,7 +28,7 @@ private:
 
 	//Implementation stuff.
 	struct TargetScoreLabelScriptImpl;
-	std::unique_ptr<TargetScoreLabelScriptImpl> pimpl;
+	std::shared_ptr<TargetScoreLabelScriptImpl> pimpl;
 };
 
 #endif // !__TARGET_SCORE_LABEL_SCRIPT__

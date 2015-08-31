@@ -19,7 +19,7 @@ struct MatrixLayerScript::MatrixLayerScriptImpl
 	MatrixLayerScriptImpl();
 	~MatrixLayerScriptImpl();
 
-	void onStartLevelLabelDisappeared();
+	void onStartLevelLabelDisappeared(const IEventData & e);
 
 	std::weak_ptr<Actor> m_matrix;
 };
@@ -32,7 +32,7 @@ MatrixLayerScript::MatrixLayerScriptImpl::~MatrixLayerScriptImpl()
 {
 }
 
-void MatrixLayerScript::MatrixLayerScriptImpl::onStartLevelLabelDisappeared()
+void MatrixLayerScript::MatrixLayerScriptImpl::onStartLevelLabelDisappeared(const IEventData & e)
 {
 	m_matrix.lock()->getComponent<StarMatrixScript>()->reset();
 	Audio::getInstance()->playReadyGo();
@@ -41,19 +41,12 @@ void MatrixLayerScript::MatrixLayerScriptImpl::onStartLevelLabelDisappeared()
 //////////////////////////////////////////////////////////////////////////
 //Implementation of MatrixLayerScript.
 //////////////////////////////////////////////////////////////////////////
-MatrixLayerScript::MatrixLayerScript() : pimpl{ std::make_unique<MatrixLayerScriptImpl>() }
+MatrixLayerScript::MatrixLayerScript() : pimpl{ std::make_shared<MatrixLayerScriptImpl>() }
 {
 }
 
 MatrixLayerScript::~MatrixLayerScript()
 {
-	if (auto& singleton_container = SingletonContainer::getInstance())
-		singleton_container->get<IEventDispatcher>()->deleteListener(this);
-}
-
-const std::string & MatrixLayerScript::getType() const
-{
-	return Type;
 }
 
 void MatrixLayerScript::vPostInit()
@@ -65,8 +58,14 @@ void MatrixLayerScript::vPostInit()
 	pimpl->m_matrix = starMatrixActor;
 
 	//Register as EventListener.
-	SingletonContainer::getInstance()->get<IEventDispatcher>()->registerListener(EventType::StartLevelLabelDisappeared, this,
-		[this](BaseEventData *){pimpl->onStartLevelLabelDisappeared(); });
+	SingletonContainer::getInstance()->get<IEventDispatcher>()->vAddListener(EventType::StartLevelLabelDisappeared, pimpl, [this](const IEventData & e){
+		pimpl->onStartLevelLabelDisappeared(e);
+	});
+}
+
+const std::string & MatrixLayerScript::getType() const
+{
+	return Type;
 }
 
 const std::string MatrixLayerScript::Type = "MatrixLayerScript";

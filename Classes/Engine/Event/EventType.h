@@ -9,7 +9,7 @@ enum class EventType
 
 	SequentialInvokerFinishOneAction,
 
-	CurrentScoreIncreased,
+	PlayerGetScore,
 
 	PlayerExplodedStars,
 
@@ -17,7 +17,7 @@ enum class EventType
 
 	LevelStarted,
 	StartLevelLabelDisappeared,
-	LevelSummaryLabelDisappeared,
+	LevelSummaryDisappeared,
 
 	GameOver,
 

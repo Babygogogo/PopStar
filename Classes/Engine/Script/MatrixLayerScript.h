@@ -26,7 +26,7 @@ private:
 
 	//Implementation stuff.
 	struct MatrixLayerScriptImpl;
-	std::unique_ptr<MatrixLayerScriptImpl> pimpl;
+	std::shared_ptr<MatrixLayerScriptImpl> pimpl;
 };
 
 #endif // !__MATRIX_LAYER_SCRIPT__

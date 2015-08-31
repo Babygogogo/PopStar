@@ -138,64 +138,6 @@ EventDispatcher::~EventDispatcher()
 {
 }
 
-void EventDispatcher::registerListener(EventType event_type, void *target, std::function<void(BaseEventData*)> callback)
-{
-	if (pimpl->m_IsDispatchingQueue)
-		pimpl->m_listeners_to_add[event_type].emplace(std::move(target), std::move(callback));
-	else
-		pimpl->m_listeners[event_type].emplace(std::move(target), std::move(callback));
-}
-
-//void EventDispatcher::registerListener(EventType event_type, IEventListener *listener)
-//{
-//	pimpl->m_script_listeners[event_type].emplace(std::move(listener));
-//}
-
-void EventDispatcher::deleteListener(void *target)
-{
-	if (pimpl->m_IsDispatchingQueue)
-		pimpl->m_listeners_to_delete.emplace(target);
-	else
-		for (auto &type_target_callback : pimpl->m_listeners)
-			type_target_callback.second.erase(target);
-}
-
-//void EventDispatcher::deleteListener(IEventListener *listener)
-//{
-//	for (auto &listener_set : pimpl->m_script_listeners)
-//		listener_set.second.erase(listener);
-//}
-
-void EventDispatcher::dispatch(std::unique_ptr<BaseEventData> &&event, void *target /*= nullptr*/)
-{
-	if (pimpl->m_IsDispatchingQueue)
-		throw("Recursive dispatch");
-
-	pimpl->handleNewListeners();
-	pimpl->m_IsDispatchingQueue = true;
-
-	auto event_ptr = event.get();
-
-	if (!target){
-		for (auto &target_callback : pimpl->m_listeners[event->getType()])
-			target_callback.second(event_ptr);
-
-		//for (auto &listener : pimpl->m_script_listeners[event->getType()])
-		//	listener->onEvent(event_ptr);
-	}
-	else{
-		auto range = pimpl->m_listeners[event->getType()].equal_range(target);
-		for (auto target_callback_iter = range.first; target_callback_iter != range.second; ++target_callback_iter)
-			target_callback_iter->second(event_ptr);
-
-		//for (auto &listener : pimpl->m_script_listeners[event->getType()])
-		//	if (listener == target)
-		//		listener->onEvent(event_ptr);
-	}
-
-	pimpl->m_IsDispatchingQueue = false;
-}
-
 void EventDispatcher::vAddListener(const EventType & eType, const ListenerCallback & eListenerCallback)
 {
 	if (pimpl->canAddListenerCallback(eType, eListenerCallback))

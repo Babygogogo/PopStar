@@ -28,7 +28,7 @@ private:
 
 	//Implementation stuff.
 	struct HighScoreLabelScriptImpl;
-	std::unique_ptr<HighScoreLabelScriptImpl> pimpl;
+	std::shared_ptr<HighScoreLabelScriptImpl> pimpl;
 };
 
 #endif // !__HIGH_SCORE_LABEL_SCRIPT__

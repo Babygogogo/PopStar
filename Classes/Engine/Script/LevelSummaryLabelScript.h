@@ -26,7 +26,7 @@ private:
 
 	//Implementation stuff.
 	struct LevelSummaryLabelScriptImpl;
-	std::unique_ptr<LevelSummaryLabelScriptImpl> pimpl;
+	std::shared_ptr<LevelSummaryLabelScriptImpl> pimpl;
 };
 
 #endif // !__LEVEL_SUMMARY_LABEL_SCRIPT__

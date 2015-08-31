@@ -10,7 +10,7 @@
 				<Right Row="0" Column="1"/>
 			</NeighborIndexOffset>
 		</StarMatrixScript>
-		<GeneralRenderComponent Type="Layer"/>
+		<GeneralRenderComponent Type="Node"/>
 		<SequentialInvokerComponent/>
 	</Components>
 </Actor>

@@ -28,7 +28,7 @@ private:
 
 	//Implementation stuff.
 	struct GameOverLabelScriptImpl;
-	std::unique_ptr<GameOverLabelScriptImpl> pimpl;
+	std::shared_ptr<GameOverLabelScriptImpl> pimpl;
 };
 
 #endif // !__GAME_OVER_LABEL_SCRIPT__

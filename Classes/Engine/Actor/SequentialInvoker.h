@@ -23,17 +23,18 @@ public:
 
 	static const std::string Type;
 
+	virtual const std::string & getType() const;
+
 	void addMoveTo(float duration_s, float x, float y, std::function<void()> &&callback = nullptr);
 	void addDelay(float delay_s);
 	void addCallback(std::function<void()> &&callback);
 	void addFiniteTimeAction(cocos2d::FiniteTimeAction* action);
-	void clear();
+
+	void clearAllActions();
 
 	void setInvokeContinuously(bool continuously);
 	bool invoke();
 	bool isInvoking() const;
-
-	virtual const std::string & getType() const;
 
 	//Disable copy/move constructor and operator=.
 	SequentialInvoker(const SequentialInvoker&) = delete;
@@ -43,12 +44,12 @@ public:
 
 private:
 	//Override functions.
-	virtual bool vInit(tinyxml2::XMLElement *xmlElement);
+	virtual bool vInit(tinyxml2::XMLElement *xmlElement) override;
 	virtual void vPostInit() override;
 
 	//Implementation stuff.
 	struct SequentialInvokerImpl;
-	std::unique_ptr<SequentialInvokerImpl> pimpl;
+	std::shared_ptr<SequentialInvokerImpl> pimpl;
 };
 
 #endif // !__SEQUENTIAL_INVOKER__

@@ -1,120 +1,96 @@
+#include <cassert>
 #include <list>
+
+#include "cocos2d.h"
 
 #include "SequentialInvoker.h"
 #include "Actor.h"
-#include "GeneralRenderComponent.h"
-#include "../Utilities/SingletonContainer.h"
-#include "../Event/IEventDispatcher.h"
-#include "../Event/EventType.h"
-#include "../Event/BaseEventData.h"
-#include "../Event/EvtDataGeneric.h"
-#include "cocos2d.h"
+#include "BaseRenderComponent.h"
 
 //////////////////////////////////////////////////////////////////////////
 //Definition of SequentialInvokerImpl.
 //////////////////////////////////////////////////////////////////////////
 struct SequentialInvoker::SequentialInvokerImpl
 {
-	SequentialInvokerImpl(SequentialInvoker *visitor);
+	SequentialInvokerImpl();
 	~SequentialInvokerImpl();
-
-	void init();
 
 	void pushBack(cocos2d::Action *action);
 	void popFront();
-	void eraseCurrent();
+	void eraseCurrentAction();
 
-	bool invoke(bool is_called_by_event_dispatcher);
+	bool invoke(bool isCalledByLastAction);
+
 	bool isInvoking() const;
 
-	cocos2d::CallFunc *createDispatchCallback() const;
-
-	SequentialInvoker *m_Visitor{ nullptr };
 	cocos2d::Node *m_TargetNode{ nullptr };
-	cocos2d::Action *m_current_action{ nullptr };
-	bool m_invoke_continuously{ false };
-	std::list<cocos2d::Action*> m_action_list;
+	cocos2d::Action *m_CurrentAction{ nullptr };
+	bool m_IsInvokeContinuously{ false };
+	std::list<cocos2d::Action*> m_ActionList;
 };
 
-SequentialInvoker::SequentialInvokerImpl::SequentialInvokerImpl(SequentialInvoker *visitor) : m_Visitor{ visitor }
+SequentialInvoker::SequentialInvokerImpl::SequentialInvokerImpl()
 {
 }
 
 SequentialInvoker::SequentialInvokerImpl::~SequentialInvokerImpl()
 {
-	while (!m_action_list.empty())
+	while (!m_ActionList.empty())
 		popFront();
 
-	eraseCurrent();
-
-	if (auto& singleton_container = SingletonContainer::getInstance())
-		singleton_container->get<IEventDispatcher>()->deleteListener(this);
-}
-
-void SequentialInvoker::SequentialInvokerImpl::init()
-{
-	m_TargetNode = m_Visitor->m_Actor.lock()->getComponent<GeneralRenderComponent>()->getAs<cocos2d::Node>();
-	SingletonContainer::getInstance()->get<IEventDispatcher>()->registerListener(
-		EventType::SequentialInvokerFinishOneAction, this, [this](BaseEventData *e){eraseCurrent(); invoke(true); });
+	eraseCurrentAction();
 }
 
 void SequentialInvoker::SequentialInvokerImpl::popFront()
 {
-	if (m_action_list.empty())
+	if (m_ActionList.empty())
 		return;
 
-	m_action_list.front()->release();
-	m_action_list.pop_front();
+	m_ActionList.front()->release();
+	m_ActionList.pop_front();
 }
 
 void SequentialInvoker::SequentialInvokerImpl::pushBack(cocos2d::Action *action)
 {
 	action->retain();
-	m_action_list.push_back(action);
+	m_ActionList.emplace_back(action);
 }
 
-void SequentialInvoker::SequentialInvokerImpl::eraseCurrent()
+void SequentialInvoker::SequentialInvokerImpl::eraseCurrentAction()
 {
-	if (!m_current_action)
+	if (!m_CurrentAction)
 		return;
 
-	m_current_action->release();
-	m_current_action = nullptr;
+	m_CurrentAction->release();
+	m_CurrentAction = nullptr;
 }
 
-bool SequentialInvoker::SequentialInvokerImpl::invoke(bool is_called_by_event_dispatcher)
+bool SequentialInvoker::SequentialInvokerImpl::invoke(bool isCalledByLastAction)
 {
-	if (is_called_by_event_dispatcher && !m_invoke_continuously)
+	if (isCalledByLastAction && !m_IsInvokeContinuously)
 		return false;
-	if (isInvoking() || m_action_list.empty())
+	if (isInvoking() || m_ActionList.empty())
 		return false;
 
-	m_current_action = m_action_list.front();
-	m_action_list.pop_front();
-	m_TargetNode->runAction(m_current_action);
+	m_CurrentAction = m_ActionList.front();
+	m_ActionList.pop_front();
+	m_TargetNode->runAction(m_CurrentAction);
 
 	return true;
 }
 
 bool SequentialInvoker::SequentialInvokerImpl::isInvoking() const
 {
-	if (!m_current_action)
+	if (!m_CurrentAction)
 		return false;
 
-	return !m_current_action->isDone();
-}
-
-cocos2d::CallFunc * SequentialInvoker::SequentialInvokerImpl::createDispatchCallback() const
-{
-	return cocos2d::CallFunc::create([this]{if (auto& singleton_container = SingletonContainer::getInstance())
-		singleton_container->get<IEventDispatcher>()->dispatch(
-		std::make_unique<EvtDataGeneric>(EventType::SequentialInvokerFinishOneAction), const_cast<SequentialInvoker::SequentialInvokerImpl*>(this)); });
+	return !m_CurrentAction->isDone();
 }
 
 //////////////////////////////////////////////////////////////////////////
 //Implementation of SequentialInvoker.
 //////////////////////////////////////////////////////////////////////////
-SequentialInvoker::SequentialInvoker() : pimpl{ std::make_unique<SequentialInvokerImpl>(this) }
+SequentialInvoker::SequentialInvoker() : pimpl{ std::make_shared<SequentialInvokerImpl>() }
 {
 }
 
@@ -135,17 +111,16 @@ bool SequentialInvoker::invoke()
 void SequentialInvoker::addMoveTo(float duration_s, float x, float y, std::function<void()> &&callback /*= nullptr*/)
 {
 	auto move_to = cocos2d::MoveTo::create(duration_s, { x, y });
-	auto step = callback ?
-		cocos2d::Sequence::create(move_to, cocos2d::CallFunc::create(callback), nullptr) :
-		cocos2d::Sequence::create(move_to, nullptr);
 
-	addFiniteTimeAction(step);
+	if (callback)
+		addFiniteTimeAction(cocos2d::Sequence::create(move_to, cocos2d::CallFunc::create(callback), nullptr));
+	else
+		addFiniteTimeAction(move_to);
 }
 
 void SequentialInvoker::addDelay(float delay_s)
 {
-	if (delay_s <= 0)
-		throw("addDelay with negative time in SequentialInvoker.");
+	assert(delay_s > 0.0f && "SequentialInvoker::addDelay() with time <= 0.");
 
 	addFiniteTimeAction(cocos2d::DelayTime::create(delay_s));
 }
@@ -157,28 +132,33 @@ void SequentialInvoker::addCallback(std::function<void()> &&callback)
 
 void SequentialInvoker::addFiniteTimeAction(cocos2d::FiniteTimeAction* action)
 {
-	pimpl->pushBack(cocos2d::Sequence::create(action, pimpl->createDispatchCallback(), nullptr));
-	if (pimpl->m_invoke_continuously)
+	auto weakPimpl = std::weak_ptr<SequentialInvokerImpl>(pimpl);
+	auto recallSelf = cocos2d::CallFunc::create([weakPimpl](){
+		if (!weakPimpl.expired()){
+			auto strongPimpl = weakPimpl.lock();
+			strongPimpl->eraseCurrentAction();
+			strongPimpl->invoke(true);
+		}
+	});
+
+	pimpl->pushBack(cocos2d::Sequence::create(action, recallSelf, nullptr));
+
+	if (pimpl->m_IsInvokeContinuously)
 		invoke();
 }
 
 void SequentialInvoker::setInvokeContinuously(bool continuously)
 {
-	pimpl->m_invoke_continuously = continuously;
+	pimpl->m_IsInvokeContinuously = continuously;
 }
 
-void SequentialInvoker::clear()
+void SequentialInvoker::clearAllActions()
 {
-	while (!pimpl->m_action_list.empty())
+	while (!pimpl->m_ActionList.empty())
 		pimpl->popFront();
 
 	pimpl->m_TargetNode->stopAllActions();
-	pimpl->eraseCurrent();
-}
-
-const std::string & SequentialInvoker::getType() const
-{
-	return Type;
+	pimpl->eraseCurrentAction();
 }
 
 bool SequentialInvoker::vInit(tinyxml2::XMLElement *xmlElement)
@@ -188,7 +168,12 @@ bool SequentialInvoker::vInit(tinyxml2::XMLElement *xmlElement)
 
 void SequentialInvoker::vPostInit()
 {
-	pimpl->init();
+	pimpl->m_TargetNode = m_Actor.lock()->getRenderComponent()->getSceneNode();
+}
+
+const std::string & SequentialInvoker::getType() const
+{
+	return Type;
 }
 
 const std::string SequentialInvoker::Type = "SequentialInvokerComponent";

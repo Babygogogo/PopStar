@@ -36,7 +36,7 @@ void ButtonStartGameScript::ButtonStartGameScriptImpl::onClicked()
 	auto mainSceneActor = singletonContainer->get<GameLogic>()->createActor("Actors\\MainScene.xml");
 	singletonContainer->get<SceneStack>()->replaceAndRun(*mainSceneActor);
 
-	singletonContainer->get<IEventDispatcher>()->dispatch(std::make_unique<EvtDataGeneric>(EventType::LevelStarted));
+	singletonContainer->get<IEventDispatcher>()->vQueueEvent(std::make_unique<EvtDataGeneric>(EventType::LevelStarted));
 }
 
 //////////////////////////////////////////////////////////////////////////

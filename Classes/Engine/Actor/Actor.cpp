@@ -110,8 +110,9 @@ void Actor::removeFromParent()
 		return;
 
 	//If the parent is alive, remove this from the parent's children list.
-	if (auto parent = SingletonContainer::getInstance()->get<GameLogic>()->getActor(pimpl->m_ParentID))
-		parent->pimpl->m_ChildrenID.erase(pimpl->m_ID);
+	if (auto & singletonContainer = SingletonContainer::getInstance())
+		if (auto parent = singletonContainer->get<GameLogic>()->getActor(pimpl->m_ParentID))
+			parent->pimpl->m_ChildrenID.erase(pimpl->m_ID);
 
 	pimpl->m_ParentID = INVALID_ACTOR_ID;
 

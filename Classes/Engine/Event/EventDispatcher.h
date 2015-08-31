@@ -16,10 +16,6 @@ public:
 	EventDispatcher();
 	~EventDispatcher();
 
-	virtual void registerListener(EventType event_type, void *target, std::function<void(BaseEventData*)> callback) override;
-	virtual void deleteListener(void *target) override;
-	virtual void dispatch(std::unique_ptr<BaseEventData> &&event, void *target = nullptr) override;
-
 	//Disable copy/move constructor and operator=.
 	EventDispatcher(const EventDispatcher&) = delete;
 	EventDispatcher(EventDispatcher&&) = delete;

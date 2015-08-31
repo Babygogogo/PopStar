@@ -16,6 +16,7 @@ public:
 	GeneralRenderComponentImpl();
 	~GeneralRenderComponentImpl();
 
+	cocos2d::Node * createNode(tinyxml2::XMLElement * xmlElement);
 	cocos2d::Sprite * createSprite(tinyxml2::XMLElement * xmlElement);
 	cocos2d::Layer * createLayer(tinyxml2::XMLElement * xmlElement);
 	cocos2d::Scene * createScene(tinyxml2::XMLElement * xmlElement);
@@ -24,6 +25,11 @@ public:
 	cocos2d::MenuItemImage * createMenuItemImage(tinyxml2::XMLElement *xmlElement);
 	cocos2d::ParticleExplosion * createParticleExplosion(tinyxml2::XMLElement * xmlElement);
 };
+
+cocos2d::Node * GeneralRenderComponent::GeneralRenderComponentImpl::createNode(tinyxml2::XMLElement * xmlElement)
+{
+	return cocos2d::Node::create();
+}
 
 GeneralRenderComponent::GeneralRenderComponentImpl::GeneralRenderComponentImpl()
 {
@@ -151,6 +157,8 @@ bool GeneralRenderComponent::vInit(tinyxml2::XMLElement *xmlElement)
 		m_Node = pimpl->createLayer(xmlElement);
 	else if (strcmp(nodeType, "Scene") == 0)
 		m_Node = pimpl->createScene(xmlElement);
+	else if (strcmp(nodeType, "Node") == 0)
+		m_Node = pimpl->createNode(xmlElement);
 	else if (strcmp(nodeType, "Label") == 0)
 		m_Node = pimpl->createLabel(xmlElement);
 	else if (strcmp(nodeType, "Menu") == 0)

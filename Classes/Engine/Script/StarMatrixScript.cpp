@@ -3,10 +3,13 @@
 #include <vector>
 #include <functional>
 
+#include "cocos2d.h"
+#include "../../cocos2d/external/tinyxml2/tinyxml2.h"
+
 #include "StarMatrixScript.h"
 #include "StarScript.h"
 #include "StarParticleScript.h"
-#include "../Actor/GeneralRenderComponent.h"
+#include "../Actor/BaseRenderComponent.h"
 #include "../Actor/SequentialInvoker.h"
 #include "../Actor/Actor.h"
 #include "../Utilities/SingletonContainer.h"
@@ -18,9 +21,6 @@
 #include "../Event/EvtDataPlayerExplodedStars.h"
 #include "../GameLogic/GameLogic.h"
 #include "../Audio/Audio.h"
-
-#include "cocos2d.h"
-#include "../../cocos2d/external/tinyxml2/tinyxml2.h"
 
 //////////////////////////////////////////////////////////////////////////
 //Definition of StarMatrixScriptImpl.
@@ -34,6 +34,7 @@ struct StarMatrixScript::StarMatrixScriptImpl
 	void unregisterAsEventListeners();
 
 	void onTouch(const cocos2d::Point& p);
+	void onLevelSummaryDisappeared(const IEventData & e);
 
 	bool isRowNumValid(int row_num) const;
 	bool isColNumValid(int col_num) const;
@@ -48,8 +49,6 @@ struct StarMatrixScript::StarMatrixScriptImpl
 	void explode(StarScript* star);
 	void explodeGroupingStars(std::list<StarScript*> &&group_stars);
 	void shrink();
-	void moveColumnsDownward();
-	void moveColumnsLeftward();
 	void explodeAllLeftStars();
 
 	void update(float delta);
@@ -88,25 +87,23 @@ void StarMatrixScript::StarMatrixScriptImpl::registerAsEventListeners()
 		return true;
 	};
 	cocos2d::Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, m_node_underlying);
-
-	SingletonContainer::getInstance()->get<IEventDispatcher>()->registerListener(EventType::LevelSummaryLabelDisappeared, this, [this](::BaseEventData*){
-		explodeAllLeftStars();
-		m_invoker->addCallback([]{SingletonContainer::getInstance()->get<GameData>()->levelEnd(); });
-		unregisterAsEventListeners();
-	});
 }
 
 void StarMatrixScript::StarMatrixScriptImpl::unregisterAsEventListeners()
 {
 	cocos2d::Director::getInstance()->getEventDispatcher()->removeEventListenersForTarget(m_node_underlying);
-
-	if (auto& singleton_container = SingletonContainer::getInstance())
-		singleton_container->get<IEventDispatcher>()->deleteListener(this);
 }
 
 void StarMatrixScript::StarMatrixScriptImpl::onTouch(const cocos2d::Point& p)
 {
 	explodeGroupingStars(findGroupingStars(getStarByPoint(p)));
+}
+
+void StarMatrixScript::StarMatrixScriptImpl::onLevelSummaryDisappeared(const IEventData & e)
+{
+	explodeAllLeftStars();
+	m_invoker->addCallback([]{SingletonContainer::getInstance()->get<GameData>()->levelEnd(); });
+	unregisterAsEventListeners();
 }
 
 bool StarMatrixScript::StarMatrixScriptImpl::isRowNumValid(int row_num) const
@@ -191,7 +188,7 @@ void StarMatrixScript::StarMatrixScriptImpl::explodeGroupingStars(std::list<Star
 
 	if (isNoMoreMove()){
 		SingletonContainer::getInstance()->get<GameData>()->setStarsLeftNum(countStarsLeft());
-		SingletonContainer::getInstance()->get<IEventDispatcher>()->dispatch(std::make_unique<EvtDataGeneric>(EventType::LevelNoMoreMove));
+		singletonContainer->get<IEventDispatcher>()->vQueueEvent(std::make_unique<EvtDataGeneric>(EventType::LevelNoMoreMove));
 	}
 }
 
@@ -207,25 +204,7 @@ int StarMatrixScript::StarMatrixScriptImpl::countStarsLeft() const
 
 void StarMatrixScript::StarMatrixScriptImpl::shrink()
 {
-	moveColumnsDownward();
-	moveColumnsLeftward();
-
-	for (auto row_num = 0; row_num < s_RowCount; ++row_num)
-		for (auto col_num = 0; col_num < s_ColumnCount; ++col_num){
-			auto star = m_StarScripts[row_num][col_num];
-
-			if (star && (star->getRowNum() != row_num || star->getColNum() != col_num)){
-				star->setRowNum(row_num);
-				star->setColNum(col_num);
-
-				auto position = getStarDefaultPosition(row_num, col_num);
-				star->moveTo(position.x, position.y);
-			}
-		}
-}
-
-void StarMatrixScript::StarMatrixScriptImpl::moveColumnsDownward()
-{
+	//Move stars downward.
 	for (auto col_num = 0; col_num < s_ColumnCount; ++col_num){
 		auto row_offset = 1;
 		for (auto row_num = 0; row_num < s_RowCount; ++row_num){
@@ -243,10 +222,8 @@ void StarMatrixScript::StarMatrixScriptImpl::moveColumnsDownward()
 			m_StarScripts[non_null_row_num][col_num] = nullptr;
 		}
 	}
-}
 
-void StarMatrixScript::StarMatrixScriptImpl::moveColumnsLeftward()
-{
+	//Move stars leftward.
 	auto col_offset = 1;
 	for (auto col_num = 0; col_num < s_ColumnCount; ++col_num){
 		if (m_StarScripts[0][col_num])
@@ -264,6 +241,19 @@ void StarMatrixScript::StarMatrixScriptImpl::moveColumnsLeftward()
 			m_StarScripts[row_num][non_null_col_num] = nullptr;
 		}
 	}
+
+	for (auto row_num = 0; row_num < s_RowCount; ++row_num)
+		for (auto col_num = 0; col_num < s_ColumnCount; ++col_num){
+			auto star = m_StarScripts[row_num][col_num];
+
+			if (star && (star->getRowNum() != row_num || star->getColNum() != col_num)){
+				star->setRowNum(row_num);
+				star->setColNum(col_num);
+
+				auto position = getStarDefaultPosition(row_num, col_num);
+				star->moveTo(position.x, position.y);
+			}
+		}
 }
 
 cocos2d::Point StarMatrixScript::StarMatrixScriptImpl::getStarDefaultPosition(int row_num, int col_num) const
@@ -299,8 +289,11 @@ void StarMatrixScript::StarMatrixScriptImpl::explodeAllLeftStars()
 //////////////////////////////////////////////////////////////////////////
 //Implementation of StarMatrixScript.
 //////////////////////////////////////////////////////////////////////////
-StarMatrixScript::StarMatrixScript() : pimpl{ std::make_unique<StarMatrixScriptImpl>(this) }
+StarMatrixScript::StarMatrixScript() : pimpl{ std::make_shared<StarMatrixScriptImpl>(this) }
 {
+	SingletonContainer::getInstance()->get<IEventDispatcher>()->vAddListener(EventType::LevelSummaryDisappeared, pimpl, [this](const IEventData & e){
+		pimpl->onLevelSummaryDisappeared(e);
+	});
 }
 
 StarMatrixScript::~StarMatrixScript()
@@ -352,7 +345,7 @@ bool StarMatrixScript::vInit(tinyxml2::XMLElement *xmlElement)
 void StarMatrixScript::vPostInit()
 {
 	auto actor = m_Actor.lock();
-	pimpl->m_node_underlying = actor->getComponent<GeneralRenderComponent>()->getAs<cocos2d::Layer>();
+	pimpl->m_node_underlying = actor->getRenderComponent()->getSceneNode();
 
 	pimpl->m_invoker = actor->getComponent<SequentialInvoker>().get();
 	pimpl->m_invoker->setInvokeContinuously(true);

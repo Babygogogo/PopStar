@@ -30,9 +30,6 @@ LevelSummaryLabelScript::LevelSummaryLabelScriptImpl::LevelSummaryLabelScriptImp
 
 LevelSummaryLabelScript::LevelSummaryLabelScriptImpl::~LevelSummaryLabelScriptImpl()
 {
-	//Unregister as EventListener.
-	if (auto& singleton_container = SingletonContainer::getInstance())
-		singleton_container->get<IEventDispatcher>()->deleteListener(this);
 }
 
 void LevelSummaryLabelScript::LevelSummaryLabelScriptImpl::onLevelNoMoreMove()
@@ -52,7 +49,7 @@ void LevelSummaryLabelScript::LevelSummaryLabelScriptImpl::onLevelNoMoreMove()
 	m_invoker->addMoveTo(0.6f, -m_label_underlying->getContentSize().width / 2, visible_size.height / 2, [this]{
 		m_label_underlying->setVisible(false);
 		SingletonContainer::getInstance()->get<GameData>()->updateScoreWithEndLevelBonus();
-		SingletonContainer::getInstance()->get<IEventDispatcher>()->dispatch(std::make_unique<EvtDataGeneric>(EventType::LevelSummaryLabelDisappeared));
+		SingletonContainer::getInstance()->get<IEventDispatcher>()->vQueueEvent(std::make_unique<EvtDataGeneric>(EventType::LevelSummaryDisappeared));
 	});
 	m_invoker->invoke();
 }
@@ -60,20 +57,12 @@ void LevelSummaryLabelScript::LevelSummaryLabelScriptImpl::onLevelNoMoreMove()
 //////////////////////////////////////////////////////////////////////////
 //Implementation of LevelSummaryLabel.
 //////////////////////////////////////////////////////////////////////////
-LevelSummaryLabelScript::LevelSummaryLabelScript() : pimpl{ std::make_unique<LevelSummaryLabelScriptImpl>() }
+LevelSummaryLabelScript::LevelSummaryLabelScript() : pimpl{ std::make_shared<LevelSummaryLabelScriptImpl>() }
 {
 }
 
 LevelSummaryLabelScript::~LevelSummaryLabelScript()
 {
-	//Unregister as EventListener.
-	if (auto& singleton_container = SingletonContainer::getInstance())
-		singleton_container->get<IEventDispatcher>()->deleteListener(this);
-}
-
-const std::string & LevelSummaryLabelScript::getType() const
-{
-	return Type;
 }
 
 void LevelSummaryLabelScript::vPostInit()
@@ -86,8 +75,9 @@ void LevelSummaryLabelScript::vPostInit()
 	pimpl->m_invoker = actor->getComponent<SequentialInvoker>().get();
 
 	//Register as EventListener.
-	SingletonContainer::getInstance()->get<IEventDispatcher>()->registerListener(EventType::LevelNoMoreMove, this,
-		[this](BaseEventData*){pimpl->onLevelNoMoreMove(); });
+	SingletonContainer::getInstance()->get<IEventDispatcher>()->vAddListener(EventType::LevelNoMoreMove, pimpl, [this](const IEventData & e){
+		pimpl->onLevelNoMoreMove();
+	});
 
 	//Register as touch listener.
 	auto touch_listener = cocos2d::EventListenerTouchOneByOne::create();
@@ -96,6 +86,11 @@ void LevelSummaryLabelScript::vPostInit()
 		return true;
 	};
 	cocos2d::Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(touch_listener, pimpl->m_label_underlying);
+}
+
+const std::string & LevelSummaryLabelScript::getType() const
+{
+	return Type;
 }
 
 const std::string LevelSummaryLabelScript::Type = "LevelSummaryLabelScript";
