@@ -22,21 +22,9 @@ public:
 	//This should be removed.
 	static std::unique_ptr<GameData> create();
 
-	void levelEnd();
 	int getCurrentLevel() const;
 
-	void updateCurrentScoreWith(int num_of_exploded_stars);
-	int getScoreOfPreviousExplosion() const;
-	int getExplodedStarsNum() const;
-
-	int getHighScore() const;
-	int getCurrentScore() const;
 	int getTargetScore() const;
-
-	int getStarsLeftNum() const;
-	void setStarsLeftNum(int stars_left_num);
-	void updateScoreWithEndLevelBonus();
-	int getEndLevelBonus() const;
 
 	//Disable copy/move constructor and operator=.
 	GameData(const GameData&) = delete;

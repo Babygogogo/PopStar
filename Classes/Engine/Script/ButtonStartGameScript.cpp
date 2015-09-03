@@ -37,7 +37,6 @@ void ButtonStartGameScript::ButtonStartGameScriptImpl::onClicked()
 
 	auto eventDispatcher = singletonContainer->get<IEventDispatcher>();
 	eventDispatcher->vQueueEvent(std::make_unique<EvtDataGeneric>(EventType::NewGameStarted));
-	eventDispatcher->vQueueEvent(std::make_unique<EvtDataGeneric>(EventType::LevelStarted));
 }
 
 //////////////////////////////////////////////////////////////////////////

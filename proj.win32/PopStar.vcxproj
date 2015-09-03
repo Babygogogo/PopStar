@@ -188,6 +188,7 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClInclude Include="..\Classes\Engine\Event\EvtDataCurrentScoreUpdated.h" />
     <ClInclude Include="..\Classes\Engine\Event\EvtDataHighScoreUpdated.h" />
     <ClInclude Include="..\Classes\Engine\Event\EvtDataLevelIndexUpdated.h" />
+    <ClInclude Include="..\Classes\Engine\Event\EvtDataLevelNoMoreMove.h" />
     <ClInclude Include="..\Classes\Engine\Event\EvtDataLevelSummaryStarted.h" />
     <ClInclude Include="..\Classes\Engine\Event\EvtDataPlayerExplodedStars.h" />
     <ClInclude Include="..\Classes\Engine\Event\EvtDataGeneric.h" />

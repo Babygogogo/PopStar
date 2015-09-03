@@ -18,6 +18,7 @@ enum class EventType
 	StartLevelLabelDisappeared,
 	LevelSummaryStarted,
 	LevelSummaryFinished,
+	LeftStarsExploded,
 
 	GameOver,
 

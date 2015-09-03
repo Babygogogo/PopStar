@@ -19,6 +19,7 @@
 #include "../Event/BaseEventData.h"
 #include "../Event/EvtDataGeneric.h"
 #include "../Event/EvtDataPlayerExplodedStars.h"
+#include "../Event/EvtDataLevelNoMoreMove.h"
 #include "../GameLogic/GameLogic.h"
 #include "../Audio/Audio.h"
 
@@ -102,7 +103,9 @@ void StarMatrixScript::StarMatrixScriptImpl::onTouch(const cocos2d::Point& p)
 void StarMatrixScript::StarMatrixScriptImpl::onLevelSummaryFinished(const IEventData & e)
 {
 	explodeAllLeftStars();
-	m_invoker->addCallback([]{SingletonContainer::getInstance()->get<GameData>()->levelEnd(); });
+	m_invoker->addCallback([]{
+		SingletonContainer::getInstance()->get<IEventDispatcher>()->vQueueEvent(std::make_unique<EvtDataGeneric>(EventType::LeftStarsExploded));
+	});
 	unregisterAsEventListeners();
 }
 
@@ -183,12 +186,11 @@ void StarMatrixScript::StarMatrixScriptImpl::explodeGroupingStars(std::list<Star
 	shrink();
 
 	auto & singletonContainer = SingletonContainer::getInstance();
-	singletonContainer->get<GameData>()->updateCurrentScoreWith(group_stars.size());
 	singletonContainer->get<IEventDispatcher>()->vQueueEvent(std::make_unique<EvtDataPlayerExplodedStars>(group_stars.size()));
 
 	if (isNoMoreMove()){
-		SingletonContainer::getInstance()->get<GameData>()->setStarsLeftNum(countStarsLeft());
-		singletonContainer->get<IEventDispatcher>()->vQueueEvent(std::make_unique<EvtDataGeneric>(EventType::LevelNoMoreMove));
+		auto noMoreMoveEvent = std::make_unique<EvtDataLevelNoMoreMove>(countStarsLeft());
+		singletonContainer->get<IEventDispatcher>()->vQueueEvent(std::move(noMoreMoveEvent));
 	}
 }
 

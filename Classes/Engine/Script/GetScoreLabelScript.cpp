@@ -17,7 +17,7 @@ struct GetScoreLabelScript::GetScoreLabelScriptImpl
 	~GetScoreLabelScriptImpl();
 
 	void onPlayerGotScore(const IEventData & e);
-	void onLevelSummaryEnded(const IEventData & e);
+	void onLevelSummaryFinished(const IEventData & e);
 
 	cocos2d::Label * getUnderlyingLabel() const;
 
@@ -43,7 +43,7 @@ void GetScoreLabelScript::GetScoreLabelScriptImpl::onPlayerGotScore(const IEvent
 	underlyingLabel->setVisible(true);
 }
 
-void GetScoreLabelScript::GetScoreLabelScriptImpl::onLevelSummaryEnded(const IEventData & e)
+void GetScoreLabelScript::GetScoreLabelScriptImpl::onLevelSummaryFinished(const IEventData & e)
 {
 	getUnderlyingLabel()->setVisible(false);
 }
@@ -77,7 +77,7 @@ void GetScoreLabelScript::vPostInit()
 		pimpl->onPlayerGotScore(e);
 	});
 	eventDispatcher->vAddListener(EventType::LevelSummaryFinished, pimpl, [this](const IEventData & e){
-		pimpl->onLevelSummaryEnded(e);
+		pimpl->onLevelSummaryFinished(e);
 	});
 }
 

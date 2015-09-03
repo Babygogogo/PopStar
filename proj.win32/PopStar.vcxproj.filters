@@ -308,6 +308,9 @@
     <ClInclude Include="..\Classes\Engine\Event\EvtDataLevelSummaryStarted.h">
       <Filter>Classes\Engine\Event</Filter>
     </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Event\EvtDataLevelNoMoreMove.h">
+      <Filter>Classes\Engine\Event</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="game.rc">
