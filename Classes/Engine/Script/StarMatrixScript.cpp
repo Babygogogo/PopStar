@@ -13,7 +13,6 @@
 #include "../Actor/SequentialInvoker.h"
 #include "../Actor/Actor.h"
 #include "../Utilities/SingletonContainer.h"
-#include "../../Common/GameData.h"
 #include "../Event/EventDispatcher.h"
 #include "../Event/EventType.h"
 #include "../Event/BaseEventData.h"

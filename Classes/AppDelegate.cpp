@@ -1,13 +1,12 @@
 #include "AppDelegate.h"
 #include "Engine/Audio/Audio.h"
 
-#include "Engine/GameLogic/GameLogic.h"
-#include "Engine/Utilities/SingletonContainer.h"
-#include "Engine/MainLoop/Timer.h"
-#include "Engine/Graphic2D/SceneStack.h"
-#include "Common/GameData.h"
-#include "Engine/Event/EventDispatcher.h"
 #include "Engine/Actor/Actor.h"
+#include "Engine/Event/EventDispatcher.h"
+#include "Engine/GameLogic/GameLogic.h"
+#include "Engine/Graphic2D/SceneStack.h"
+#include "Engine/MainLoop/Timer.h"
+#include "Engine/Utilities/SingletonContainer.h"
 
 USING_NS_CC;
 
@@ -43,7 +42,6 @@ void AppDelegate::AppDelegateImpl::initGame()
 	auto & singletonContainer = SingletonContainer::getInstance();
 	singletonContainer->set<::Timer>(::Timer::create())->init();
 	singletonContainer->set<IEventDispatcher>(std::make_unique<::EventDispatcher>());
-	singletonContainer->set<GameData>(GameData::create());
 	singletonContainer->set<GameLogic>(std::make_unique<GameLogic>());
 	singletonContainer->set<SceneStack>(std::make_unique<SceneStack>());
 

@@ -24,8 +24,7 @@ enum class EventType
 
 	CurrentScoreUpdated,
 	HighScoreUpdated,
-	TargetScoreValueUpdated,
-	LevelIndexUpdated
+	TargetScoreUpdated,
 };
 
 #endif // !__EVENT_TYPE__

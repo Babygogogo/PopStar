@@ -1,11 +1,11 @@
 #include "cocos2d.h"
 
 #include "TargetScoreLabelScript.h"
-#include "../../Common/GameData.h"
 #include "../Actor/Actor.h"
 #include "../Actor/BaseRenderComponent.h"
 #include "../Event/IEventDispatcher.h"
 #include "../Event/EventType.h"
+#include "../Event/EvtDataTargetScoreUpdated.h"
 #include "../Utilities/SingletonContainer.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -33,13 +33,14 @@ TargetScoreLabelScript::TargetScoreLabelScriptImpl::~TargetScoreLabelScriptImpl(
 
 void TargetScoreLabelScript::TargetScoreLabelScriptImpl::onTargetScoreValueUpdated(const IEventData & e)
 {
-	setStringWithTargetScore();
+	const auto & targetScoreEvent = static_cast<const EvtDataTargetScoreUpdated &>(e);
+	setStringWithTargetScore(targetScoreEvent.getTargetScore());
 }
 
 void TargetScoreLabelScript::TargetScoreLabelScriptImpl::setStringWithTargetScore(int targetScore /*= 0*/)
 {
 	auto underlyingLabel = static_cast<cocos2d::Label*>(m_Visitor->m_Actor.lock()->getRenderComponent()->getSceneNode());
-	underlyingLabel->setString(std::string("Target Score: ") + std::to_string(SingletonContainer::getInstance()->get<GameData>()->getTargetScore()));
+	underlyingLabel->setString(std::string("Target Score: ") + std::to_string(targetScore));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -57,7 +58,7 @@ void TargetScoreLabelScript::vPostInit()
 {
 	pimpl->setStringWithTargetScore();
 
-	SingletonContainer::getInstance()->get<IEventDispatcher>()->vAddListener(EventType::TargetScoreValueUpdated, pimpl, [this](const IEventData & e){
+	SingletonContainer::getInstance()->get<IEventDispatcher>()->vAddListener(EventType::TargetScoreUpdated, pimpl, [this](const IEventData & e){
 		pimpl->onTargetScoreValueUpdated(e);
 	});
 }

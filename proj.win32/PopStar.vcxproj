@@ -136,7 +136,6 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Classes\AppDelegate.cpp" />
-    <ClCompile Include="..\Classes\Common\GameData.cpp" />
     <ClCompile Include="..\Classes\Engine\Actor\ActorComponent.cpp" />
     <ClCompile Include="..\Classes\Engine\Actor\ActorFactory.cpp" />
     <ClCompile Include="..\Classes\Engine\Actor\BaseRenderComponent.cpp" />
@@ -161,6 +160,7 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClCompile Include="..\Classes\Engine\Script\LevelSummaryLabelScript.cpp" />
     <ClCompile Include="..\Classes\Engine\Script\MatrixLayerScript.cpp" />
     <ClCompile Include="..\Classes\Engine\Script\MainSceneScript.cpp" />
+    <ClCompile Include="..\Classes\Engine\Script\ScoreCalculatorScript.cpp" />
     <ClCompile Include="..\Classes\Engine\Script\StarScript.cpp" />
     <ClCompile Include="..\Classes\Engine\Script\StarMatrixScript.cpp" />
     <ClCompile Include="..\Classes\Engine\Script\StarParticleScript.cpp" />
@@ -174,7 +174,6 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Classes\AppDelegate.h" />
-    <ClInclude Include="..\Classes\Common\GameData.h" />
     <ClInclude Include="..\Classes\Engine\Actor\ActorComponent.h" />
     <ClInclude Include="..\Classes\Engine\Actor\ActorFactory.h" />
     <ClInclude Include="..\Classes\Engine\Actor\ActorID.h" />
@@ -187,13 +186,14 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClInclude Include="..\Classes\Engine\Audio\Audio.h" />
     <ClInclude Include="..\Classes\Engine\Event\EvtDataCurrentScoreUpdated.h" />
     <ClInclude Include="..\Classes\Engine\Event\EvtDataHighScoreUpdated.h" />
-    <ClInclude Include="..\Classes\Engine\Event\EvtDataLevelIndexUpdated.h" />
+    <ClInclude Include="..\Classes\Engine\Event\EvtDataLevelStarted.h" />
     <ClInclude Include="..\Classes\Engine\Event\EvtDataLevelNoMoreMove.h" />
     <ClInclude Include="..\Classes\Engine\Event\EvtDataLevelSummaryStarted.h" />
     <ClInclude Include="..\Classes\Engine\Event\EvtDataPlayerExplodedStars.h" />
     <ClInclude Include="..\Classes\Engine\Event\EvtDataGeneric.h" />
     <ClInclude Include="..\Classes\Engine\Event\EvtDataPlayerGotScore.h" />
     <ClInclude Include="..\Classes\Engine\Event\EvtDataRequestDestroyActor.h" />
+    <ClInclude Include="..\Classes\Engine\Event\EvtDataTargetScoreUpdated.h" />
     <ClInclude Include="..\Classes\Engine\Event\IEventData.h" />
     <ClInclude Include="..\Classes\Engine\Event\BaseEventData.h" />
     <ClInclude Include="..\Classes\Engine\Event\EventDispatcher.h" />
@@ -215,6 +215,7 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClInclude Include="..\Classes\Engine\Script\LevelSummaryLabelScript.h" />
     <ClInclude Include="..\Classes\Engine\Script\MatrixLayerScript.h" />
     <ClInclude Include="..\Classes\Engine\Script\MainSceneScript.h" />
+    <ClInclude Include="..\Classes\Engine\Script\ScoreCalculatorScript.h" />
     <ClInclude Include="..\Classes\Engine\Script\StarScript.h" />
     <ClInclude Include="..\Classes\Engine\Script\StarMatrixScript.h" />
     <ClInclude Include="..\Classes\Engine\Script\StarParticleScript.h" />

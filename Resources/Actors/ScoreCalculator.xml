@@ -1,0 +1,6 @@
+<!-- edited with XMLSpy v2013 (http://www.altova.com) by  () -->
+<Actor Type="ScoreCalculator" Resource="Actors\ScoreCalculator.xml">
+	<Components>
+		<ScoreCalculatorScript/>
+	</Components>
+</Actor>

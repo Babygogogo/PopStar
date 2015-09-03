@@ -5,7 +5,7 @@
 #include "../Actor/BaseRenderComponent.h"
 #include "../Event/IEventDispatcher.h"
 #include "../Event/EventType.h"
-#include "../Event/EvtDataLevelIndexUpdated.h"
+#include "../Event/EvtDataLevelStarted.h"
 #include "../Utilities/SingletonContainer.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -16,7 +16,7 @@ struct LevelLabelScript::LevelLabelScriptImpl
 	LevelLabelScriptImpl(LevelLabelScript *visitor);
 	~LevelLabelScriptImpl();
 
-	void onLevelValueUpdated(const IEventData & e);
+	void onLevelStarted(const IEventData & e);
 
 	void setStringWithLevel(int levelValue = 0);
 
@@ -31,10 +31,10 @@ LevelLabelScript::LevelLabelScriptImpl::~LevelLabelScriptImpl()
 {
 }
 
-void LevelLabelScript::LevelLabelScriptImpl::onLevelValueUpdated(const IEventData & e)
+void LevelLabelScript::LevelLabelScriptImpl::onLevelStarted(const IEventData & e)
 {
-	auto & levelIndexEvent = static_cast<const EvtDataLevelIndexUpdated &>(e);
-	setStringWithLevel(levelIndexEvent.getLevelIndex());
+	auto & levelStartedEvent = static_cast<const EvtDataLevelStarted &>(e);
+	setStringWithLevel(levelStartedEvent.getLevelIndex());
 }
 
 void LevelLabelScript::LevelLabelScriptImpl::setStringWithLevel(int levelValue /*= 0*/)
@@ -58,8 +58,8 @@ void LevelLabelScript::vPostInit()
 {
 	pimpl->setStringWithLevel();
 
-	SingletonContainer::getInstance()->get<IEventDispatcher>()->vAddListener(EventType::LevelIndexUpdated, pimpl, [this](const IEventData & e){
-		pimpl->onLevelValueUpdated(e);
+	SingletonContainer::getInstance()->get<IEventDispatcher>()->vAddListener(EventType::LevelStarted, pimpl, [this](const IEventData & e){
+		pimpl->onLevelStarted(e);
 	});
 }
 

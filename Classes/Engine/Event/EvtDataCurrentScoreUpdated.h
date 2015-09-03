@@ -1,5 +1,5 @@
-#ifndef __EVENT_DATA_CURRENT_SCORE_VALUE_UPDATED__
-#define __EVENT_DATA_CURRENT_SCORE_VALUE_UPDATED__
+#ifndef __EVENT_DATA_CURRENT_SCORE_UPDATED__
+#define __EVENT_DATA_CURRENT_SCORE_UPDATED__
 
 #include "BaseEventData.h"
 #include "EventType.h"
@@ -35,4 +35,4 @@ private:
 	int m_NewCurrentScore{ 0 };
 };
 
-#endif // !__EVENT_DATA_CURRENT_SCORE_VALUE_UPDATED__
+#endif // !__EVENT_DATA_CURRENT_SCORE_UPDATED__

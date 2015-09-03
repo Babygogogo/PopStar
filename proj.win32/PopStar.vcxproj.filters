@@ -10,9 +10,6 @@
     <Filter Include="resource">
       <UniqueIdentifier>{715254bc-d70b-4ec5-bf29-467dd3ace079}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Classes\Common">
-      <UniqueIdentifier>{a5a94a7e-091b-4363-af0f-202d37bee3c1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Classes\Engine">
       <UniqueIdentifier>{8a734a2b-f696-4575-a6ea-5c35a5201b16}</UniqueIdentifier>
     </Filter>
@@ -50,9 +47,6 @@
     </ClCompile>
     <ClCompile Include="..\Classes\HelloWorldScene.cpp">
       <Filter>Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Common\GameData.cpp">
-      <Filter>Classes\Common</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\Engine\Utilities\SingletonContainer.cpp">
       <Filter>Classes\Engine\Utilities</Filter>
@@ -150,6 +144,9 @@
     <ClCompile Include="..\Classes\Engine\Script\ButtonStartGameScript.cpp">
       <Filter>Classes\Engine\Script</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Script\ScoreCalculatorScript.cpp">
+      <Filter>Classes\Engine\Script</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -160,9 +157,6 @@
     </ClInclude>
     <ClInclude Include="..\Classes\HelloWorldScene.h">
       <Filter>Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Common\GameData.h">
-      <Filter>Classes\Common</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Engine\Utilities\SingletonContainer.h">
       <Filter>Classes\Engine\Utilities</Filter>
@@ -302,14 +296,20 @@
     <ClInclude Include="..\Classes\Engine\Event\EvtDataCurrentScoreUpdated.h">
       <Filter>Classes\Engine\Event</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Event\EvtDataLevelIndexUpdated.h">
-      <Filter>Classes\Engine\Event</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\Engine\Event\EvtDataLevelSummaryStarted.h">
       <Filter>Classes\Engine\Event</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Engine\Event\EvtDataLevelNoMoreMove.h">
       <Filter>Classes\Engine\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Event\EvtDataLevelStarted.h">
+      <Filter>Classes\Engine\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Event\EvtDataTargetScoreUpdated.h">
+      <Filter>Classes\Engine\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Script\ScoreCalculatorScript.h">
+      <Filter>Classes\Engine\Script</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -5,6 +5,7 @@
 		<GeneralRenderComponent Type="Scene"/>
 	</Components>
 	<ChildrenActors>
+		<Resource File="Actors\ScoreCalculator.xml"/>
 		<Resource File="Actors\MainSceneBackground.xml"/>
 		<Resource File="Actors\MatrixLayer.xml"/>
 		<Resource File="Actors\HighScoreLabel.xml"/>
