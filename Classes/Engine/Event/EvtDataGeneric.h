@@ -16,7 +16,6 @@ class EvtDataGeneric : public BaseEventData
 public:
 	EvtDataGeneric(EventType eType) : m_Type{ eType }
 	{
-
 	}
 
 	virtual ~EvtDataGeneric() = default;
@@ -25,6 +24,12 @@ public:
 	{
 		return m_Type;
 	}
+
+	//Disable copy/move constructor and operator=.
+	EvtDataGeneric(const EvtDataGeneric &) = delete;
+	EvtDataGeneric(EvtDataGeneric &&) = delete;
+	EvtDataGeneric & operator=(const EvtDataGeneric &) = delete;
+	EvtDataGeneric & operator=(EvtDataGeneric &&) = delete;
 
 private:
 	EventType m_Type{ EventType::InvalidEventType };

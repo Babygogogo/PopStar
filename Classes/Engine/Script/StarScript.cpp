@@ -1,12 +1,13 @@
 #include <random>
 #include <vector>
 
-#include "StarScript.h"
-#include "../Actor/Actor.h"
-#include "../Actor/GeneralRenderComponent.h"
-#include "../Actor/SequentialInvoker.h"
 #include "cocos2d.h"
 #include "../../cocos2d/external/tinyxml2/tinyxml2.h"
+
+#include "StarScript.h"
+#include "../Actor/Actor.h"
+#include "../Actor/BaseRenderComponent.h"
+#include "../Actor/SequentialInvoker.h"
 
 //////////////////////////////////////////////////////////////////////////
 //Definition of StarScriptImpl.
@@ -229,7 +230,7 @@ void StarScript::vPostInit()
 {
 	auto actor = m_Actor.lock();
 
-	pimpl->m_sprite = actor->getComponent<GeneralRenderComponent>()->getAs<cocos2d::Sprite>();
+	pimpl->m_sprite = static_cast<cocos2d::Sprite*>(actor->getRenderComponent()->getSceneNode());
 
 	pimpl->m_invoker = actor->getComponent<SequentialInvoker>().get();
 	pimpl->m_invoker->setInvokeContinuously(true);

@@ -1,10 +1,11 @@
-#include "HighScoreLabelScript.h"
 #include "cocos2d.h"
-#include "../../Common/GameData.h"
+
+#include "HighScoreLabelScript.h"
 #include "../Actor/Actor.h"
-#include "../Actor/GeneralRenderComponent.h"
+#include "../Actor/BaseRenderComponent.h"
 #include "../Event/IEventDispatcher.h"
 #include "../Event/EventType.h"
+#include "../Event/EvtDataHighScoreUpdated.h"
 #include "../Utilities/SingletonContainer.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -17,7 +18,7 @@ struct HighScoreLabelScript::HighScoreLabelScriptImpl
 
 	void setStringWithScore(int highScore = 0);
 
-	void onHighScoreValueUpdated(const IEventData & e);
+	void onHighScoreUpdated(const IEventData & e);
 
 	HighScoreLabelScript *m_Visitor{ nullptr };
 };
@@ -30,21 +31,22 @@ HighScoreLabelScript::HighScoreLabelScriptImpl::~HighScoreLabelScriptImpl()
 {
 }
 
-void HighScoreLabelScript::HighScoreLabelScriptImpl::onHighScoreValueUpdated(const IEventData & e)
+void HighScoreLabelScript::HighScoreLabelScriptImpl::onHighScoreUpdated(const IEventData & e)
 {
-	setStringWithScore();
+	auto & highScoreEvent = static_cast<const EvtDataHighScoreUpdated &>(e);
+	setStringWithScore(highScoreEvent.getHighScore());
 }
 
 void HighScoreLabelScript::HighScoreLabelScriptImpl::setStringWithScore(int highScore /*= 0*/)
 {
 	auto underlyingLabel = static_cast<cocos2d::Label*>(m_Visitor->m_Actor.lock()->getRenderComponent()->getSceneNode());
-	underlyingLabel->setString(std::string("High Score: ") + std::to_string(SingletonContainer::getInstance()->get<GameData>()->getHighScore()));
+	underlyingLabel->setString(std::string("High Score: ") + std::to_string(highScore));
 }
 
 //////////////////////////////////////////////////////////////////////////
 //Implementation of HighScoreLabelScript.
 //////////////////////////////////////////////////////////////////////////
-HighScoreLabelScript::HighScoreLabelScript() : pimpl{ std::make_unique<HighScoreLabelScriptImpl>(this) }
+HighScoreLabelScript::HighScoreLabelScript() : pimpl{ std::make_shared<HighScoreLabelScriptImpl>(this) }
 {
 }
 
@@ -56,8 +58,8 @@ void HighScoreLabelScript::vPostInit()
 {
 	pimpl->setStringWithScore();
 
-	SingletonContainer::getInstance()->get<IEventDispatcher>()->vAddListener(EventType::HighScoreValueUpdated, pimpl, [this](const IEventData & e){
-		pimpl->onHighScoreValueUpdated(e);
+	SingletonContainer::getInstance()->get<IEventDispatcher>()->vAddListener(EventType::HighScoreUpdated, pimpl, [this](const IEventData & e){
+		pimpl->onHighScoreUpdated(e);
 	});
 }
 

@@ -1,11 +1,12 @@
+#include "cocos2d.h"
+
 #include "GetScoreLabelScript.h"
 #include "../Actor/Actor.h"
 #include "../Actor/BaseRenderComponent.h"
-#include "../Utilities/SingletonContainer.h"
-#include "../../Common/GameData.h"
 #include "../Event/EventDispatcher.h"
 #include "../Event/EventType.h"
-#include "cocos2d.h"
+#include "../Event/EvtDataPlayerGotScore.h"
+#include "../Utilities/SingletonContainer.h"
 
 //////////////////////////////////////////////////////////////////////////
 //Definition of GetScoreLabelScript.
@@ -15,8 +16,8 @@ struct GetScoreLabelScript::GetScoreLabelScriptImpl
 	GetScoreLabelScriptImpl(GetScoreLabelScript *visitor);
 	~GetScoreLabelScriptImpl();
 
-	void onPlayerGetScore(const IEventData & e);
-	void onLevelSummaryDisppeared(const IEventData & e);
+	void onPlayerGotScore(const IEventData & e);
+	void onLevelSummaryEnded(const IEventData & e);
 
 	cocos2d::Label * getUnderlyingLabel() const;
 
@@ -31,17 +32,18 @@ GetScoreLabelScript::GetScoreLabelScriptImpl::~GetScoreLabelScriptImpl()
 {
 }
 
-void GetScoreLabelScript::GetScoreLabelScriptImpl::onPlayerGetScore(const IEventData & e)
+void GetScoreLabelScript::GetScoreLabelScriptImpl::onPlayerGotScore(const IEventData & e)
 {
-	auto exploded_stars_num = std::to_string(SingletonContainer::getInstance()->get<GameData>()->getExplodedStarsNum());
-	auto attained_score = std::to_string(SingletonContainer::getInstance()->get<GameData>()->getScoreOfPreviousExplosion());
+	auto & playerGotScoreEvent = static_cast<const EvtDataPlayerGotScore &>(e);
+	auto explodedStarsCountString = std::string("Exploded: ") + std::to_string(playerGotScoreEvent.getExplodedStarsCount());
+	auto gotScore = std::string(" Score: ") + std::to_string(playerGotScoreEvent.getScore());
 
 	auto underlyingLabel = getUnderlyingLabel();
-	underlyingLabel->setString(std::string("Exploded: ") + exploded_stars_num + std::string(" Score: ") + attained_score);
+	underlyingLabel->setString(explodedStarsCountString + gotScore);
 	underlyingLabel->setVisible(true);
 }
 
-void GetScoreLabelScript::GetScoreLabelScriptImpl::onLevelSummaryDisppeared(const IEventData & e)
+void GetScoreLabelScript::GetScoreLabelScriptImpl::onLevelSummaryEnded(const IEventData & e)
 {
 	getUnderlyingLabel()->setVisible(false);
 }
@@ -71,11 +73,11 @@ void GetScoreLabelScript::vPostInit()
 {
 	auto eventDispatcher = SingletonContainer::getInstance()->get<IEventDispatcher>();
 
-	eventDispatcher->vAddListener(EventType::PlayerGetScore, pimpl, [this](const IEventData & e){
-		pimpl->onPlayerGetScore(e);
+	eventDispatcher->vAddListener(EventType::PlayerGotScore, pimpl, [this](const IEventData & e){
+		pimpl->onPlayerGotScore(e);
 	});
-	eventDispatcher->vAddListener(EventType::LevelSummaryDisappeared, pimpl, [this](const IEventData & e){
-		pimpl->onLevelSummaryDisppeared(e);
+	eventDispatcher->vAddListener(EventType::LevelSummaryFinished, pimpl, [this](const IEventData & e){
+		pimpl->onLevelSummaryEnded(e);
 	});
 }
 

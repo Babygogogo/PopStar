@@ -4,7 +4,7 @@
 #include "BaseEventData.h"
 #include "EventType.h"
 
-class EvtDataPlayerExplodedStars : public BaseEventData
+class EvtDataPlayerExplodedStars final : public BaseEventData
 {
 public:
 	EvtDataPlayerExplodedStars(int explodedStarsCount) : m_ExplodedStarsCount{ explodedStarsCount }
@@ -24,6 +24,12 @@ public:
 	{
 		return m_ExplodedStarsCount;
 	}
+
+	//Disable copy/move constructor and operator=.
+	EvtDataPlayerExplodedStars(const EvtDataPlayerExplodedStars &) = delete;
+	EvtDataPlayerExplodedStars(EvtDataPlayerExplodedStars &&) = delete;
+	EvtDataPlayerExplodedStars & operator=(const EvtDataPlayerExplodedStars &) = delete;
+	EvtDataPlayerExplodedStars & operator=(EvtDataPlayerExplodedStars &&) = delete;
 
 private:
 	int m_ExplodedStarsCount{ 0 };

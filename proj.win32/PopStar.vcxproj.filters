@@ -293,7 +293,19 @@
     <ClInclude Include="..\Classes\Engine\Event\EvtDataRequestDestroyActor.h">
       <Filter>Classes\Engine\Event</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Event\EvtDataCurrentScoreValueUpdated.h">
+    <ClInclude Include="..\Classes\Engine\Event\EvtDataPlayerGotScore.h">
+      <Filter>Classes\Engine\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Event\EvtDataHighScoreUpdated.h">
+      <Filter>Classes\Engine\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Event\EvtDataCurrentScoreUpdated.h">
+      <Filter>Classes\Engine\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Event\EvtDataLevelIndexUpdated.h">
+      <Filter>Classes\Engine\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Event\EvtDataLevelSummaryStarted.h">
       <Filter>Classes\Engine\Event</Filter>
     </ClInclude>
   </ItemGroup>

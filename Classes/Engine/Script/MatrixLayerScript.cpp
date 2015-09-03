@@ -4,7 +4,7 @@
 #include "StarMatrixScript.h"
 #include "../Utilities/SingletonContainer.h"
 #include "../Actor/Actor.h"
-#include "../Actor/GeneralRenderComponent.h"
+#include "../Actor/BaseRenderComponent.h"
 #include "../Actor/SequentialInvoker.h"
 #include "../Event/EventType.h"
 #include "../Event/EventDispatcher.h"

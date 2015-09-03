@@ -7,24 +7,24 @@ enum class EventType
 
 	RequestDestoryActor,
 
-	SequentialInvokerFinishOneAction,
-
-	PlayerGetScore,
+	PlayerGotScore,
 
 	PlayerExplodedStars,
 
 	LevelNoMoreMove,
 
+	NewGameStarted,
 	LevelStarted,
 	StartLevelLabelDisappeared,
-	LevelSummaryDisappeared,
+	LevelSummaryStarted,
+	LevelSummaryFinished,
 
 	GameOver,
 
-	CurrentScoreValueUpdated,
-	HighScoreValueUpdated,
+	CurrentScoreUpdated,
+	HighScoreUpdated,
 	TargetScoreValueUpdated,
-	LevelValueUpdated
+	LevelIndexUpdated
 };
 
 #endif // !__EVENT_TYPE__

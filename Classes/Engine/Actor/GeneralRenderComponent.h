@@ -7,8 +7,6 @@
 
 class GeneralRenderComponent final : public BaseRenderComponent
 {
-	friend class Actor;
-
 public:
 	GeneralRenderComponent();
 	~GeneralRenderComponent();

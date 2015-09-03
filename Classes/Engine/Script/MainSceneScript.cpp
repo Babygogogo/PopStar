@@ -1,6 +1,6 @@
 #include "MainSceneScript.h"
 #include "../Actor/Actor.h"
-#include "../Actor/GeneralRenderComponent.h"
+#include "../Actor/BaseRenderComponent.h"
 #include "../Audio/Audio.h"
 #include "../GameLogic/GameLogic.h"
 #include "../Utilities/SingletonContainer.h"

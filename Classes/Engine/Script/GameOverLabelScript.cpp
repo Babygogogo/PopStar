@@ -2,7 +2,7 @@
 
 #include "GameOverLabelScript.h"
 #include "../Actor/Actor.h"
-#include "../Actor/GeneralRenderComponent.h"
+#include "../Actor/BaseRenderComponent.h"
 #include "../Actor/SequentialInvoker.h"
 #include "../Utilities/SingletonContainer.h"
 #include "../GameLogic/GameLogic.h"
@@ -95,7 +95,7 @@ void GameOverLabelScript::vPostInit()
 	assert(!m_Actor.expired());
 	auto strongActor = m_Actor.lock();
 
-	pimpl->m_LabelUnderlying = strongActor->getComponent<GeneralRenderComponent>()->getAs<cocos2d::Label>();
+	pimpl->m_LabelUnderlying = static_cast<cocos2d::Label*>(strongActor->getRenderComponent()->getSceneNode());
 	pimpl->m_LabelUnderlying->setVisible(false);
 
 	pimpl->m_Invoker = strongActor->getComponent<SequentialInvoker>();

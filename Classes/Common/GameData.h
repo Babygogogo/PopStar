@@ -24,7 +24,7 @@ public:
 
 	void levelEnd();
 	int getCurrentLevel() const;
-	
+
 	void updateCurrentScoreWith(int num_of_exploded_stars);
 	int getScoreOfPreviousExplosion() const;
 	int getExplodedStarsNum() const;
@@ -38,8 +38,6 @@ public:
 	void updateScoreWithEndLevelBonus();
 	int getEndLevelBonus() const;
 
-	void reset();
-
 	//Disable copy/move constructor and operator=.
 	GameData(const GameData&) = delete;
 	GameData(GameData&&) = delete;
@@ -48,7 +46,7 @@ public:
 
 private:
 	struct GameDataImpl;
-	std::unique_ptr<GameDataImpl> pimpl;
+	std::shared_ptr<GameDataImpl> pimpl;
 };
 
 #endif

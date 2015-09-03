@@ -1,13 +1,13 @@
+#include "cocos2d.h"
+
 #include "ButtonStartGameScript.h"
-#include "../../Common/GameData.h"
 #include "../Actor/Actor.h"
-#include "../Actor/GeneralRenderComponent.h"
+#include "../Actor/BaseRenderComponent.h"
 #include "../Event/IEventDispatcher.h"
 #include "../Event/EvtDataGeneric.h"
 #include "../GameLogic/GameLogic.h"
 #include "../Graphic2D/SceneStack.h"
 #include "../Utilities/SingletonContainer.h"
-#include "cocos2d.h"
 
 //////////////////////////////////////////////////////////////////////////
 //Definition of ButtonStartGameScriptImpl.
@@ -31,12 +31,13 @@ ButtonStartGameScript::ButtonStartGameScriptImpl::~ButtonStartGameScriptImpl()
 void ButtonStartGameScript::ButtonStartGameScriptImpl::onClicked()
 {
 	auto & singletonContainer = SingletonContainer::getInstance();
-	singletonContainer->get<GameData>()->reset();
 
 	auto mainSceneActor = singletonContainer->get<GameLogic>()->createActor("Actors\\MainScene.xml");
 	singletonContainer->get<SceneStack>()->replaceAndRun(*mainSceneActor);
 
-	singletonContainer->get<IEventDispatcher>()->vQueueEvent(std::make_unique<EvtDataGeneric>(EventType::LevelStarted));
+	auto eventDispatcher = singletonContainer->get<IEventDispatcher>();
+	eventDispatcher->vQueueEvent(std::make_unique<EvtDataGeneric>(EventType::NewGameStarted));
+	eventDispatcher->vQueueEvent(std::make_unique<EvtDataGeneric>(EventType::LevelStarted));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -52,7 +53,7 @@ ButtonStartGameScript::~ButtonStartGameScript()
 
 void ButtonStartGameScript::vPostInit()
 {
-	auto menuItemImage = m_Actor.lock()->getComponent<GeneralRenderComponent>()->getAs<cocos2d::MenuItemImage>();
+	auto menuItemImage = static_cast<cocos2d::MenuItemImage*>(m_Actor.lock()->getRenderComponent()->getSceneNode());
 	menuItemImage->setCallback([this](cocos2d::Ref*){
 		pimpl->onClicked();
 	});

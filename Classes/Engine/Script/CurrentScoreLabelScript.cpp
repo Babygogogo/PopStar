@@ -5,7 +5,7 @@
 #include "../Actor/BaseRenderComponent.h"
 #include "../Event/IEventDispatcher.h"
 #include "../Event/EventType.h"
-#include "../Event/EvtDataCurrentScoreValueUpdated.h"
+#include "../Event/EvtDataCurrentScoreUpdated.h"
 #include "../Utilities/SingletonContainer.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -38,7 +38,7 @@ void CurrentScoreLabelScript::CurrentScoreLabelScriptImpl::setStringWithScore(in
 
 void CurrentScoreLabelScript::CurrentScoreLabelScriptImpl::onCurrentScoreValueUpdated(const IEventData & e)
 {
-	auto newCurrentScore = (static_cast<const EvtDataCurrentScoreValueUpdated &>(e)).getNewCurrentScore();
+	auto newCurrentScore = (static_cast<const EvtDataCurrentScoreUpdated &>(e)).getNewCurrentScore();
 	setStringWithScore(newCurrentScore);
 }
 
@@ -47,7 +47,7 @@ void CurrentScoreLabelScript::CurrentScoreLabelScriptImpl::onCurrentScoreValueUp
 //////////////////////////////////////////////////////////////////////////
 CurrentScoreLabelScript::CurrentScoreLabelScript() : pimpl{ std::make_shared<CurrentScoreLabelScriptImpl>(this) }
 {
-	SingletonContainer::getInstance()->get<IEventDispatcher>()->vAddListener(EventType::CurrentScoreValueUpdated, pimpl, [this](const IEventData & e){
+	SingletonContainer::getInstance()->get<IEventDispatcher>()->vAddListener(EventType::CurrentScoreUpdated, pimpl, [this](const IEventData & e){
 		pimpl->onCurrentScoreValueUpdated(e);
 	});
 }

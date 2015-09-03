@@ -1,13 +1,13 @@
+#include "cocos2d.h"
+
 #include "StarParticleScript.h"
 #include "StarScript.h"
 #include "../Actor/Actor.h"
-#include "../Actor/GeneralRenderComponent.h"
+#include "../Actor/BaseRenderComponent.h"
 #include "../Actor/SequentialInvoker.h"
 #include "../Event/EvtDataRequestDestroyActor.h"
 #include "../Event/IEventDispatcher.h"
 #include "../Utilities/SingletonContainer.h"
-
-#include "cocos2d.h"
 
 //////////////////////////////////////////////////////////////////////////
 //Definition of StarPatricleEffectScriptImpl.
@@ -44,7 +44,7 @@ void StarParticleScript::show(StarScript *star)
 
 	auto actor = m_Actor.lock();
 
-	auto particle = actor->getComponent<GeneralRenderComponent>()->getAs<cocos2d::ParticleExplosion>();
+	auto particle = static_cast<cocos2d::ParticleExplosion*>(actor->getRenderComponent()->getSceneNode());
 	particle->setStartColor(star->getColor4F());
 	particle->setEndColor(star->getColor4F());
 	particle->setPosition(star->getPositionX(), star->getPositionY());

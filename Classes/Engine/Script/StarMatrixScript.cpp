@@ -34,7 +34,7 @@ struct StarMatrixScript::StarMatrixScriptImpl
 	void unregisterAsEventListeners();
 
 	void onTouch(const cocos2d::Point& p);
-	void onLevelSummaryDisappeared(const IEventData & e);
+	void onLevelSummaryFinished(const IEventData & e);
 
 	bool isRowNumValid(int row_num) const;
 	bool isColNumValid(int col_num) const;
@@ -99,7 +99,7 @@ void StarMatrixScript::StarMatrixScriptImpl::onTouch(const cocos2d::Point& p)
 	explodeGroupingStars(findGroupingStars(getStarByPoint(p)));
 }
 
-void StarMatrixScript::StarMatrixScriptImpl::onLevelSummaryDisappeared(const IEventData & e)
+void StarMatrixScript::StarMatrixScriptImpl::onLevelSummaryFinished(const IEventData & e)
 {
 	explodeAllLeftStars();
 	m_invoker->addCallback([]{SingletonContainer::getInstance()->get<GameData>()->levelEnd(); });
@@ -291,8 +291,8 @@ void StarMatrixScript::StarMatrixScriptImpl::explodeAllLeftStars()
 //////////////////////////////////////////////////////////////////////////
 StarMatrixScript::StarMatrixScript() : pimpl{ std::make_shared<StarMatrixScriptImpl>(this) }
 {
-	SingletonContainer::getInstance()->get<IEventDispatcher>()->vAddListener(EventType::LevelSummaryDisappeared, pimpl, [this](const IEventData & e){
-		pimpl->onLevelSummaryDisappeared(e);
+	SingletonContainer::getInstance()->get<IEventDispatcher>()->vAddListener(EventType::LevelSummaryFinished, pimpl, [this](const IEventData & e){
+		pimpl->onLevelSummaryFinished(e);
 	});
 }
 

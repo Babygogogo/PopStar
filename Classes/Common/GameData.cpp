@@ -1,13 +1,18 @@
-#include "GameData.h"
+#include <array>
+
 #include "cocos2d.h"
-#include "../Engine/Utilities/SingletonContainer.h"
+
+#include "GameData.h"
 #include "../Engine/Event/EventDispatcher.h"
 #include "../Engine/Event/EventType.h"
 #include "../Engine/Event/BaseEventData.h"
 #include "../Engine/Event/EvtDataGeneric.h"
-#include "../Engine/Event/EvtDataCurrentScoreValueUpdated.h"
-
-#include <array>
+#include "../Engine/Event/EvtDataCurrentScoreUpdated.h"
+#include "../Engine/Event/EvtDataHighScoreUpdated.h"
+#include "../Engine/Event/EvtDataLevelIndexUpdated.h"
+#include "../Engine/Event/EvtDataLevelSummaryStarted.h"
+#include "../Engine/Event/EvtDataPlayerGotScore.h"
+#include "../Engine/Utilities/SingletonContainer.h"
 
 //////////////////////////////////////////////////////////////////////////
 //Definition of GameDataImpl.
@@ -17,10 +22,15 @@ struct GameData::GameDataImpl
 	GameDataImpl();
 	~GameDataImpl();
 
+	void onNewGameStarted(const IEventData & e);
+	void onLevelNoMoreMove(const IEventData & e);
+	void onLevelSummaryFinished(const IEventData & e);
+
 	void setCurrentScore(int score);
 	void setHighScore(int score);
 	void saveHighScore();
 	int getScoreOf(int num_of_exploded_stars);
+	int getEndLevelBonus() const;
 
 	void setCurrentLevel(int level);
 	void updateTargetScoreByCurrentLevel();
@@ -29,7 +39,7 @@ struct GameData::GameDataImpl
 	int m_high_score{ 0 };
 	int m_current_score{ 0 };
 	int m_target_score{ 0 };
-	int m_previous_exploded_stars_num{ 0 };
+	int m_PreviousExplodedStarsCount{ 0 };
 	int m_stars_left_num{ 0 };
 };
 
@@ -41,11 +51,29 @@ GameData::GameDataImpl::~GameDataImpl()
 {
 }
 
+void GameData::GameDataImpl::onNewGameStarted(const IEventData & e)
+{
+	setCurrentLevel(1);
+	setCurrentScore(0);
+	setHighScore(cocos2d::UserDefault::getInstance()->getIntegerForKey("highestScore", 0));
+}
+
+void GameData::GameDataImpl::onLevelNoMoreMove(const IEventData & e)
+{
+	auto levelSummaryEvent = std::make_unique<EvtDataLevelSummaryStarted>(m_stars_left_num, getEndLevelBonus());
+	SingletonContainer::getInstance()->get<IEventDispatcher>()->vQueueEvent(std::move(levelSummaryEvent));
+}
+
+void GameData::GameDataImpl::onLevelSummaryFinished(const IEventData & e)
+{
+	setCurrentScore(m_current_score + getEndLevelBonus());
+}
+
 void GameData::GameDataImpl::setCurrentScore(int score)
 {
 	if (score != m_current_score){
 		m_current_score = score;
-		SingletonContainer::getInstance()->get<IEventDispatcher>()->vQueueEvent(std::make_unique<EvtDataCurrentScoreValueUpdated>(m_current_score));
+		SingletonContainer::getInstance()->get<IEventDispatcher>()->vQueueEvent(std::make_unique<EvtDataCurrentScoreUpdated>(m_current_score));
 
 		setHighScore(m_current_score);
 	}
@@ -57,7 +85,8 @@ void GameData::GameDataImpl::setHighScore(int score)
 		m_high_score = score;
 		saveHighScore();
 
-		SingletonContainer::getInstance()->get<IEventDispatcher>()->vQueueEvent(std::make_unique<EvtDataGeneric>(EventType::HighScoreValueUpdated));
+		auto highScoreEvent = std::make_unique<EvtDataHighScoreUpdated>(score);
+		SingletonContainer::getInstance()->get<IEventDispatcher>()->vQueueEvent(std::move(highScoreEvent));
 	}
 }
 
@@ -80,9 +109,10 @@ void GameData::GameDataImpl::setCurrentLevel(int level)
 		throw("setCurrentLevel with a negative num in GameData.");
 
 	m_current_level = level;
-	m_previous_exploded_stars_num = 0;
+	m_PreviousExplodedStarsCount = 0;
 
-	SingletonContainer::getInstance()->get<IEventDispatcher>()->vQueueEvent(std::make_unique<EvtDataGeneric>(EventType::LevelValueUpdated));
+	auto levelIndexEvent = std::make_unique<EvtDataLevelIndexUpdated>(level);
+	SingletonContainer::getInstance()->get<IEventDispatcher>()->vQueueEvent(std::move(levelIndexEvent));
 
 	updateTargetScoreByCurrentLevel();
 }
@@ -108,27 +138,41 @@ void GameData::GameDataImpl::updateTargetScoreByCurrentLevel()
 	}
 }
 
+int GameData::GameDataImpl::getEndLevelBonus() const
+{
+	static const std::array<int, 10> bonus_array = { 2000, 1660, 1360, 1100, 880, 700, 560, 460, 400, 380 };
+
+	if (m_stars_left_num > 9 || m_stars_left_num < 0)
+		return 0;
+
+	return bonus_array[m_stars_left_num];
+}
+
 //////////////////////////////////////////////////////////////////////////
 //Implementation of GameData.
 //////////////////////////////////////////////////////////////////////////
 GameData::GameData() : pimpl{ std::make_unique<GameDataImpl>() }
 {
-	reset();
+	auto eventDispatcher = SingletonContainer::getInstance()->get<IEventDispatcher>();
+
+	eventDispatcher->vAddListener(EventType::NewGameStarted, pimpl, [this](const IEventData & e){
+		pimpl->onNewGameStarted(e);
+	});
+	eventDispatcher->vAddListener(EventType::LevelNoMoreMove, pimpl, [this](const IEventData & e){
+		pimpl->onLevelNoMoreMove(e);
+	});
+	eventDispatcher->vAddListener(EventType::LevelSummaryFinished, pimpl, [this](const IEventData & e){
+		pimpl->onLevelSummaryFinished(e);
+	});
 }
 
 GameData::~GameData()
 {
-	CCLOG("GameData destructing");
 }
 
 int GameData::getEndLevelBonus() const
 {
-	static const std::array<int, 10> bonus_array = { 2000, 1660, 1360, 1100, 880, 700, 560, 460, 400, 380 };
-
-	if (pimpl->m_stars_left_num > 9 || pimpl->m_stars_left_num < 0)
-		return 0;
-
-	return bonus_array[pimpl->m_stars_left_num];
+	return pimpl->getEndLevelBonus();
 }
 
 void GameData::levelEnd()
@@ -156,10 +200,12 @@ void GameData::updateCurrentScoreWith(int num_of_exploded_stars)
 	if (num_of_exploded_stars <= 0)
 		return;
 
-	pimpl->m_previous_exploded_stars_num = num_of_exploded_stars;
-	pimpl->setCurrentScore(pimpl->m_current_score + pimpl->getScoreOf(num_of_exploded_stars));
+	pimpl->m_PreviousExplodedStarsCount = num_of_exploded_stars;
+	auto gotScore = pimpl->getScoreOf(num_of_exploded_stars);
+	pimpl->setCurrentScore(pimpl->m_current_score + gotScore);
 
-	SingletonContainer::getInstance()->get<IEventDispatcher>()->vQueueEvent(std::make_unique<EvtDataGeneric>(EventType::PlayerGetScore));
+	auto playerGotScoreEvent = std::make_unique<EvtDataPlayerGotScore>(gotScore, num_of_exploded_stars);
+	SingletonContainer::getInstance()->get<IEventDispatcher>()->vQueueEvent(std::move(playerGotScoreEvent));
 }
 
 int GameData::getStarsLeftNum() const
@@ -179,12 +225,12 @@ void GameData::updateScoreWithEndLevelBonus()
 
 int GameData::getExplodedStarsNum() const
 {
-	return pimpl->m_previous_exploded_stars_num;
+	return pimpl->m_PreviousExplodedStarsCount;
 }
 
 int GameData::getScoreOfPreviousExplosion() const
 {
-	return pimpl->getScoreOf(pimpl->m_previous_exploded_stars_num);
+	return pimpl->getScoreOf(pimpl->m_PreviousExplodedStarsCount);
 }
 
 int GameData::getHighScore() const
@@ -200,11 +246,4 @@ int GameData::getCurrentScore() const
 std::unique_ptr<GameData> GameData::create()
 {
 	return std::unique_ptr<GameData>(new GameData);
-}
-
-void GameData::reset()
-{
-	pimpl->setCurrentLevel(1);
-	pimpl->setCurrentScore(0);
-	pimpl->setHighScore(cocos2d::UserDefault::getInstance()->getIntegerForKey("highestScore", 0));
 }

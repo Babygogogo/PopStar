@@ -1,14 +1,15 @@
+#include "cocos2d.h"
+
 #include "StartLevelLabelScript.h"
 #include "../Actor/Actor.h"
-#include "../Actor/GeneralRenderComponent.h"
+#include "../Actor/BaseRenderComponent.h"
 #include "../Actor/SequentialInvoker.h"
-#include "../Utilities/SingletonContainer.h"
 #include "../../Common/GameData.h"
 #include "../Event/EventDispatcher.h"
 #include "../Event/EventType.h"
 #include "../Event/BaseEventData.h"
 #include "../Event/EvtDataGeneric.h"
-#include "cocos2d.h"
+#include "../Utilities/SingletonContainer.h"
 
 //////////////////////////////////////////////////////////////////////////
 //Definition of StartLevelLabelScriptImpl.
@@ -71,7 +72,7 @@ void StartLevelLabelScript::vPostInit()
 {
 	auto actor = m_Actor.lock();
 
-	pimpl->m_label_underlying = actor->getComponent<GeneralRenderComponent>()->getAs<cocos2d::Label>();
+	pimpl->m_label_underlying = static_cast<cocos2d::Label*>(actor->getRenderComponent()->getSceneNode());
 	pimpl->m_label_underlying->setVisible(false);
 
 	pimpl->m_invoker = actor->getComponent<SequentialInvoker>().get();
