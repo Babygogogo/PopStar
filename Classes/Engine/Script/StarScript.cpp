@@ -7,7 +7,7 @@
 #include "StarScript.h"
 #include "../Actor/Actor.h"
 #include "../Actor/BaseRenderComponent.h"
-#include "../Actor/SequentialInvoker.h"
+#include "../Actor/FiniteTimeActionComponent.h"
 
 //////////////////////////////////////////////////////////////////////////
 //Definition of StarScriptImpl.
@@ -25,7 +25,7 @@ struct StarScript::StarScriptImpl
 	void moveTo(float pos_x, float pos_y, float speed = StarScript::StarScriptImpl::s_NormalSpeedPPS);
 
 	cocos2d::Sprite *m_sprite{ nullptr };
-	SequentialInvoker *m_invoker{ nullptr };
+	FiniteTimeActionComponent *m_invoker{ nullptr };
 
 	bool m_is_selected{ false };
 	int m_row_num{ 0 }, m_col_num{ 0 };
@@ -95,7 +95,7 @@ void StarScript::StarScriptImpl::moveTo(float pos_x, float pos_y, float speed /*
 	if (pos_x == m_pos_x && pos_y == m_pos_y)
 		return;
 
-	m_invoker->addMoveTo(calculateMoveTime(pos_x, pos_y, speed), pos_x, pos_y);
+	m_invoker->queueMoveTo(calculateMoveTime(pos_x, pos_y, speed), pos_x, pos_y);
 	m_pos_x = pos_x;
 	m_pos_y = pos_y;
 }
@@ -232,8 +232,8 @@ void StarScript::vPostInit()
 
 	pimpl->m_sprite = static_cast<cocos2d::Sprite*>(actor->getRenderComponent()->getSceneNode());
 
-	pimpl->m_invoker = actor->getComponent<SequentialInvoker>().get();
-	pimpl->m_invoker->setInvokeContinuously(true);
+	pimpl->m_invoker = actor->getComponent<FiniteTimeActionComponent>().get();
+	pimpl->m_invoker->setRunAutomatically(true);
 }
 
 const std::string StarScript::Type = "StarScript";

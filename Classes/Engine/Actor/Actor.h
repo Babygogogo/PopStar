@@ -23,7 +23,6 @@ class BaseRenderComponent;
  *	If a parent actor is destroyed, all of its children will be destroyed too.
  *	Roots of the trees are Actors that created as "scene". They should be push into SceneStack to take their effects.
  *	Actor is a container of various components and/or scripts which implement most of the logics of the real game object.
- *	Now refactoring...
  * \
  * \author	Babygogogo
  * \date	2015.03
@@ -62,7 +61,7 @@ public:
 	bool isAncestorOf(const Actor & child) const;
 	//If the child has a render component, it will also be added to the parent's render component.
 	//If the child has a parent already, nothing happens.
-	void addChild(std::shared_ptr<Actor> child);
+	void addChild(Actor & child);
 	//If the actor has a render component, it will also be removed from its parent's render component.
 	//If the actor has no parent, nothing happens.
 	void removeFromParent();
@@ -82,12 +81,12 @@ private:
 	//Calls vPostInit() on every attached component.
 	void postInit();
 
+	//Called by ActorFactory during the creation of the actor.
+	void addComponent(std::shared_ptr<ActorComponent> && component);
+
 	//Called by GameLogic on every game loop.
 	//Calles vUpdate() on every attached component.
 	void update(const std::chrono::milliseconds & delteTimeMs);
-
-	//Called by ActorFactory during the creation of the actor.
-	void addComponent(std::shared_ptr<ActorComponent> && component);
 
 	//Implementation stuff.
 	struct ActorImpl;

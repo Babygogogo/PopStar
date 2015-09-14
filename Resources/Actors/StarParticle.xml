@@ -17,6 +17,6 @@
 				<Gravity X="0" Y="-300"/>
 			</Properties>
 		</GeneralRenderComponent>
-		<SequentialInvokerComponent/>
+		<FiniteTimeActionComponent/>
 	</Components>
 </Actor>

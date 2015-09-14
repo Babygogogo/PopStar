@@ -5,7 +5,7 @@
 #include "../Utilities/SingletonContainer.h"
 #include "../Actor/Actor.h"
 #include "../Actor/BaseRenderComponent.h"
-#include "../Actor/SequentialInvoker.h"
+#include "../Actor/FiniteTimeActionComponent.h"
 #include "../Event/EventType.h"
 #include "../Event/EventDispatcher.h"
 #include "../GameLogic/GameLogic.h"
@@ -54,7 +54,7 @@ void MatrixLayerScript::vPostInit()
 	auto actor = m_Actor.lock();
 
 	auto starMatrixActor = SingletonContainer::getInstance()->get<GameLogic>()->createActor("Actors\\StarMatrix.xml");
-	actor->addChild(starMatrixActor);
+	actor->addChild(*starMatrixActor);
 	pimpl->m_matrix = starMatrixActor;
 
 	//Register as EventListener.

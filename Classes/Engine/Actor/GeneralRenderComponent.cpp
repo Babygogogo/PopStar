@@ -1,4 +1,3 @@
-#include <unordered_set>
 #include <cassert>
 
 #include "cocos2d.h"
@@ -26,17 +25,17 @@ public:
 	cocos2d::ParticleExplosion * createParticleExplosion(tinyxml2::XMLElement * xmlElement);
 };
 
-cocos2d::Node * GeneralRenderComponent::GeneralRenderComponentImpl::createNode(tinyxml2::XMLElement * xmlElement)
-{
-	return cocos2d::Node::create();
-}
-
 GeneralRenderComponent::GeneralRenderComponentImpl::GeneralRenderComponentImpl()
 {
 }
 
 GeneralRenderComponent::GeneralRenderComponentImpl::~GeneralRenderComponentImpl()
 {
+}
+
+cocos2d::Node * GeneralRenderComponent::GeneralRenderComponentImpl::createNode(tinyxml2::XMLElement * xmlElement)
+{
+	return cocos2d::Node::create();
 }
 
 cocos2d::Sprite * GeneralRenderComponent::GeneralRenderComponentImpl::createSprite(tinyxml2::XMLElement * xmlElement)

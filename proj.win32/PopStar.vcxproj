@@ -142,7 +142,7 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClCompile Include="..\Classes\Engine\Actor\BaseScriptComponent.cpp" />
     <ClCompile Include="..\Classes\Engine\Actor\GeneralRenderComponent.cpp" />
     <ClCompile Include="..\Classes\Engine\Actor\Actor.cpp" />
-    <ClCompile Include="..\Classes\Engine\Actor\SequentialInvoker.cpp" />
+    <ClCompile Include="..\Classes\Engine\Actor\FiniteTimeActionComponent.cpp" />
     <ClCompile Include="..\Classes\Engine\Audio\Audio.cpp" />
     <ClCompile Include="..\Classes\Engine\Event\EventDispatcher.cpp" />
     <ClCompile Include="..\Classes\Engine\GameLogic\GameLogic.cpp" />
@@ -181,7 +181,7 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClInclude Include="..\Classes\Engine\Actor\GeneralRenderComponent.h" />
     <ClInclude Include="..\Classes\Engine\Actor\Actor.h" />
     <ClInclude Include="..\Classes\Engine\Actor\BaseRenderComponent.h" />
-    <ClInclude Include="..\Classes\Engine\Actor\SequentialInvoker.h" />
+    <ClInclude Include="..\Classes\Engine\Actor\FiniteTimeActionComponent.h" />
     <ClInclude Include="..\Classes\Engine\Actor\SoundPlayer.h" />
     <ClInclude Include="..\Classes\Engine\Audio\Audio.h" />
     <ClInclude Include="..\Classes\Engine\Event\EvtDataCurrentScoreUpdated.h" />

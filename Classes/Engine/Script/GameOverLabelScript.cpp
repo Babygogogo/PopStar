@@ -3,7 +3,7 @@
 #include "GameOverLabelScript.h"
 #include "../Actor/Actor.h"
 #include "../Actor/BaseRenderComponent.h"
-#include "../Actor/SequentialInvoker.h"
+#include "../Actor/FiniteTimeActionComponent.h"
 #include "../Utilities/SingletonContainer.h"
 #include "../GameLogic/GameLogic.h"
 #include "../Graphic2D/SceneStack.h"
@@ -25,7 +25,7 @@ struct GameOverLabelScript::GameOverLabelScriptImpl
 	void resetInvoker();
 
 	cocos2d::Label *m_LabelUnderlying{ nullptr };
-	std::weak_ptr<SequentialInvoker> m_Invoker;
+	std::weak_ptr<FiniteTimeActionComponent> m_Invoker;
 };
 
 GameOverLabelScript::GameOverLabelScriptImpl::GameOverLabelScriptImpl()
@@ -40,7 +40,7 @@ void GameOverLabelScript::GameOverLabelScriptImpl::registerAsEventListeners()
 {
 	auto touch_listener = cocos2d::EventListenerTouchOneByOne::create();
 	touch_listener->onTouchBegan = [this](cocos2d::Touch* touch, cocos2d::Event* event)->bool{
-		m_Invoker.lock()->invoke();
+		m_Invoker.lock()->runNextAction();
 		return true;
 	};
 	cocos2d::Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(touch_listener, m_LabelUnderlying);
@@ -55,16 +55,16 @@ void GameOverLabelScript::GameOverLabelScriptImpl::onGameOver()
 	m_LabelUnderlying->setPosition(visible_size.width / 2, visible_size.height + label_size.height / 2);
 
 	resetInvoker();
-	m_Invoker.lock()->invoke();
+	m_Invoker.lock()->runNextAction();
 }
 
 void GameOverLabelScript::GameOverLabelScriptImpl::resetInvoker()
 {
 	auto strongInvoker = m_Invoker.lock();
 	auto visible_size = cocos2d::Director::getInstance()->getVisibleSize();
-	strongInvoker->addMoveTo(1, visible_size.width / 2, visible_size.height / 2);
+	strongInvoker->queueMoveTo(1, visible_size.width / 2, visible_size.height / 2);
 
-	strongInvoker->addCallback([]{
+	strongInvoker->queueCallback([]{
 		auto & singletonContainer = SingletonContainer::getInstance();
 		auto titleScene = singletonContainer->get<GameLogic>()->createActor("Actors\\TitleScene.xml");
 		singletonContainer->get<SceneStack>()->replaceAndRun(*titleScene);
@@ -98,7 +98,7 @@ void GameOverLabelScript::vPostInit()
 	pimpl->m_LabelUnderlying = static_cast<cocos2d::Label*>(strongActor->getRenderComponent()->getSceneNode());
 	pimpl->m_LabelUnderlying->setVisible(false);
 
-	pimpl->m_Invoker = strongActor->getComponent<SequentialInvoker>();
+	pimpl->m_Invoker = strongActor->getComponent<FiniteTimeActionComponent>();
 
 	pimpl->registerAsEventListeners();
 }

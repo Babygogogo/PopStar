@@ -6,7 +6,7 @@
 #include "ActorID.h"
 #include "ActorComponent.h"
 #include "GeneralRenderComponent.h"
-#include "SequentialInvoker.h"
+#include "FiniteTimeActionComponent.h"
 
 #include "../Script/ButtonStartGameScript.h"
 #include "../Script/ComboEffectScript.h"
@@ -63,7 +63,7 @@ void ActorFactory::ActorFactoryImpl::registerComponents()
 {
 	//#TODO: Register all of the concrete components here.
 	m_ComponentFactory.registerType<GeneralRenderComponent>();
-	m_ComponentFactory.registerType<SequentialInvoker>();
+	m_ComponentFactory.registerType<FiniteTimeActionComponent>();
 
 	m_ComponentFactory.registerType<ButtonStartGameScript>();
 	m_ComponentFactory.registerType<ComboEffectScript>();
@@ -181,7 +181,7 @@ std::vector<std::shared_ptr<Actor>> ActorFactory::createActorAndChildren(const c
 				continue;
 
 			//The child actors is created. Attach the first one to the parent actor, and add child actors to the returning vector.
-			parentActor->addChild(childActors[0]);
+			parentActor->addChild(*childActors[0]);
 			for (auto && childActor : childActors)
 				actorVector.emplace_back(std::move(childActor));
 		}

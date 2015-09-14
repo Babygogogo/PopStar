@@ -6,6 +6,6 @@
 			<CreateWith FunctionName="createWithSystemFont" Text="" FontName="Verdana-Bold" FontSize="50"/>
 			<Position NormalizedX="0.5" PixelOffsetX="0" NormalizedY="1" PixelOffsetY="-250"/>
 		</GeneralRenderComponent>
-		<SequentialInvokerComponent/>
+		<FiniteTimeActionComponent/>
 	</Components>
 </Actor>

@@ -10,7 +10,7 @@
 #include "StarScript.h"
 #include "StarParticleScript.h"
 #include "../Actor/BaseRenderComponent.h"
-#include "../Actor/SequentialInvoker.h"
+#include "../Actor/FiniteTimeActionComponent.h"
 #include "../Actor/Actor.h"
 #include "../Utilities/SingletonContainer.h"
 #include "../Event/EventDispatcher.h"
@@ -60,7 +60,7 @@ struct StarMatrixScript::StarMatrixScriptImpl
 
 	StarMatrixScript * m_Visitor{ nullptr };
 	cocos2d::Node *m_node_underlying{ nullptr };
-	SequentialInvoker *m_invoker{ nullptr };
+	FiniteTimeActionComponent *m_invoker{ nullptr };
 	std::vector<std::vector<StarScript*>> m_StarScripts = {};
 	std::vector<std::vector<StarScript*>> m_initial_stars = {};
 };
@@ -102,7 +102,7 @@ void StarMatrixScript::StarMatrixScriptImpl::onTouch(const cocos2d::Point& p)
 void StarMatrixScript::StarMatrixScriptImpl::onLevelSummaryFinished(const IEventData & e)
 {
 	explodeAllLeftStars();
-	m_invoker->addCallback([]{
+	m_invoker->queueCallback([]{
 		SingletonContainer::getInstance()->get<IEventDispatcher>()->vQueueEvent(std::make_unique<EvtDataGeneric>(EventType::LeftStarsExploded));
 	});
 	unregisterAsEventListeners();
@@ -167,7 +167,7 @@ void StarMatrixScript::StarMatrixScriptImpl::explode(StarScript* star)
 
 	auto particleActor = SingletonContainer::getInstance()->get<GameLogic>()->createActor("Actors\\StarParticle.xml");
 	particleActor->getComponent<StarParticleScript>()->show(star);
-	m_Visitor->m_Actor.lock()->addChild(std::move(particleActor));
+	m_Visitor->m_Actor.lock()->addChild(*particleActor);
 
 	m_StarScripts[star->getRowNum()][star->getColNum()] = nullptr;
 	star->setVisible(false);
@@ -283,7 +283,7 @@ void StarMatrixScript::StarMatrixScriptImpl::explodeAllLeftStars()
 	for (auto &star_row : m_StarScripts)
 		for (auto &star : star_row)
 			if (star)
-				m_invoker->addFiniteTimeAction(cocos2d::Sequence::create(
+				m_invoker->queueAction(cocos2d::Sequence::create(
 				cocos2d::DelayTime::create(0.02f), cocos2d::CallFunc::create([this, star]{explode(star); }), nullptr));
 }
 
@@ -348,8 +348,8 @@ void StarMatrixScript::vPostInit()
 	auto actor = m_Actor.lock();
 	pimpl->m_node_underlying = actor->getRenderComponent()->getSceneNode();
 
-	pimpl->m_invoker = actor->getComponent<SequentialInvoker>().get();
-	pimpl->m_invoker->setInvokeContinuously(true);
+	pimpl->m_invoker = actor->getComponent<FiniteTimeActionComponent>().get();
+	pimpl->m_invoker->setRunAutomatically(true);
 
 	//Resize the matrix.
 	pimpl->m_StarScripts.resize(pimpl->s_RowCount);
@@ -365,7 +365,7 @@ void StarMatrixScript::vPostInit()
 		for (auto col_num = 0; col_num < pimpl->s_ColumnCount; ++col_num){
 			auto starActor = gameLogic->createActor("Actors\\Star.xml");
 			pimpl->m_StarScripts[row_num][col_num] = pimpl->m_initial_stars[row_num][col_num] = starActor->getComponent<StarScript>().get();
-			actor->addChild(std::move(starActor));
+			actor->addChild(*starActor);
 		}
 }
 

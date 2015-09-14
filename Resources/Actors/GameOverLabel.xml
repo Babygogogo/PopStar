@@ -5,6 +5,6 @@
 		<GeneralRenderComponent Type="Label">
 			<CreateWith FunctionName="createWithSystemFont" Text="Game Over" FontName="Verdana-Bold" FontSize="80"/>
 		</GeneralRenderComponent>
-		<SequentialInvokerComponent/>
+		<FiniteTimeActionComponent/>
 	</Components>
 </Actor>

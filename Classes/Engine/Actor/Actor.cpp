@@ -2,15 +2,15 @@
 #include <set>
 #include <unordered_map>
 
+#include "cocos2d.h"
+#include "../../cocos2d/external/tinyxml2/tinyxml2.h"
+
 #include "Actor.h"
 #include "BaseRenderComponent.h"
 #include "../Event/EvtDataRequestDestroyActor.h"
 #include "../Event/IEventDispatcher.h"
 #include "../GameLogic/GameLogic.h"
 #include "../Utilities/SingletonContainer.h"
-
-#include "cocos2d.h"
-#include "../../cocos2d/external/tinyxml2/tinyxml2.h"
 
 //////////////////////////////////////////////////////////////////////////
 //Definition of Actor::ActorImpl.
@@ -58,26 +58,39 @@ Actor::~Actor()
 	auto & singletonContainer = SingletonContainer::getInstance();
 	if (!singletonContainer)
 		return;
-	auto eventDispatcher = singletonContainer->get<IEventDispatcher>();
-	if (!eventDispatcher)
-		return;
 
+	auto eventDispatcher = singletonContainer->get<IEventDispatcher>();
 	for (auto childID : pimpl->m_ChildrenID)
 		eventDispatcher->vQueueEvent(std::make_unique<EvtDataRequestDestoryActor>(childID));
 }
 
-void Actor::addChild(std::shared_ptr<Actor> child)
+const ActorID & Actor::getID() const
 {
-	//If the child is not valid or has parent already, simply return.
-	if (!child || child->hasParent())
-		return;
+	return pimpl->m_ID;
+}
 
-	child->pimpl->m_ParentID = pimpl->m_ID;
-	pimpl->m_ChildrenID.emplace(child->getID());
+const ActorID & Actor::getParentID() const
+{
+	return pimpl->m_ParentID;
+}
 
-	//Deal with child's render component if present
-	if (auto childRenderComponent = child->pimpl->m_RenderComponent)
-		pimpl->m_RenderComponent->addChild(*childRenderComponent);
+std::shared_ptr<ActorComponent> Actor::getComponent(const std::string & type) const
+{
+	auto findIter = pimpl->m_Components.find(type);
+	if (findIter == pimpl->m_Components.end())
+		return nullptr;
+
+	return findIter->second;
+}
+
+std::shared_ptr<BaseRenderComponent> Actor::getRenderComponent() const
+{
+	return pimpl->m_RenderComponent;
+}
+
+bool Actor::hasParent() const
+{
+	return pimpl->m_ParentID != INVALID_ACTOR_ID;
 }
 
 bool Actor::isAncestorOf(const Actor & child) const
@@ -94,14 +107,18 @@ bool Actor::isAncestorOf(const Actor & child) const
 	return false;
 }
 
-bool Actor::hasParent() const
+void Actor::addChild(Actor & child)
 {
-	return pimpl->m_ParentID != INVALID_ACTOR_ID;
-}
+	//If the child is not valid or has parent already, simply return.
+	if (child.hasParent())
+		return;
 
-const ActorID & Actor::getParentID() const
-{
-	return pimpl->m_ParentID;
+	child.pimpl->m_ParentID = pimpl->m_ID;
+	pimpl->m_ChildrenID.emplace(child.getID());
+
+	//Deal with child's render component if present
+	if (auto childRenderComponent = child.pimpl->m_RenderComponent)
+		pimpl->m_RenderComponent->addChild(*childRenderComponent);
 }
 
 void Actor::removeFromParent()
@@ -119,11 +136,6 @@ void Actor::removeFromParent()
 	//Deal with child's render component if present.
 	if (pimpl->m_RenderComponent)
 		pimpl->m_RenderComponent->removeFromParent();
-}
-
-void Actor::update(const std::chrono::milliseconds & delteTimeMs)
-{
-	//#TODO: call update() on all components here.
 }
 
 bool Actor::init(ActorID id, tinyxml2::XMLElement *xmlElement)
@@ -171,21 +183,7 @@ void Actor::addComponent(std::shared_ptr<ActorComponent> && component)
 	assert(emplaceResult.second && "Actor::addComponent() can't emplace the component due to some unknown reasons.");
 }
 
-std::shared_ptr<ActorComponent> Actor::getComponent(const std::string & type) const
+void Actor::update(const std::chrono::milliseconds & delteTimeMs)
 {
-	auto findIter = pimpl->m_Components.find(type);
-	if (findIter == pimpl->m_Components.end())
-		return nullptr;
-
-	return findIter->second;
-}
-
-std::shared_ptr<BaseRenderComponent> Actor::getRenderComponent() const
-{
-	return pimpl->m_RenderComponent;
-}
-
-const ActorID & Actor::getID() const
-{
-	return pimpl->m_ID;
+	//#TODO: call update() on all components here.
 }

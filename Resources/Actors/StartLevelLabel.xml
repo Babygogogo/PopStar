@@ -5,6 +5,6 @@
 		<GeneralRenderComponent Type="Label">
 			<CreateWith FunctionName="createWithSystemFont" Text="" FontName="Verdana-Bold" FontSize="50"/>
 		</GeneralRenderComponent>
-		<SequentialInvokerComponent/>
+		<FiniteTimeActionComponent/>
 	</Components>
 </Actor>

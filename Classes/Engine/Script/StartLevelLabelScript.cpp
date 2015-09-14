@@ -3,7 +3,7 @@
 #include "StartLevelLabelScript.h"
 #include "../Actor/Actor.h"
 #include "../Actor/BaseRenderComponent.h"
-#include "../Actor/SequentialInvoker.h"
+#include "../Actor/FiniteTimeActionComponent.h"
 #include "../Event/EventDispatcher.h"
 #include "../Event/EventType.h"
 #include "../Event/BaseEventData.h"
@@ -22,7 +22,7 @@ struct StartLevelLabelScript::StartLevelLabelScriptImpl
 	void onLevelStarted(const IEventData & e);
 
 	cocos2d::Label *m_label_underlying{ nullptr };
-	SequentialInvoker *m_invoker{ nullptr };
+	FiniteTimeActionComponent *m_invoker{ nullptr };
 };
 
 StartLevelLabelScript::StartLevelLabelScriptImpl::StartLevelLabelScriptImpl()
@@ -45,12 +45,12 @@ void StartLevelLabelScript::StartLevelLabelScriptImpl::onLevelStarted(const IEve
 	m_label_underlying->setPosition(visible_size.width + m_label_underlying->getContentSize().width / 2, visible_size.height / 2);
 
 	//Reset the invoker.
-	m_invoker->addMoveTo(0.6f, visible_size.width / 2, visible_size.height / 2);
-	m_invoker->addMoveTo(0.6f, -m_label_underlying->getContentSize().width / 2, visible_size.height / 2, [this]{
+	m_invoker->queueMoveTo(0.6f, visible_size.width / 2, visible_size.height / 2);
+	m_invoker->queueMoveTo(0.6f, -m_label_underlying->getContentSize().width / 2, visible_size.height / 2, [this]{
 		m_label_underlying->setVisible(false);
 		SingletonContainer::getInstance()->get<IEventDispatcher>()->vQueueEvent(std::make_unique<EvtDataGeneric>(EventType::StartLevelLabelDisappeared));
 	});
-	m_invoker->invoke();
+	m_invoker->runNextAction();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -76,7 +76,7 @@ void StartLevelLabelScript::vPostInit()
 	pimpl->m_label_underlying = static_cast<cocos2d::Label*>(actor->getRenderComponent()->getSceneNode());
 	pimpl->m_label_underlying->setVisible(false);
 
-	pimpl->m_invoker = actor->getComponent<SequentialInvoker>().get();
+	pimpl->m_invoker = actor->getComponent<FiniteTimeActionComponent>().get();
 
 	//Register as EventListener.
 	SingletonContainer::getInstance()->get<IEventDispatcher>()->vAddListener(EventType::LevelStarted, pimpl, [this](const IEventData & e){
@@ -85,7 +85,7 @@ void StartLevelLabelScript::vPostInit()
 
 	auto touch_listener = cocos2d::EventListenerTouchOneByOne::create();
 	touch_listener->onTouchBegan = [this](cocos2d::Touch* touch, cocos2d::Event* event)->bool{
-		pimpl->m_invoker->invoke();
+		pimpl->m_invoker->runNextAction();
 		return true;
 	};
 	cocos2d::Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(touch_listener, pimpl->m_label_underlying);

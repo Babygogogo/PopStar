@@ -13,6 +13,6 @@
 			</Color>
 		</StarScript>
 		<GeneralRenderComponent Type="Sprite"/>
-		<SequentialInvokerComponent/>
+		<FiniteTimeActionComponent/>
 	</Components>
 </Actor>

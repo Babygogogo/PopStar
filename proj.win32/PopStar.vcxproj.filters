@@ -54,9 +54,6 @@
     <ClCompile Include="..\Classes\Engine\Event\EventDispatcher.cpp">
       <Filter>Classes\Engine\Event</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Engine\Actor\SequentialInvoker.cpp">
-      <Filter>Classes\Engine\Actor</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\Engine\Actor\Actor.cpp">
       <Filter>Classes\Engine\Actor</Filter>
     </ClCompile>
@@ -147,6 +144,9 @@
     <ClCompile Include="..\Classes\Engine\Script\ScoreCalculatorScript.cpp">
       <Filter>Classes\Engine\Script</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Actor\FiniteTimeActionComponent.cpp">
+      <Filter>Classes\Engine\Actor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -175,9 +175,6 @@
     </ClInclude>
     <ClInclude Include="..\Classes\Engine\Event\IEventData.h">
       <Filter>Classes\Engine\Event</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Actor\SequentialInvoker.h">
-      <Filter>Classes\Engine\Actor</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Engine\Actor\SoundPlayer.h">
       <Filter>Classes\Engine\Actor</Filter>
@@ -310,6 +307,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\Engine\Script\ScoreCalculatorScript.h">
       <Filter>Classes\Engine\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Actor\FiniteTimeActionComponent.h">
+      <Filter>Classes\Engine\Actor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

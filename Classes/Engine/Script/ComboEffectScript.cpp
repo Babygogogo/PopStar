@@ -3,12 +3,12 @@
 #include "ComboEffectScript.h"
 #include "../Actor/Actor.h"
 #include "../Actor/BaseRenderComponent.h"
-#include "../Actor/SequentialInvoker.h"
-#include "../Utilities/SingletonContainer.h"
-#include "../Event/IEventDispatcher.h"
+#include "../Actor/FiniteTimeActionComponent.h"
 #include "../Event/BaseEventData.h"
 #include "../Event/EventType.h"
 #include "../Event/EvtDataPlayerExplodedStars.h"
+#include "../Event/IEventDispatcher.h"
+#include "../Utilities/SingletonContainer.h"
 #include "../Audio/Audio.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -51,10 +51,10 @@ void ComboEffectScript::ComboEffectImpl::onPlayerExplodedStars(const IEventData 
 	underlyingSprite->setVisible(true);
 
 	//Reset the sequential invoker so that the sprite will disappear as we wish
-	auto sequentialInvoker = m_Visitor->m_Actor.lock()->getComponent<SequentialInvoker>();
-	sequentialInvoker->addFiniteTimeAction(cocos2d::Sequence::create(
+	auto sequentialInvoker = m_Visitor->m_Actor.lock()->getComponent<FiniteTimeActionComponent>();
+	sequentialInvoker->queueAction(cocos2d::Sequence::create(
 		cocos2d::Blink::create(1.0f, 5), cocos2d::CallFunc::create([underlyingSprite]{underlyingSprite->setVisible(false); }), nullptr));
-	sequentialInvoker->invoke();
+	sequentialInvoker->runNextAction();
 
 	//Play sound effect.
 	Audio::getInstance()->playCombo(explodedStarsCount);

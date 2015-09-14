@@ -11,6 +11,6 @@
 			</NeighborIndexOffset>
 		</StarMatrixScript>
 		<GeneralRenderComponent Type="Node"/>
-		<SequentialInvokerComponent/>
+		<FiniteTimeActionComponent/>
 	</Components>
 </Actor>
