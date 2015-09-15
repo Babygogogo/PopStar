@@ -1,7 +1,14 @@
 <!-- edited with XMLSpy v2013 (http://www.altova.com) by  () -->
 <Actor Type="ComboEffect" Resource="Actors\ComboEffect.xml">
 	<Components>
-		<ComboEffectScript/>
+		<ComboEffectScript>
+			<ConditionalSpriteFrameNames>
+				<Condition GreaterThanOrEqualTo="10" SpriteFrameName="combo_3.png"/>
+				<Condition GreaterThanOrEqualTo="7" SpriteFrameName="combo_2.png"/>
+				<Condition GreaterThanOrEqualTo="5" SpriteFrameName="combo_1.png"/>
+			</ConditionalSpriteFrameNames>
+			<Blink Duration="1.0" Count="5"/>
+		</ComboEffectScript>
 		<GeneralRenderComponent Type="Sprite">
 			<Position NormalizedX="0.5" NormalizedY="0.5" LocalZOrder="1"/>
 		</GeneralRenderComponent>

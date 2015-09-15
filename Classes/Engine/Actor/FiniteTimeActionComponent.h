@@ -33,13 +33,16 @@ public:
 	static const std::string Type;
 	virtual const std::string & getType() const;
 
-	//Methods for queuing actions. The callback (if provided) is called when the main action is done.
-	void queueAction(cocos2d::FiniteTimeAction* action, std::function<void()> && callback = nullptr);
-	void queueCallback(std::function<void()> && callback);
-	void queueDelay(float delay_s, std::function<void()> && callback = nullptr);
-	void queueMoveTo(float duration_s, float x, float y, std::function<void()> && callback = nullptr);
+	using Callback = std::function<void()>;
 
-	void clearAllActions();
+	//Methods for queuing actions. The callback (if provided) is called when the main action is done.
+	void queueAction(cocos2d::FiniteTimeAction* action, Callback && callback = nullptr);
+	void queueBlink(float duration_s, int blinkCount, Callback && callback = nullptr);
+	void queueCallback(Callback && callback);
+	void queueDelay(float delay_s, Callback && callback = nullptr);
+	void queueMoveTo(float duration_s, float x, float y, Callback && callback = nullptr);
+
+	void stopAndClearAllActions();
 
 	//In the automatically-run-mode, all the actions in the queue will be run one by one, automatically.
 	//In the manually-run-mode (by default), you must manually call runNextAction() to run an action in the queue.

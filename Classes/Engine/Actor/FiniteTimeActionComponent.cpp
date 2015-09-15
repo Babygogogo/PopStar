@@ -124,6 +124,11 @@ void FiniteTimeActionComponent::queueAction(cocos2d::FiniteTimeAction* action, s
 		runNextAction();
 }
 
+void FiniteTimeActionComponent::queueBlink(float duration_s, int blinkCount, Callback && callback /*= nullptr*/)
+{
+	queueAction(cocos2d::Blink::create(duration_s, blinkCount), std::move(callback));
+}
+
 void FiniteTimeActionComponent::queueCallback(std::function<void()> && callback)
 {
 	queueAction(cocos2d::CallFunc::create(callback));
@@ -141,7 +146,7 @@ void FiniteTimeActionComponent::queueMoveTo(float duration_s, float x, float y, 
 	queueAction(cocos2d::MoveTo::create(duration_s, { x, y }), std::move(callback));
 }
 
-void FiniteTimeActionComponent::clearAllActions()
+void FiniteTimeActionComponent::stopAndClearAllActions()
 {
 	while (!pimpl->m_ActionList.empty())
 		pimpl->popFrontAction();

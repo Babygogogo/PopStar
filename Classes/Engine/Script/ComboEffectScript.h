@@ -36,10 +36,11 @@ public:
 private:
 	//Override functions.
 	virtual bool vInit(tinyxml2::XMLElement *xmlElement) override;
+	virtual void vPostInit() override;
 
 	//Implementation stuff.
-	struct ComboEffectImpl;
-	std::shared_ptr<ComboEffectImpl> pimpl;
+	struct ComboEffectScriptImpl;
+	std::shared_ptr<ComboEffectScriptImpl> pimpl;
 };
 
 #endif // !__COMBO_EFFECT_SCRIPT__
