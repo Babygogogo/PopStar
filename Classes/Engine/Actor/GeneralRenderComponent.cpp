@@ -43,6 +43,8 @@ cocos2d::Sprite * GeneralRenderComponent::GeneralRenderComponentImpl::createSpri
 	if (auto createWith = xmlElement->FirstChildElement("CreateWith")){
 		if (auto fileName = createWith->Attribute("FileName"))
 			return cocos2d::Sprite::create(fileName);
+		if (auto spriteFrameName = createWith->Attribute("SpriteFrameName"))
+			return cocos2d::Sprite::createWithSpriteFrameName(spriteFrameName);
 	}
 
 	return cocos2d::Sprite::create();
@@ -81,10 +83,15 @@ cocos2d::Menu * GeneralRenderComponent::GeneralRenderComponentImpl::createMenu(t
 cocos2d::MenuItemImage * GeneralRenderComponent::GeneralRenderComponentImpl::createMenuItemImage(tinyxml2::XMLElement *xmlElement)
 {
 	if (auto createWith = xmlElement->FirstChildElement("CreateWith")){
-		auto normalImage = createWith->Attribute("NormalImage");
-		auto selectedImage = createWith->Attribute("SelectedImage");
+		auto menuItemImage = cocos2d::MenuItemImage::create();
+		auto spriteFrameCache = cocos2d::SpriteFrameCache::getInstance();
 
-		return cocos2d::MenuItemImage::create(normalImage, selectedImage);
+		if (auto normalName = createWith->Attribute("NormalSpriteFrameName"))
+			menuItemImage->setNormalSpriteFrame(spriteFrameCache->getSpriteFrameByName(normalName));
+		if (auto selectedName = createWith->Attribute("SelectedSpriteFrameName"))
+			menuItemImage->setSelectedSpriteFrame(spriteFrameCache->getSpriteFrameByName(selectedName));
+
+		return menuItemImage;
 	}
 
 	return cocos2d::MenuItemImage::create();

@@ -39,7 +39,7 @@ struct StarScript::StarScriptImpl
 
 	struct ColorStruct{
 		std::string typeName;
-		std::string textureName;
+		std::string spriteFrameName;
 		cocos2d::Color4F color4F;
 	};
 	static std::vector<ColorStruct> s_Colors;
@@ -71,7 +71,7 @@ StarScript::StarScriptImpl::~StarScriptImpl()
 void StarScript::StarScriptImpl::setRandomColor()
 {
 	m_ColorIndex = s_RandomColorNum(s_RandomEngine);
-	m_sprite->setTexture(s_Colors[m_ColorIndex].textureName);
+	m_sprite->setSpriteFrame(cocos2d::SpriteFrameCache::getInstance()->getSpriteFrameByName(s_Colors[m_ColorIndex].spriteFrameName));
 }
 
 void StarScript::StarScriptImpl::setRandomPosition(float pos_x, float pos_y)
@@ -209,14 +209,14 @@ bool StarScript::vInit(tinyxml2::XMLElement *xmlElement)
 		auto colorElement = xmlElement->FirstChildElement("Color");
 		for (auto concreteColor = colorElement->FirstChildElement(); concreteColor; concreteColor = concreteColor->NextSiblingElement()){
 			auto colorType = concreteColor->Value();
-			auto textureName = concreteColor->Attribute("TextureName");
+			auto spriteFrameName = concreteColor->Attribute("SpriteFrameName");
 			auto colorR = concreteColor->FloatAttribute("R");
 			auto colorG = concreteColor->FloatAttribute("G");
 			auto colorB = concreteColor->FloatAttribute("B");
 
 			auto colorStruct = StarScriptImpl::ColorStruct();
 			colorStruct.typeName = colorType;
-			colorStruct.textureName = textureName;
+			colorStruct.spriteFrameName = spriteFrameName;
 			colorStruct.color4F = { colorR / 255.0f, colorG / 255.0f, colorB / 255.0f, 1.0f };
 			pimpl->s_Colors.emplace_back(std::move(colorStruct));
 		}

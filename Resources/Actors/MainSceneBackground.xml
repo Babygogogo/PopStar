@@ -2,7 +2,7 @@
 <Actor Type="MainSceneBackground" Resource="Actors\MainSceneBackground.xml">
 	<Components>
 		<GeneralRenderComponent Type="Sprite">
-			<CreateWith FileName="bg_mainscene.jpg"/>
+			<CreateWith SpriteFrameName="bg_mainscene.jpg"/>
 			<Position NormalizedX="0.5" PixelOffsetX="0" NormalizedY="0.5" PixelOffsetY="0" LocalZOrder="-1"/>
 		</GeneralRenderComponent>
 	</Components>

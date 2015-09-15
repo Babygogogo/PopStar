@@ -3,7 +3,7 @@
 	<Components>
 		<ButtonStartGameScript/>
 		<GeneralRenderComponent Type="MenuItemImage">
-			<CreateWith NormalImage="menu_start.png" SelectedImage="menu_start.png"/>
+			<CreateWith NormalSpriteFrameName="menu_start.png" SelectedSpriteFrameName="menu_start.png"/>
 		</GeneralRenderComponent>
 	</Components>
 </Actor>

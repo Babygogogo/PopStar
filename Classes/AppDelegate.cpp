@@ -39,6 +39,8 @@ void AppDelegate::AppDelegateImpl::initGame()
 {
 	Audio::getInstance()->prepare();
 
+	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("Texture.plist");
+
 	auto & singletonContainer = SingletonContainer::getInstance();
 	singletonContainer->set<::Timer>(::Timer::create())->init();
 	singletonContainer->set<IEventDispatcher>(std::make_unique<::EventDispatcher>());

@@ -5,11 +5,11 @@
 			<MoveSpeed Initial="150" Normal="250"/>
 			<Position MaxInitialOffset="135"/>
 			<Color>
-				<Blue TextureName="blue.png" R="84" G="203" B="254"/>
-				<Green TextureName="green.png" R="132" G="226" B="111"/>
-				<Orange TextureName="orange.png" R="253" G="234" B="84"/>
-				<Purple TextureName="purple.png" R="189" G="78" B="253"/>
-				<Red TextureName="red.png" R="253" G="80" B="126"/>
+				<Blue SpriteFrameName="blue.png" R="84" G="203" B="254"/>
+				<Green SpriteFrameName="green.png" R="132" G="226" B="111"/>
+				<Orange SpriteFrameName="orange.png" R="253" G="234" B="84"/>
+				<Purple SpriteFrameName="purple.png" R="189" G="78" B="253"/>
+				<Red SpriteFrameName="red.png" R="253" G="80" B="126"/>
 			</Color>
 		</StarScript>
 		<GeneralRenderComponent Type="Sprite"/>

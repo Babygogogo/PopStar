@@ -47,7 +47,8 @@ void ComboEffectScript::ComboEffectImpl::onPlayerExplodedStars(const IEventData 
 
 	//Get the underlying sprite and update it.
 	auto underlyingSprite = static_cast<cocos2d::Sprite*>(m_Visitor->m_Actor.lock()->getRenderComponent()->getSceneNode());
-	underlyingSprite->setTexture(texture_name);
+	//underlyingSprite->setTexture(texture_name);
+	underlyingSprite->setSpriteFrame(cocos2d::SpriteFrameCache::getInstance()->getSpriteFrameByName(texture_name));
 	underlyingSprite->setVisible(true);
 
 	//Reset the sequential invoker so that the sprite will disappear as we wish
