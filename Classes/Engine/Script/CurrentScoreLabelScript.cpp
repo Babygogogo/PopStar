@@ -1,4 +1,7 @@
+#include <string>
+
 #include "cocos2d.h"
+#include "../../cocos2d/external/tinyxml2/tinyxml2.h"
 
 #include "CurrentScoreLabelScript.h"
 #include "../Actor/Actor.h"
@@ -13,16 +16,20 @@
 //////////////////////////////////////////////////////////////////////////
 struct CurrentScoreLabelScript::CurrentScoreLabelScriptImpl
 {
-	CurrentScoreLabelScriptImpl(CurrentScoreLabelScript *visitor);
+	CurrentScoreLabelScriptImpl();
 	~CurrentScoreLabelScriptImpl();
 
 	void setStringWithScore(int currentScore = 0);
 	void onCurrentScoreValueUpdated(const IEventData & e);
 
-	CurrentScoreLabelScript *m_Visitor{ nullptr };
+	static std::string s_TextPrefix;
+
+	std::weak_ptr<BaseRenderComponent> m_RenderComponent;
 };
 
-CurrentScoreLabelScript::CurrentScoreLabelScriptImpl::CurrentScoreLabelScriptImpl(CurrentScoreLabelScript *visitor) : m_Visitor{ visitor }
+std::string CurrentScoreLabelScript::CurrentScoreLabelScriptImpl::s_TextPrefix;
+
+CurrentScoreLabelScript::CurrentScoreLabelScriptImpl::CurrentScoreLabelScriptImpl()
 {
 }
 
@@ -32,8 +39,8 @@ CurrentScoreLabelScript::CurrentScoreLabelScriptImpl::~CurrentScoreLabelScriptIm
 
 void CurrentScoreLabelScript::CurrentScoreLabelScriptImpl::setStringWithScore(int currentScore /*= 0*/)
 {
-	auto scoreText = std::string("Current Score: ") + std::to_string(currentScore);
-	static_cast<cocos2d::Label*>(m_Visitor->m_Actor.lock()->getRenderComponent()->getSceneNode())->setString(scoreText);
+	auto scoreText = s_TextPrefix + std::to_string(currentScore);
+	static_cast<cocos2d::Label*>(m_RenderComponent.lock()->getSceneNode())->setString(scoreText);
 }
 
 void CurrentScoreLabelScript::CurrentScoreLabelScriptImpl::onCurrentScoreValueUpdated(const IEventData & e)
@@ -45,7 +52,7 @@ void CurrentScoreLabelScript::CurrentScoreLabelScriptImpl::onCurrentScoreValueUp
 //////////////////////////////////////////////////////////////////////////
 //Implementation of CurrentScoreLabelScript.
 //////////////////////////////////////////////////////////////////////////
-CurrentScoreLabelScript::CurrentScoreLabelScript() : pimpl{ std::make_shared<CurrentScoreLabelScriptImpl>(this) }
+CurrentScoreLabelScript::CurrentScoreLabelScript() : pimpl{ std::make_shared<CurrentScoreLabelScriptImpl>() }
 {
 	SingletonContainer::getInstance()->get<IEventDispatcher>()->vAddListener(EventType::CurrentScoreUpdated, pimpl, [this](const IEventData & e){
 		pimpl->onCurrentScoreValueUpdated(e);
@@ -56,8 +63,23 @@ CurrentScoreLabelScript::~CurrentScoreLabelScript()
 {
 }
 
+bool CurrentScoreLabelScript::vInit(tinyxml2::XMLElement *xmlElement)
+{
+	auto s_IsStaticInitialized = false;
+	if (s_IsStaticInitialized)
+		return true;
+
+	auto textElement = xmlElement->FirstChildElement("Text");
+	pimpl->s_TextPrefix = textElement->Attribute("Prefix");
+
+	s_IsStaticInitialized = true;
+	return true;
+}
+
 void CurrentScoreLabelScript::vPostInit()
 {
+	pimpl->m_RenderComponent = m_Actor.lock()->getRenderComponent();
+
 	pimpl->setStringWithScore();
 }
 

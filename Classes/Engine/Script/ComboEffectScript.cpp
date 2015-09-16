@@ -27,7 +27,6 @@ struct ComboEffectScript::ComboEffectScriptImpl
 
 	std::string _getSpriteFrameName(int explodedStarsCount) const;
 
-	static bool s_IsStaticInitialized;
 	static std::vector<std::pair<int, std::string>> s_ConditionalSpriteFrameNameList;
 	static float s_BlinkDuration;
 	static int s_BlinkCount;
@@ -36,7 +35,6 @@ struct ComboEffectScript::ComboEffectScriptImpl
 	std::weak_ptr<FiniteTimeActionComponent> m_FiniteTimeActionComponent;
 };
 
-bool ComboEffectScript::ComboEffectScriptImpl::s_IsStaticInitialized{ false };
 std::vector<std::pair<int, std::string>> ComboEffectScript::ComboEffectScriptImpl::s_ConditionalSpriteFrameNameList;
 float ComboEffectScript::ComboEffectScriptImpl::s_BlinkDuration{ 0.0f };
 int ComboEffectScript::ComboEffectScriptImpl::s_BlinkCount{ 0 };
@@ -64,9 +62,12 @@ void ComboEffectScript::ComboEffectScriptImpl::onPlayerExplodedStars(const IEven
 	underlyingSprite->setVisible(true);
 
 	//Make the sprite blink and then disappear.
+	auto renderComponent = m_RenderComponent;
 	auto finiteTimeActionComponent = m_FiniteTimeActionComponent.lock();
 	finiteTimeActionComponent->stopAndClearAllActions();
-	finiteTimeActionComponent->queueBlink(s_BlinkDuration, s_BlinkCount, [underlyingSprite]{underlyingSprite->setVisible(false); });
+	finiteTimeActionComponent->queueBlink(s_BlinkDuration, s_BlinkCount, [renderComponent]{
+		renderComponent.lock()->getSceneNode()->setVisible(false);
+	});
 	finiteTimeActionComponent->runNextAction();
 
 	//Play sound effect.
@@ -98,7 +99,8 @@ ComboEffectScript::~ComboEffectScript()
 
 bool ComboEffectScript::vInit(tinyxml2::XMLElement *xmlElement)
 {
-	if (pimpl->s_IsStaticInitialized)
+	static auto s_IsStaticInitialized = false;
+	if (s_IsStaticInitialized)
 		return true;
 
 	//Initialize the conditional sprite frame name list.
@@ -115,7 +117,7 @@ bool ComboEffectScript::vInit(tinyxml2::XMLElement *xmlElement)
 	pimpl->s_BlinkDuration = blinkElement->FloatAttribute("Duration");
 	pimpl->s_BlinkCount = blinkElement->IntAttribute("Count");
 
-	pimpl->s_IsStaticInitialized = true;
+	s_IsStaticInitialized = true;
 	return true;
 }
 

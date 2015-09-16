@@ -1,7 +1,9 @@
 <!-- edited with XMLSpy v2013 (http://www.altova.com) by  () -->
 <Actor Type="CurrentScoreLabel" Resource="Actors\CurrentScoreLabel.xml">
 	<Components>
-		<CurrentScoreLabelScript/>
+		<CurrentScoreLabelScript>
+			<Text Prefix="Current Score: "/>
+		</CurrentScoreLabelScript>
 		<GeneralRenderComponent Type="Label">
 			<CreateWith FunctionName="createWithSystemFont" Text="" FontName="Verdana-Bold" FontSize="40"/>
 			<Position NormalizedX="0.5" PixelOffsetX="0" NormalizedY="1" PixelOffsetY="-150"/>
