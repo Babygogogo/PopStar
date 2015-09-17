@@ -9,6 +9,7 @@
 #include "../Graphic2D/SceneStack.h"
 #include "../Event/EventDispatcher.h"
 #include "../Event/EventType.h"
+#include "../Utilities/RelativePosition.h"
 #include "../Utilities/SingletonContainer.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -22,9 +23,15 @@ struct GameOverLabelScript::GameOverLabelScriptImpl
 	void onGameOver();
 	std::function<void()> _callbackOnLabelMoveFinished() const;
 
+	static float s_MoveToDuration;
+	static RelativePosition s_MoveToPosition;
+
 	std::weak_ptr<BaseRenderComponent> m_RenderComponent;
 	std::weak_ptr<FiniteTimeActionComponent> m_FiniteTimeActionComponent;
 };
+
+float GameOverLabelScript::GameOverLabelScriptImpl::s_MoveToDuration{ 0.0f };
+RelativePosition GameOverLabelScript::GameOverLabelScriptImpl::s_MoveToPosition;
 
 GameOverLabelScript::GameOverLabelScriptImpl::GameOverLabelScriptImpl()
 {
@@ -39,13 +46,9 @@ void GameOverLabelScript::GameOverLabelScriptImpl::onGameOver()
 	auto underlyingNode = m_RenderComponent.lock()->getSceneNode();
 	underlyingNode->setVisible(true);
 
-	auto visible_size = cocos2d::Director::getInstance()->getVisibleSize();
-	auto label_size = underlyingNode->getContentSize();
-	underlyingNode->setPosition(visible_size.width / 2, visible_size.height + label_size.height / 2);
-
 	auto actionComponent = m_FiniteTimeActionComponent.lock();
 	actionComponent->stopAndClearAllActions();
-	actionComponent->queueMoveTo(1, visible_size.width / 2, visible_size.height / 2, _callbackOnLabelMoveFinished());
+	actionComponent->queueMoveTo(s_MoveToDuration, s_MoveToPosition.getAbsolutePositionX(underlyingNode), s_MoveToPosition.getAbsolutePositionY(underlyingNode), _callbackOnLabelMoveFinished());
 	actionComponent->runNextAction();
 }
 
@@ -85,6 +88,15 @@ GameOverLabelScript::~GameOverLabelScript()
 
 bool GameOverLabelScript::vInit(tinyxml2::XMLElement *xmlElement)
 {
+	static auto isStaticInitialized = false;
+	if (isStaticInitialized)
+		return true;
+
+	auto moveToElement = xmlElement->FirstChildElement("MoveTo");
+	pimpl->s_MoveToDuration = moveToElement->FloatAttribute("Duration");
+	pimpl->s_MoveToPosition.initialize(moveToElement);
+
+	isStaticInitialized = true;
 	return true;
 }
 

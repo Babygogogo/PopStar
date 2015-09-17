@@ -23,16 +23,7 @@ void BaseRenderComponent::setPosition(const RelativePosition & relativePosition)
 {
 	assert(m_Node && "BaseRenderComponent::setPosition() while the node is not initialized.");
 
-	auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
-	auto screenPosX = relativePosition.m_NormalizedScreenOffsetX * visibleSize.width;
-	auto screenPosY = relativePosition.m_NormalizedScreenOffsetY * visibleSize.height;
-
-	auto nodeSizeX = m_Node->getContentSize().width;
-	auto nodeSizeY = m_Node->getContentSize().height;
-	auto nodePosX = relativePosition.m_NormalizedNodeOffsetX * nodeSizeX;
-	auto nodePosY = relativePosition.m_NormalizedNodeOffsetY * nodeSizeY;
-
-	m_Node->setPosition({ screenPosX + nodePosX + relativePosition.m_PixelOffsetX, screenPosY + nodePosY + relativePosition.m_PixelOffsetY });
+	m_Node->setPosition(relativePosition.getAbsolutePositionX(m_Node), relativePosition.getAbsolutePositionY(m_Node));
 }
 
 void BaseRenderComponent::addChild(const BaseRenderComponent & child)

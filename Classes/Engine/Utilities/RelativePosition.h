@@ -1,6 +1,9 @@
 namespace tinyxml2{
 	class XMLElement;
 }
+namespace cocos2d{
+	class Node;
+}
 
 class RelativePosition
 {
@@ -10,6 +13,9 @@ public:
 	~RelativePosition();
 
 	void initialize(tinyxml2::XMLElement * positionElement);
+
+	float getAbsolutePositionX(cocos2d::Node * node = nullptr) const;
+	float getAbsolutePositionY(cocos2d::Node * node = nullptr) const;
 
 	float m_NormalizedScreenOffsetX{ 0.0f }, m_NormalizedScreenOffsetY{ 0.0f };
 	float m_NormalizedNodeOffsetX{ 0.0f }, m_NormalizedNodeOffsetY{ 0.0f };
