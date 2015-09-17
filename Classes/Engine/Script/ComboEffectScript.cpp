@@ -24,8 +24,7 @@ struct ComboEffectScript::ComboEffectScriptImpl
 	~ComboEffectScriptImpl();
 
 	void onPlayerExplodedStars(const IEventData & e);
-
-	std::string _getSpriteFrameName(int explodedStarsCount) const;
+	cocos2d::SpriteFrame * _getSpriteFrame(int explodedStarsCount) const;
 
 	static std::vector<std::pair<int, std::string>> s_ConditionalSpriteFrameNameList;
 	static float s_BlinkDuration;
@@ -51,14 +50,14 @@ void ComboEffectScript::ComboEffectScriptImpl::onPlayerExplodedStars(const IEven
 {
 	auto explodedStarsCount = (static_cast<const EvtDataPlayerExplodedStars &>(e)).getExplodedStarsCount();
 
-	//Get the sprite frame name corresponding to explodedStarsCount.
-	auto spriteFrameName = _getSpriteFrameName(explodedStarsCount);
-	if (spriteFrameName.empty())
+	//Get the sprite frame corresponding to explodedStarsCount.
+	auto spriteFrame = _getSpriteFrame(explodedStarsCount);
+	if (!spriteFrame)
 		return;
 
 	//Get the underlying sprite and update its appearance.
 	auto underlyingSprite = static_cast<cocos2d::Sprite*>(m_RenderComponent.lock()->getSceneNode());
-	underlyingSprite->setSpriteFrame(cocos2d::SpriteFrameCache::getInstance()->getSpriteFrameByName(spriteFrameName));
+	underlyingSprite->setSpriteFrame(spriteFrame);
 	underlyingSprite->setVisible(true);
 
 	//Make the sprite blink and then disappear.
@@ -74,13 +73,13 @@ void ComboEffectScript::ComboEffectScriptImpl::onPlayerExplodedStars(const IEven
 	Audio::getInstance()->playCombo(explodedStarsCount);
 }
 
-std::string ComboEffectScript::ComboEffectScriptImpl::_getSpriteFrameName(int explodedStarsCount) const
+cocos2d::SpriteFrame * ComboEffectScript::ComboEffectScriptImpl::_getSpriteFrame(int explodedStarsCount) const
 {
 	for (const auto & conditionSpriteFrameName : s_ConditionalSpriteFrameNameList)
 		if (explodedStarsCount >= conditionSpriteFrameName.first)
-			return conditionSpriteFrameName.second;
+			return cocos2d::SpriteFrameCache::getInstance()->getSpriteFrameByName(conditionSpriteFrameName.second);
 
-	return{};
+	return nullptr;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -88,9 +87,6 @@ std::string ComboEffectScript::ComboEffectScriptImpl::_getSpriteFrameName(int ex
 //////////////////////////////////////////////////////////////////////////
 ComboEffectScript::ComboEffectScript() : pimpl{ std::make_shared<ComboEffectScriptImpl>() }
 {
-	SingletonContainer::getInstance()->get<IEventDispatcher>()->vAddListener(EventType::PlayerExplodedStars, pimpl, [this](const IEventData & e){
-		pimpl->onPlayerExplodedStars(e);
-	});
 }
 
 ComboEffectScript::~ComboEffectScript()
@@ -121,16 +117,20 @@ bool ComboEffectScript::vInit(tinyxml2::XMLElement *xmlElement)
 	return true;
 }
 
-const std::string & ComboEffectScript::getType() const
-{
-	return Type;
-}
-
 void ComboEffectScript::vPostInit()
 {
+	SingletonContainer::getInstance()->get<IEventDispatcher>()->vAddListener(EventType::PlayerExplodedStars, pimpl, [this](const IEventData & e){
+		pimpl->onPlayerExplodedStars(e);
+	});
+
 	auto strongActor = m_Actor.lock();
 	pimpl->m_RenderComponent = strongActor->getRenderComponent();
 	pimpl->m_FiniteTimeActionComponent = strongActor->getComponent<FiniteTimeActionComponent>();
+}
+
+const std::string & ComboEffectScript::getType() const
+{
+	return Type;
 }
 
 const std::string ComboEffectScript::Type = "ComboEffectScript";

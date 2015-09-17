@@ -19,12 +19,10 @@ struct GameOverLabelScript::GameOverLabelScriptImpl
 	GameOverLabelScriptImpl();
 	~GameOverLabelScriptImpl();
 
-	void registerAsEventListeners();
-
 	void onGameOver();
-	void resetInvoker();
+	std::function<void()> _callbackOnLabelMoveFinished() const;
 
-	cocos2d::Label *m_LabelUnderlying{ nullptr };
+	std::weak_ptr<BaseRenderComponent> m_RenderComponent;
 	std::weak_ptr<FiniteTimeActionComponent> m_FiniteTimeActionComponent;
 };
 
@@ -36,39 +34,42 @@ GameOverLabelScript::GameOverLabelScriptImpl::~GameOverLabelScriptImpl()
 {
 }
 
-void GameOverLabelScript::GameOverLabelScriptImpl::registerAsEventListeners()
-{
-	auto touch_listener = cocos2d::EventListenerTouchOneByOne::create();
-	touch_listener->onTouchBegan = [this](cocos2d::Touch* touch, cocos2d::Event* event)->bool{
-		m_FiniteTimeActionComponent.lock()->runNextAction();
-		return true;
-	};
-	cocos2d::Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(touch_listener, m_LabelUnderlying);
-}
-
 void GameOverLabelScript::GameOverLabelScriptImpl::onGameOver()
 {
-	m_LabelUnderlying->setVisible(true);
+	auto underlyingNode = m_RenderComponent.lock()->getSceneNode();
+	underlyingNode->setVisible(true);
 
 	auto visible_size = cocos2d::Director::getInstance()->getVisibleSize();
-	auto label_size = m_LabelUnderlying->getContentSize();
-	m_LabelUnderlying->setPosition(visible_size.width / 2, visible_size.height + label_size.height / 2);
+	auto label_size = underlyingNode->getContentSize();
+	underlyingNode->setPosition(visible_size.width / 2, visible_size.height + label_size.height / 2);
 
-	resetInvoker();
-	m_FiniteTimeActionComponent.lock()->runNextAction();
+	auto actionComponent = m_FiniteTimeActionComponent.lock();
+	actionComponent->stopAndClearAllActions();
+	actionComponent->queueMoveTo(1, visible_size.width / 2, visible_size.height / 2, _callbackOnLabelMoveFinished());
+	actionComponent->runNextAction();
 }
 
-void GameOverLabelScript::GameOverLabelScriptImpl::resetInvoker()
+std::function<void()> GameOverLabelScript::GameOverLabelScriptImpl::_callbackOnLabelMoveFinished() const
 {
-	auto strongInvoker = m_FiniteTimeActionComponent.lock();
-	auto visible_size = cocos2d::Director::getInstance()->getVisibleSize();
-	strongInvoker->queueMoveTo(1, visible_size.width / 2, visible_size.height / 2);
+	auto renderComponent = m_RenderComponent;
+	return [renderComponent](){
+		//After the label finished moving, we should be able to respond to player's touch.
+		//To do this, create an touch event listener and add callback to it.
+		auto touchListener = cocos2d::EventListenerTouchOneByOne::create();
+		touchListener->onTouchBegan = [renderComponent](cocos2d::Touch* touch, cocos2d::Event* event)->bool{
+			//When touched, unregister as touch listener.
+			cocos2d::Director::getInstance()->getEventDispatcher()->removeEventListenersForTarget(renderComponent.lock()->getSceneNode());
 
-	strongInvoker->queueCallback([]{
-		auto & singletonContainer = SingletonContainer::getInstance();
-		auto titleScene = singletonContainer->get<GameLogic>()->createActor("Actors\\TitleScene.xml");
-		singletonContainer->get<SceneStack>()->replaceAndRun(*titleScene);
-	});
+			//Then run the TitleScene.
+			auto & singletonContainer = SingletonContainer::getInstance();
+			auto titleScene = singletonContainer->get<GameLogic>()->createActor("Actors\\TitleScene.xml");
+			singletonContainer->get<SceneStack>()->replaceAndRun(*titleScene);
+			return true;
+		};
+
+		//Register the touch listener to event dispatcher.
+		cocos2d::Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(touchListener, renderComponent.lock()->getSceneNode());
+	};
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -76,9 +77,6 @@ void GameOverLabelScript::GameOverLabelScriptImpl::resetInvoker()
 //////////////////////////////////////////////////////////////////////////
 GameOverLabelScript::GameOverLabelScript() : pimpl{ std::make_shared<GameOverLabelScriptImpl>() }
 {
-	SingletonContainer::getInstance()->get<IEventDispatcher>()->vAddListener(EventType::GameOver, pimpl, [this](const IEventData &){
-		pimpl->onGameOver();
-	});
 }
 
 GameOverLabelScript::~GameOverLabelScript()
@@ -92,14 +90,16 @@ bool GameOverLabelScript::vInit(tinyxml2::XMLElement *xmlElement)
 
 void GameOverLabelScript::vPostInit()
 {
+	SingletonContainer::getInstance()->get<IEventDispatcher>()->vAddListener(EventType::GameOver, pimpl, [this](const IEventData &){
+		pimpl->onGameOver();
+	});
+
 	auto strongActor = m_Actor.lock();
+	auto renderComponent = strongActor->getRenderComponent();
+	renderComponent->getSceneNode()->setVisible(false);
 
-	pimpl->m_LabelUnderlying = static_cast<cocos2d::Label*>(strongActor->getRenderComponent()->getSceneNode());
-	pimpl->m_LabelUnderlying->setVisible(false);
-
+	pimpl->m_RenderComponent = renderComponent;
 	pimpl->m_FiniteTimeActionComponent = strongActor->getComponent<FiniteTimeActionComponent>();
-
-	pimpl->registerAsEventListeners();
 }
 
 const std::string & GameOverLabelScript::getType() const

@@ -168,6 +168,7 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClCompile Include="..\Classes\Engine\Script\TargetScoreLabelScript.cpp" />
     <ClCompile Include="..\Classes\Engine\Script\TitleMenuScript.cpp" />
     <ClCompile Include="..\Classes\Engine\Script\TitleSceneScript.cpp" />
+    <ClCompile Include="..\Classes\Engine\Utilities\RelativePosition.cpp" />
     <ClCompile Include="..\Classes\Engine\Utilities\SingletonContainer.cpp" />
     <ClCompile Include="..\Classes\HelloWorldScene.cpp" />
     <ClCompile Include="main.cpp" />
@@ -224,6 +225,7 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClInclude Include="..\Classes\Engine\Script\TitleMenuScript.h" />
     <ClInclude Include="..\Classes\Engine\Script\TitleSceneScript.h" />
     <ClInclude Include="..\Classes\Engine\Utilities\GenericFactory.h" />
+    <ClInclude Include="..\Classes\Engine\Utilities\RelativePosition.h" />
     <ClInclude Include="..\Classes\Engine\Utilities\SingletonContainer.h" />
     <ClInclude Include="..\Classes\HelloWorldScene.h" />
     <ClInclude Include="main.h" />

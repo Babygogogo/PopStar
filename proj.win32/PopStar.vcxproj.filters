@@ -147,6 +147,9 @@
     <ClCompile Include="..\Classes\Engine\Actor\FiniteTimeActionComponent.cpp">
       <Filter>Classes\Engine\Actor</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Utilities\RelativePosition.cpp">
+      <Filter>Classes\Engine\Utilities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -310,6 +313,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\Engine\Actor\FiniteTimeActionComponent.h">
       <Filter>Classes\Engine\Actor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Utilities\RelativePosition.h">
+      <Filter>Classes\Engine\Utilities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

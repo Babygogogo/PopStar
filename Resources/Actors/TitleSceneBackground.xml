@@ -3,7 +3,7 @@
 	<Components>
 		<GeneralRenderComponent Type="Sprite">
 			<CreateWith SpriteFrameName="bg_menuscene.jpg"/>
-			<Position NormalizedX="0.5" PixelOffsetX="0" NormalizedY="0.5" PixelOffsetY="0" LocalZOrder="-1"/>
+			<Position NormalizedScreenOffsetX="0.5" PixelOffsetX="0" NormalizedScreenOffsetY="0.5" PixelOffsetY="0" LocalZOrder="-1"/>
 		</GeneralRenderComponent>
 	</Components>
 </Actor>

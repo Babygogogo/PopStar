@@ -10,7 +10,7 @@
 			<Blink Duration="1.0" Count="5"/>
 		</ComboEffectScript>
 		<GeneralRenderComponent Type="Sprite">
-			<Position NormalizedX="0.5" NormalizedY="0.5" LocalZOrder="1"/>
+			<Position NormalizedScreenOffsetX="0.5" NormalizedScreenOffsetY="0.5" LocalZOrder="1"/>
 		</GeneralRenderComponent>
 		<FiniteTimeActionComponent/>
 	</Components>

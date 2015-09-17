@@ -4,7 +4,7 @@
 		<LevelSummaryLabelScript/>
 		<GeneralRenderComponent Type="Label">
 			<CreateWith FunctionName="createWithSystemFont" Text="" FontName="Verdana-Bold" FontSize="50"/>
-			<Position NormalizedX="0.5" PixelOffsetX="0" NormalizedY="1" PixelOffsetY="-250"/>
+			<Position NormalizedScreenOffsetX="0.5" PixelOffsetX="0" NormalizedScreenOffsetY="1" PixelOffsetY="-250"/>
 		</GeneralRenderComponent>
 		<FiniteTimeActionComponent/>
 	</Components>

@@ -3,7 +3,7 @@
 	<Components>
 		<TitleMenuScript/>
 		<GeneralRenderComponent Type="Menu">
-			<Position NormalizedX="0.5" PixelOffsetX="0" NormalizedY="0.5" PixelOffsetY="0"/>
+			<Position NormalizedScreenOffsetX="0.5" PixelOffsetX="0" NormalizedScreenOffsetY="0.5" PixelOffsetY="0"/>
 		</GeneralRenderComponent>
 	</Components>
 	<ChildrenActors>

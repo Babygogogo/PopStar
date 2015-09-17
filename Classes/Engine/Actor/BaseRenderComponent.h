@@ -8,6 +8,7 @@ namespace cocos2d
 {
 	class Node;
 }
+class RelativePosition;
 
 /*!
  * \class BaseRenderComponent
@@ -31,6 +32,8 @@ public:
 	~BaseRenderComponent();
 
 	cocos2d::Node * getSceneNode() const;
+
+	void setPosition(const RelativePosition & relativePosition);
 
 	//Disable copy/move constructor and operator=.
 	BaseRenderComponent(const BaseRenderComponent &) = delete;

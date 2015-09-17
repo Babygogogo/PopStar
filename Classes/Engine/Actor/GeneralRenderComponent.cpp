@@ -5,6 +5,7 @@
 
 #include "GeneralRenderComponent.h"
 #include "Actor.h"
+#include "../Utilities/RelativePosition.h"
 
 //////////////////////////////////////////////////////////////////////////
 //Definition of DisplayNodeImpl.
@@ -180,13 +181,7 @@ bool GeneralRenderComponent::vInit(tinyxml2::XMLElement *xmlElement)
 
 	//Set some extra data if presents in the xmlElement.
 	if (auto positionElement = xmlElement->FirstChildElement("Position")){
-		auto visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
-
-		auto normalizedX = positionElement->FloatAttribute("NormalizedX");
-		auto pixelOffsetX = positionElement->FloatAttribute("PixelOffsetX");
-		auto normalizedY = positionElement->FloatAttribute("NormalizedY");
-		auto pixelOffsetY = positionElement->FloatAttribute("PixelOffsetY");
-		m_Node->setPosition(visibleSize.width * normalizedX + pixelOffsetX, visibleSize.height * normalizedY + pixelOffsetY);
+		setPosition(RelativePosition(positionElement));
 
 		auto localZOrder = positionElement->IntAttribute("LocalZOrder");
 		m_Node->setLocalZOrder(localZOrder);
