@@ -13,6 +13,7 @@ public:
 
 	//The type name of this component. Same as the class name.
 	static const std::string Type;
+	virtual const std::string & getType() const override;
 
 	//Disable copy/move constructor and operator=.
 	GetScoreLabelScript(const GetScoreLabelScript&) = delete;
@@ -22,7 +23,7 @@ public:
 
 private:
 	//Override functions.
-	virtual const std::string & getType() const override;
+	virtual bool vInit(tinyxml2::XMLElement *xmlElement) override;
 	virtual void vPostInit() override;
 
 	//Implementation stuff.

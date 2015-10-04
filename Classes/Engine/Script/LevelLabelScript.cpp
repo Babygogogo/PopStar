@@ -1,4 +1,5 @@
 #include "cocos2d.h"
+#include "../../cocos2d/external/tinyxml2/tinyxml2.h"
 
 #include "LevelLabelScript.h"
 #include "../Actor/Actor.h"
@@ -13,17 +14,21 @@
 //////////////////////////////////////////////////////////////////////////
 struct LevelLabelScript::LevelLabelScriptImpl
 {
-	LevelLabelScriptImpl(LevelLabelScript *visitor);
+	LevelLabelScriptImpl();
 	~LevelLabelScriptImpl();
 
 	void onLevelStarted(const IEventData & e);
 
-	void setStringWithLevel(int levelValue = 0);
+	void setStringWithLevel(int levelIndex);
 
-	LevelLabelScript *m_Visitor{ nullptr };
+	static std::string s_LevelString;
+
+	std::weak_ptr<BaseRenderComponent> m_RenderComponent;
 };
 
-LevelLabelScript::LevelLabelScriptImpl::LevelLabelScriptImpl(LevelLabelScript *visitor) : m_Visitor{ visitor }
+std::string LevelLabelScript::LevelLabelScriptImpl::s_LevelString;
+
+LevelLabelScript::LevelLabelScriptImpl::LevelLabelScriptImpl()
 {
 }
 
@@ -37,16 +42,16 @@ void LevelLabelScript::LevelLabelScriptImpl::onLevelStarted(const IEventData & e
 	setStringWithLevel(levelStartedEvent.getLevelIndex());
 }
 
-void LevelLabelScript::LevelLabelScriptImpl::setStringWithLevel(int levelValue /*= 0*/)
+void LevelLabelScript::LevelLabelScriptImpl::setStringWithLevel(int levelIndex)
 {
-	auto underlyingLabel = static_cast<cocos2d::Label*>(m_Visitor->m_Actor.lock()->getRenderComponent()->getSceneNode());
-	underlyingLabel->setString(std::string("Level: ") + std::to_string(levelValue));
+	auto underlyingLabel = static_cast<cocos2d::Label*>(m_RenderComponent.lock()->getSceneNode());
+	underlyingLabel->setString(s_LevelString + std::to_string(levelIndex));
 }
 
 //////////////////////////////////////////////////////////////////////////
 //Implementation of LevelLabelScript.
 //////////////////////////////////////////////////////////////////////////
-LevelLabelScript::LevelLabelScript() : pimpl{ std::make_shared<LevelLabelScriptImpl>(this) }
+LevelLabelScript::LevelLabelScript() : pimpl{ std::make_shared<LevelLabelScriptImpl>() }
 {
 }
 
@@ -54,13 +59,27 @@ LevelLabelScript::~LevelLabelScript()
 {
 }
 
+bool LevelLabelScript::vInit(tinyxml2::XMLElement *xmlElement)
+{
+	static auto isStaticInitialized = false;
+	if (isStaticInitialized)
+		return true;
+
+	auto textElement = xmlElement->FirstChildElement("Text");
+	pimpl->s_LevelString = textElement->Attribute("Level");
+
+	isStaticInitialized = true;
+	return true;
+}
+
 void LevelLabelScript::vPostInit()
 {
-	pimpl->setStringWithLevel();
-
 	SingletonContainer::getInstance()->get<IEventDispatcher>()->vAddListener(EventType::LevelStarted, pimpl, [this](const IEventData & e){
 		pimpl->onLevelStarted(e);
 	});
+
+	pimpl->m_RenderComponent = m_Actor.lock()->getRenderComponent();
+	pimpl->setStringWithLevel(0);
 }
 
 const std::string & LevelLabelScript::getType() const

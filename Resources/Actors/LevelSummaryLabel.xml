@@ -1,10 +1,14 @@
 <!-- edited with XMLSpy v2013 (http://www.altova.com) by  () -->
 <Actor Type="LevelSummaryLabel" Resource="Actors\LevelSummaryLabel.xml">
 	<Components>
-		<LevelSummaryLabelScript/>
+		<LevelSummaryLabelScript>
+			<Text RemainingStars="Remaining: " BonusScore="    Bonus: "/>
+			<InitialPosition NormalizedScreenOffsetX="1" NormalizedScreenOffsetY="0.5" NormalizedNodeOffsetX="0.5" NormalizedNodeOffsetY="0"/>
+			<MoveIn Duration="0.6" NormalizedScreenOffsetX="0.5" NormalizedScreenOffsetY="0.5"/>
+			<MoveOut Duration="0.6" NormalizedScreenOffsetX="0" NormalizedScreenOffsetY="0.5" NormalizedNodeOffsetX="-0.5" NormalizedNodeOffsetY="0"/>
+		</LevelSummaryLabelScript>
 		<GeneralRenderComponent Type="Label">
-			<CreateWith FunctionName="createWithSystemFont" Text="" FontName="Verdana-Bold" FontSize="50"/>
-			<Position NormalizedScreenOffsetX="0.5" PixelOffsetX="0" NormalizedScreenOffsetY="1" PixelOffsetY="-250"/>
+			<CreateWith FunctionName="createWithSystemFont" Text="" FontName="Verdana-Bold" FontSize="45"/>
 		</GeneralRenderComponent>
 		<FiniteTimeActionComponent/>
 	</Components>

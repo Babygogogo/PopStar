@@ -1,3 +1,6 @@
+#ifndef __RELATIVE_POSITION__
+#define __RELATIVE_POSITION__
+
 namespace tinyxml2{
 	class XMLElement;
 }
@@ -21,3 +24,5 @@ public:
 	float m_NormalizedNodeOffsetX{ 0.0f }, m_NormalizedNodeOffsetY{ 0.0f };
 	float m_PixelOffsetX{ 0.0f }, m_PixelOffsetY{ 0.0f };
 };
+
+#endif // !__RELATIVE_POSITION__

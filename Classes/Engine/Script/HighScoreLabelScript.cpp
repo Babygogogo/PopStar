@@ -1,4 +1,5 @@
 #include "cocos2d.h"
+#include "../../cocos2d/external/tinyxml2/tinyxml2.h"
 
 #include "HighScoreLabelScript.h"
 #include "../Actor/Actor.h"
@@ -13,17 +14,21 @@
 //////////////////////////////////////////////////////////////////////////
 struct HighScoreLabelScript::HighScoreLabelScriptImpl
 {
-	HighScoreLabelScriptImpl(HighScoreLabelScript *visitor);
+	HighScoreLabelScriptImpl();
 	~HighScoreLabelScriptImpl();
 
-	void setStringWithScore(int highScore = 0);
+	void setStringWithScore(int highScore);
 
 	void onHighScoreUpdated(const IEventData & e);
 
-	HighScoreLabelScript *m_Visitor{ nullptr };
+	static std::string s_HighScoreString;
+
+	std::weak_ptr<BaseRenderComponent> m_RenderComponent;
 };
 
-HighScoreLabelScript::HighScoreLabelScriptImpl::HighScoreLabelScriptImpl(HighScoreLabelScript *visitor) : m_Visitor{ visitor }
+std::string HighScoreLabelScript::HighScoreLabelScriptImpl::s_HighScoreString;
+
+HighScoreLabelScript::HighScoreLabelScriptImpl::HighScoreLabelScriptImpl()
 {
 }
 
@@ -33,20 +38,20 @@ HighScoreLabelScript::HighScoreLabelScriptImpl::~HighScoreLabelScriptImpl()
 
 void HighScoreLabelScript::HighScoreLabelScriptImpl::onHighScoreUpdated(const IEventData & e)
 {
-	auto & highScoreEvent = static_cast<const EvtDataHighScoreUpdated &>(e);
+	const auto & highScoreEvent = static_cast<const EvtDataHighScoreUpdated &>(e);
 	setStringWithScore(highScoreEvent.getHighScore());
 }
 
-void HighScoreLabelScript::HighScoreLabelScriptImpl::setStringWithScore(int highScore /*= 0*/)
+void HighScoreLabelScript::HighScoreLabelScriptImpl::setStringWithScore(int highScore)
 {
-	auto underlyingLabel = static_cast<cocos2d::Label*>(m_Visitor->m_Actor.lock()->getRenderComponent()->getSceneNode());
-	underlyingLabel->setString(std::string("High Score: ") + std::to_string(highScore));
+	auto underlyingLabel = static_cast<cocos2d::Label*>(m_RenderComponent.lock()->getSceneNode());
+	underlyingLabel->setString(s_HighScoreString + std::to_string(highScore));
 }
 
 //////////////////////////////////////////////////////////////////////////
 //Implementation of HighScoreLabelScript.
 //////////////////////////////////////////////////////////////////////////
-HighScoreLabelScript::HighScoreLabelScript() : pimpl{ std::make_shared<HighScoreLabelScriptImpl>(this) }
+HighScoreLabelScript::HighScoreLabelScript() : pimpl{ std::make_shared<HighScoreLabelScriptImpl>() }
 {
 }
 
@@ -54,13 +59,27 @@ HighScoreLabelScript::~HighScoreLabelScript()
 {
 }
 
+bool HighScoreLabelScript::vInit(tinyxml2::XMLElement *xmlElement)
+{
+	static auto isStaticInitialized = false;
+	if (isStaticInitialized)
+		return true;
+
+	auto textElement = xmlElement->FirstChildElement("Text");
+	pimpl->s_HighScoreString = textElement->Attribute("HighScore");
+
+	isStaticInitialized = true;
+	return true;
+}
+
 void HighScoreLabelScript::vPostInit()
 {
-	pimpl->setStringWithScore();
-
 	SingletonContainer::getInstance()->get<IEventDispatcher>()->vAddListener(EventType::HighScoreUpdated, pimpl, [this](const IEventData & e){
 		pimpl->onHighScoreUpdated(e);
 	});
+
+	pimpl->m_RenderComponent = m_Actor.lock()->getRenderComponent();
+	pimpl->setStringWithScore(0);
 }
 
 const std::string & HighScoreLabelScript::getType() const
