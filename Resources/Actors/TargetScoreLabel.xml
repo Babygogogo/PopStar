@@ -1,0 +1,10 @@
+<!-- edited with XMLSpy v2013 (http://www.altova.com) by  () -->
+<Actor Type="TargetScoreLabel" Resource="Actors\TargetScoreLabel.xml">
+	<Components>
+		<TargetScoreLabelScript/>
+		<GeneralRenderComponent Type="Label">
+			<CreateWith FunctionName="createWithSystemFont" Text="" FontName="Verdana-Bold" FontSize="30"/>
+			<Position NormalizedScreenOffsetX="0" PixelOffsetX="325" NormalizedScreenOffsetY="1" PixelOffsetY="-100"/>
+		</GeneralRenderComponent>
+	</Components>
+</Actor>

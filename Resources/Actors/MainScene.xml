@@ -1,0 +1,20 @@
+<!-- edited with XMLSpy v2013 (http://www.altova.com) by  () -->
+<Actor Type="MainScene" Resource="Actors\MainScene.xml">
+	<Components>
+		<MainSceneScript/>
+		<GeneralRenderComponent Type="Scene"/>
+	</Components>
+	<ChildrenActors>
+		<Resource File="Actors\ScoreCalculator.xml"/>
+		<Resource File="Actors\MainSceneBackground.xml"/>
+		<Resource File="Actors\MatrixLayer.xml"/>
+		<Resource File="Actors\HighScoreLabel.xml"/>
+		<Resource File="Actors\CurrentScoreLabel.xml"/>
+		<Resource File="Actors\TargetScoreLabel.xml"/>
+		<Resource File="Actors\LevelLabel.xml"/>
+		<Resource File="Actors\StartLevelLabel.xml"/>
+		<Resource File="Actors\GetScoreLabel.xml"/>
+		<Resource File="Actors\LevelSummaryLabel.xml"/>
+		<Resource File="Actors\GameOverLabel.xml"/>
+	</ChildrenActors>
+</Actor>
