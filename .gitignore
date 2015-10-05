@@ -160,3 +160,6 @@ $RECYCLE.BIN/
 /proj.linux
 /proj.wp8-xaml
 /proj.win32/Debug.win32
+/proj.android-studio
+/proj.win10
+/proj.win8.1-universal

@@ -1,0 +1,12 @@
+<!-- edited with XMLSpy v2013 (http://www.altova.com) by  () -->
+<Actor Type="GetScoreLabel" Resource="Actors\GetScoreLabel.xml">
+	<Components>
+		<GetScoreLabelScript>
+			<Text ExplodedStars="Exploded: " GetScore=" Score: "/>
+		</GetScoreLabelScript>
+		<GeneralRenderComponent Type="Label">
+			<CreateWith FunctionName="createWithSystemFont" Text="" FontName="Arial" FontSize="30"/>
+			<Position NormalizedScreenOffsetX="0.5" PixelOffsetX="0" NormalizedScreenOffsetY="1" PixelOffsetY="-250"/>
+		</GeneralRenderComponent>
+	</Components>
+</Actor>

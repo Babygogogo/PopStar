@@ -1,0 +1,9 @@
+<!-- edited with XMLSpy v2013 (http://www.altova.com) by  () -->
+<Actor Type="TitleSceneBackground" Resource="Actors\TitleSceneBackground.xml">
+	<Components>
+		<GeneralRenderComponent Type="Sprite">
+			<CreateWith SpriteFrameName="bg_menuscene.jpg"/>
+			<Position NormalizedScreenOffsetX="0.5" PixelOffsetX="0" NormalizedScreenOffsetY="0.5" PixelOffsetY="0" LocalZOrder="-1"/>
+		</GeneralRenderComponent>
+	</Components>
+</Actor>

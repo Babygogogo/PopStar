@@ -1,0 +1,10 @@
+<!-- edited with XMLSpy v2013 (http://www.altova.com) by  () -->
+<Actor Type="MatrixLayer" Resource="Actors\MatrixLayer.xml">
+	<Components>
+		<MatrixLayerScript/>
+		<GeneralRenderComponent Type="Layer"/>
+	</Components>
+	<ChildrenActors>
+		<Resource File="Actors\ComboEffect.xml"/>
+	</ChildrenActors>
+</Actor>
