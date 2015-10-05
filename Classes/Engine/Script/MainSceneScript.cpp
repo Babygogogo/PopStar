@@ -34,14 +34,14 @@ MainSceneScript::~MainSceneScript()
 {
 }
 
-const std::string & MainSceneScript::getType() const
-{
-	return Type;
-}
-
 void MainSceneScript::vPostInit()
 {
 	Audio::getInstance()->playBGM();
+}
+
+const std::string & MainSceneScript::getType() const
+{
+	return Type;
 }
 
 const std::string MainSceneScript::Type = "MainSceneScript";

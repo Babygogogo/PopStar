@@ -114,9 +114,6 @@
     <ClCompile Include="..\Classes\Engine\Script\MainSceneScript.cpp">
       <Filter>src\Scripts</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Engine\Script\MatrixLayerScript.cpp">
-      <Filter>src\Scripts</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\Engine\Script\ScoreCalculatorScript.cpp">
       <Filter>src\Scripts</Filter>
     </ClCompile>
@@ -276,9 +273,6 @@
       <Filter>src\Scripts</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Engine\Script\MainSceneScript.h">
-      <Filter>src\Scripts</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Script\MatrixLayerScript.h">
       <Filter>src\Scripts</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Engine\Script\ScoreCalculatorScript.h">

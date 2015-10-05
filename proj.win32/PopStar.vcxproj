@@ -168,7 +168,6 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClCompile Include="..\Classes\Engine\Script\LevelLabelScript.cpp" />
     <ClCompile Include="..\Classes\Engine\Script\LevelSummaryLabelScript.cpp" />
     <ClCompile Include="..\Classes\Engine\Script\MainSceneScript.cpp" />
-    <ClCompile Include="..\Classes\Engine\Script\MatrixLayerScript.cpp" />
     <ClCompile Include="..\Classes\Engine\Script\ScoreCalculatorScript.cpp" />
     <ClCompile Include="..\Classes\Engine\Script\StarMatrixScript.cpp" />
     <ClCompile Include="..\Classes\Engine\Script\StarParticleScript.cpp" />
@@ -224,7 +223,6 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClInclude Include="..\Classes\Engine\Script\LevelLabelScript.h" />
     <ClInclude Include="..\Classes\Engine\Script\LevelSummaryLabelScript.h" />
     <ClInclude Include="..\Classes\Engine\Script\MainSceneScript.h" />
-    <ClInclude Include="..\Classes\Engine\Script\MatrixLayerScript.h" />
     <ClInclude Include="..\Classes\Engine\Script\ScoreCalculatorScript.h" />
     <ClInclude Include="..\Classes\Engine\Script\StarMatrixScript.h" />
     <ClInclude Include="..\Classes\Engine\Script\StarParticleScript.h" />

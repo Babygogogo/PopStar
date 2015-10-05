@@ -35,6 +35,7 @@ struct StarMatrixScript::StarMatrixScriptImpl
 
 	void onTouch(const cocos2d::Point& p);
 	void onLevelSummaryFinished(const IEventData & e);
+	void onStartLevelLabelDisappeared(const IEventData & e);
 
 	bool isRowNumValid(int row_num) const;
 	bool isColNumValid(int col_num) const;
@@ -106,6 +107,22 @@ void StarMatrixScript::StarMatrixScriptImpl::onLevelSummaryFinished(const IEvent
 		SingletonContainer::getInstance()->get<IEventDispatcher>()->vQueueEvent(std::make_unique<EvtDataGeneric>(EventType::LeftStarsExploded));
 	});
 	unregisterAsEventListeners();
+}
+
+void StarMatrixScript::StarMatrixScriptImpl::onStartLevelLabelDisappeared(const IEventData & e)
+{
+	//Randomize the star matrix.
+	for (auto row_num = 0; row_num < s_RowCount; ++row_num){
+		for (auto col_num = 0; col_num < s_ColumnCount; ++col_num){
+			m_StarScripts[row_num][col_num] = m_initial_stars[row_num][col_num];
+
+			auto position = getStarDefaultPosition(row_num, col_num);
+			m_StarScripts[row_num][col_num]->randomize(row_num, col_num, position.x, position.y);
+		}
+	}
+	registerAsEventListeners();
+
+	Audio::getInstance()->playReadyGo();
 }
 
 bool StarMatrixScript::StarMatrixScriptImpl::isRowNumValid(int row_num) const
@@ -292,9 +309,6 @@ void StarMatrixScript::StarMatrixScriptImpl::explodeAllLeftStars()
 //////////////////////////////////////////////////////////////////////////
 StarMatrixScript::StarMatrixScript() : pimpl{ std::make_shared<StarMatrixScriptImpl>(this) }
 {
-	SingletonContainer::getInstance()->get<IEventDispatcher>()->vAddListener(EventType::LevelSummaryFinished, pimpl, [this](const IEventData & e){
-		pimpl->onLevelSummaryFinished(e);
-	});
 }
 
 StarMatrixScript::~StarMatrixScript()
@@ -313,11 +327,6 @@ void StarMatrixScript::reset()
 		}
 
 	pimpl->registerAsEventListeners();
-}
-
-const std::string & StarMatrixScript::getType() const
-{
-	return Type;
 }
 
 bool StarMatrixScript::vInit(tinyxml2::XMLElement *xmlElement)
@@ -367,6 +376,19 @@ void StarMatrixScript::vPostInit()
 			pimpl->m_StarScripts[row_num][col_num] = pimpl->m_initial_stars[row_num][col_num] = starActor->getComponent<StarScript>().get();
 			actor->addChild(*starActor);
 		}
+
+	auto eventDispatcher = SingletonContainer::getInstance()->get<IEventDispatcher>();
+	eventDispatcher->vAddListener(EventType::LevelSummaryFinished, pimpl, [this](const IEventData & e){
+		pimpl->onLevelSummaryFinished(e);
+	});
+	eventDispatcher->vAddListener(EventType::StartLevelLabelDisappeared, pimpl, [this](const IEventData & e){
+		pimpl->onStartLevelLabelDisappeared(e);
+	});
+}
+
+const std::string & StarMatrixScript::getType() const
+{
+	return Type;
 }
 
 const std::string StarMatrixScript::Type = "StarMatrixScript";

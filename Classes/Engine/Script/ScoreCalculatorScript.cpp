@@ -182,7 +182,7 @@ int ScoreCalculatorScript::ScoreCalculatorScriptImpl::getEndLevelBonus() const
 //////////////////////////////////////////////////////////////////////////
 //Implementation of GameData.
 //////////////////////////////////////////////////////////////////////////
-ScoreCalculatorScript::ScoreCalculatorScript() : pimpl{ std::make_unique<ScoreCalculatorScriptImpl>() }
+ScoreCalculatorScript::ScoreCalculatorScript() : pimpl{ std::make_shared<ScoreCalculatorScriptImpl>() }
 {
 	auto eventDispatcher = SingletonContainer::getInstance()->get<IEventDispatcher>();
 

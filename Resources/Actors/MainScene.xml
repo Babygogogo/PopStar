@@ -7,7 +7,8 @@
 	<ChildrenActors>
 		<Resource File="Actors\ScoreCalculator.xml"/>
 		<Resource File="Actors\MainSceneBackground.xml"/>
-		<Resource File="Actors\MatrixLayer.xml"/>
+		<Resource File="Actors\StarMatrix.xml"/>
+		<Resource File="Actors\ComboEffect.xml"/>
 		<Resource File="Actors\HighScoreLabel.xml"/>
 		<Resource File="Actors\CurrentScoreLabel.xml"/>
 		<Resource File="Actors\TargetScoreLabel.xml"/>

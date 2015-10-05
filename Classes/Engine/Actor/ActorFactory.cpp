@@ -17,7 +17,6 @@
 #include "../Script/LevelLabelScript.h"
 #include "../Script/LevelSummaryLabelScript.h"
 #include "../Script/MainSceneScript.h"
-#include "../Script/MatrixLayerScript.h"
 #include "../Script/ScoreCalculatorScript.h"
 #include "../Script/StarScript.h"
 #include "../Script/StarMatrixScript.h"
@@ -74,7 +73,6 @@ void ActorFactory::ActorFactoryImpl::registerComponents()
 	m_ComponentFactory.registerType<LevelLabelScript>();
 	m_ComponentFactory.registerType<LevelSummaryLabelScript>();
 	m_ComponentFactory.registerType<MainSceneScript>();
-	m_ComponentFactory.registerType<MatrixLayerScript>();
 	m_ComponentFactory.registerType<ScoreCalculatorScript>();
 	m_ComponentFactory.registerType<StarScript>();
 	m_ComponentFactory.registerType<StarMatrixScript>();

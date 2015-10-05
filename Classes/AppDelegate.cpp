@@ -2,7 +2,6 @@
 #include "Engine/Audio/Audio.h"
 
 #include "Engine/Actor/Actor.h"
-#include "Engine/Actor/BaseRenderComponent.h"
 #include "Engine/Event/EventDispatcher.h"
 #include "Engine/GameLogic/GameLogic.h"
 #include "Engine/Graphic2D/SceneStack.h"
@@ -52,13 +51,6 @@ void AppDelegate::AppDelegateImpl::initGame()
 	singletonContainer->get<SceneStack>()->pushAndRun(*titleScene);
 
 	Director::getInstance()->getScheduler()->scheduleUpdate(this, 0, false);
-
-	//Test the particle explosion.
-	auto pe = cocos2d::ParticleExplosion::create();
-	pe->setTexture(cocos2d::Director::getInstance()->getTextureCache()->addImage("red_heart.png"));
-	pe->setTotalParticles(10);
-	pe->setPosition(240, 400);
-	titleScene->getRenderComponent()->getSceneNode()->addChild(pe, 10);
 }
 
 void AppDelegate::AppDelegateImpl::update(float deltaTimeF)
