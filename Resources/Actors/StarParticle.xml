@@ -11,7 +11,7 @@
 			</Color>
 		</StarParticleScript>
 		<GeneralRenderComponent Type="ParticleExplosion">
-			<Properties Texture="star.png" TotalParticles="15" StartSize="25" Life="1" Speed="200" SpeedVariance="10">
+			<Properties Texture="star.png" TotalParticles="10000" Life="1" Speed="150" SpeedVariance="100">
 				<StartColorVariance R="0" G="0" B="0" A="1"/>
 				<EndColorVariance R="0" G="0" B="0" A="255"/>
 				<Gravity X="0" Y="-300"/>

@@ -4,38 +4,35 @@
     <Filter Include="win32">
       <UniqueIdentifier>{84a8ebd7-7cf0-47f6-b75e-d441df67da40}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Classes">
-      <UniqueIdentifier>{bb6c862e-70e9-49d9-81b7-3829a6f50471}</UniqueIdentifier>
-    </Filter>
     <Filter Include="resource">
       <UniqueIdentifier>{715254bc-d70b-4ec5-bf29-467dd3ace079}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Classes\Engine">
-      <UniqueIdentifier>{8a734a2b-f696-4575-a6ea-5c35a5201b16}</UniqueIdentifier>
+    <Filter Include="src">
+      <UniqueIdentifier>{bb6c862e-70e9-49d9-81b7-3829a6f50471}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Classes\Engine\Utilities">
-      <UniqueIdentifier>{c7678c21-27a6-4d3c-9a44-1b575a8d9533}</UniqueIdentifier>
+    <Filter Include="src\Actor">
+      <UniqueIdentifier>{7a9ee041-75a0-4729-b8f7-239151a55677}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Classes\Engine\Actor">
-      <UniqueIdentifier>{036000fc-6319-4e35-a0ee-2c9811861748}</UniqueIdentifier>
+    <Filter Include="src\Audio">
+      <UniqueIdentifier>{0b0635ae-4d1e-4812-95dd-58b6160a64ba}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Classes\Engine\Script">
-      <UniqueIdentifier>{ef8c469e-5c7a-42b8-a0b3-cad6c0f00978}</UniqueIdentifier>
+    <Filter Include="src\Event">
+      <UniqueIdentifier>{c62dbd55-ea39-4133-9f80-375df12b5f96}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Classes\Engine\MainLoop">
-      <UniqueIdentifier>{f383a445-cdbc-44c5-9b77-978b1db4d78a}</UniqueIdentifier>
+    <Filter Include="src\GameLogic">
+      <UniqueIdentifier>{d1d9f999-1929-4b01-83ed-92e4f94033f3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Classes\Engine\Graphic2D">
-      <UniqueIdentifier>{a2351463-f91b-49a2-bb5d-856f04de1f11}</UniqueIdentifier>
+    <Filter Include="src\Graphic2D">
+      <UniqueIdentifier>{c84400e2-9cee-4db6-bc4b-6cecaad08302}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Classes\Engine\Audio">
-      <UniqueIdentifier>{9e3a3300-7804-45e9-a14a-e6a2c670d9d7}</UniqueIdentifier>
+    <Filter Include="src\MainLoop">
+      <UniqueIdentifier>{afbd03da-da21-4c06-b7d4-f387057d46ad}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Classes\Engine\Logic">
-      <UniqueIdentifier>{a10c367e-79e4-4851-aa19-22c604b5b269}</UniqueIdentifier>
+    <Filter Include="src\Utilities">
+      <UniqueIdentifier>{e0248e48-b98e-443d-9d82-361b3b2cf780}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Classes\Engine\Event">
-      <UniqueIdentifier>{28d53e71-a1b4-4424-98e0-55e49df8bff1}</UniqueIdentifier>
+    <Filter Include="src\Scripts">
+      <UniqueIdentifier>{a97cb2f8-2aa7-4fcb-ab41-8f60463bed2b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -43,112 +40,112 @@
       <Filter>win32</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\AppDelegate.cpp">
-      <Filter>Classes</Filter>
+      <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\HelloWorldScene.cpp">
-      <Filter>Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Engine\Utilities\SingletonContainer.cpp">
-      <Filter>Classes\Engine\Utilities</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Engine\Event\EventDispatcher.cpp">
-      <Filter>Classes\Engine\Event</Filter>
+      <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\Engine\Actor\Actor.cpp">
-      <Filter>Classes\Engine\Actor</Filter>
+      <Filter>src\Actor</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\Engine\Actor\ActorComponent.cpp">
-      <Filter>Classes\Engine\Actor</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Engine\MainLoop\Timer.cpp">
-      <Filter>Classes\Engine\MainLoop</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Engine\Graphic2D\SceneStack.cpp">
-      <Filter>Classes\Engine\Graphic2D</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Engine\Audio\Audio.cpp">
-      <Filter>Classes\Engine\Audio</Filter>
+      <Filter>src\Actor</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\Engine\Actor\ActorFactory.cpp">
-      <Filter>Classes\Engine\Actor</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Engine\Actor\BaseScriptComponent.cpp">
-      <Filter>Classes\Engine\Actor</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Engine\MainLoop\BaseProcess.cpp">
-      <Filter>Classes\Engine\MainLoop</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Engine\MainLoop\ProcessRunner.cpp">
-      <Filter>Classes\Engine\MainLoop</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Engine\GameLogic\GameLogic.cpp">
-      <Filter>Classes\Engine\Logic</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Engine\Script\ComboEffectScript.cpp">
-      <Filter>Classes\Engine\Script</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Engine\Script\GameOverLabelScript.cpp">
-      <Filter>Classes\Engine\Script</Filter>
+      <Filter>src\Actor</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\Engine\Actor\BaseRenderComponent.cpp">
-      <Filter>Classes\Engine\Actor</Filter>
+      <Filter>src\Actor</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Engine\Actor\GeneralRenderComponent.cpp">
-      <Filter>Classes\Engine\Actor</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Engine\Script\GetScoreLabelScript.cpp">
-      <Filter>Classes\Engine\Script</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Engine\Script\LevelSummaryLabelScript.cpp">
-      <Filter>Classes\Engine\Script</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Engine\Script\MatrixLayerScript.cpp">
-      <Filter>Classes\Engine\Script</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Engine\Script\MainSceneScript.cpp">
-      <Filter>Classes\Engine\Script</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Engine\Script\StarScript.cpp">
-      <Filter>Classes\Engine\Script</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Engine\Script\StarMatrixScript.cpp">
-      <Filter>Classes\Engine\Script</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Engine\Script\StarParticleScript.cpp">
-      <Filter>Classes\Engine\Script</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Engine\Script\StartLevelLabelScript.cpp">
-      <Filter>Classes\Engine\Script</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Engine\Script\HighScoreLabelScript.cpp">
-      <Filter>Classes\Engine\Script</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Engine\Script\CurrentScoreLabelScript.cpp">
-      <Filter>Classes\Engine\Script</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Engine\Script\TargetScoreLabelScript.cpp">
-      <Filter>Classes\Engine\Script</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Engine\Script\LevelLabelScript.cpp">
-      <Filter>Classes\Engine\Script</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Engine\Script\TitleSceneScript.cpp">
-      <Filter>Classes\Engine\Script</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Engine\Script\TitleMenuScript.cpp">
-      <Filter>Classes\Engine\Script</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Engine\Script\ButtonStartGameScript.cpp">
-      <Filter>Classes\Engine\Script</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Engine\Script\ScoreCalculatorScript.cpp">
-      <Filter>Classes\Engine\Script</Filter>
+    <ClCompile Include="..\Classes\Engine\Actor\BaseScriptComponent.cpp">
+      <Filter>src\Actor</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\Engine\Actor\FiniteTimeActionComponent.cpp">
-      <Filter>Classes\Engine\Actor</Filter>
+      <Filter>src\Actor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Actor\GeneralRenderComponent.cpp">
+      <Filter>src\Actor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Audio\Audio.cpp">
+      <Filter>src\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Event\EventDispatcher.cpp">
+      <Filter>src\Event</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\GameLogic\GameLogic.cpp">
+      <Filter>src\GameLogic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Graphic2D\SceneStack.cpp">
+      <Filter>src\Graphic2D</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\MainLoop\BaseProcess.cpp">
+      <Filter>src\MainLoop</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\MainLoop\ProcessRunner.cpp">
+      <Filter>src\MainLoop</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\MainLoop\Timer.cpp">
+      <Filter>src\MainLoop</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Script\ButtonStartGameScript.cpp">
+      <Filter>src\Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Script\ComboEffectScript.cpp">
+      <Filter>src\Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Script\CurrentScoreLabelScript.cpp">
+      <Filter>src\Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Script\GameOverLabelScript.cpp">
+      <Filter>src\Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Script\GetScoreLabelScript.cpp">
+      <Filter>src\Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Script\HighScoreLabelScript.cpp">
+      <Filter>src\Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Script\LevelLabelScript.cpp">
+      <Filter>src\Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Script\LevelSummaryLabelScript.cpp">
+      <Filter>src\Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Script\MainSceneScript.cpp">
+      <Filter>src\Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Script\MatrixLayerScript.cpp">
+      <Filter>src\Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Script\ScoreCalculatorScript.cpp">
+      <Filter>src\Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Script\StarMatrixScript.cpp">
+      <Filter>src\Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Script\StarParticleScript.cpp">
+      <Filter>src\Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Script\StarScript.cpp">
+      <Filter>src\Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Script\StartLevelLabelScript.cpp">
+      <Filter>src\Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Script\TargetScoreLabelScript.cpp">
+      <Filter>src\Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Script\TitleMenuScript.cpp">
+      <Filter>src\Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Script\TitleSceneScript.cpp">
+      <Filter>src\Scripts</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\Engine\Utilities\RelativePosition.cpp">
-      <Filter>Classes\Engine\Utilities</Filter>
+      <Filter>src\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Engine\Utilities\SingletonContainer.cpp">
+      <Filter>src\Utilities</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -156,166 +153,166 @@
       <Filter>win32</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\AppDelegate.h">
-      <Filter>Classes</Filter>
+      <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\HelloWorldScene.h">
-      <Filter>Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Utilities\SingletonContainer.h">
-      <Filter>Classes\Engine\Utilities</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Event\EventDispatcher.h">
-      <Filter>Classes\Engine\Event</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Event\EventType.h">
-      <Filter>Classes\Engine\Event</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Event\IEventListener.h">
-      <Filter>Classes\Engine\Event</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Event\IEventDispatcher.h">
-      <Filter>Classes\Engine\Event</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Event\IEventData.h">
-      <Filter>Classes\Engine\Event</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Actor\SoundPlayer.h">
-      <Filter>Classes\Engine\Actor</Filter>
+      <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Engine\Actor\Actor.h">
-      <Filter>Classes\Engine\Actor</Filter>
+      <Filter>src\Actor</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Engine\Actor\ActorComponent.h">
-      <Filter>Classes\Engine\Actor</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\MainLoop\Timer.h">
-      <Filter>Classes\Engine\MainLoop</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Graphic2D\SceneStack.h">
-      <Filter>Classes\Engine\Graphic2D</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Audio\Audio.h">
-      <Filter>Classes\Engine\Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Utilities\GenericFactory.h">
-      <Filter>Classes\Engine\Utilities</Filter>
+      <Filter>src\Actor</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Engine\Actor\ActorFactory.h">
-      <Filter>Classes\Engine\Actor</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Actor\BaseScriptComponent.h">
-      <Filter>Classes\Engine\Actor</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\MainLoop\BaseProcess.h">
-      <Filter>Classes\Engine\MainLoop</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\MainLoop\ProcessRunner.h">
-      <Filter>Classes\Engine\MainLoop</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\GameLogic\GameLogic.h">
-      <Filter>Classes\Engine\Logic</Filter>
+      <Filter>src\Actor</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Engine\Actor\ActorID.h">
-      <Filter>Classes\Engine\Actor</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Script\ComboEffectScript.h">
-      <Filter>Classes\Engine\Script</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Event\EvtDataPlayerExplodedStars.h">
-      <Filter>Classes\Engine\Event</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Event\EvtDataGeneric.h">
-      <Filter>Classes\Engine\Event</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Event\BaseEventData.h">
-      <Filter>Classes\Engine\Event</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Script\GameOverLabelScript.h">
-      <Filter>Classes\Engine\Script</Filter>
+      <Filter>src\Actor</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Engine\Actor\BaseRenderComponent.h">
-      <Filter>Classes\Engine\Actor</Filter>
+      <Filter>src\Actor</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Actor\GeneralRenderComponent.h">
-      <Filter>Classes\Engine\Actor</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Script\GetScoreLabelScript.h">
-      <Filter>Classes\Engine\Script</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Script\LevelSummaryLabelScript.h">
-      <Filter>Classes\Engine\Script</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Script\MatrixLayerScript.h">
-      <Filter>Classes\Engine\Script</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Script\MainSceneScript.h">
-      <Filter>Classes\Engine\Script</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Script\StarScript.h">
-      <Filter>Classes\Engine\Script</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Script\StarMatrixScript.h">
-      <Filter>Classes\Engine\Script</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Script\StarParticleScript.h">
-      <Filter>Classes\Engine\Script</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Script\StartLevelLabelScript.h">
-      <Filter>Classes\Engine\Script</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Script\HighScoreLabelScript.h">
-      <Filter>Classes\Engine\Script</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Script\CurrentScoreLabelScript.h">
-      <Filter>Classes\Engine\Script</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Script\TargetScoreLabelScript.h">
-      <Filter>Classes\Engine\Script</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Script\LevelLabelScript.h">
-      <Filter>Classes\Engine\Script</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Script\TitleSceneScript.h">
-      <Filter>Classes\Engine\Script</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Script\TitleMenuScript.h">
-      <Filter>Classes\Engine\Script</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Script\ButtonStartGameScript.h">
-      <Filter>Classes\Engine\Script</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Event\EvtDataRequestDestroyActor.h">
-      <Filter>Classes\Engine\Event</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Event\EvtDataPlayerGotScore.h">
-      <Filter>Classes\Engine\Event</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Event\EvtDataHighScoreUpdated.h">
-      <Filter>Classes\Engine\Event</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Event\EvtDataCurrentScoreUpdated.h">
-      <Filter>Classes\Engine\Event</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Event\EvtDataLevelSummaryStarted.h">
-      <Filter>Classes\Engine\Event</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Event\EvtDataLevelNoMoreMove.h">
-      <Filter>Classes\Engine\Event</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Event\EvtDataLevelStarted.h">
-      <Filter>Classes\Engine\Event</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Event\EvtDataTargetScoreUpdated.h">
-      <Filter>Classes\Engine\Event</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Script\ScoreCalculatorScript.h">
-      <Filter>Classes\Engine\Script</Filter>
+    <ClInclude Include="..\Classes\Engine\Actor\BaseScriptComponent.h">
+      <Filter>src\Actor</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Engine\Actor\FiniteTimeActionComponent.h">
-      <Filter>Classes\Engine\Actor</Filter>
+      <Filter>src\Actor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Actor\GeneralRenderComponent.h">
+      <Filter>src\Actor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Actor\SoundPlayer.h">
+      <Filter>src\Actor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Audio\Audio.h">
+      <Filter>src\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Event\BaseEventData.h">
+      <Filter>src\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Event\EventDispatcher.h">
+      <Filter>src\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Event\EventType.h">
+      <Filter>src\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Event\EvtDataCurrentScoreUpdated.h">
+      <Filter>src\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Event\EvtDataGeneric.h">
+      <Filter>src\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Event\EvtDataHighScoreUpdated.h">
+      <Filter>src\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Event\EvtDataLevelNoMoreMove.h">
+      <Filter>src\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Event\EvtDataLevelStarted.h">
+      <Filter>src\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Event\EvtDataLevelSummaryStarted.h">
+      <Filter>src\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Event\EvtDataPlayerExplodedStars.h">
+      <Filter>src\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Event\EvtDataPlayerGotScore.h">
+      <Filter>src\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Event\EvtDataRequestDestroyActor.h">
+      <Filter>src\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Event\EvtDataTargetScoreUpdated.h">
+      <Filter>src\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Event\IEventData.h">
+      <Filter>src\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Event\IEventDispatcher.h">
+      <Filter>src\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Event\IEventListener.h">
+      <Filter>src\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\GameLogic\GameLogic.h">
+      <Filter>src\GameLogic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Graphic2D\SceneStack.h">
+      <Filter>src\Graphic2D</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\MainLoop\BaseProcess.h">
+      <Filter>src\MainLoop</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\MainLoop\ProcessRunner.h">
+      <Filter>src\MainLoop</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\MainLoop\Timer.h">
+      <Filter>src\MainLoop</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Script\ButtonStartGameScript.h">
+      <Filter>src\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Script\ComboEffectScript.h">
+      <Filter>src\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Script\CurrentScoreLabelScript.h">
+      <Filter>src\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Script\GameOverLabelScript.h">
+      <Filter>src\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Script\GetScoreLabelScript.h">
+      <Filter>src\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Script\HighScoreLabelScript.h">
+      <Filter>src\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Script\LevelLabelScript.h">
+      <Filter>src\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Script\LevelSummaryLabelScript.h">
+      <Filter>src\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Script\MainSceneScript.h">
+      <Filter>src\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Script\MatrixLayerScript.h">
+      <Filter>src\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Script\ScoreCalculatorScript.h">
+      <Filter>src\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Script\StarMatrixScript.h">
+      <Filter>src\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Script\StarParticleScript.h">
+      <Filter>src\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Script\StarScript.h">
+      <Filter>src\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Script\StartLevelLabelScript.h">
+      <Filter>src\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Script\TargetScoreLabelScript.h">
+      <Filter>src\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Script\TitleMenuScript.h">
+      <Filter>src\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Script\TitleSceneScript.h">
+      <Filter>src\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Utilities\GenericFactory.h">
+      <Filter>src\Utilities</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Engine\Utilities\RelativePosition.h">
-      <Filter>Classes\Engine\Utilities</Filter>
+      <Filter>src\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Utilities\SingletonContainer.h">
+      <Filter>src\Utilities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
