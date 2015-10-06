@@ -234,6 +234,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClInclude Include="..\Classes\Engine\Utilities\GenericFactory.h" />
     <ClInclude Include="..\Classes\Engine\Utilities\RelativePosition.h" />
     <ClInclude Include="..\Classes\Engine\Utilities\SingletonContainer.h" />
+    <ClInclude Include="..\Classes\Engine\Utilities\StringToVector.h" />
     <ClInclude Include="..\Classes\HelloWorldScene.h" />
     <ClInclude Include="main.h" />
   </ItemGroup>

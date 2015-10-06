@@ -1,6 +1,9 @@
 <!-- edited with XMLSpy v2013 (http://www.altova.com) by  () -->
 <Actor Type="ScoreCalculator" Resource="Actors\ScoreCalculator.xml">
 	<Components>
-		<ScoreCalculatorScript/>
+		<ScoreCalculatorScript>
+			<EndLevelBonus Array="2000 1660 1360 1100 880 700 560 460 400 380"/>
+			<TargetScore Array="1000 2500 4500 7000 10000" Increment="3000"/>
+		</ScoreCalculatorScript>
 	</Components>
 </Actor>

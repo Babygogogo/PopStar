@@ -20,7 +20,7 @@ public:
 		return EvtType;
 	}
 
-	int getLeftStarsCount() const
+	int getRemainingStarsCount() const
 	{
 		return m_LeftStarsCount;
 	}

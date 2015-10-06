@@ -104,7 +104,7 @@ void StarMatrixScript::StarMatrixScriptImpl::onLevelSummaryFinished(const IEvent
 {
 	explodeAllLeftStars();
 	m_invoker->queueCallback([]{
-		SingletonContainer::getInstance()->get<IEventDispatcher>()->vQueueEvent(std::make_unique<EvtDataGeneric>(EventType::LeftStarsExploded));
+		SingletonContainer::getInstance()->get<IEventDispatcher>()->vQueueEvent(std::make_unique<EvtDataGeneric>(EventType::RemainingStarsExploded));
 	});
 	unregisterAsEventListeners();
 }

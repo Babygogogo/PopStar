@@ -1,21 +1,25 @@
 #include <array>
+#include <cassert>
+#include <vector>
 
 #include "cocos2d.h"
+#include "../../cocos2d/external/tinyxml2/tinyxml2.h"
 
 #include "ScoreCalculatorScript.h"
+#include "../Event/BaseEventData.h"
 #include "../Event/EventDispatcher.h"
 #include "../Event/EventType.h"
-#include "../Event/BaseEventData.h"
-#include "../Event/EvtDataGeneric.h"
 #include "../Event/EvtDataCurrentScoreUpdated.h"
+#include "../Event/EvtDataGeneric.h"
 #include "../Event/EvtDataHighScoreUpdated.h"
+#include "../Event/EvtDataLevelNoMoreMove.h"
 #include "../Event/EvtDataLevelStarted.h"
 #include "../Event/EvtDataLevelSummaryStarted.h"
-#include "../Event/EvtDataLevelNoMoreMove.h"
 #include "../Event/EvtDataPlayerExplodedStars.h"
 #include "../Event/EvtDataPlayerGotScore.h"
 #include "../Event/EvtDataTargetScoreUpdated.h"
 #include "../Utilities/SingletonContainer.h"
+#include "../Utilities/StringToVector.h"
 
 //////////////////////////////////////////////////////////////////////////
 //Definition of GameDataImpl.
@@ -29,24 +33,29 @@ struct ScoreCalculatorScript::ScoreCalculatorScriptImpl
 	void onPlayerExplodedStars(const IEventData & e);
 	void onLevelNoMoreMove(const IEventData & e);
 	void onLevelSummaryFinished(const IEventData & e);
-	void onLeftStarsExploded(const IEventData & e);
+	void onRemainingStarsExploded(const IEventData & e);
 
-	void setCurrentScore(int score);
-	void setHighScore(int score);
-	void saveHighScore();
-	int getScoreOf(int num_of_exploded_stars);
+	int getExplodeScore(int explodedStarsCount) const;
 	int getEndLevelBonus() const;
+	int getTargetScore(int levelIndex) const;
 
-	void setCurrentLevel(int level);
-	void updateTargetScoreByCurrentLevel();
+	void updateCurrentAndHighScore(int score);
+	void updateCurrentLevelAndTargetScore(int level);
 
-	int m_current_level{ 0 };
-	int m_HighScore{ 0 };
+	static std::vector<int> s_EndLevelBonusArray;
+	static std::vector<int> s_TargetScoreArray;
+	static int s_TargetScoreIncrement;
+
+	int m_CurrentLevel{ 0 };
+	int m_HighScore{ -1 };
 	int m_CurrentScore{ 0 };
 	int m_TargetScore{ 0 };
-	int m_PreviousExplodedStarsCount{ 0 };
-	int m_stars_left_num{ 0 };
+	int m_RemainingStarsCount{ 0 };
 };
+
+std::vector<int> ScoreCalculatorScript::ScoreCalculatorScriptImpl::s_EndLevelBonusArray;
+std::vector<int> ScoreCalculatorScript::ScoreCalculatorScriptImpl::s_TargetScoreArray;
+int ScoreCalculatorScript::ScoreCalculatorScriptImpl::s_TargetScoreIncrement;
 
 ScoreCalculatorScript::ScoreCalculatorScriptImpl::ScoreCalculatorScriptImpl()
 {
@@ -58,9 +67,8 @@ ScoreCalculatorScript::ScoreCalculatorScriptImpl::~ScoreCalculatorScriptImpl()
 
 void ScoreCalculatorScript::ScoreCalculatorScriptImpl::onNewGameStarted(const IEventData & e)
 {
-	setCurrentScore(0);
-	setHighScore(cocos2d::UserDefault::getInstance()->getIntegerForKey("highestScore", 0));
-	setCurrentLevel(1);
+	updateCurrentAndHighScore(0);
+	updateCurrentLevelAndTargetScore(1);
 }
 
 void ScoreCalculatorScript::ScoreCalculatorScriptImpl::onPlayerExplodedStars(const IEventData & e)
@@ -68,121 +76,124 @@ void ScoreCalculatorScript::ScoreCalculatorScriptImpl::onPlayerExplodedStars(con
 	const auto & playerExplodedStarsEvent = static_cast<const EvtDataPlayerExplodedStars &>(e);
 	auto explodedStarsCount = playerExplodedStarsEvent.getExplodedStarsCount();
 
-	m_PreviousExplodedStarsCount = explodedStarsCount;
-	auto gotScore = getScoreOf(explodedStarsCount);
-	setCurrentScore(m_CurrentScore + gotScore);
+	auto explodeScore = getExplodeScore(explodedStarsCount);
+	updateCurrentAndHighScore(m_CurrentScore + explodeScore);
 
-	auto playerGotScoreEvent = std::make_unique<EvtDataPlayerGotScore>(gotScore, explodedStarsCount);
+	auto playerGotScoreEvent = std::make_unique<EvtDataPlayerGotScore>(explodeScore, explodedStarsCount);
 	SingletonContainer::getInstance()->get<IEventDispatcher>()->vQueueEvent(std::move(playerGotScoreEvent));
 }
 
 void ScoreCalculatorScript::ScoreCalculatorScriptImpl::onLevelNoMoreMove(const IEventData & e)
 {
 	const auto & noMoreMoveEvent = static_cast<const EvtDataLevelNoMoreMove &>(e);
-	m_stars_left_num = noMoreMoveEvent.getLeftStarsCount();
+	m_RemainingStarsCount = noMoreMoveEvent.getRemainingStarsCount();
 
-	auto levelSummaryEvent = std::make_unique<EvtDataLevelSummaryStarted>(m_stars_left_num, getEndLevelBonus());
+	auto levelSummaryEvent = std::make_unique<EvtDataLevelSummaryStarted>(m_RemainingStarsCount, getEndLevelBonus());
 	SingletonContainer::getInstance()->get<IEventDispatcher>()->vQueueEvent(std::move(levelSummaryEvent));
 }
 
 void ScoreCalculatorScript::ScoreCalculatorScriptImpl::onLevelSummaryFinished(const IEventData & e)
 {
-	setCurrentScore(m_CurrentScore + getEndLevelBonus());
+	updateCurrentAndHighScore(m_CurrentScore + getEndLevelBonus());
 }
 
-void ScoreCalculatorScript::ScoreCalculatorScriptImpl::onLeftStarsExploded(const IEventData & e)
+void ScoreCalculatorScript::ScoreCalculatorScriptImpl::onRemainingStarsExploded(const IEventData & e)
 {
 	if (m_CurrentScore < m_TargetScore)
 		SingletonContainer::getInstance()->get<IEventDispatcher>()->vQueueEvent(std::make_unique<EvtDataGeneric>(EventType::GameOver));
 	else
-		setCurrentLevel(m_current_level + 1);
+		updateCurrentLevelAndTargetScore(m_CurrentLevel + 1);
 }
 
-void ScoreCalculatorScript::ScoreCalculatorScriptImpl::setCurrentScore(int score)
+int ScoreCalculatorScript::ScoreCalculatorScriptImpl::getExplodeScore(int explodedStarsCount) const
 {
-	if (score != m_CurrentScore){
-		m_CurrentScore = score;
-		SingletonContainer::getInstance()->get<IEventDispatcher>()->vQueueEvent(std::make_unique<EvtDataCurrentScoreUpdated>(m_CurrentScore));
+	assert(explodedStarsCount > 1 && "ScoreCalculatorScriptImpl::getExplodeScore() with exploded count <= 1.");
 
-		setHighScore(m_CurrentScore);
-	}
-}
-
-void ScoreCalculatorScript::ScoreCalculatorScriptImpl::setHighScore(int score)
-{
-	if (m_HighScore <= score){
-		m_HighScore = score;
-		saveHighScore();
-
-		auto highScoreEvent = std::make_unique<EvtDataHighScoreUpdated>(m_HighScore);
-		SingletonContainer::getInstance()->get<IEventDispatcher>()->vQueueEvent(std::move(highScoreEvent));
-	}
-}
-
-void ScoreCalculatorScript::ScoreCalculatorScriptImpl::saveHighScore()
-{
-	cocos2d::UserDefault::getInstance()->setIntegerForKey("highestScore", m_HighScore);
-}
-
-int ScoreCalculatorScript::ScoreCalculatorScriptImpl::getScoreOf(int num_of_exploded_stars)
-{
-	if (num_of_exploded_stars <= 1)
-		throw("getScoreOf(exploded_stars_num) with a num <= 1 in GameData.");
-
-	return num_of_exploded_stars * num_of_exploded_stars * 5;
-}
-
-void ScoreCalculatorScript::ScoreCalculatorScriptImpl::setCurrentLevel(int level)
-{
-	if (level < 0)
-		throw("setCurrentLevel with a negative num in GameData.");
-
-	m_current_level = level;
-	m_PreviousExplodedStarsCount = 0;
-
-	auto levelStartedEvent = std::make_unique<EvtDataLevelStarted>(level);
-	SingletonContainer::getInstance()->get<IEventDispatcher>()->vQueueEvent(std::move(levelStartedEvent));
-
-	updateTargetScoreByCurrentLevel();
-}
-
-void ScoreCalculatorScript::ScoreCalculatorScriptImpl::updateTargetScoreByCurrentLevel()
-{
-	if (m_current_level <= 0)
-		throw("updateTargetScoreByCurrentLevel when current_level <= 0");
-
-	auto score = 0;
-	if (m_current_level == 1)
-		score = 1000;
-	else if (m_current_level == 2)
-		score = 3000;
-	else if ((m_current_level >= 3) && (m_current_level <= 10))
-		score = 3000 + 3000 * (m_current_level - 2);
-	else
-		score = 27000 + 4000 * (m_current_level - 10);
-
-	if (score != m_TargetScore){
-		m_TargetScore = score;
-
-		auto targetScoreEvent = std::make_unique<EvtDataTargetScoreUpdated>(m_TargetScore);
-		SingletonContainer::getInstance()->get<IEventDispatcher>()->vQueueEvent(std::move(targetScoreEvent));
-	}
+	return explodedStarsCount * explodedStarsCount * 5;
 }
 
 int ScoreCalculatorScript::ScoreCalculatorScriptImpl::getEndLevelBonus() const
 {
-	static const std::array<int, 10> bonus_array = { 2000, 1660, 1360, 1100, 880, 700, 560, 460, 400, 380 };
-
-	if (m_stars_left_num > 9 || m_stars_left_num < 0)
+	if (m_RemainingStarsCount >= s_EndLevelBonusArray.size() || m_RemainingStarsCount < 0)
 		return 0;
 
-	return bonus_array[m_stars_left_num];
+	return s_EndLevelBonusArray[m_RemainingStarsCount];
+}
+
+int ScoreCalculatorScript::ScoreCalculatorScriptImpl::getTargetScore(int levelIndex) const
+{
+	assert(levelIndex > 0 && "ScoreCalculatorScriptImpl::getTargetScore() with a non-positive level.");
+	if (levelIndex <= s_TargetScoreArray.size())
+		return s_TargetScoreArray[levelIndex - 1];
+	else
+		return s_TargetScoreArray.back() + (levelIndex - s_TargetScoreArray.size()) * s_TargetScoreIncrement;
+}
+
+void ScoreCalculatorScript::ScoreCalculatorScriptImpl::updateCurrentAndHighScore(int score)
+{
+	//Update current score and dispatch an event.
+	if (score != m_CurrentScore){
+		m_CurrentScore = score;
+		SingletonContainer::getInstance()->get<IEventDispatcher>()->vQueueEvent(std::make_unique<EvtDataCurrentScoreUpdated>(m_CurrentScore));
+	}
+
+	//Update high score if needed.
+	auto newHighScore = score;
+	if (newHighScore == 0)
+		newHighScore = cocos2d::UserDefault::getInstance()->getIntegerForKey("highestScore", 0);
+	if (newHighScore > m_HighScore){
+		m_HighScore = newHighScore;
+		cocos2d::UserDefault::getInstance()->setIntegerForKey("highestScore", m_HighScore);
+
+		SingletonContainer::getInstance()->get<IEventDispatcher>()->vQueueEvent(std::make_unique<EvtDataHighScoreUpdated>(m_HighScore));
+	}
+}
+
+void ScoreCalculatorScript::ScoreCalculatorScriptImpl::updateCurrentLevelAndTargetScore(int level)
+{
+	assert(level > 0 && "ScoreCalculatorScriptImpl::setCurrentLevel() with a non-positive level.");
+
+	m_CurrentLevel = level;
+	SingletonContainer::getInstance()->get<IEventDispatcher>()->vQueueEvent(std::make_unique<EvtDataLevelStarted>(level));
+
+	//Update target score by current level.
+	auto score = getTargetScore(m_CurrentLevel);
+	if (score != m_TargetScore){
+		m_TargetScore = score;
+		SingletonContainer::getInstance()->get<IEventDispatcher>()->vQueueEvent(std::make_unique<EvtDataTargetScoreUpdated>(m_TargetScore));
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
 //Implementation of GameData.
 //////////////////////////////////////////////////////////////////////////
 ScoreCalculatorScript::ScoreCalculatorScript() : pimpl{ std::make_shared<ScoreCalculatorScriptImpl>() }
+{
+}
+
+ScoreCalculatorScript::~ScoreCalculatorScript()
+{
+}
+
+bool ScoreCalculatorScript::vInit(tinyxml2::XMLElement *xmlElement)
+{
+	static auto isStaticInitialized = false;
+	if (isStaticInitialized)
+		return true;
+
+	//Load the end level bonus array.
+	pimpl->s_EndLevelBonusArray = toVector<int>(xmlElement->FirstChildElement("EndLevelBonus")->Attribute("Array"));
+
+	//Load the target score array.
+	auto targetScoreElement = xmlElement->FirstChildElement("TargetScore");
+	pimpl->s_TargetScoreArray = toVector<int>(targetScoreElement->Attribute("Array"));
+	pimpl->s_TargetScoreIncrement = targetScoreElement->IntAttribute("Increment");
+
+	isStaticInitialized = true;
+	return true;
+}
+
+void ScoreCalculatorScript::vPostInit()
 {
 	auto eventDispatcher = SingletonContainer::getInstance()->get<IEventDispatcher>();
 
@@ -198,13 +209,9 @@ ScoreCalculatorScript::ScoreCalculatorScript() : pimpl{ std::make_shared<ScoreCa
 	eventDispatcher->vAddListener(EventType::LevelSummaryFinished, pimpl, [this](const IEventData & e){
 		pimpl->onLevelSummaryFinished(e);
 	});
-	eventDispatcher->vAddListener(EventType::LeftStarsExploded, pimpl, [this](const IEventData & e){
-		pimpl->onLeftStarsExploded(e);
+	eventDispatcher->vAddListener(EventType::RemainingStarsExploded, pimpl, [this](const IEventData & e){
+		pimpl->onRemainingStarsExploded(e);
 	});
-}
-
-ScoreCalculatorScript::~ScoreCalculatorScript()
-{
 }
 
 const std::string & ScoreCalculatorScript::getType() const

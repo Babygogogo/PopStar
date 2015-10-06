@@ -308,6 +308,9 @@
     <ClInclude Include="..\Classes\Engine\Utilities\SingletonContainer.h">
       <Filter>src\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="..\Classes\Engine\Utilities\StringToVector.h">
+      <Filter>src\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="game.rc">
