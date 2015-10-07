@@ -30,8 +30,8 @@ public:
 
 	void setVisible(bool visible);
 
-	bool isSelected() const;
-	void setSelected(bool selected);
+	bool isInGroup() const;
+	void setIsInGroup(bool selected);
 
 	int getRowNum() const;
 	void setRowNum(int row_num);

@@ -129,12 +129,12 @@ void StarScript::moveTo(float pos_x, float pos_y)
 	pimpl->moveTo(pos_x, pos_y);
 }
 
-bool StarScript::isSelected() const
+bool StarScript::isInGroup() const
 {
 	return pimpl->m_is_selected;
 }
 
-void StarScript::setSelected(bool selected)
+void StarScript::setIsInGroup(bool selected)
 {
 	pimpl->m_is_selected = selected;
 }
@@ -161,7 +161,7 @@ void StarScript::setColNum(int col_num)
 
 bool StarScript::canGroupWith(StarScript *star) const
 {
-	return this != star && pimpl->m_ColorIndex == star->pimpl->m_ColorIndex;
+	return (star) && (this != star) && (pimpl->m_ColorIndex == star->pimpl->m_ColorIndex);
 }
 
 cocos2d::Color4F StarScript::getColor4F() const

@@ -13,8 +13,6 @@ public:
 
 	static const std::string Type;
 
-	void reset();
-
 	virtual const std::string & getType() const override;
 
 	//Disable copy/move constructor and operator=.
