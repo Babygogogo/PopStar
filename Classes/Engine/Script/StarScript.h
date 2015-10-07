@@ -33,9 +33,9 @@ public:
 	bool isInGroup() const;
 	void setIsInGroup(bool selected);
 
-	int getRowNum() const;
+	int getRowIndex() const;
 	void setRowNum(int row_num);
-	int getColNum() const;
+	int getColIndex() const;
 	void setColNum(int col_num);
 
 	virtual const std::string & getType() const override;

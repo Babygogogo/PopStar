@@ -12,7 +12,6 @@ public:
 	~StarMatrixScript();
 
 	static const std::string Type;
-
 	virtual const std::string & getType() const override;
 
 	//Disable copy/move constructor and operator=.

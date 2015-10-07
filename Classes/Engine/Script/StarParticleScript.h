@@ -5,7 +5,10 @@
 
 #include "../Actor/BaseScriptComponent.h"
 
-class StarScript;
+//Forward declaration.
+namespace cocos2d{
+	struct Color4F;
+}
 
 class StarParticleScript final :public BaseScriptComponent
 {
@@ -13,10 +16,9 @@ public:
 	StarParticleScript();
 	~StarParticleScript();
 
-	void show(StarScript *star);
+	void show(float posX, float posY, const cocos2d::Color4F & color);
 
 	static const std::string Type;
-
 	virtual const std::string & getType() const override;
 
 	//Disable copy/move constructor and operator=.
@@ -28,7 +30,6 @@ public:
 private:
 	//Override functions.
 	virtual bool vInit(tinyxml2::XMLElement *xmlElement) override;
-	virtual void vPostInit() override;
 
 	//Implementation stuff.
 	struct StarParticleScriptImpl;

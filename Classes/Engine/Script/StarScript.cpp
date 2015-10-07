@@ -139,7 +139,7 @@ void StarScript::setIsInGroup(bool selected)
 	pimpl->m_is_selected = selected;
 }
 
-int StarScript::getRowNum() const
+int StarScript::getRowIndex() const
 {
 	return pimpl->m_row_num;
 }
@@ -149,7 +149,7 @@ void StarScript::setRowNum(int row_num)
 	pimpl->m_row_num = row_num;
 }
 
-int StarScript::getColNum() const
+int StarScript::getColIndex() const
 {
 	return pimpl->m_col_num;
 }

@@ -9,6 +9,7 @@
 				<Left Row="0" Column="-1"/>
 				<Right Row="0" Column="1"/>
 			</NeighborIndexOffset>
+			<IntervalForExplodingRemainingStars Value="0.03"/>
 		</StarMatrixScript>
 		<GeneralRenderComponent Type="Node"/>
 		<FiniteTimeActionComponent/>
