@@ -29,6 +29,8 @@ struct StarScript::StarScriptImpl
 
 	static float s_InitialSpeedPPS;
 	static float s_NormalSpeedPPS;
+	static float s_Width;
+	static float s_Height;
 
 	struct ColorStruct{
 		std::string typeName;
@@ -43,6 +45,8 @@ struct StarScript::StarScriptImpl
 	static std::uniform_int_distribution<> s_RandomPositionOffset;
 };
 
+float StarScript::StarScriptImpl::s_Width{};
+float StarScript::StarScriptImpl::s_Height{};
 float StarScript::StarScriptImpl::s_InitialSpeedPPS{};
 float StarScript::StarScriptImpl::s_NormalSpeedPPS{};
 std::vector<StarScript::StarScriptImpl::ColorStruct> StarScript::StarScriptImpl::s_Colors;
@@ -94,6 +98,9 @@ void StarScript::randomizePositionAndColor(int rowIndex, int colIndex, float nor
 	//Randomize the color of the star.
 	pimpl->m_ColorIndex = pimpl->s_RandomColorNum(pimpl->s_RandomEngine);
 	pimpl->m_UnderlyingSprite->setSpriteFrame(cocos2d::SpriteFrameCache::getInstance()->getSpriteFrameByName(pimpl->s_Colors[pimpl->m_ColorIndex].spriteFrameName));
+	auto contentSize = pimpl->m_UnderlyingSprite->getContentSize();
+	pimpl->m_UnderlyingSprite->setScaleX(pimpl->s_Width / contentSize.width);
+	pimpl->m_UnderlyingSprite->setScaleY(pimpl->s_Height / contentSize.height);
 	pimpl->m_UnderlyingSprite->setVisible(true);
 
 	//Randomize the position of the star, and move it to the normal position.
@@ -111,6 +118,16 @@ void StarScript::randomizePositionAndColor(int rowIndex, int colIndex, float nor
 void StarScript::moveTo(float posX, float posY)
 {
 	pimpl->moveTo(posX, posY);
+}
+
+float StarScript::getWidth()
+{
+	return StarScriptImpl::s_Width;
+}
+
+float StarScript::getHeight()
+{
+	return StarScriptImpl::s_Height;
 }
 
 bool StarScript::isInGroup() const
@@ -184,6 +201,11 @@ bool StarScript::vInit(tinyxml2::XMLElement *xmlElement)
 	auto initialOffset = positionElement->IntAttribute("MaxInitialOffset");
 	pimpl->s_RandomPositionOffset.param({ -initialOffset, initialOffset });
 
+	//Grab the data of size.
+	auto sizeElement = xmlElement->FirstChildElement("Size");
+	pimpl->s_Width = sizeElement->FloatAttribute("Width");
+	pimpl->s_Height = sizeElement->FloatAttribute("Height");
+
 	//Grab the data of color.
 	auto colorElement = xmlElement->FirstChildElement("Color");
 	for (auto concreteColor = colorElement->FirstChildElement(); concreteColor; concreteColor = concreteColor->NextSiblingElement()){
@@ -208,8 +230,8 @@ bool StarScript::vInit(tinyxml2::XMLElement *xmlElement)
 void StarScript::vPostInit()
 {
 	auto actor = m_Actor.lock();
-	pimpl->m_UnderlyingSprite = static_cast<cocos2d::Sprite*>(actor->getRenderComponent()->getSceneNode());
 	pimpl->m_ActionComponent = actor->getComponent<FiniteTimeActionComponent>();
+	pimpl->m_UnderlyingSprite = static_cast<cocos2d::Sprite*>(actor->getRenderComponent()->getSceneNode());
 }
 
 const std::string & StarScript::getType() const

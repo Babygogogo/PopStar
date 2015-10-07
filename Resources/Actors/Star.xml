@@ -4,6 +4,7 @@
 		<StarScript>
 			<MoveSpeed Initial="150" Normal="250"/>
 			<Position MaxInitialOffset="135"/>
+			<Size Width="48" Height="48"/>
 			<Color>
 				<Blue SpriteFrameName="blue.png" R="84" G="203" B="254"/>
 				<Green SpriteFrameName="green.png" R="132" G="226" B="111"/>

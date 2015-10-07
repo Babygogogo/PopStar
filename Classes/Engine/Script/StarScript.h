@@ -21,6 +21,9 @@ public:
 	void moveTo(float posX, float posY);
 	bool canGroupWith(StarScript *star) const;
 
+	static float getWidth();
+	static float getHeight();
+
 	cocos2d::Color4F getColor4F() const;
 
 	float getPositionX() const;
@@ -38,9 +41,6 @@ public:
 
 	static const std::string Type;
 	virtual const std::string & getType() const override;
-
-	const static int WIDTH = 48;
-	const static int HEIGHT = 48;
 
 	//Disable copy/move constructor and operator=.
 	StarScript(const StarScript&) = delete;

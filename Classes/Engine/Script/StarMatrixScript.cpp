@@ -73,8 +73,8 @@ void StarMatrixScript::StarMatrixScriptImpl::onTouch(const cocos2d::Point & posi
 	//////////////////////////////////////////////////////////////////////////
 	//Find which star is touched.
 	auto touchedStar = static_cast<StarScript*>(nullptr);
-	auto rowIndex = static_cast<int>(position.y / StarScript::HEIGHT);
-	auto colIndex = static_cast<int>(position.x / StarScript::WIDTH);
+	auto rowIndex = static_cast<int>(position.y / StarScript::getHeight());
+	auto colIndex = static_cast<int>(position.x / StarScript::getWidth());
 	if (isRowIndexValid(rowIndex) && isColIndexValid(colIndex))
 		touchedStar = m_StarScripts[rowIndex][colIndex];
 
@@ -215,7 +215,7 @@ int StarMatrixScript::StarMatrixScriptImpl::countRemainingStars() const
 
 cocos2d::Point StarMatrixScript::StarMatrixScriptImpl::getStarDefaultPosition(int rowIndex, int colIndex) const
 {
-	return cocos2d::Point(colIndex * StarScript::WIDTH + StarScript::WIDTH / 2, rowIndex * StarScript::HEIGHT + StarScript::HEIGHT / 2);
+	return cocos2d::Point(colIndex * StarScript::getWidth() + StarScript::getWidth() / 2, rowIndex * StarScript::getHeight() + StarScript::getHeight() / 2);
 }
 
 StarScript * StarMatrixScript::StarMatrixScriptImpl::getStarWithPosition(int rowIndex, int colIndex, int rowOffset, int colOffset) const
