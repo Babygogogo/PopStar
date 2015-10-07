@@ -17,23 +17,16 @@ struct StarScript::StarScriptImpl
 	StarScriptImpl();
 	~StarScriptImpl();
 
-	void setRandomColor();
-	std::string getImageFileName();
-	void setRandomPosition(float pos_x, float pos_y);
+	void moveTo(float toPosX, float toPosY, float speed = StarScript::StarScriptImpl::s_NormalSpeedPPS);
 
-	float calculateMoveTime(float to_pos_x, float to_pos_y, float speed);
-	void moveTo(float pos_x, float pos_y, float speed = StarScript::StarScriptImpl::s_NormalSpeedPPS);
+	cocos2d::Sprite *m_UnderlyingSprite{ nullptr };
+	std::weak_ptr<FiniteTimeActionComponent> m_ActionComponent;
 
-	cocos2d::Sprite *m_sprite{ nullptr };
-	FiniteTimeActionComponent *m_invoker{ nullptr };
-
-	bool m_is_selected{ false };
-	int m_row_num{ 0 }, m_col_num{ 0 };
-	float m_pos_x{ 0.0f }, m_pos_y{ 0.0f };
+	bool m_IsInGroup{ false };
+	int m_RowIndex{ 0 }, m_ColIndex{ 0 };
 
 	int m_ColorIndex{ 0 };
 
-	static bool s_IsStaticInitialized;
 	static float s_InitialSpeedPPS;
 	static float s_NormalSpeedPPS;
 
@@ -50,7 +43,6 @@ struct StarScript::StarScriptImpl
 	static std::uniform_int_distribution<> s_RandomPositionOffset;
 };
 
-bool StarScript::StarScriptImpl::s_IsStaticInitialized{ false };
 float StarScript::StarScriptImpl::s_InitialSpeedPPS{};
 float StarScript::StarScriptImpl::s_NormalSpeedPPS{};
 std::vector<StarScript::StarScriptImpl::ColorStruct> StarScript::StarScriptImpl::s_Colors;
@@ -68,36 +60,22 @@ StarScript::StarScriptImpl::~StarScriptImpl()
 {
 }
 
-void StarScript::StarScriptImpl::setRandomColor()
+void StarScript::StarScriptImpl::moveTo(float toPosX, float toPosY, float speed /*= StarScript::StarScriptImpl::s_NormalSpeedPPS*/)
 {
-	m_ColorIndex = s_RandomColorNum(s_RandomEngine);
-	m_sprite->setSpriteFrame(cocos2d::SpriteFrameCache::getInstance()->getSpriteFrameByName(s_Colors[m_ColorIndex].spriteFrameName));
-}
-
-void StarScript::StarScriptImpl::setRandomPosition(float pos_x, float pos_y)
-{
-	m_pos_x = pos_x + s_RandomPositionOffset(s_RandomEngine);
-	m_pos_y = pos_y + s_RandomPositionOffset(s_RandomEngine);
-
-	m_sprite->setPosition(m_pos_x, m_pos_y);
-}
-
-float StarScript::StarScriptImpl::calculateMoveTime(float to_pos_x, float to_pos_y, float speed)
-{
-	auto delta_x = m_pos_x - to_pos_x;
-	auto delta_y = m_pos_y - to_pos_y;
-
-	return sqrt(delta_x * delta_x + delta_y * delta_y) / speed;
-}
-
-void StarScript::StarScriptImpl::moveTo(float pos_x, float pos_y, float speed /*= Star::impl::MOVE_SPEED*/)
-{
-	if (pos_x == m_pos_x && pos_y == m_pos_y)
+	auto currentPosX = m_UnderlyingSprite->getPositionX();
+	auto currentPosY = m_UnderlyingSprite->getPositionY();
+	if (toPosX == currentPosX && toPosY == currentPosY)
 		return;
 
-	m_invoker->queueMoveTo(calculateMoveTime(pos_x, pos_y, speed), pos_x, pos_y);
-	m_pos_x = pos_x;
-	m_pos_y = pos_y;
+	//Calculate the time for moving.
+	auto deltaX = currentPosX - toPosX;
+	auto deltaY = currentPosY - toPosY;
+	auto moveDuration = sqrt(deltaX * deltaX + deltaY * deltaY) / speed;
+
+	auto actionComponent = m_ActionComponent.lock();
+	actionComponent->stopAndClearAllActions();
+	actionComponent->queueMoveTo(moveDuration, toPosX, toPosY);
+	actionComponent->runNextAction();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -111,52 +89,58 @@ StarScript::~StarScript()
 {
 }
 
-void StarScript::randomize(int row_num, int col_num, float pos_x, float pos_y)
+void StarScript::randomizePositionAndColor(int rowIndex, int colIndex, float normalPosX, float normalPosY)
 {
-	pimpl->setRandomColor();
-	pimpl->m_sprite->setVisible(true);
+	//Randomize the color of the star.
+	pimpl->m_ColorIndex = pimpl->s_RandomColorNum(pimpl->s_RandomEngine);
+	pimpl->m_UnderlyingSprite->setSpriteFrame(cocos2d::SpriteFrameCache::getInstance()->getSpriteFrameByName(pimpl->s_Colors[pimpl->m_ColorIndex].spriteFrameName));
+	pimpl->m_UnderlyingSprite->setVisible(true);
 
-	pimpl->m_is_selected = false;
-	pimpl->m_row_num = row_num;
-	pimpl->m_col_num = col_num;
+	//Randomize the position of the star, and move it to the normal position.
+	auto randomPosX = normalPosX + pimpl->s_RandomPositionOffset(pimpl->s_RandomEngine);
+	auto randomPosY = normalPosY + pimpl->s_RandomPositionOffset(pimpl->s_RandomEngine);
+	pimpl->m_UnderlyingSprite->setPosition(randomPosX, randomPosY);
+	pimpl->moveTo(normalPosX, normalPosY, StarScript::StarScriptImpl::s_InitialSpeedPPS);
 
-	pimpl->setRandomPosition(pos_x, pos_y);
-	pimpl->moveTo(pos_x, pos_y, StarScript::StarScriptImpl::s_InitialSpeedPPS);
+	//Reset some data that are related to the matrix.
+	pimpl->m_IsInGroup = false;
+	pimpl->m_RowIndex = rowIndex;
+	pimpl->m_ColIndex = colIndex;
 }
 
-void StarScript::moveTo(float pos_x, float pos_y)
+void StarScript::moveTo(float posX, float posY)
 {
-	pimpl->moveTo(pos_x, pos_y);
+	pimpl->moveTo(posX, posY);
 }
 
 bool StarScript::isInGroup() const
 {
-	return pimpl->m_is_selected;
+	return pimpl->m_IsInGroup;
 }
 
-void StarScript::setIsInGroup(bool selected)
+void StarScript::setIsInGroup(bool isInGroup)
 {
-	pimpl->m_is_selected = selected;
+	pimpl->m_IsInGroup = isInGroup;
 }
 
 int StarScript::getRowIndex() const
 {
-	return pimpl->m_row_num;
+	return pimpl->m_RowIndex;
 }
 
 void StarScript::setRowNum(int row_num)
 {
-	pimpl->m_row_num = row_num;
+	pimpl->m_RowIndex = row_num;
 }
 
 int StarScript::getColIndex() const
 {
-	return pimpl->m_col_num;
+	return pimpl->m_ColIndex;
 }
 
 void StarScript::setColNum(int col_num)
 {
-	pimpl->m_col_num = col_num;
+	pimpl->m_ColIndex = col_num;
 }
 
 bool StarScript::canGroupWith(StarScript *star) const
@@ -171,69 +155,66 @@ cocos2d::Color4F StarScript::getColor4F() const
 
 float StarScript::getPositionX() const
 {
-	return pimpl->m_sprite->getPositionX();
+	return pimpl->m_UnderlyingSprite->getPositionX();
 }
 
 float StarScript::getPositionY() const
 {
-	return pimpl->m_sprite->getPositionY();
+	return pimpl->m_UnderlyingSprite->getPositionY();
 }
 
 void StarScript::setVisible(bool visible)
 {
-	pimpl->m_sprite->setVisible(visible);
-}
-
-const std::string & StarScript::getType() const
-{
-	return Type;
+	pimpl->m_UnderlyingSprite->setVisible(visible);
 }
 
 bool StarScript::vInit(tinyxml2::XMLElement *xmlElement)
 {
-	//Check if the static members are initialized. If not, grab data from xml and initialize them.
-	if (!pimpl->s_IsStaticInitialized){
-		pimpl->s_IsStaticInitialized = true;
+	static auto isStaticInitialized = false;
+	if (isStaticInitialized)
+		return true;
 
-		//Grab the data of speed.
-		auto speedElement = xmlElement->FirstChildElement("MoveSpeed");
-		pimpl->s_InitialSpeedPPS = speedElement->FloatAttribute("Initial");
-		pimpl->s_NormalSpeedPPS = speedElement->FloatAttribute("Normal");
+	//Grab the data of speed.
+	auto speedElement = xmlElement->FirstChildElement("MoveSpeed");
+	pimpl->s_InitialSpeedPPS = speedElement->FloatAttribute("Initial");
+	pimpl->s_NormalSpeedPPS = speedElement->FloatAttribute("Normal");
 
-		//Grab the data of position.
-		auto positionElement = xmlElement->FirstChildElement("Position");
-		auto initialOffset = positionElement->IntAttribute("MaxInitialOffset");
-		pimpl->s_RandomPositionOffset.param({ -initialOffset, initialOffset });
+	//Grab the data of position.
+	auto positionElement = xmlElement->FirstChildElement("Position");
+	auto initialOffset = positionElement->IntAttribute("MaxInitialOffset");
+	pimpl->s_RandomPositionOffset.param({ -initialOffset, initialOffset });
 
-		//Grab the data of color.
-		auto colorElement = xmlElement->FirstChildElement("Color");
-		for (auto concreteColor = colorElement->FirstChildElement(); concreteColor; concreteColor = concreteColor->NextSiblingElement()){
-			auto colorType = concreteColor->Value();
-			auto spriteFrameName = concreteColor->Attribute("SpriteFrameName");
-			auto colorR = concreteColor->FloatAttribute("R");
-			auto colorG = concreteColor->FloatAttribute("G");
-			auto colorB = concreteColor->FloatAttribute("B");
+	//Grab the data of color.
+	auto colorElement = xmlElement->FirstChildElement("Color");
+	for (auto concreteColor = colorElement->FirstChildElement(); concreteColor; concreteColor = concreteColor->NextSiblingElement()){
+		auto colorType = concreteColor->Value();
+		auto spriteFrameName = concreteColor->Attribute("SpriteFrameName");
+		auto colorR = concreteColor->FloatAttribute("R");
+		auto colorG = concreteColor->FloatAttribute("G");
+		auto colorB = concreteColor->FloatAttribute("B");
 
-			auto colorStruct = StarScriptImpl::ColorStruct();
-			colorStruct.typeName = colorType;
-			colorStruct.spriteFrameName = spriteFrameName;
-			colorStruct.color4F = { colorR / 255.0f, colorG / 255.0f, colorB / 255.0f, 1.0f };
-			pimpl->s_Colors.emplace_back(std::move(colorStruct));
-		}
-		pimpl->s_RandomColorNum.param({ 0, static_cast<int>(pimpl->s_Colors.size() - 1) });
+		auto colorStruct = StarScriptImpl::ColorStruct();
+		colorStruct.typeName = colorType;
+		colorStruct.spriteFrameName = spriteFrameName;
+		colorStruct.color4F = { colorR / 255.0f, colorG / 255.0f, colorB / 255.0f, 1.0f };
+		pimpl->s_Colors.emplace_back(std::move(colorStruct));
 	}
+	pimpl->s_RandomColorNum.param({ 0, static_cast<int>(pimpl->s_Colors.size() - 1) });
 
+	isStaticInitialized = true;
 	return true;
 }
 
 void StarScript::vPostInit()
 {
 	auto actor = m_Actor.lock();
+	pimpl->m_UnderlyingSprite = static_cast<cocos2d::Sprite*>(actor->getRenderComponent()->getSceneNode());
+	pimpl->m_ActionComponent = actor->getComponent<FiniteTimeActionComponent>();
+}
 
-	pimpl->m_sprite = static_cast<cocos2d::Sprite*>(actor->getRenderComponent()->getSceneNode());
-
-	pimpl->m_invoker = actor->getComponent<FiniteTimeActionComponent>().get();
-	pimpl->m_invoker->setRunAutomatically(true);
+const std::string & StarScript::getType() const
+{
+	return Type;
 }
 
 const std::string StarScript::Type = "StarScript";

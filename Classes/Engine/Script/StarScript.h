@@ -17,10 +17,8 @@ public:
 	StarScript();
 	~StarScript();
 
-	static const std::string Type;
-
-	void randomize(int row_num, int col_num, float pos_x, float pos_y);
-	void moveTo(float pos_x, float pos_y);
+	void randomizePositionAndColor(int rowIndex, int colIndex, float normalPosX, float normalPosY);
+	void moveTo(float posX, float posY);
 	bool canGroupWith(StarScript *star) const;
 
 	cocos2d::Color4F getColor4F() const;
@@ -31,13 +29,14 @@ public:
 	void setVisible(bool visible);
 
 	bool isInGroup() const;
-	void setIsInGroup(bool selected);
+	void setIsInGroup(bool isInGroup);
 
 	int getRowIndex() const;
 	void setRowNum(int row_num);
 	int getColIndex() const;
 	void setColNum(int col_num);
 
+	static const std::string Type;
 	virtual const std::string & getType() const override;
 
 	const static int WIDTH = 48;

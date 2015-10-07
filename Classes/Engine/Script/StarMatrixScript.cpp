@@ -158,7 +158,7 @@ void StarMatrixScript::StarMatrixScriptImpl::onStartLevelLabelDisappeared(const 
 			m_StarScripts[row_num][col_num] = m_initial_stars[row_num][col_num];
 
 			auto position = getStarDefaultPosition(row_num, col_num);
-			m_StarScripts[row_num][col_num]->randomize(row_num, col_num, position.x, position.y);
+			m_StarScripts[row_num][col_num]->randomizePositionAndColor(row_num, col_num, position.x, position.y);
 		}
 	}
 
