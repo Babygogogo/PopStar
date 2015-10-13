@@ -74,12 +74,12 @@ bool LevelLabelScript::vInit(tinyxml2::XMLElement *xmlElement)
 
 void LevelLabelScript::vPostInit()
 {
+	pimpl->m_RenderComponent = m_Actor.lock()->getRenderComponent();
+	pimpl->setStringWithLevel(0);
+
 	SingletonContainer::getInstance()->get<IEventDispatcher>()->vAddListener(EventType::LevelStarted, pimpl, [this](const IEventData & e){
 		pimpl->onLevelStarted(e);
 	});
-
-	pimpl->m_RenderComponent = m_Actor.lock()->getRenderComponent();
-	pimpl->setStringWithLevel(0);
 }
 
 const std::string & LevelLabelScript::getType() const

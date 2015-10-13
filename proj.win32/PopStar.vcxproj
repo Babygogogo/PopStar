@@ -174,7 +174,6 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClCompile Include="..\Classes\Engine\Script\StarScript.cpp" />
     <ClCompile Include="..\Classes\Engine\Script\StartLevelLabelScript.cpp" />
     <ClCompile Include="..\Classes\Engine\Script\TargetScoreLabelScript.cpp" />
-    <ClCompile Include="..\Classes\Engine\Script\TitleMenuScript.cpp" />
     <ClCompile Include="..\Classes\Engine\Script\TitleSceneScript.cpp" />
     <ClCompile Include="..\Classes\Engine\Utilities\RelativePosition.cpp" />
     <ClCompile Include="..\Classes\Engine\Utilities\SingletonContainer.cpp" />
@@ -229,7 +228,6 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClInclude Include="..\Classes\Engine\Script\StarScript.h" />
     <ClInclude Include="..\Classes\Engine\Script\StartLevelLabelScript.h" />
     <ClInclude Include="..\Classes\Engine\Script\TargetScoreLabelScript.h" />
-    <ClInclude Include="..\Classes\Engine\Script\TitleMenuScript.h" />
     <ClInclude Include="..\Classes\Engine\Script\TitleSceneScript.h" />
     <ClInclude Include="..\Classes\Engine\Utilities\GenericFactory.h" />
     <ClInclude Include="..\Classes\Engine\Utilities\RelativePosition.h" />

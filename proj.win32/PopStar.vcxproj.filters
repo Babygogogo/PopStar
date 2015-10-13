@@ -132,9 +132,6 @@
     <ClCompile Include="..\Classes\Engine\Script\TargetScoreLabelScript.cpp">
       <Filter>src\Scripts</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Engine\Script\TitleMenuScript.cpp">
-      <Filter>src\Scripts</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\Engine\Script\TitleSceneScript.cpp">
       <Filter>src\Scripts</Filter>
     </ClCompile>
@@ -291,9 +288,6 @@
       <Filter>src\Scripts</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Engine\Script\TargetScoreLabelScript.h">
-      <Filter>src\Scripts</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Engine\Script\TitleMenuScript.h">
       <Filter>src\Scripts</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Engine\Script\TitleSceneScript.h">

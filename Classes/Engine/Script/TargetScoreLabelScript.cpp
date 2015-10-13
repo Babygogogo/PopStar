@@ -1,4 +1,5 @@
 #include "cocos2d.h"
+#include "../../cocos2d/external/tinyxml2/tinyxml2.h"
 
 #include "TargetScoreLabelScript.h"
 #include "../Actor/Actor.h"
@@ -13,17 +14,21 @@
 //////////////////////////////////////////////////////////////////////////
 struct TargetScoreLabelScript::TargetScoreLabelScriptImpl
 {
-	TargetScoreLabelScriptImpl(TargetScoreLabelScript *visitor);
+	TargetScoreLabelScriptImpl();
 	~TargetScoreLabelScriptImpl();
 
 	void onTargetScoreValueUpdated(const IEventData & e);
 
-	void setStringWithTargetScore(int targetScore = 0);
+	void setStringWithTargetScore(int targetScore);
 
-	TargetScoreLabelScript *m_Visitor{ nullptr };
+	static std::string s_TargetScoreString;
+
+	std::weak_ptr<BaseRenderComponent> m_RenderComponent;
 };
 
-TargetScoreLabelScript::TargetScoreLabelScriptImpl::TargetScoreLabelScriptImpl(TargetScoreLabelScript *visitor) : m_Visitor{ visitor }
+std::string TargetScoreLabelScript::TargetScoreLabelScriptImpl::s_TargetScoreString;
+
+TargetScoreLabelScript::TargetScoreLabelScriptImpl::TargetScoreLabelScriptImpl()
 {
 }
 
@@ -37,16 +42,16 @@ void TargetScoreLabelScript::TargetScoreLabelScriptImpl::onTargetScoreValueUpdat
 	setStringWithTargetScore(targetScoreEvent.getTargetScore());
 }
 
-void TargetScoreLabelScript::TargetScoreLabelScriptImpl::setStringWithTargetScore(int targetScore /*= 0*/)
+void TargetScoreLabelScript::TargetScoreLabelScriptImpl::setStringWithTargetScore(int targetScore)
 {
-	auto underlyingLabel = static_cast<cocos2d::Label*>(m_Visitor->m_Actor.lock()->getRenderComponent()->getSceneNode());
-	underlyingLabel->setString(std::string("Target Score: ") + std::to_string(targetScore));
+	auto underlyingLabel = static_cast<cocos2d::Label*>(m_RenderComponent.lock()->getSceneNode());
+	underlyingLabel->setString(s_TargetScoreString + std::to_string(targetScore));
 }
 
 //////////////////////////////////////////////////////////////////////////
 //Implementation of TargetScoreLabelScript.
 //////////////////////////////////////////////////////////////////////////
-TargetScoreLabelScript::TargetScoreLabelScript() : pimpl{ std::make_shared<TargetScoreLabelScriptImpl>(this) }
+TargetScoreLabelScript::TargetScoreLabelScript() : pimpl{ std::make_shared<TargetScoreLabelScriptImpl>() }
 {
 }
 
@@ -54,9 +59,23 @@ TargetScoreLabelScript::~TargetScoreLabelScript()
 {
 }
 
+bool TargetScoreLabelScript::vInit(tinyxml2::XMLElement *xmlElement)
+{
+	static auto isStaticInitialized = false;
+	if (isStaticInitialized)
+		return true;
+
+	auto textElement = xmlElement->FirstChildElement("Text");
+	pimpl->s_TargetScoreString = textElement->Attribute("TargetScore");
+
+	isStaticInitialized = true;
+	return true;
+}
+
 void TargetScoreLabelScript::vPostInit()
 {
-	pimpl->setStringWithTargetScore();
+	pimpl->m_RenderComponent = m_Actor.lock()->getRenderComponent();
+	pimpl->setStringWithTargetScore(0);
 
 	SingletonContainer::getInstance()->get<IEventDispatcher>()->vAddListener(EventType::TargetScoreUpdated, pimpl, [this](const IEventData & e){
 		pimpl->onTargetScoreValueUpdated(e);

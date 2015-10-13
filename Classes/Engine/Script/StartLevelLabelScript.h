@@ -12,7 +12,6 @@ public:
 	~StartLevelLabelScript();
 
 	virtual const std::string & getType() const override;
-
 	static const std::string Type;
 
 	//Disable copy/move constructor and operator=.
@@ -23,6 +22,7 @@ public:
 
 private:
 	//Override functions.
+	virtual bool vInit(tinyxml2::XMLElement *xmlElement) override;
 	virtual void vPostInit() override;
 
 	//Implementation stuff.

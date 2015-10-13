@@ -23,7 +23,6 @@
 #include "../Script/StarParticleScript.h"
 #include "../Script/StartLevelLabelScript.h"
 #include "../Script/TargetScoreLabelScript.h"
-#include "../Script/TitleMenuScript.h"
 #include "../Script/TitleSceneScript.h"
 #include "../Utilities/GenericFactory.h"
 
@@ -79,7 +78,6 @@ void ActorFactory::ActorFactoryImpl::registerComponents()
 	m_ComponentFactory.registerType<StarParticleScript>();
 	m_ComponentFactory.registerType<StartLevelLabelScript>();
 	m_ComponentFactory.registerType<TargetScoreLabelScript>();
-	m_ComponentFactory.registerType<TitleMenuScript>();
 	m_ComponentFactory.registerType<TitleSceneScript>();
 }
 
